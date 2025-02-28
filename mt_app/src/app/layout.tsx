@@ -32,6 +32,3 @@ export const metadata: Metadata = {
 //     </html>
 //   );
 // }
-
-
-Fuvkkkkkkkkkkkk
