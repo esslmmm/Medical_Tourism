@@ -33,5 +33,4 @@ export const metadata: Metadata = {
 //   );
 // }
  
-
-<Thuta></Thuta>
+<NEON></NEON>
