@@ -33,6 +33,4 @@ export const metadata: Metadata = {
 //   );
 // }
 
-abc
-
-123
+Neon is big gay
