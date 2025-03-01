@@ -32,4 +32,6 @@ export const metadata: Metadata = {
 //     </html>
 //   );
 // }
+ 
 
+Neon is Gay
