@@ -29,7 +29,7 @@ export default function MedicalForm() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+        <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg text-black">
             <h2 className="text-xl font-bold mb-4">Contact Detail</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Contact Details */}
@@ -40,7 +40,7 @@ export default function MedicalForm() {
                         placeholder="First Name"
                         value={formData.firstName}
                         onChange={handleChange}
-                        className="border p-2 w-full rounded"
+                        className="border p-2 w-full rounded text-black"
                     />
                     <input
                         type="text"
@@ -48,7 +48,7 @@ export default function MedicalForm() {
                         placeholder="Last Name"
                         value={formData.lastName}
                         onChange={handleChange}
-                        className="border p-2 w-full rounded"
+                        className="border p-2 w-full rounded text-black"
                     />
                     <input
                         type="email"
@@ -56,7 +56,7 @@ export default function MedicalForm() {
                         placeholder="Email"
                         value={formData.email}
                         onChange={handleChange}
-                        className="border p-2 w-full rounded"
+                        className="border p-2 w-full rounded text-black"
                     />
                     <input
                         type="text"
@@ -64,7 +64,7 @@ export default function MedicalForm() {
                         placeholder="Country"
                         value={formData.country}
                         onChange={handleChange}
-                        className="border p-2 w-full rounded"
+                        className="border p-2 w-full rounded text-black"
                     />
                     <input
                         type="text"
@@ -72,7 +72,7 @@ export default function MedicalForm() {
                         placeholder="Phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        className="border p-2 w-full rounded"
+                        className="border p-2 w-full rounded text-black"
                     />
                     <input
                         type="text"
@@ -80,13 +80,13 @@ export default function MedicalForm() {
                         placeholder="Purpose"
                         value={formData.purpose}
                         onChange={handleChange}
-                        className="border p-2 w-full rounded"
+                        className="border p-2 w-full rounded text-black"
                     />
                 </div>
 
                 {/* Patient Details */}
                 <h2 className="text-xl font-bold mt-6">Patient Detail</h2>
-                <div className="flex space-x-4">
+                <div className="flex space-x-4 text-black">
                     <label className="flex items-center">
                         <input
                             type="radio"
@@ -118,7 +118,7 @@ export default function MedicalForm() {
                         placeholder="First Name"
                         value={formData.patientFirstName}
                         onChange={handleChange}
-                        className="border p-2 w-full rounded"
+                        className="border p-2 w-full rounded text-black"
                     />
                     <input
                         type="text"
@@ -126,14 +126,14 @@ export default function MedicalForm() {
                         placeholder="Last Name"
                         value={formData.patientLastName}
                         onChange={handleChange}
-                        className="border p-2 w-full rounded"
+                        className="border p-2 w-full rounded text-black"
                     />
                     <input
                         type="date"
                         name="dob"
                         value={formData.dob}
                         onChange={handleChange}
-                        className="border p-2 w-full rounded"
+                        className="border p-2 w-full rounded text-black"
                     />
                     <input
                         type="text"
@@ -141,7 +141,7 @@ export default function MedicalForm() {
                         placeholder="Nationality"
                         value={formData.nationality}
                         onChange={handleChange}
-                        className="border p-2 w-full rounded"
+                        className="border p-2 w-full rounded text-black"
                     />
                     <input
                         type="text"
@@ -149,7 +149,7 @@ export default function MedicalForm() {
                         placeholder="Passport ID"
                         value={formData.passport}
                         onChange={handleChange}
-                        className="border p-2 w-full rounded"
+                        className="border p-2 w-full rounded text-black"
                     />
                 </div>
 
