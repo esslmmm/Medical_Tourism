@@ -44,6 +44,7 @@ export default function AppointmentForm() {
                         </div>
                     </div>
                 </div>
+                <h2 className="text-lg font-semibold mb-4 text-black border-b border-gray-300 pb-2"></h2>
                 <h2 className="text-lg font-semibold mb-4 text-black border-b border-gray-300 pb-2">Patient detail</h2>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -71,8 +72,8 @@ export default function AppointmentForm() {
                         <p className="text-black">{formData.passportId}</p>
                     </div>
                 </div>
+                <h2 className="text-lg font-semibold mb-4 text-black border-b border-gray-300 pb-2"></h2>
             </div>
-
             {/* Right Sidebar Section */}
             <div className="w-1/3 ml-6">
                 <div className="bg-white p-6 rounded-lg shadow-lg mb-6 flex items-center">
