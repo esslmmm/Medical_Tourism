@@ -44,8 +44,7 @@ export default function AppointmentForm() {
                         </div>
                     </div>
                 </div>
-
-                <h2 className="text-lg font-semibold mt-6 mb-4 text-black">Patient detail</h2>
+                <h2 className="text-lg font-semibold mb-4 text-black border-b border-gray-300 pb-2">Patient detail</h2>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                         <p className="text-sm font-medium text-black">First Name</p>
