@@ -9,6 +9,7 @@ import BodyBE from "./componants/BodyBE";
 import BodyBC from "./componants/BodyBC";
 import BodyBM from "./componants/BodyBM";
 import ContactUs from "./componants/ContactUs";
+import ReviewPopUp from "./componants/ReviewPopUp";
 import "./globals.css";
 
 // /pages/index.js
@@ -21,7 +22,7 @@ export default function HomePage({
     <html lang="en">
       <body>
         <NavbarBM />
-        <BodyBC />
+        <BodyBD />
       </body>
       <Footer />
     </html>
