@@ -21,7 +21,7 @@ export default function HomePage({
     <html lang="en">
       <body>
         <NavbarBM />
-        <ContactUs />
+        <BodyBC />
       </body>
       <Footer />
     </html>
