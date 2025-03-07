@@ -8,7 +8,7 @@ import BodyBD from "./componants/BodyBD";
 import BodyBE from "./componants/BodyBE";
 import BodyBC from "./componants/BodyBC";
 import BodyBM from "./componants/BodyBM";
-
+import ContactUs from "./componants/ContactUs";
 import "./globals.css";
 
 // /pages/index.js
@@ -20,8 +20,8 @@ export default function HomePage({
   return (
     <html lang="en">
       <body>
-        {/* <NavbarBM /> */}
-        <BodyBM />
+        <NavbarBM />
+        <ContactUs />
       </body>
       <Footer />
     </html>
