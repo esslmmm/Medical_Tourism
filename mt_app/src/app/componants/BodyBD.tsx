@@ -94,7 +94,7 @@ export default function AppointmentForm() {
                     <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
                     <div>
                         <h3 className="font-semibold text-black">Medical Service</h3>
-                        <p className="text-sm text-black">Appointment - Sat, Feb 8, 2025</p>
+                        <p className="text-sm text-black font-bold">Appointment - Sat, Feb 8, 2025</p>
                         <p className="text-sm text-black">Time - 9:00 - 12:00</p>
                         <p className="text-sm text-black">Service: Medical check-up</p>
                     </div>
@@ -116,6 +116,42 @@ export default function AppointmentForm() {
                             <p className="text-sm text-black">Time: 3:00 PM - 5:00 PM</p>
                         </div>
                     </div>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-lg mb-6 my-6">
+                    <h3 className="font-semibold text-black">Accommodation</h3>
+                    <div className="flex items-center mt-4">
+                        <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
+                        <div>
+                            <p className="font-semibold text-black">Chiang Rai Hotel</p>
+                            <p className="text-sm text-black">8 Feb 2025 - 10 Feb 2025 | 2 Nights</p>
+                            <p className="text-sm text-black">1 x Sweet Dream Room (90m²)</p>
+                            <p className="text-sm text-black">Guest(s): 1 Adult</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
+                    <h3 className="font-semibold text-black">Interpreter</h3>
+                    <div className="flex items-center mt-4">
+                        <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
+                        <div>
+                            <p className="font-semibold text-black">Wan Lucas</p>
+                            <p className="text-sm text-black">English to Thai Language</p>
+                            <p className="text-sm text-black">1 - 5 FEB 2025</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 className="font-semibold text-black">Car Service</h3>
+                    <div className="flex items-center mt-4">
+                        <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
+                        <div>
+                            <p className="font-semibold text-black">In Plan</p>
+                            <p className="text-sm text-black">1 - 5 FEB 2025</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="mt-4 text-right">
+                    <a href="#" className="text-blue-500 text-sm font-semibold">Show all detail</a>
                 </div>
             </div>
         </div>
