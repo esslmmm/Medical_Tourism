@@ -6,7 +6,6 @@ import Footer from "./componants/Footer";
 import BodyBD from "./componants/BodyBD";
 import BodyBE from "./componants/BodyBE";
 import BodyBC from "./componants/BodyBC";
-import ReviewPopUp from "./componants/ReviewPopUp";
 import "./globals.css";
 
 // /pages/index.js
@@ -19,7 +18,7 @@ export default function HomePage({
     <html lang="en">
       <body>
         <NavbarBC />
-        <ReviewPopUp />
+        <BodyBC />
       </body>
       <Footer />
     </html>
