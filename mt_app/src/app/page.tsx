@@ -7,6 +7,7 @@ import Footer from "./componants/Footer";
 import BodyBD from "./componants/BodyBD";
 import BodyBE from "./componants/BodyBE";
 import BodyBC from "./componants/BodyBC";
+import BodyBM from "./componants/BodyBM";
 
 import "./globals.css";
 
@@ -19,8 +20,8 @@ export default function HomePage({
   return (
     <html lang="en">
       <body>
-        <NavbarBM />
-        <BodyBE />
+        {/* <NavbarBM /> */}
+        <BodyBM />
       </body>
       <Footer />
     </html>
