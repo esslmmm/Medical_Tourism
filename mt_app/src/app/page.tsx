@@ -2,10 +2,12 @@ import Image from "next/image";
 import NavbarBD from "./componants/NavbarBD";
 import NavbarBE from "./componants/NavbarBE";
 import NavbarBC from "./componants/NavbarBC";
+import NavbarBM from "./componants/NavbarBM";
 import Footer from "./componants/Footer";
 import BodyBD from "./componants/BodyBD";
 import BodyBE from "./componants/BodyBE";
 import BodyBC from "./componants/BodyBC";
+import BodyBM from "./componants/BodyBM";
 import "./globals.css";
 
 // /pages/index.js
@@ -17,8 +19,8 @@ export default function HomePage({
   return (
     <html lang="en">
       <body>
-        <NavbarBC />
-        <BodyBC />
+        <NavbarBM />
+        <BodyBM />
       </body>
       <Footer />
     </html>
