@@ -1,6 +1,6 @@
 import React from "react";
 import { FaStar } from "react-icons/fa";
-import { Interpreter } from "@/components/user-interpreter-page/types";
+import { Interpreter } from "./types";
 
 interface InterpreterListProps {
   interpreters: Interpreter[];

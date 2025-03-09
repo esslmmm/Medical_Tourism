@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import NavigationIcons from "../../../components/select-timeline/NavigationIcons";
-import PackageType from "../../../components/select-timeline/PackageType";
-import TimelineSelector from "../../../components/select-timeline/TimelineSelector";
-import EventsList from "../../../components/select-timeline/EventList";
-import CarService from "../../../components/select-timeline/CarService";
+import NavigationIcons from "../../components/select-timeline/NavigationIcons";
+import PackageType from "../../components/select-timeline/PackageType";
+import TimelineSelector from "../../components/select-timeline/TimelineSelector";
+import EventsList from "../../components/select-timeline/EventList";
+import CarService from "../../components/select-timeline/CarService";
 
 
 

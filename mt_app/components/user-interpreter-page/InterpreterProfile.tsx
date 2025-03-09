@@ -1,5 +1,5 @@
 import React from "react";
-import { Interpreter } from "@/components/user-interpreter-page/types";
+import { Interpreter } from "./types";
 
 interface InterpreterProfileProps {
   interpreter: Interpreter;
