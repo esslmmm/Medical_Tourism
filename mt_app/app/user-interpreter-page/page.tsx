@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-<<<<<<< HEAD:mt_app/app/user-interpreter-page/page.tsx
 import InterpreterList from "../../components/user-interpreter-page/InterpreterList";
 import InterpreterProfile from "../../components/user-interpreter-page/InterpreterProfile";
 import InterpreterBio from "../../components/user-interpreter-page/InterpreterBio";
@@ -14,13 +13,6 @@ interface Review {
   comment: string;
   date: string;
 }
-=======
-import InterpreterList from "../../../components/user-interpreter-page/InterpreterList";
-import InterpreterProfile from "../../../components/user-interpreter-page/InterpreterProfile";
-import InterpreterBio from "../../../components/user-interpreter-page/InterpreterBio";
-import ReviewSection from "../../../components/user-interpreter-page/ReviewSection";
-import { Interpreter } from "../../../components/user-interpreter-page/types";
->>>>>>> 45e1973f296fbaa0d583fb8d0646799dc1b3210b:mt_app/src/app/user-interpreter-page/page.tsx
 
 // Function to generate random ratings & reviews
 const getRandomRating = () => (Math.random() * 1.5 + 3.5).toFixed(1);
