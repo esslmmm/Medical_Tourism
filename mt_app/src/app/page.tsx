@@ -22,7 +22,7 @@ export default function HomePage({
     <html lang="en">
       <body>
         <NavbarBM />
-        <BodyBD />
+        <ReviewPopUp />
       </body>
       <Footer />
     </html>
