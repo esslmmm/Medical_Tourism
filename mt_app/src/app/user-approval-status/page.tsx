@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import Sidebar from "@/components/user-approval-status/Sidebar";
-import SearchBar from "@/components/user-approval-status/SearchBar";
-import BookingTabs from "@/components/user-approval-status/BookingTabs";
+import Sidebar from "../../../components/user-approval-status/Sidebar";
+import SearchBar from "../../../components/user-approval-status/SearchBar";
+import BookingTabs from "../../../components/user-approval-status/BookingTabs";
 
 const UserProfileStatus: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"process" | "payment" | "completed">("process");

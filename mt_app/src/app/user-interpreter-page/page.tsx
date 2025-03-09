@@ -1,10 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import InterpreterList from "@/components/user-interpreter-page/InterpreterList";
-import InterpreterProfile from "@/components/user-interpreter-page/InterpreterProfile";
-import InterpreterBio from "@/components/user-interpreter-page/InterpreterBio";
-import ReviewSection from "@/components/user-interpreter-page/ReviewSection";
-import { Interpreter } from "@/components/user-interpreter-page/types";
+import InterpreterList from "../../../components/user-interpreter-page/InterpreterList";
+import InterpreterProfile from "../../../components/user-interpreter-page/InterpreterProfile";
+import InterpreterBio from "../../../components/user-interpreter-page/InterpreterBio";
+import ReviewSection from "../../../components/user-interpreter-page/ReviewSection";
+import { Interpreter } from "../../../components/user-interpreter-page/types";
 
 // Function to generate random ratings & reviews
 const getRandomRating = () => (Math.random() * 1.5 + 3.5).toFixed(1);

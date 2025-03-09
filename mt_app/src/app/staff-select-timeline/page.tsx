@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import Sidebar from "@/components/staff-select-timeline/Sidebar";
-import ProfileHeader from "@/components/staff-select-timeline/ProfileHeader";
-import TimelineSelector from "@/components/staff-select-timeline/TimelineSelector";
-import EventsList from "@/components/staff-select-timeline/EventsList";
-import InterpreterCarService from "@/components/staff-select-timeline/InterpreterCarService";
+import Sidebar from "../../../components/staff-select-timeline/Sidebar";
+import ProfileHeader from "../../../components/staff-select-timeline/ProfileHeader";
+import TimelineSelector from "../../../components/staff-select-timeline/TimelineSelector";
+import EventsList from "../../../components/staff-select-timeline/EventsList";
+import InterpreterCarService from "../../../components/staff-select-timeline/InterpreterCarService";
 
 const generateEvents = (day: number) => [
   {

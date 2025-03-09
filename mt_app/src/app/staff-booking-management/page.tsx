@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import Sidebar from "@/components/staff-booking-management/Sidebar";
-import ProfileHeader from "@/components/staff-booking-management/ProfileHeader";
-import DashboardCards from "@/components/staff-booking-management/DashboardCards";
-import BookingTabs from "@/components/staff-booking-management/BookingTabs";
+import Sidebar from "../../../components/staff-booking-management/Sidebar";
+import ProfileHeader from "../../../components/staff-booking-management/ProfileHeader";
+import DashboardCards from "../../../components/staff-booking-management/DashboardCards";
+import BookingTabs from "../../../components/staff-booking-management/BookingTabs";
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"process" | "history">("process");

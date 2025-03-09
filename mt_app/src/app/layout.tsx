@@ -32,5 +32,3 @@ export const metadata: Metadata = {
 //     </html>
 //   );
 // }
- 
-GIO
