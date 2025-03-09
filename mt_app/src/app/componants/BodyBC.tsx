@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import ContactDetails from './BookingConfirm/ContactDetails';
+import PatientDetails from './BookingConfirm/PatientDetails';
 
 export default function ConfirmBody() {
     return (
@@ -10,63 +12,9 @@ export default function ConfirmBody() {
                 {/* Left Section: Contact & Patient Details */}
                 <div className="col-span-2">
 
-                    {/* Contact Detail */}
-                    <div className="bg-white p-6 rounded-lg shadow border mb-6">
-                        <h2 className="text-xl font-semibold text-gray-800 mb-4">Contact Detail</h2>
-                        <div className="grid grid-cols-2 gap-4 text-gray-600">
-                            <div>
-                                <p className="font-medium">First Name</p>
-                                <p>Ekkarat</p>
-                            </div>
-                            <div>
-                                <p className="font-medium">Last Name</p>
-                                <p>Singhkha</p>
-                            </div>
-                            <div>
-                                <p className="font-medium">Country</p>
-                                <p>Thailand</p>
-                            </div>
-                            <div>
-                                <p className="font-medium">Phone</p>
-                                <p>+66 872311430</p>
-                            </div>
-                            <div className="col-span-2">
-                                <p className="font-medium">Email</p>
-                                <p>620501231@lamduan.mfu.ac.th</p>
-                            </div>
-                        </div>
-                    </div>
+                    <ContactDetails />
 
-                    {/* Patient Detail */}
-                    <div className="bg-white p-6 rounded-lg shadow border mb-6">
-                        <h2 className="text-xl font-semibold text-gray-800 mb-4">Patient Detail</h2>
-                        <div className="grid grid-cols-2 gap-4 text-gray-600">
-                            <div>
-                                <p className="font-medium">First Name</p>
-                                <p>Ekkarat</p>
-                            </div>
-                            <div>
-                                <p className="font-medium">Last Name</p>
-                                <p>Singhkha</p>
-                            </div>
-                            <div>
-                                <p className="font-medium">Gender</p>
-                                <p>Male</p>
-                            </div>
-                            <div>
-                                <p className="font-medium">Nationality</p>
-                                <p>Thai</p>
-                            </div>
-                            <div>
-                                <p className="font-medium">Date of Birth</p>
-                                <p>19-10-1993</p>
-                            </div>
-                            <div>
-                                <p className="font-medium">Passport ID</p>
-                                <p>AB-356-134-1345</p>
-                            </div>
-                        </div>
-                    </div>
+                    <PatientDetails />
 
                     {/* Confirm Button */}
                     <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition duration-300">
