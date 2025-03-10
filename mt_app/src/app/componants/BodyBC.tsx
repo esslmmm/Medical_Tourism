@@ -3,6 +3,7 @@
 import React from 'react';
 import ContactDetails from './BookingConfirm/ContactDetails';
 import PatientDetails from './BookingConfirm/PatientDetails';
+import MedicalService from './BookingConfirm/MedicalService';
 
 export default function ConfirmBody() {
     return (
@@ -26,17 +27,7 @@ export default function ConfirmBody() {
                 <div className="w-full">
 
                     {/* Medical Service */}
-                    <div className="bg-white p-6 rounded-lg shadow border mb-6">
-                        <h3 className="text-xl font-semibold text-gray-800 mb-2">Medical Service</h3>
-                        <div className="flex items-center mt-4">
-                            <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
-                            <div>
-                                <p className="text-black font-bold"><span className="font-bold">Appointment:</span> Sat, Feb 8, 2025</p>
-                                <p className="text-gray-600"><span className="font-medium">Time:</span> 9:00 AM - 12:00 PM</p>
-                                <p className="text-gray-600"><span className="font-medium">Service:</span> Medical Check-up</p>
-                            </div>
-                        </div>
-                    </div>
+                    <MedicalService />
 
                     {/* Place to Visit */}
                     <div className="bg-white p-6 rounded-lg shadow border">
