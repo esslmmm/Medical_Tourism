@@ -7,7 +7,7 @@ import MainPageBookingDetails from "./componants/BookingDetails/MainPage/MainPag
 import MainPageBookingEdit from "./componants/BookingEdit/MainPage/MainPageBookingEdit";
 import MainPageBookingConfirm from "./componants/BookingConfirm/MainPage/MainPageBookingConfirm";
 import MainPageBookingManagement from "./componants/BookingManagement/MainPage/MainPageBookingManagement";
-import StaffChat from "./StaffChat";
+import StaffChat from "./componants/StaffChat/StaffChat";
 import ContactUs from "./componants/ContactUs/MainPage/ContactUs";
 import ReviewPopUp from "./componants/ReviewPopUp/MainPage/ReviewPopUp";
 import "./globals.css";
