@@ -7,6 +7,7 @@ import MainPageBookingDetails from "./componants/BookingDetails/MainPage/MainPag
 import MainPageBookingEdit from "./componants/BookingEdit/MainPage/MainPageBookingEdit";
 import MainPageBookingConfirm from "./componants/BookingConfirm/MainPage/MainPageBookingConfirm";
 import MainPageBookingManagement from "./componants/BookingManagement/MainPage/MainPageBookingManagement";
+import Example from "./Example";
 import ContactUs from "./componants/ContactUs/MainPage/ContactUs";
 import ReviewPopUp from "./componants/ReviewPopUp/MainPage/ReviewPopUp";
 import "./globals.css";
@@ -21,7 +22,7 @@ export default function HomePage({
     <html lang="en">
       <body>
         {/* <NavbarBookingEdit /> */}
-        <MainPageBookingManagement />
+        <Example />
       </body>
       <Footer />
     </html>
