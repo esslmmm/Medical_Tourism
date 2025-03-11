@@ -1,14 +1,10 @@
 "use client";
 import React, { useState } from "react";
-<<<<<<< HEAD:mt_app/app/user-approval-status/page.tsx
+
 import Sidebar from "../../components/user-approval-status/Sidebar";
 import SearchBar from "../../components/user-approval-status/SearchBar";
 import BookingTabs from "../../components/user-approval-status/BookingTabs";
-=======
-import Sidebar from "../../../components/user-approval-status/Sidebar";
-import SearchBar from "../../../components/user-approval-status/SearchBar";
-import BookingTabs from "../../../components/user-approval-status/BookingTabs";
->>>>>>> 45e1973f296fbaa0d583fb8d0646799dc1b3210b:mt_app/src/app/user-approval-status/page.tsx
+
 
 const UserProfileStatus: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"process" | "payment" | "completed">("process");
