@@ -1,15 +1,14 @@
 import Image from "next/image";
-import NavbarBD from "./componants/NavbarBD";
-import NavbarBE from "./componants/NavbarBE";
-import NavbarBC from "./componants/NavbarBC";
-import NavbarBM from "./componants/NavbarBM";
-import Footer from "./componants/Footer";
-import BodyBD from "./componants/BodyBD";
-import BodyBE from "./componants/BodyBE";
-import BodyBC from "./componants/BodyBC";
-import BodyBM from "./componants/BodyBM";
-import ContactUs from "./componants/ContactUs";
-import ReviewPopUp from "./componants/ReviewPopUp";
+import NavbarBookingDetails from "./componants/BookingDetails/Components/NavbarBookingDetails";
+import NavbarBookingEdit from "./componants/BookingEdit/Components/NavbarBookingEdit";
+import NavbarBookingConfirm from "./componants/BookingConfirm/Components/NavbarBookingConfirm";
+import Footer from "./componants/BookingDetails/Components/Footer";
+import MainPageBookingDetails from "./componants/BookingDetails/MainPage/MainPageBookingDetails";
+import MainPageBookingEdit from "./componants/BookingEdit/MainPage/MainPageBookingEdit";
+import MainPageBookingConfirm from "./componants/BookingConfirm/MainPage/MainPageBookingConfirm";
+import MainPageBookingManagement from "./componants/BookingManagement/MainPage/MainPageBookingManagement";
+import ContactUs from "./componants/ContactUs/MainPage/ContactUs";
+import ReviewPopUp from "./componants/ReviewPopUp/MainPage/ReviewPopUp";
 import "./globals.css";
 
 // /pages/index.js
@@ -21,8 +20,8 @@ export default function HomePage({
   return (
     <html lang="en">
       <body>
-        <NavbarBM />
-        <ReviewPopUp />
+        {/* <NavbarBookingEdit /> */}
+        <MainPageBookingManagement />
       </body>
       <Footer />
     </html>
