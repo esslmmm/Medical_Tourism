@@ -1,0 +1,78 @@
+"use client";
+
+import Image from "next/image";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500", "700"] });
+
+const doctorInfo = {
+  name: "Dr. Sithiphol Chinnapongse",
+  description:
+    "Dermatologist specializes in skin conditions and aesthetics, including skin allergies and inflammation",
+  specialization: "Dermatology",
+  spokenLanguage: "Thai & English",
+  image: "/doctor4.png", // Replace with actual doctor image
+  logo: "/Bangkoklogo.png", // Replace with actual hospital logo
+};
+
+const DoctorProfile = () => {
+  return (
+    <div>
+      <div className="flex items-center justify-center mx-auto w-270 h-60 shadow-lg shadow-[#792AA7]/15 rounded-2xl p-6 border border-[#DBCEF8] m-10 bg-[#F2F2F8]/70 ">
+        {/* Doctor Image */}
+        <div className="w-40 h-40 rounded-full overflow-hidden flex mr-6 ">
+          <Image
+            src={doctorInfo.image}
+            alt={doctorInfo.name}
+            width={150}
+            height={150}
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Doctor Information */}
+        <div className="ml-4">
+          <h2 className={`ml-2 text-xl font-bold text-[#023F76] ${poppins.className}`} style={{ fontSize: "36px" }}>
+            {doctorInfo.name}
+          </h2>
+          <div className="flex items-center mb-2">
+            <hr className="w-65 border-t-3 border-[#293625]" />
+            <hr className="w-65 border-t-3 border-[#30329F]" />
+          </div>
+          <p className={`ml-5 mr-10 text-[#000000] font-light mt-1 ${poppins.className}`} style={{ fontSize: "16px" }}>
+            {doctorInfo.description}
+          </p>
+          <p className={`ml-4 mt-5 text-[#47764C] font-bold mt-1 ${poppins.className}`} style={{ fontSize: "30px" }}>
+            {doctorInfo.specialization}
+          </p>
+        </div>
+      </div>
+
+      {/* Bottom Section */}
+      <div className="mt-4 bg-gray-100 rounded-4xl flex items-center px-6 py-3 mx-auto w-270 h-15 shadow-lg shadow-[#792AA7]/15 bg-white">
+        {/* First Part */}
+        <p className={`flex-1 text-center font-bold text-[#382E2E] text-xl ${poppins.className}`}>
+          {doctorInfo.specialization}
+        </p>
+
+        {/* Vertical Line */}
+        <div className="h-15 w-[2px] bg-gray-200"></div>
+
+        {/* Second Part (Logo Centered) */}
+        <div className="flex-1 flex justify-center">
+          <Image src={doctorInfo.logo} alt="Hospital Logo" width={130} height={20} />
+        </div>
+
+        {/* Vertical Line */}
+        <div className="h-15 w-[2px] bg-gray-200"></div>
+
+        {/* Third Part */}
+        <p className={`flex-1 text-center font-bold text-[#382E2E] text-xl ${poppins.className}`}>
+          {doctorInfo.spokenLanguage}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default DoctorProfile;

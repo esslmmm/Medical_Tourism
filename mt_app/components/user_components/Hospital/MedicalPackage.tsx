@@ -1,0 +1,145 @@
+"use client";
+import { useRef, useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });
+
+interface Package {
+  id: number;
+  image: string;
+  name: string;
+  details: string;
+  expired: string;
+}
+
+const packages: Package[] = [
+  {
+    id: 1,
+    image: "/medical1.png",
+    name: "CT Scan Heart & Lung",
+    details: "Package’s detail or promotion description",
+    expired: "Expired Date",
+  },
+  {
+    id: 2,
+    image: "/medical2.png",
+    name: "Best Medical Service",
+    details: "Package’s detail or promotion description",
+    expired: "Expired Date",
+  },
+  {
+    id: 3,
+    image: "/medical3.png",
+    name: "Know Your Rhythm",
+    details: "Package’s detail or promotion description",
+    expired: "Expired Date",
+  },
+  {
+    id: 4,
+    image: "/medical4.png",
+    name: "Robotic Assisted Surgery",
+    details: "Package’s detail or promotion description",
+    expired: "Expired Date",
+  },
+  {
+    id: 5,
+    image: "/package1.jpg",
+    name: "Advanced Medical Package",
+    details: "Package’s detail or promotion description",
+    expired: "Expired Date",
+  },
+];
+
+const MedicalPackage: React.FC = () => {
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
+  const [canScrollRight, setCanScrollRight] = useState<boolean>(true);
+
+  useEffect(() => {
+    checkScrollPosition();
+  }, []);
+
+  const checkScrollPosition = () => {
+    if (scrollRef.current) {
+      setCanScrollLeft(scrollRef.current.scrollLeft > 0);
+      setCanScrollRight(
+        scrollRef.current.scrollLeft < scrollRef.current.scrollWidth - scrollRef.current.clientWidth
+      );
+    }
+  };
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -400, behavior: "smooth" });
+      setTimeout(checkScrollPosition, 300);
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 400, behavior: "smooth" });
+      setTimeout(checkScrollPosition, 300);
+    }
+  };
+
+  return (
+    <div className="container mx-auto p-12 relative">
+      <h2 className="text-2xl font-semibold text-start pl-6 mb-6">Medical Packages</h2>
+
+      {canScrollLeft && (
+        <button
+          onClick={scrollLeft}
+          className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-200 rounded-full p-2 shadow-lg transition-transform duration-200 hover:scale-110 active:scale-90 hover:bg-gray-300"
+        >
+          <ChevronLeftIcon className="w-6 h-6 text-gray-700" />
+        </button>
+      )}
+
+      <div
+        ref={scrollRef}
+        className="overflow-hidden scrollbar-hide flex space-x-6 pl-5 pr-10 scroll-smooth"
+        onScroll={checkScrollPosition}
+      >
+        {packages.map((pkg) => (
+          <motion.div
+            key={pkg.id}
+            className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200"
+            whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="relative w-full h-52">
+              <Image
+                src={pkg.image}
+                alt={pkg.name}
+                layout="fill"
+                objectFit="cover"
+                className="rounded-lg"
+              />
+            </div>
+            <h3 className={`${poppins.className} font-medium text-[#023F76] text-md mt-4`}>
+              {pkg.name}
+            </h3>
+            <p className={`${poppins.className} font-light text-[#023F76] text-sm`}>
+              {pkg.details}
+            </p>
+            <p className={`${poppins.className} font-medium text-black mt-4`}>{pkg.expired}</p>
+          </motion.div>
+        ))}
+      </div>
+
+      {canScrollRight && (
+        <button
+          onClick={scrollRight}
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-200 rounded-full p-2 shadow-lg transition-transform duration-200 hover:scale-110 hover:bg-gray-300 active:scale-90"
+        >
+          <ChevronRightIcon className="w-6 h-6 text-gray-700" />
+        </button>
+      )}
+    </div>
+  );
+};
+
+export default MedicalPackage;
