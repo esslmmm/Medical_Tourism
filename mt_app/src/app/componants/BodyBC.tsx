@@ -4,6 +4,7 @@ import React from 'react';
 import ContactDetails from './BookingConfirm/ContactDetails';
 import PatientDetails from './BookingConfirm/PatientDetails';
 import MedicalService from './BookingConfirm/MedicalService';
+import ConfirmButton from './BookingConfirm/ConfirmButton';
 
 export default function ConfirmBody() {
     return (
@@ -12,15 +13,13 @@ export default function ConfirmBody() {
 
                 {/* Left Section: Contact & Patient Details */}
                 <div className="col-span-2">
-
+                    {/* Contact Details */}
                     <ContactDetails />
-
+                    {/* Patient Details */}
                     <PatientDetails />
 
                     {/* Confirm Button */}
-                    <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition duration-300">
-                        Confirm
-                    </button>
+                    <ConfirmButton />
                 </div>
 
                 {/* Right Section: Medical Services & Places to Visit */}
