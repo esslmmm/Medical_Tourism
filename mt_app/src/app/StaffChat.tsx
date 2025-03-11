@@ -1,12 +1,14 @@
 'use client';
 import { useState } from 'react';
-import { FaRegUser, FaRegCommentDots } from "react-icons/fa";
+import { FaRegUser, FaRegCommentDots, FaPlus } from "react-icons/fa";
 import { HiOutlineLogout } from "react-icons/hi";
 import { MdOutlineEventAvailable } from "react-icons/md";
 
 export default function UserDetail() {
     const [selectedChat, setSelectedChat] = useState(null);
     const [message, setMessage] = useState("");
+    const [showPopup, setShowPopup] = useState(false);
+    const [email, setEmail] = useState("");
 
     const chats = [
         {
@@ -20,18 +22,6 @@ export default function UserDetail() {
             id: 2, name: "Sondeth Singkhala", role: "Customer", image: "/profile2.jpg", messages: [
                 { text: "Can you help me book an appointment?", sender: "user" },
                 { text: "Of course! What procedure are you looking for?", sender: "other" }
-            ]
-        },
-        {
-            id: 3, name: "Arthit Boonmee", role: "Customer", image: "/profile3.jpg", messages: [
-                { text: "Do you have any recommendations for eye surgery?", sender: "user" },
-                { text: "Yes! Thailand is a top destination for eye surgeries.", sender: "other" }
-            ]
-        },
-        {
-            id: 4, name: "Napat Wichai", role: "Customer", image: "/profile4.jpg", messages: [
-                { text: "How much does a knee replacement cost in India?", sender: "user" },
-                { text: "A knee replacement in India costs around $5,000 to $7,000.", sender: "other" }
             ]
         }
     ];
@@ -51,19 +41,19 @@ export default function UserDetail() {
                     <h2 className="text-2xl font-semibold text-teal-600">Medical <br /> Tourism</h2>
                     <nav className="mt-8">
                         <ul className="space-y-4">
-                            <li className="flex items-center space-x-3 text-gray-600 hover:text-teal-600 cursor-pointer">
-                                <FaRegUser size={18} />
-                                <span>Profile</span>
-                            </li>
-                            <li className="flex items-center space-x-3 text-teal-600 font-semibold cursor-pointer">
-                                <MdOutlineEventAvailable size={18} />
-                                <span>Booking Management</span>
-                            </li>
-                            <li className="flex items-center space-x-3 text-gray-600 hover:text-teal-600 cursor-pointer relative">
-                                <FaRegCommentDots size={18} />
-                                <span>Chat</span>
-                                <span className="absolute right-0 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">•</span>
-                            </li>
+                      <li className="flex items-center space-x-3 text-gray-600 hover:text-teal-600 cursor-pointer">
+                          <FaRegUser size={18} />
+                          <span>Profile</span>
+                      </li>
+                      <li className="flex items-center space-x-3 text-gray-600 hover:text-teal-600 cursor-pointer">
+                          <MdOutlineEventAvailable size={18} />
+                          <span>Booking Management</span>
+                      </li>
+                            <li className="flex items-center space-x-3 text-teal-600 hover:text-teal-600 font-semibold cursor-pointer relative">
+                          <FaRegCommentDots size={18} />
+                          <span>Chat</span>
+                          <span className="absolute right-0 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">•</span>
+                      </li>
                         </ul>
                     </nav>
                 </div>
@@ -78,7 +68,7 @@ export default function UserDetail() {
                 {/* Top Right Profile */}
                 <div className="p-4 flex justify-end border-b bg-white">
                     <div className="flex items-center space-x-3">
-                        <img src="/profile1.jpg" alt="Ekkarat Singkhala" className="w-10 h-10 rounded-full" />
+                        <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
                         <div>
                             <div className="font-semibold text-lg">Ekkarat Singkhala</div>
                             <div className="text-sm text-black">Junior Staff</div>
@@ -89,11 +79,14 @@ export default function UserDetail() {
                 {/* Chat List */}
                 <div className="flex flex-1">
                     <div className="w-1/3 border-r bg-white p-5">
-                        <h3 className="text-lg font-semibold">Customer Chat</h3>
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-lg font-semibold">Customer Chat</h3>
+                            <FaPlus size={18} className="text-teal-600 cursor-pointer" onClick={() => setShowPopup(true)} />
+                        </div>
                         <ul className="mt-4 space-y-4">
                             {chats.map(chat => (
                                 <li key={chat.id} className={`p-3 rounded-lg cursor-pointer flex items-center space-x-3 ${selectedChat?.id === chat.id ? 'bg-teal-100' : 'hover:bg-gray-100'}`} onClick={() => setSelectedChat(chat)}>
-                                    <img src={chat.image} alt={chat.name} className="w-10 h-10 rounded-full" />
+                                    <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
                                     <div>
                                         <div className="font-semibold">{chat.name}</div>
                                         <div className="text-sm text-black">{chat.role}</div>
@@ -102,13 +95,12 @@ export default function UserDetail() {
                             ))}
                         </ul>
                     </div>
-
                     {/* Chat Window */}
                     <div className="flex-1 flex flex-col">
                         {selectedChat ? (
                             <>
                                 <div className="p-4 border-b bg-white flex items-center space-x-3">
-                                    <img src={selectedChat.image} alt={selectedChat.name} className="w-12 h-12 rounded-full" />
+                                    <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
                                     <div>
                                         <div className="font-semibold text-lg">{selectedChat.name}</div>
                                         <div className="text-sm text-black">{selectedChat.role}</div>
@@ -130,6 +122,26 @@ export default function UserDetail() {
                     </div>
                 </div>
             </main>
+
+            {/* Popup Modal */}
+            {showPopup && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
+                        <h2 className="text-lg font-semibold mb-4">Add Customer Chat</h2>
+                        <input
+                            type="email"
+                            className="w-full p-3 border rounded-full text-center text-gray-500"
+                            placeholder="customer@email.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <div className="mt-4 flex justify-center space-x-4">
+                            <button className="px-6 py-2 bg-blue-500 text-white rounded-lg">Add</button>
+                            <button className="px-6 py-2 bg-red-500 text-white rounded-lg" onClick={() => setShowPopup(false)}>Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
