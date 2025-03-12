@@ -19,7 +19,7 @@ const CertificateSection = () => {
       {/* Background Image */}
       <div className="relative w-full h-40">
         <Image
-          src="/Cer_background.png" // Replace with your image path
+          src="/img/DoctorProfile/Cer_background.png" // Replace with your image path
           alt="Certificate Background"
           layout="fill"
           objectFit="cover"

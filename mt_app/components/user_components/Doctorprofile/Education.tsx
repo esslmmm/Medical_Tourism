@@ -39,7 +39,7 @@ const EducationSection = () => {
       {/* Background Image */}
       <div className="relative w-full h-[370px]">
         <Image
-          src="/edu_background.png" // Replace with your image path
+          src="/img/DoctorProfile/edu_background.png" // Replace with your image path
           alt="Education Background"
           layout="fill"
           objectFit="cover"

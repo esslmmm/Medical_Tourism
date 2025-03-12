@@ -11,8 +11,8 @@ const doctorInfo = {
     "Dermatologist specializes in skin conditions and aesthetics, including skin allergies and inflammation",
   specialization: "Dermatology",
   spokenLanguage: "Thai & English",
-  image: "/doctor4.png", // Replace with actual doctor image
-  logo: "/Bangkoklogo.png", // Replace with actual hospital logo
+  image: "/img/DoctorList/doctor4.png", // Replace with actual doctor image
+  logo: "/img/DoctorProfile/Bangkoklogo.png", // Replace with actual hospital logo
 };
 
 const DoctorProfile = () => {

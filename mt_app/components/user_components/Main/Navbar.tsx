@@ -87,8 +87,8 @@ const Navbar: React.FC = () => {
               <ul className="text-left">
                 {[
                   { name: "English", img: "/img/Footer&Navbar/engflag.png" },
-                  { name: "العربية", img: "/public/img/Footer&Navbar/arabic.png" },
-                  { name: "မြန်မာ", img: "/public/img/Footer&Navbar/myanmar.png" },
+                  { name: "العربية", img: "/img/Footer&Navbar/arabic.png" },
+                  { name: "မြန်မာ", img: "/img/Footer&Navbar/myanmar.png" },
                 ].map((lang, index) => (
                   <li key={index} className="p-2 hover:bg-gray-100 cursor-pointer flex items-center">
                     <img src={lang.img} alt={lang.name} className="w-6 h-auto mr-2" />
