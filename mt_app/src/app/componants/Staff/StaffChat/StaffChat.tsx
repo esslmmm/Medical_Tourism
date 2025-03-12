@@ -70,7 +70,7 @@ export default function UserDetail() {
                     <div className="flex items-center space-x-3">
                         <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
                         <div>
-                            <div className="font-semibold text-lg">Ekkarat Singkhala</div>
+                            <div className="font-semibold text-black">Ekkarat Singkhala</div>
                             <div className="text-sm text-black">Junior Staff</div>
                         </div>
                     </div>
@@ -80,7 +80,7 @@ export default function UserDetail() {
                 <div className="flex flex-1">
                     <div className="w-1/3 border-r bg-white p-5">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-semibold">Customer Chat</h3>
+                            <h3 className="text-black font-semibold">Customer Chat</h3>
                             <FaPlus size={18} className="text-teal-600 cursor-pointer" onClick={() => setShowPopup(true)} />
                         </div>
                         <ul className="mt-4 space-y-4">
@@ -88,7 +88,7 @@ export default function UserDetail() {
                                 <li key={chat.id} className={`p-3 rounded-lg cursor-pointer flex items-center space-x-3 ${selectedChat?.id === chat.id ? 'bg-teal-100' : 'hover:bg-gray-100'}`} onClick={() => setSelectedChat(chat)}>
                                     <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
                                     <div>
-                                        <div className="font-semibold">{chat.name}</div>
+                                        <div className="font-semibold text-black">{chat.name}</div>
                                         <div className="text-sm text-black">{chat.role}</div>
                                     </div>
                                 </li>
@@ -102,7 +102,7 @@ export default function UserDetail() {
                                 <div className="p-4 border-b bg-white flex items-center space-x-3">
                                     <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
                                     <div>
-                                        <div className="font-semibold text-lg">{selectedChat.name}</div>
+                                        <div className="font-semibold text-black">{selectedChat.name}</div>
                                         <div className="text-sm text-black">{selectedChat.role}</div>
                                     </div>
                                 </div>
