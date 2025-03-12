@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-import LoginModal from "./LoginModal";
+import LoginModal from "../Homepage/LoginModal";
 
 const Navbarpro: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -29,7 +29,7 @@ const Navbarpro: React.FC = () => {
   return (
     <nav className="relative z-50 flex items-center justify-between p-3 bg-[#F5F7FA] shadow-md">
       <Link href="/">
-        <img src="/Medical Tourism.png" alt="Logo" className="w-30 h-auto ml-5" />
+        <img src="/img/Footer&Navbar/Medical Tourism.png" alt="Logo" className="w-30 h-auto ml-5" />
       </Link>
 
       <button className="md:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
@@ -56,15 +56,15 @@ const Navbarpro: React.FC = () => {
 
         <div className="relative language-selector">
           <div className="flex items-center cursor-pointer p-2 rounded-md hover:bg-gray-200" onClick={() => setIsOpen(!isOpen)}>
-            <img src="/engflag.png" alt="Flag" className="w-8 h-auto" />
+            <img src="/img/Footer&Navbar/engflag.png" alt="Flag" className="w-8 h-auto" />
           </div>
           {isOpen && (
             <div className="absolute left-0 mt-2 w-36 bg-white shadow-lg border border-gray-200 rounded-md z-50">
               <ul className="text-left">
                 {[
-                  { name: "English", img: "/engflag.png" },
-                  { name: "العربية", img: "/arabic.png" },
-                  { name: "မြန်မာ", img: "/myanmar.png" },
+                  { name: "English", img: "/img/Footer&Navbar/engflag.png" },
+                  { name: "العربية", img: "/img/Footer&Navbar/arabic.png" },
+                  { name: "မြန်မာ", img: "/img/Footer&Navbar/myanmar.png" },
                 ].map((lang, index) => (
                   <li key={index} className="p-2 hover:bg-gray-100 cursor-pointer flex items-center">
                     <img src={lang.img} alt={lang.name} className="w-6 h-auto mr-2" />

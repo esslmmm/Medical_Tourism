@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Lato } from "next/font/google";
-import "../globals.css";
+import "../../../app/globals.css";
 
 const lato = Lato({ subsets: ["latin"], weight: ["400", "900"] });
 
@@ -25,7 +25,7 @@ const hospitals: Hospital[] = [
     phone: "+123 456 78 91",
     email: "hello@luxi.com",
     address: "Lorem ipsum street no 14 Block A",
-    image: "/Mfu.jpg",
+    image: "/img/Homepage/Mfu.jpg",
   },
   {
     id: 2,
@@ -33,7 +33,7 @@ const hospitals: Hospital[] = [
     phone: "+123 456 78 91",
     email: "info@bangkokhospital.com",
     address: "123 Bangkok Street, Thailand",
-    image: "/Bangkokhospital.png",
+    image: "/img/Homepage/Bangkokhospital.png",
   },
   {
     id: 3,
@@ -41,7 +41,7 @@ const hospitals: Hospital[] = [
     phone: "+987 654 32 10",
     email: "contact@cityhospital.com",
     address: "456 Medical Lane, Downtown",
-    image: "/hospital3.png",
+    image: "/img/Homepage/hospital3.png",
   },
   {
     id: 4,
@@ -49,7 +49,7 @@ const hospitals: Hospital[] = [
     phone: "+555 111 22 33",
     email: "info@imc.com",
     address: "789 Global Ave, Uptown",
-    image: "/hospital4.png",
+    image: "/img/Homepage/hospital4.png",
   },
   {
     id: 5,
@@ -57,7 +57,7 @@ const hospitals: Hospital[] = [
     phone: "+321 654 98 76",
     email: "support@ach.com",
     address: "246 Health Blvd, Metropolis",
-    image: "/hospital5.png",
+    image: "/img/Homepage/hospital5.png",
   },
 ];
 
@@ -69,7 +69,7 @@ const Hospitaltap: React.FC = () => {
   const router = useRouter();
 
   const navigateToHospitalPage = () => {
-    router.push("/Hospital");
+    router.push("user/Hospital");
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {

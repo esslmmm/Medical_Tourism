@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import "../globals.css";
+import "../../../app/globals.css";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
 
@@ -20,35 +20,35 @@ interface Package {
 const packages: Package[] = [
   {
     id: 1,
-    image: "/basiccheckup.webp",
+    image: "/img/Packages/basiccheckup.webp",
     name: "CT Scan Heart & Lung",
     details: "Package’s detail or promotion description",
     expired: "Expired Date",
   },
   {
     id: 2,
-    image: "/health-checkup.jpg",
+    image: "/img/Homepage/health-checkup.jpg",
     name: "X-Ray Chest",
     details: "Package’s detail or promotion description",
     expired: "Expired Date",
   },
   {
     id: 3,
-    image: "/package3.jpg",
+    image: "/img/Packages/package3.jpg",
     name: "Health Check-Up",
     details: "Package’s detail or promotion description",
     expired: "Expired Date",
   },
   {
     id: 4,
-    image: "/package2.jpg",
+    image: "/img/Packages/package2.jpg",
     name: "Basic Health Check-Up",
     details: "Package’s detail or promotion description",
     expired: "Expired Date",
   },
   {
     id: 5,
-    image: "/package1.jpg",
+    image: "/img/Packages/package1.jpg",
     name: "Advanced Medical Package",
     details: "Package’s detail or promotion description",
     expired: "Expired Date",

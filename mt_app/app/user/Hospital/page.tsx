@@ -1,12 +1,12 @@
 "use client";
 
-import Navbarpro from "../components/Navbarpro";
-import HospitalProfile from "./components/HospitalProfile";
-import DoctorHos from "./components/DoctorHos";
-import MedicalPackage from "./components/MedicalPackage";
-import ReviewsSection from "./components/ReviewsSection";
-import Footer from "../components/Footer";
-import "../globals.css";
+import Navbarpro from "../../../components/user_components/Main/Navbarpro";
+import HospitalProfile from "../../../components/user_components/Hospital/HospitalProfile";
+import DoctorHos from "../../../components/user_components/Hospital/DoctorHos";
+import MedicalPackage from "../../../components/user_components/Hospital/MedicalPackage";
+import ReviewsSection from "../../../components/user_components/Hospital/ReviewsSection";
+import Footer from "../../../components/user_components/Main/Footer";
+import "../../../app/globals.css";
 
 const HomePage: React.FC = () => {
   
@@ -17,7 +17,7 @@ const HomePage: React.FC = () => {
       "MAE FAH LUANG MEDICAL CENTER HOSPITAL was established in 1972 as one of the first private hospitals in Thailand. Over the past 50 years, we have expanded our operations to become a tertiary care facility with dedicated hospitals for cancer and cardiology.",
     rating: 5,
     reviews: 400,
-    images: ["/Mfu.jpg", "/Mfu2.jpg", "/Mfu3.jpg"],
+    images: ["/img/Homepage/Mfu.jpg", "/img/Hospital/Mfu2.jpg", "/img/Hospital/Mfu3.jpg"],
     services: [
       { icon: "❤️", name: "Heart" },
       { icon: "🎗", name: "Cancer" },

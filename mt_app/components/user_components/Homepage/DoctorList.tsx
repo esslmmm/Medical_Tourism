@@ -20,37 +20,37 @@ const doctors: Doctor[] = [
     id: 1,
     name: "Dr. Manoch Techachokwiwat",
     specialty: "Nephrology",
-    image: "/doctor1.png",
+    image: "/img/DoctorList/doctor1.png",
   },
   {
     id: 2,
     name: "Dr. Valailuck Klatthanakorn",
     specialty: "Thoracic Surgery",
-    image: "/doctor2.png",
+    image: "/img/DoctorList/doctor2.png",
   },
   {
     id: 3,
     name: "Dr. Vitoon Pitiguagool",
     specialty: "Thoracic Surgery",
-    image: "/doctor3.png",
+    image: "/img/DoctorList/doctor3.png",
   },
   {
     id: 4,
     name: "Dr. Stithipol Chinnapongse",
     specialty: "Dermatology",
-    image: "/doctor4.png",
+    image: "/img/DoctorList/doctor4.png",
   },
   {
     id: 5,
     name: "Dr. Chris Evanston",
     specialty: "Cardiology",
-    image: "/doctor4.png",
+    image: "/img/DoctorList/doctor4.png",
   },
   {
     id: 6,
     name: "Dr. Lisa Thornton",
     specialty: "Pediatrics",
-    image: "/doctor4.png",
+    image: "/img/DoctorList/doctor4.png",
   },
 ];
 

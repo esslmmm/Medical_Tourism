@@ -17,11 +17,11 @@ interface Package {
 }
 
 const packages: Package[] = [
-  { id: 1, image: "/medical1.png", name: "CT Scan Heart & Lung", details: "Package’s detail or promotion description", expired: "Expired Date" },
-  { id: 2, image: "/medical2.png", name: "Best Medical Service", details: "Package’s detail or promotion description", expired: "Expired Date" },
-  { id: 3, image: "/medical3.png", name: "Know Your Rhythm", details: "Package’s detail or promotion description", expired: "Expired Date" },
-  { id: 4, image: "/medical4.png", name: "Robotic Assisted Surgery", details: "Package’s detail or promotion description", expired: "Expired Date" },
-  { id: 5, image: "/package1.jpg", name: "Advanced Medical Package", details: "Package’s detail or promotion description", expired: "Expired Date" },
+  { id: 1, image: "/img/Packages/medical1.png", name: "CT Scan Heart & Lung", details: "Package’s detail or promotion description", expired: "Expired Date" },
+  { id: 2, image: "/img/Packages/medical2.png", name: "Best Medical Service", details: "Package’s detail or promotion description", expired: "Expired Date" },
+  { id: 3, image: "/img/Packages/medical3.png", name: "Know Your Rhythm", details: "Package’s detail or promotion description", expired: "Expired Date" },
+  { id: 4, image: "/img/Packages/medical4.png", name: "Robotic Assisted Surgery", details: "Package’s detail or promotion description", expired: "Expired Date" },
+  { id: 5, image: "/img/Packages/package1.jpg", name: "Advanced Medical Package", details: "Package’s detail or promotion description", expired: "Expired Date" },
 ];
 
 const MedicalList: React.FC = () => {

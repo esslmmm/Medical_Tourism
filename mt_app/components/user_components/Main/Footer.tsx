@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
       <div className="container mx-auto flex flex-col md:flex-row items-start pt-10">
         <div className="mb-6 md:mb-0 ml-15">
           <Link href="/">
-            <img src="/Medical Tourism.png" alt="Logo" className="w-35 h-auto " />
+            <img src="/img/Footer&Navbar/Medical Tourism.png" alt="Logo" className="w-35 h-auto " />
           </Link>
           <p className="text-sm mt-2">Copyright &copy; 2020 Nexcent Ltd.</p>
           <p className="text-xs">All rights reserved</p>
@@ -40,13 +40,13 @@ const Footer: React.FC = () => {
           <ul className="mt-2 space-y-2">
             <li>
               <a href="mailto:support@figma.com" className={`flex items-center hover:underline ${roboto.className}`}>
-                <img src="/email.png" alt="Email Icon" className="w-5 h-5 mr-2" />
+                <img src="/img/Footer&Navbar/email.png" alt="Email Icon" className="w-5 h-5 mr-2" />
                 support@figma.com
               </a>
             </li>
             <li>
               <a href="tel:+18008543680" className={`flex items-center hover:underline ${roboto.className}`}>
-                <img src="/phone.png" alt="Phone Icon" className="w-4 h-4 mr-3" />
+                <img src="/img/Footer&Navbar/phone.png" alt="Phone Icon" className="w-4 h-4 mr-3" />
                 +1 800 854-36-80
               </a>
             </li>

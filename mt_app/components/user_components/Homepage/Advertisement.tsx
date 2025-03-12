@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import "../globals.css";
+import "../../../app/globals.css";
 
 const images = [
-  "/Test.jpg",
-  "/basiccheckup.webp",
-  "/medical2.png",
+  "img/Homepage/Test.jpg",
+  "img/Packages/basiccheckup.webp",
+  "img/Packages/medical2.png",
 ];
 
 const Advertisement = () => {

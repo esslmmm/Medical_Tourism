@@ -1,12 +1,11 @@
 "use client";
-import Image from "next/image";
-import Navbarpro from "../components/Navbarpro";
-import DoctorProfile from "./components/DoctorPro"
-import EducationSection from "./components/Education"
-import CertificateSection from "./components/Certificate"
-import DoctorPackage from "./components/DoctorPackage";
-import Footer from "../components/Footer";
-import "../globals.css";
+import Navbarpro from "../../../components/user_components/Main/Navbarpro";
+import DoctorProfile from "../../../components/user_components/Doctorprofile/DoctorPro"
+import EducationSection from "../../../components/user_components/Doctorprofile/Education"
+import CertificateSection from "../../../components/user_components/Doctorprofile/Certificate"
+import DoctorPackage from "../../../components/user_components/Doctorprofile/DoctorPackage";
+import Footer from "../../../components/user_components/Main/Footer";
+import "../../../app/globals.css";
 import { Poppins } from "next/font/google";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });

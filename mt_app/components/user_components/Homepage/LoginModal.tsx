@@ -38,11 +38,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         className="bg-[#F8F8F8] w-250 h-120 rounded-lg shadow-lg overflow-hidden flex"
       >
         <div className="w-1/2 p-8 flex flex-col justify-center relative">
-          <button className="absolute top-4 right-4" onClick={onClose}>
-            <X className="w-6 h-6 text-gray-600 hover:text-gray-900" />
-          </button>
           <div className="flex justify-center">
-            <img src="/Medical Tourism.png" alt="Logo" className="w-30 h-auto mb-8" />
+            <img src="/img/Footer&Navbar/Medical Tourism.png" alt="Logo" className="w-30 h-auto mb-8" />
           </div>
           <p className={`text-[#030303] font-medium text-center ${poppins.className}`} style={{ fontSize: "34px" }}>
             SIGN IN/SIGN UP
@@ -72,16 +69,16 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           </div>
           <div className="flex gap-4 justify-center">
             <button className="flex w-30 items-center justify-center bg-white border border-[#BCBEC0] rounded-md py-2 hover:bg-gray-100">
-              <img src="/google.png" alt="Google" className="w-5 h-5" />
+              <img src="/img/Homepage/google.png" alt="Google" className="w-5 h-5" />
             </button>
             <button className="flex w-30 items-center justify-center bg-white border border-[#BCBEC0] rounded-md py-2 hover:bg-gray-100">
-              <img src="/facebook.png" alt="Facebook" className="w-5 h-5" />
+              <img src="/img/Homepage/facebook.png" alt="Facebook" className="w-5 h-5" />
             </button>
           </div>
         </div>
         <div className="w-1/2 relative hidden md:block">
           <Image
-            src="/airplane.png"
+            src="/img/Homepage/airplane.png"
             alt="Medical Tourism"
             layout="fill"
             objectFit="cover"
