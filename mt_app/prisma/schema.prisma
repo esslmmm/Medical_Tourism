@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  user_id      Int     @id @default(autoincrement())
+  name         String  
+  email        String  @unique
+  nationality  String  
+  contact_info String  
+  role         Role
+  logins       login[]
+}
+
+model login {
+  login_id   Int      @id @default(autoincrement())
+  user       Users    @relation(fields: [user_id], references: [user_id])
+  user_id    Int
+  login_time DateTime @default(now())
+}
+
+model Doctors {
+  doctor_id     Int     @id @default(autoincrement())
+  name          String  
+  specialization String  
+  hospital      Hospitals @relation(fields: [hospital_id], references: [hospital_id])
+  hospital_id   Int
+  experience    Int
+  description   String  
+  image         String  
+  create_at     DateTime @default(now())
+}
+
+model Hospitals {
+  hospital_id  Int     @id @default(autoincrement())
+  name         String  
+  hospital_code String 
+  location     String  
+  city         String  
+  description  String  
+  contact_info String  
+  rating       Float
+  image        String  
+  create_at    DateTime @default(now())
+  doctors      Doctors[]
+  services     Medical_services[]
+  packages     Packages[]
+}
+
+model Medical_services {
+  service_id   Int     @id @default(autoincrement())
+  hospital     Hospitals @relation(fields: [hospital_id], references: [hospital_id])
+  hospital_id  Int
+  service_name String  
+  description  String  
+}
+
+model Packages {
+  package_id   Int     @id @default(autoincrement())
+  package_name String  
+  package_type PackageType
+  hospital     Hospitals @relation(fields: [hospital_id], references: [hospital_id])
+  hospital_id  Int
+  tour_id      Int?
+  image        String  
+  description  String  
+  duration     Int
+  expired_date DateTime
+  create_at    DateTime @default(now())
+}
+
+enum Role {
+  customer
+  staff
+  admin
+}
+
+enum PackageType {
+  MedicalAndTourism
+  MedicalServiceOnly
+}
