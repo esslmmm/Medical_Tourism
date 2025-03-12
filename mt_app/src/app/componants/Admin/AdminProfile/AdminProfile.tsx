@@ -1,6 +1,3 @@
-
-
-
 'use client';
 import { SetStateAction, useState } from 'react';
 import { FaRegUser, FaRegCommentDots } from "react-icons/fa";
