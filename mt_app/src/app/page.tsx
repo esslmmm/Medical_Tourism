@@ -20,8 +20,8 @@ import AdminHospital from "./componants/Admin/AdminHospital/AdminHospital";
 import AdminAccommodation from "./componants/Admin/AdminAccommodation/AdminAccommodation";
 import AdminInterpreter from "./componants/Admin/AdminInterpreter/AdminInterpreter";
 import AdminDoctor from "./componants/Admin/AdminDoctor/AdminDoctor";
-import PackageList from "./componants/packagelist";
-import DoctorList from "./componants/doctorlist";
+import PackageList from "./componants/Admin/AdminPackagelist/AdminPackagelist";
+import DoctorList from "./componants/Admin/AdminDoctorlist/AdminDoctorlist";
 import "./globals.css";
 
 // /pages/index.js
