@@ -106,7 +106,7 @@ model Doctors {
   experience      Int?
   description     String?           @db.VarChar(200)
   image           String?           @db.VarChar(255)
-  create_at       DateTime?         @db.Timestamp(0)
+  create_at       DateTime?         @default(now())
   Appointments    Appointments[]
   Doc_certificate Doc_certificate[]
   Doc_education   Doc_education[]
@@ -136,7 +136,7 @@ model Hospitals {
   contact_info     String?            @db.VarChar(255)
   rating           Float?             @db.Float
   image            String?            @db.VarChar(255)
-  create_at        DateTime?          @db.Timestamp(0)
+  create_at        DateTime?          @default(now())
   Doctors          Doctors[]
   Hopital_images   Hopital_images[]
   Medical_services Medical_services[]
