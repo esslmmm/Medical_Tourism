@@ -33,10 +33,10 @@ export default function HomePage({
   return (
     <html lang="en">
       <body>
-        <NavbarBookingEdit />
-        <DoctorList />
+        {/* <NavbarBookingEdit /> */}
+        <AdminProfile />
       </body>
-      <Footer />
+      {/* <Footer /> */}
     </html>
   );
 }
