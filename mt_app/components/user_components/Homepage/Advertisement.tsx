@@ -5,9 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import "../../../app/globals.css";
 
 const images = [
-  "img/Homepage/Test.jpg",
-  "img/Packages/basiccheckup.webp",
-  "img/Packages/medical2.png",
+  "/img/Homepage/Test.jpg",
+  "/img/Packages/basiccheckup.webp",
+  "/img/Packages/medical2.png",
 ];
 
 const Advertisement = () => {

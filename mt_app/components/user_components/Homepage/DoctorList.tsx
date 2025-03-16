@@ -9,59 +9,81 @@ import { Poppins } from "next/font/google";
 const poppins = Poppins({ subsets: ["latin"], weight: ["500", "700"] });
 
 interface Doctor {
-  id: number;
+  doctor_id: number;
   name: string;
-  specialty: string;
+  specialization: string;
   image: string;
 }
 
-const doctors: Doctor[] = [
-  {
-    id: 1,
-    name: "Dr. Manoch Techachokwiwat",
-    specialty: "Nephrology",
-    image: "/img/DoctorList/doctor1.png",
-  },
-  {
-    id: 2,
-    name: "Dr. Valailuck Klatthanakorn",
-    specialty: "Thoracic Surgery",
-    image: "/img/DoctorList/doctor2.png",
-  },
-  {
-    id: 3,
-    name: "Dr. Vitoon Pitiguagool",
-    specialty: "Thoracic Surgery",
-    image: "/img/DoctorList/doctor3.png",
-  },
-  {
-    id: 4,
-    name: "Dr. Stithipol Chinnapongse",
-    specialty: "Dermatology",
-    image: "/img/DoctorList/doctor4.png",
-  },
-  {
-    id: 5,
-    name: "Dr. Chris Evanston",
-    specialty: "Cardiology",
-    image: "/img/DoctorList/doctor4.png",
-  },
-  {
-    id: 6,
-    name: "Dr. Lisa Thornton",
-    specialty: "Pediatrics",
-    image: "/img/DoctorList/doctor4.png",
-  },
-];
+// const doctors: Doctor[] = [
+//   {
+//     id: 1,
+//     name: "Dr. Manoch Techachokwiwat",
+//     specialty: "Nephrology",
+//     image: "/img/DoctorList/doctor1.png",
+//   },
+//   {
+//     id: 2,
+//     name: "Dr. Valailuck Klatthanakorn",
+//     specialty: "Thoracic Surgery",
+//     image: "/img/DoctorList/doctor2.png",
+//   },
+//   {
+//     id: 3,
+//     name: "Dr. Vitoon Pitiguagool",
+//     specialty: "Thoracic Surgery",
+//     image: "/img/DoctorList/doctor3.png",
+//   },
+//   {
+//     id: 4,
+//     name: "Dr. Stithipol Chinnapongse",
+//     specialty: "Dermatology",
+//     image: "/img/DoctorList/doctor4.png",
+//   },
+//   {
+//     id: 5,
+//     name: "Dr. Chris Evanston",
+//     specialty: "Cardiology",
+//     image: "/img/DoctorList/doctor4.png",
+//   },
+//   {
+//     id: 6,
+//     name: "Dr. Lisa Thornton",
+//     specialty: "Pediatrics",
+//     image: "/img/DoctorList/doctor4.png",
+//   },
+// ];
 
 const DoctorList: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
   const [canScrollRight, setCanScrollRight] = useState<boolean>(true);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    checkScrollPosition();
+    const fetchDoctors = async () => {
+      try {
+        const response = await fetch("/api/doctors");
+        if (!response.ok) {
+          throw new Error("Failed to fetch doctors");
+        }
+        const data: Doctor[] = await response.json();
+        setDoctors(data);
+      } catch (error) {
+        setError("Error fetching doctors");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctors();
   }, []);
+
+  if (loading) return <p className="text-center">Loading doctors...</p>;
+  if (error) return <p className="text-red-500 text-center">{error}</p>;
+
 
   const checkScrollPosition = () => {
     if (scrollRef.current) {
@@ -104,7 +126,7 @@ const DoctorList: React.FC = () => {
       >
         {doctors.map((doctor) => (
           <motion.div
-            key={doctor.id}
+            key={doctor.doctor_id}
             className="flex-shrink-0 w-[350px] border border-gray-200 bg-white shadow-lg rounded-lg p-8 text-center"
             whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
             whileTap={{ scale: 0.98 }}
@@ -123,7 +145,7 @@ const DoctorList: React.FC = () => {
             </h3>
             <div className="w-24 h-[2px] bg-gray-300 my-2 mx-auto"></div>
             <p className={`${poppins.className} font-medium text-gray-600 text-sm`}>
-              {doctor.specialty}
+              {doctor.specialization}
             </p>
           </motion.div>
         ))}
