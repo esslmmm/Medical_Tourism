@@ -5,7 +5,7 @@ import NavbarBookingConfirm from "./componants/User/BookingConfirm/Components/Na
 import Footer from "./componants/User/BookingDetails/Components/Footer";
 import MainPageBookingDetails from "./componants/User/BookingDetails/MainPage/MainPageBookingDetails";
 import MainPageBookingEdit from "./componants/User/BookingEdit/MainPage/MainPageBookingEdit";
-import MainPageBookingConfirm from "./componants/User/BookingConfirm/Page";
+import MainPageBookingConfirm from "./componants/User/BookingConfirm/page";
 import MainPageBookingManagement from "./componants/Staff/BookingManagement/MainPage/MainPageBookingManagement";
 import StaffChat from "./componants/Staff/StaffChat/StaffChat";
 import StaffProfile from "./componants/Staff/StaffProfile/StaffProfile";
