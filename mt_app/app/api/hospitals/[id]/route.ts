@@ -74,6 +74,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
                 contact_info: body.contact_info,
                 rating: body.rating,
                 image: body.image,
+                logo: body.logo
             },
         });
 
@@ -207,6 +208,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
 //   "contact_info": "+81 123-456-7890",
 //   "rating": 4.9,
 //   "image": "example.com/updated-main.jpg",
+//   "logo": "/img/Hospital/Mfu3.jpg",
 //   "hospital_images": [
 //       { "id": 9, "image_url": "https://example.com/updated-image1.jpg" },
 //       { "image_url": "https://example.com/new-image.jpg" }          

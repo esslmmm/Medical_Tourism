@@ -30,6 +30,7 @@ export async function GET() {
             contact_info,
             rating,
             image,
+            logo,
             medical_services,
             hospital_images,
         } = await request.json();
@@ -45,6 +46,7 @@ export async function GET() {
                 contact_info,
                 rating,
                 image,
+                logo
             },
             select: { hospital_id: true }
         });
@@ -93,6 +95,7 @@ export async function GET() {
 //   "contact_info": "+81 123-456-7890",
 //   "rating": 4.8,
 //   "image": "/img/Hospital/Mfu3.jpg",
+//   "logo": "/img/Hospital/Mfu3.jpg",
 //   "medical_services": [
 //       { "service_name": "Cardiology", "description": "Heart and vascular treatments" },
 //       { "service_name": "Neurology", "description": "Brain and nervous system care" }

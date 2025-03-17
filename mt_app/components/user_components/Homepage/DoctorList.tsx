@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
@@ -15,46 +16,8 @@ interface Doctor {
   image: string;
 }
 
-// const doctors: Doctor[] = [
-//   {
-//     id: 1,
-//     name: "Dr. Manoch Techachokwiwat",
-//     specialty: "Nephrology",
-//     image: "/img/DoctorList/doctor1.png",
-//   },
-//   {
-//     id: 2,
-//     name: "Dr. Valailuck Klatthanakorn",
-//     specialty: "Thoracic Surgery",
-//     image: "/img/DoctorList/doctor2.png",
-//   },
-//   {
-//     id: 3,
-//     name: "Dr. Vitoon Pitiguagool",
-//     specialty: "Thoracic Surgery",
-//     image: "/img/DoctorList/doctor3.png",
-//   },
-//   {
-//     id: 4,
-//     name: "Dr. Stithipol Chinnapongse",
-//     specialty: "Dermatology",
-//     image: "/img/DoctorList/doctor4.png",
-//   },
-//   {
-//     id: 5,
-//     name: "Dr. Chris Evanston",
-//     specialty: "Cardiology",
-//     image: "/img/DoctorList/doctor4.png",
-//   },
-//   {
-//     id: 6,
-//     name: "Dr. Lisa Thornton",
-//     specialty: "Pediatrics",
-//     image: "/img/DoctorList/doctor4.png",
-//   },
-// ];
-
 const DoctorList: React.FC = () => {
+  const router = useRouter(); // Navigation hook
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
   const [canScrollRight, setCanScrollRight] = useState<boolean>(true);
@@ -83,7 +46,6 @@ const DoctorList: React.FC = () => {
 
   if (loading) return <p className="text-center">Loading doctors...</p>;
   if (error) return <p className="text-red-500 text-center">{error}</p>;
-
 
   const checkScrollPosition = () => {
     if (scrollRef.current) {
@@ -125,9 +87,10 @@ const DoctorList: React.FC = () => {
         onScroll={checkScrollPosition}
       >
         {doctors.map((doctor) => (
-          <motion.div
+          <motion.button
             key={doctor.doctor_id}
-            className="flex-shrink-0 w-[350px] border border-gray-200 bg-white shadow-lg rounded-lg p-8 text-center"
+            onClick={() => router.push(`/user/Doctorprofile/${doctor.doctor_id}`)} // Navigate to doctor details
+            className="flex-shrink-0 w-[350px] border border-gray-200 bg-white shadow-lg rounded-lg p-8 text-center cursor-pointer focus:outline-none"
             whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
             whileTap={{ scale: 0.98 }}
           >
@@ -147,7 +110,7 @@ const DoctorList: React.FC = () => {
             <p className={`${poppins.className} font-medium text-gray-600 text-sm`}>
               {doctor.specialization}
             </p>
-          </motion.div>
+          </motion.button>
         ))}
       </div>
 
