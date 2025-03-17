@@ -29,7 +29,7 @@ model appointments {
   file_name        String?            @db.VarChar(255)
   file_path        String?            @db.VarChar(255)
   upload_date      DateTime?          @db.Timestamp(0)
-  patient_deatils  patient_deatils?   @relation(fields: [patient_id], references: [patient_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_1")
+  patient_deatils  patient_details?   @relation(fields: [patient_id], references: [patient_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_1")
   doctors          doctors?           @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_2")
   package_bookings package_bookings[]
 
@@ -50,16 +50,6 @@ model cars {
   capacity         Int?
   guide_license    String?            @db.VarChar(255)
   tourism_bookings tourism_bookings[]
-}
-
-model contact_deatils {
-  contact_id       Int                @id @default(autoincrement())
-  firstname        String?            @db.VarChar(255)
-  lastname         String?            @db.VarChar(255)
-  email            String?            @db.VarChar(255)
-  country          String?            @db.VarChar(255)
-  phone            Int?
-  package_bookings package_bookings[]
 }
 
 model description {
@@ -325,7 +315,7 @@ model package_bookings {
   tourism_bookings   tourism_bookings        @relation(fields: [tourism_booking_id], references: [tourism_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_3")
   appointments       appointments            @relation(fields: [appointment_id], references: [appointment_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_4")
   hotel_bookings     hotel_bookings          @relation(fields: [hotel_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_5")
-  contact_deatils    contact_deatils         @relation(fields: [contact_id], references: [contact_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_6")
+  contact_deatils    contact_details         @relation(fields: [contact_id], references: [contact_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_6")
   inter_bookings     inter_bookings          @relation(fields: [inter_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_7")
   payment            payment[]
 
@@ -381,14 +371,14 @@ model package_interpreters {
 }
 
 model package_places {
-  packplace_id    Int              @id @default(autoincrement())
+  packplace_id    Int       @id @default(autoincrement())
   tour_id         Int?
   place_id        Int?
-  date            DateTime?        @db.Date
-  start           DateTime?        @db.Time(0)
-  end             DateTime?        @db.Time(0)
-  tourismservices tourismservices? @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_1")
-  places          places?          @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_2")
+  date            DateTime? @db.Date
+  start           DateTime? @db.Time(0)
+  end             DateTime? @db.Time(0)
+  tourismservices trips?    @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_1")
+  places          places?   @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_2")
 
   @@index([place_id], map: "place_id")
   @@index([tour_id], map: "tour_id")
@@ -412,21 +402,10 @@ model packages {
   package_image        package_image[]
   package_interpreters package_interpreters[]
   hospitals            hospitals?             @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "packages_ibfk_1")
-  tourismservices      tourismservices?       @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "packages_ibfk_2")
+  tourismservices      trips?                 @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "packages_ibfk_2")
 
   @@index([hospital_id], map: "hospital_id")
   @@index([tour_id], map: "tour_id")
-}
-
-model patient_deatils {
-  patient_id      Int                     @id @default(autoincrement())
-  firstname       String?                 @db.VarChar(255)
-  lastname        String?                 @db.VarChar(255)
-  gender          patient_deatils_gender?
-  dateofbirth     DateTime?               @db.Date
-  nationality     String?                 @db.VarChar(255)
-  passport_number String?                 @db.VarChar(255)
-  appointments    appointments[]
 }
 
 model payment {
@@ -539,20 +518,11 @@ model tourism_bookings {
   car_id           Int?
   status           tourism_bookings_status?
   package_bookings package_bookings[]
-  tourismservices  tourismservices?         @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "tourism_bookings_ibfk_1")
+  tourismservices  trips?                   @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "tourism_bookings_ibfk_1")
   cars             cars?                    @relation(fields: [car_id], references: [car_id], onDelete: NoAction, onUpdate: NoAction, map: "tourism_bookings_ibfk_2")
 
   @@index([car_id], map: "car_id")
   @@index([tour_id], map: "tour_id")
-}
-
-model tourismservices {
-  tour_id          Int                @id
-  description      String?            @db.Text
-  total_price      Float?             @db.Float
-  package_places   package_places[]
-  packages         packages[]
-  tourism_bookings tourism_bookings[]
 }
 
 model users {
@@ -597,6 +567,36 @@ model chat {
   @@index([user1_id], map: "user_id")
 }
 
+model contact_details {
+  contact_id       Int                @id @default(autoincrement())
+  firstname        String?            @db.VarChar(255)
+  lastname         String?            @db.VarChar(255)
+  email            String?            @db.VarChar(255)
+  country          String?            @db.VarChar(255)
+  phone            Int?
+  package_bookings package_bookings[]
+}
+
+model patient_details {
+  patient_id      Int                     @id @default(autoincrement())
+  firstname       String?                 @db.VarChar(255)
+  lastname        String?                 @db.VarChar(255)
+  gender          patient_details_gender?
+  dateofbirth     DateTime?               @db.Date
+  nationality     String?                 @db.VarChar(255)
+  passport_number String?                 @db.VarChar(255)
+  appointments    appointments[]
+}
+
+model trips {
+  tour_id          Int                @id
+  description      String?            @db.Text
+  total_price      Float?             @db.Float
+  package_places   package_places[]
+  packages         packages[]
+  tourism_bookings tourism_bookings[]
+}
+
 enum action_history_type_action {
   Add
   Remove
@@ -613,11 +613,6 @@ enum languages_proficiency {
   Conversational
   Fluent
   Native
-}
-
-enum patient_deatils_gender {
-  Male
-  Female
 }
 
 enum tourism_bookings_status {
@@ -664,4 +659,9 @@ enum interpreters_language {
   English
   Arabic
   Burmese
+}
+
+enum patient_details_gender {
+  Male
+  Female
 }

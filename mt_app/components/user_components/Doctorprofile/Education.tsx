@@ -2,38 +2,87 @@
 
 import Image from "next/image";
 import { Poppins } from "next/font/google";
+import { useParams } from "next/navigation";
+import { JSX, useEffect, useState } from "react";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "600", "700"] });
 
-const educationData = [
-  {
-    year: "2016",
-    degree: "Master of Business Administration (Executive),Sasin Graduate Institute of Business Administration",
-    location: "Chulalongkorn University, Thailand",
-  },
-  {
-    year: "2003",
-    degree: "Internal Medicine",
-    location: "Thai Medical Council, Thailand",
-  },
-  {
-    year: "2002",
-    degree: "Endocrinology and Metabolism",
-    location: "University of California at San Diego (UCSD)",
-  },
-  {
-    year: "1997",
-    degree: "Internal Medicine",
-    location: "Temple University Medical School’s at Abington Memorial, United States",
-  },
-  {
-    year: "1989",
-    degree: "Doctor of Medicine",
-    location: "Cebu Doctors College of Medicine, Philippines",
-  },
-];
+// const educationData = [
+//   {
+//     year: "2016",
+//     degree: "Master of Business Administration (Executive),Sasin Graduate Institute of Business Administration",
+//     location: "Chulalongkorn University, Thailand",
+//   },
+//   {
+//     year: "2003",
+//     degree: "Internal Medicine",
+//     location: "Thai Medical Council, Thailand",
+//   },
+//   {
+//     year: "2002",
+//     degree: "Endocrinology and Metabolism",
+//     location: "University of California at San Diego (UCSD)",
+//   },
+//   {
+//     year: "1997",
+//     degree: "Internal Medicine",
+//     location: "Temple University Medical School’s at Abington Memorial, United States",
+//   },
+//   {
+//     year: "1989",
+//     degree: "Doctor of Medicine",
+//     location: "Cebu Doctors College of Medicine, Philippines",
+//   },
+// ];
+interface Education {
+  education_id: number;
+  field_of_study: string;
+  institution: string;
+  year: number;
+}
+
+interface Doctor {
+  map(arg0: (edu: any, index: any) => JSX.Element): import("react").ReactNode;
+  doctor_id: number;
+  name: string;
+  specialty: string;
+  email: string;
+  phone: string;
+  image: string;
+  doc_education: Education[];
+}
+
+
 
 const EducationSection = () => {
+  const { id } = useParams();
+  const [doctor, setDoctor] = useState<Doctor | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchDoctor() {
+      try {
+        const response = await fetch(`/api/doctors/${id}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch doctor details");
+        }
+        const data = await response.json();
+        setDoctor(data);
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (id) fetchDoctor();
+  }, [id]);
+
+  if (loading) return <p className="text-center text-gray-500">Loading doctor details...</p>;
+  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
+  if (!doctor) return <p className="text-center text-gray-500">Doctor not found</p>;
+
   return (
     <div className="relative max-w-270 mx-auto my-10">
       {/* Background Image */}
@@ -52,18 +101,18 @@ const EducationSection = () => {
         <h2 className={`text-3xl font-bold top-4 text-[#023F76] absolute left-3 ${poppins.className}`}>Education</h2>
 
         <div className={`${poppins.className} p-4 overflow-auto max-h-[300px] mt-15`}>
-          {educationData.map((edu, index) => (
+          {doctor.map((edu, index) => (
             <div key={index} className="grid grid-cols-12 gap-4 p-2">
               {/* Year */}
               <div className="col-span-2 font-semibold  text-[#023F76]">{edu.year}</div>
 
               {/* Degree & Institution */}
               <div className="col-span-6">
-                <p className="font-bold text-[#083477]">{edu.degree}</p>
+                <p className="font-bold text-[#083477]">{edu.field_of_study}</p>
               </div>
 
               {/* Location */}
-              <div className={`col-span-4 font-light text-sm text-black`}>{edu.location}</div>
+              <div className={`col-span-4 font-light text-sm text-black`}>{edu.institution}</div>
             </div>
           ))}
         </div>
