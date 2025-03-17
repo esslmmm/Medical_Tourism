@@ -197,7 +197,7 @@ export async function DELETE(request: Request, context: { params: { id: string }
         return NextResponse.json({ error: "Failed to delete hotel" }, { status: 500 });
     }
 }
-
+ 
 
 
 /*
