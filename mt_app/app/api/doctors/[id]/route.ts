@@ -18,9 +18,23 @@ export async function GET(request: Request, { params }: { params: { id: string }
       const doctor = await prisma.doctors.findUnique({
         where: { doctor_id },
         include: {
+          hospitals: true,
           doc_certificate: true,
           doc_education: true,
           doc_language: true,
+          package_doc: {
+            include: {
+                packages: {
+                    select: {
+                        package_id: true,
+                        package_name: true,
+                        expired_date: true,
+                        image: true,
+                        detail: true
+                  }
+                }
+            }
+          }
         },
       });
   

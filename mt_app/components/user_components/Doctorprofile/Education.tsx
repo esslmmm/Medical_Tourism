@@ -3,37 +3,10 @@
 import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { useParams } from "next/navigation";
-import { JSX, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "600", "700"] });
 
-// const educationData = [
-//   {
-//     year: "2016",
-//     degree: "Master of Business Administration (Executive),Sasin Graduate Institute of Business Administration",
-//     location: "Chulalongkorn University, Thailand",
-//   },
-//   {
-//     year: "2003",
-//     degree: "Internal Medicine",
-//     location: "Thai Medical Council, Thailand",
-//   },
-//   {
-//     year: "2002",
-//     degree: "Endocrinology and Metabolism",
-//     location: "University of California at San Diego (UCSD)",
-//   },
-//   {
-//     year: "1997",
-//     degree: "Internal Medicine",
-//     location: "Temple University Medical School’s at Abington Memorial, United States",
-//   },
-//   {
-//     year: "1989",
-//     degree: "Doctor of Medicine",
-//     location: "Cebu Doctors College of Medicine, Philippines",
-//   },
-// ];
 interface Education {
   education_id: number;
   field_of_study: string;
@@ -42,7 +15,6 @@ interface Education {
 }
 
 interface Doctor {
-  map(arg0: (edu: any, index: any) => JSX.Element): import("react").ReactNode;
   doctor_id: number;
   name: string;
   specialty: string;
@@ -51,8 +23,6 @@ interface Doctor {
   image: string;
   doc_education: Education[];
 }
-
-
 
 const EducationSection = () => {
   const { id } = useParams();
@@ -97,24 +67,30 @@ const EducationSection = () => {
       </div>
 
       {/* Overlay Content */}
-      <div className="absolute top-0 rounded-xl flex flex-col p-6 ">
-        <h2 className={`text-3xl font-bold top-4 text-[#023F76] absolute left-3 ${poppins.className}`}>Education</h2>
+      <div className="absolute top-0 rounded-xl flex flex-col p-6">
+        <h2 className={`text-3xl font-bold top-4 text-[#023F76] absolute left-3 ${poppins.className}`}>
+          Education
+        </h2>
 
         <div className={`${poppins.className} p-4 overflow-auto max-h-[300px] mt-15`}>
-          {doctor.map((edu, index) => (
-            <div key={index} className="grid grid-cols-12 gap-4 p-2">
-              {/* Year */}
-              <div className="col-span-2 font-semibold  text-[#023F76]">{edu.year}</div>
+          {doctor.doc_education?.length > 0 ? (
+            doctor.doc_education.map((edu, index) => (
+              <div key={edu.education_id || index} className="grid grid-cols-12 gap-4 p-2">
+                {/* Year */}
+                <div className="col-span-2 font-semibold text-[#023F76]">{edu.year}</div>
 
-              {/* Degree & Institution */}
-              <div className="col-span-6">
-                <p className="font-bold text-[#083477]">{edu.field_of_study}</p>
+                {/* Degree & Institution */}
+                <div className="col-span-6">
+                  <p className="font-bold text-[#083477]">{edu.field_of_study}</p>
+                </div>
+
+                {/* Institution */}
+                <div className={`col-span-4 font-light text-sm text-black`}>{edu.institution}</div>
               </div>
-
-              {/* Location */}
-              <div className={`col-span-4 font-light text-sm text-black`}>{edu.institution}</div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-gray-500">No education data available</p>
+          )}
         </div>
       </div>
     </div>

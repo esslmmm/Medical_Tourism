@@ -4,63 +4,61 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
+import { useParams } from "next/navigation";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });
 
 interface Package {
-  id: number;
+  package_id: number;
   image: string;
-  name: string;
-  details: string;
-  expired: string;
+  package_name: string;
+  detail: string;
+  expired_date: string;
 }
 
-const packages: Package[] = [
-  {
-    id: 1,
-    image: "/img/Packages/medical1.png",
-    name: "CT Scan Heart & Lung",
-    details: "Package’s detail or promotion description",
-    expired: "Expired Date",
-  },
-  {
-    id: 2,
-    image: "/img/Packages/medical2.png",
-    name: "Best Medical Service",
-    details: "Package’s detail or promotion description",
-    expired: "Expired Date",
-  },
-  {
-    id: 3,
-    image: "/img/Packages/medical3.png",
-    name: "Know Your Rhythm",
-    details: "Package’s detail or promotion description",
-    expired: "Expired Date",
-  },
-  {
-    id: 4,
-    image: "/img/Packages/medical4.png",
-    name: "Robotic Assisted Surgery",
-    details: "Package’s detail or promotion description",
-    expired: "Expired Date",
-  },
-  {
-    id: 5,
-    image: "/img/Packages/package1.jpg",
-    name: "Advanced Medical Package",
-    details: "Package’s detail or promotion description",
-    expired: "Expired Date",
-  },
-];
+interface PackageDoc {
+  package_id: number;
+  packages: Package; // ✅ Nested package details inside package_doc
+}
+
+interface Doctor {
+  doctor_id: number;
+  name: string;
+  package_doc: PackageDoc[]; // ✅ Updated to match API structure
+}
 
 const DoctorPackage: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
   const [canScrollRight, setCanScrollRight] = useState<boolean>(true);
 
+  const { id } = useParams();
+  const [doctor, setDoctor] = useState<Doctor | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchDoctor() {
+      try {
+        const response = await fetch(`/api/doctors/${id}`);
+        if (!response.ok) throw new Error("Failed to fetch doctor details");
+
+        const data = await response.json();
+        console.log("Doctor Data:", data); // ✅ Debugging log
+        setDoctor(data);
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (id) fetchDoctor();
+  }, [id]);
+
   useEffect(() => {
     checkScrollPosition();
-  }, []);
+  }, [doctor]);
 
   const checkScrollPosition = () => {
     if (scrollRef.current) {
@@ -85,6 +83,10 @@ const DoctorPackage: React.FC = () => {
     }
   };
 
+  if (loading) return <p className="text-center text-gray-500">Loading doctor details...</p>;
+  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
+  if (!doctor) return <p className="text-center text-gray-500">Doctor not found</p>;
+
   return (
     <div className="container mx-auto p-8 relative">
       <h2 className="text-2xl font-semibold text-start pl-6 mb-6">Related Packages</h2>
@@ -103,31 +105,38 @@ const DoctorPackage: React.FC = () => {
         className="overflow-hidden scrollbar-hide flex space-x-6 pl-5 pr-10 scroll-smooth"
         onScroll={checkScrollPosition}
       >
-        {packages.map((pkg) => (
-          <motion.div
-            key={pkg.id}
-            className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200"
-            whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="relative w-full h-52">
-              <Image
-                src={pkg.image}
-                alt={pkg.name}
-                layout="fill"
-                objectFit="cover"
-                className="rounded-lg"
-              />
-            </div>
-            <h3 className={`${poppins.className} font-medium text-[#023F76] text-md mt-4`}>
-              {pkg.name}
-            </h3>
-            <p className={`${poppins.className} font-light text-[#023F76] text-sm`}>
-              {pkg.details}
-            </p>
-            <p className={`${poppins.className} font-medium text-black mt-4`}>{pkg.expired}</p>
-          </motion.div>
-        ))}
+        {doctor.package_doc?.length > 0 ? (
+          doctor.package_doc.map((pkg) => (
+            <motion.div
+              key={pkg.packages.package_id} // ✅ Access package_id inside `pkg.packages`
+              className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200"
+              whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="relative w-full h-52">
+                {/* ✅ Access image from `pkg.packages.image` */}
+                <Image
+                  src={pkg.packages.image}
+                  alt={pkg.packages.package_name}
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-lg"
+                />
+              </div>
+              <h3 className={`${poppins.className} font-medium text-[#023F76] text-md mt-4`}>
+                {pkg.packages.package_name} {/* ✅ Access package name from nested `packages` */}
+              </h3>
+              <p className={`${poppins.className} font-light text-[#023F76] text-sm`}>
+                {pkg.packages.detail} {/* ✅ Access package detail from nested `packages` */}
+              </p>
+              <p className={`${poppins.className} font-medium text-black mt-4`}>
+                {new Date(pkg.packages.expired_date).toLocaleDateString()} {/* ✅ Format date */}
+              </p>
+            </motion.div>
+          ))
+        ) : (
+          <p className="text-gray-500">No packages available</p>
+        )}
       </div>
 
       {canScrollRight && (

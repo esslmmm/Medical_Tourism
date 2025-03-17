@@ -409,19 +409,19 @@ model packages {
 }
 
 model payment {
-  payment_id       Int                     @id @default(autoincrement())
-  uer_id           Int?
-  booking_id       Int?
-  payment_date     DateTime?               @db.DateTime(0)
-  payment_method   String?                 @db.VarChar(255)
-  amount           Decimal?                @db.Decimal(10, 0)
-  payment_status   payment_payment_status?
-  transaction_id   String?                 @db.VarChar(50)
-  users            users?                  @relation(fields: [uer_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_1")
-  package_bookings package_bookings?       @relation(fields: [booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_2")
+  payment_id       Int                    @id @default(autoincrement())
+  user_id          Int
+  booking_id       Int
+  payment_date     DateTime               @db.DateTime(0)
+  payment_method   String                 @db.VarChar(255)
+  amount           Decimal                @db.Decimal(10, 0)
+  payment_status   payment_payment_status
+  transaction_id   String                 @db.VarChar(50)
+  users            users                  @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_1")
+  package_bookings package_bookings       @relation(fields: [booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_2")
 
   @@index([booking_id], map: "booking_id")
-  @@index([uer_id], map: "uer_id")
+  @@index([user_id], map: "uer_id")
 }
 
 model place_image {

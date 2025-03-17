@@ -8,7 +8,6 @@ import { useParams } from "next/navigation";
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500", "700"] });
 
 interface Hospital {
-  hospital_id: number;
   logo: string;
 }
 
@@ -25,6 +24,7 @@ interface Doctor {
   description: string;
   image: string;
   doc_language: Language[];
+  hospital: Hospital[];
 }
 
 const DoctorProfile = () => {
