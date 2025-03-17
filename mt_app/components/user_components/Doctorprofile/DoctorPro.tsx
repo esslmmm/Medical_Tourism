@@ -7,15 +7,10 @@ import { useParams } from "next/navigation";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500", "700"] });
 
-// const doctorInfo = {
-//   name: "Dr. Sithiphol Chinnapongse",
-//   description:
-//     "Dermatologist specializes in skin conditions and aesthetics, including skin allergies and inflammation",
-//   specialization: "Dermatology",
-//   spokenLanguage: "Thai & English",
-//   image: "/img/DoctorList/doctor4.png", // Replace with actual doctor image
-//   logo: "/img/DoctorProfile/Bangkoklogo.png", // Replace with actual hospital logo
-// };
+interface Hospital {
+  hospital_id: number;
+  logo: string;
+}
 
 interface Language {
   language_id: number;
@@ -26,7 +21,7 @@ interface Doctor {
   doctor_id: number;
   name: string;
   specialization: string;
-  hospital_id: string;
+  hospital_id: number;
   description: string;
   image: string;
   doc_language: Language[];
@@ -35,6 +30,7 @@ interface Doctor {
 const DoctorProfile = () => {
   const { id } = useParams();
   const [doctor, setDoctor] = useState<Doctor | null>(null);
+  const [hospital, setHospital] = useState<Hospital | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,13 +38,22 @@ const DoctorProfile = () => {
     async function fetchDoctor() {
       try {
         const response = await fetch(`/api/doctors/${id}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch doctor details");
+        if (!response.ok) throw new Error("Failed to fetch doctor details");
+
+        const doctorData = await response.json();
+        setDoctor(doctorData);
+
+        // Fetch hospital details using doctor.hospital_id
+        if (doctorData.hospital_id) {
+          const hospitalResponse = await fetch(`/api/hospitals/${doctorData.hospital_id}`);
+          if (!hospitalResponse.ok) throw new Error("Failed to fetch hospital details");
+
+          const hospitalData = await hospitalResponse.json();
+          setHospital(hospitalData);
         }
-        const data = await response.json();
-        setDoctor(data);
-      } catch (error: any) {
-        setError(error.message);
+      } catch (error) {
+        setError("Error fetching details.");
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -57,15 +62,15 @@ const DoctorProfile = () => {
     if (id) fetchDoctor();
   }, [id]);
 
-  if (loading) return <p className="text-center text-gray-500">Loading doctor details...</p>;
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!doctor) return <p className="text-center text-gray-500">Doctor not found</p>;
+  if (loading) return <p className="text-center">Loading...</p>;
+  if (error) return <p className="text-center text-red-500">{error}</p>;
+  if (!doctor) return <p className="text-center">Doctor not found.</p>;
 
   return (
     <div>
-      <div className="flex items-center justify-center mx-auto w-270 h-60 shadow-lg shadow-[#792AA7]/15 rounded-2xl p-6 border border-[#DBCEF8] m-10 bg-[#F2F2F8]/70 ">
+      <div className="flex items-center justify-center mx-auto w-270 h-60 shadow-lg shadow-[#792AA7]/15 rounded-2xl p-6 border border-[#DBCEF8] m-10 bg-[#F2F2F8]/70">
         {/* Doctor Image */}
-        <div className="w-40 h-40 rounded-full overflow-hidden flex mr-6 ">
+        <div className="w-40 h-40 rounded-full overflow-hidden flex mr-6">
           <Image
             src={doctor.image}
             alt={doctor.name}
@@ -105,7 +110,11 @@ const DoctorProfile = () => {
 
         {/* Second Part (Logo Centered) */}
         <div className="flex-1 flex justify-center">
-          <Image src={doctor.hospital_id} alt="Hospital Logo" width={130} height={20} />
+          {hospital ? (
+            <Image src={hospital.logo} alt="Hospital Logo" width={130} height={20} />
+          ) : (
+            <p className="text-gray-400">No Logo Available</p>
+          )}
         </div>
 
         {/* Vertical Line */}
@@ -113,9 +122,8 @@ const DoctorProfile = () => {
 
         {/* Third Part */}
         <p className={`flex-1 text-center font-bold text-[#382E2E] text-xl ${poppins.className}`}>
-          {doctor.doc_language.map((lang) => lang.languages).join(" & ")}
+          {doctor.doc_language?.map((lang) => lang.languages).join(" & ") || "No Languages"}
         </p>
-
       </div>
     </div>
   );
