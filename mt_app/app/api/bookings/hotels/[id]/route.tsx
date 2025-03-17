@@ -58,10 +58,11 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
         total_price,
         status,
         room_aggregate: {
-          create: room_aggregate.map((room: { room_id: number }) => ({
-            room_id: room.room_id,
-          })),
-        },
+            create: room_aggregate.map((room: { room_id: number, amount:number }) => ({
+              room_id: room.room_id,
+              amount: room.amount
+            })),
+          },
       },
     })
 
