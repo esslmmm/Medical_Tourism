@@ -21,6 +21,9 @@ import AdminAccommodation from "./componants/Admin/AdminAccommodation/AdminAccom
 import AdminInterpreter from "./componants/Admin/AdminInterpreter/AdminInterpreter";
 import AdminDoctor from "./componants/Admin/AdminDoctor/AdminDoctor";
 import PackageList from "./componants/Admin/AdminPackagelist/AdminPackagelist";
+import AdminPackage from "./componants/Admin/AdminPackage/AdminPackage";
+import AdminPackageAdd from "./componants/Admin/AdminPackageAdd/AdminPackageAdd";
+import AdminUserManagement from "./componants/Admin/AdminUserManagement/AdminUserManagement";
 import DoctorList from "./componants/Admin/AdminDoctorlist/AdminDoctorlist";
 import "./globals.css";
 
@@ -34,7 +37,7 @@ export default function HomePage({
     <html lang="en">
       <body>
         {/* <NavbarBookingEdit /> */}
-        <AdminProfile />
+        <AdminUserManagement />
       </body>
       {/* <Footer /> */}
     </html>

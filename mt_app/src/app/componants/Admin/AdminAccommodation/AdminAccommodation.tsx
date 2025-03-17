@@ -93,7 +93,7 @@ export default function PackageServiceManagement() {
 
                 {/* Filter Categories */}
                 <div className="bg-white p-3 rounded-lg shadow flex space-x-3 mb-4 text-black">
-                    {["Medical Provider", "Accommodation", "Place", "Interpreter", "Car" , "Doctor"].map((category, index) => (
+                    {["Medical Provider", "Accommodation", "Place", "Interpreter", "Car", "Doctor"].map((category, index) => (
                         <button
                             key={index}
                             className={`px-4 py-2 rounded-lg text-sm ${activeCategory === category ? 'bg-gray-200' : 'hover:bg-gray-100'}`}
