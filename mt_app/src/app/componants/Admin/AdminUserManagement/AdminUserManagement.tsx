@@ -48,7 +48,8 @@ export default function UserManagement() {
                 {/* Top Right Profile */}
                 <div className="flex justify-end items-center border-b pb-4">
                     <div className="flex items-center space-x-3">
-                        <img src="/profile.jpg" alt="Admin" className="w-10 h-10 rounded-full" />
+                        {/* <img src="/profile.jpg" alt="Admin" className="w-10 h-10 rounded-full" /> */}
+                        <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
                         <div>
                             <div className="font-semibold text-black">Ekkarat Singkhala</div>
                             <div className="text-sm text-gray-500">Senior Admin</div>
@@ -57,7 +58,7 @@ export default function UserManagement() {
                 </div>
 
                 {/* User Statistics */}
-                <div className="bg-white p-6 rounded-lg shadow-lg mt-6 flex justify-between">
+                <div className="bg-white p-6 rounded-lg shadow-lg mt-6 flex justify-between text-black">
                     {[{ label: 'Total', count: 100, color: 'text-blue-500' }, { label: 'New', count: 10, color: 'text-gray-500' }, { label: 'Return', count: 30, color: 'text-green-500' }].map((stat, index) => (
                         <div key={index} className="flex flex-col items-center">
                             <FaUsers size={30} className={stat.color} />
@@ -92,11 +93,11 @@ export default function UserManagement() {
                         <tbody>
                             {Array(8).fill({ name: 'Ekkarat Singkhala', email: '653101137@dinamail.mfu.ac.th', role: 'Customer', lastActive: 'Tue, 12 Feb 2024, 12:30 PM' }).map((user, index) => (
                                 <tr key={index}>
-                                    <td className="p-2">{user.name}</td>
-                                    <td className="p-2">{user.email}</td>
-                                    <td className="p-2">{index < 2 ? 'Staff' : user.role}</td>
-                                    <td className="p-2">{user.lastActive}</td>
-                                    <td className="p-2 text-gray-400 cursor-pointer">
+                                    <td className="p-2 text-black">{user.name}</td>
+                                    <td className="p-2 text-black">{user.email}</td>
+                                    <td className="p-2 text-black">{index < 2 ? 'Staff' : user.role}</td>
+                                    <td className="p-2 text-black">{user.lastActive}</td>
+                                    <td className="p-2 text-black cursor-pointer">
                                         <FaSearch size={16} />
                                     </td>
                                 </tr>
