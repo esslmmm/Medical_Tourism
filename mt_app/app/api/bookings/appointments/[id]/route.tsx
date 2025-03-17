@@ -6,8 +6,9 @@ const prisma = new PrismaClient()
 // GET request - Fetch a single appointment by ID
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
+    const appointmentId = Number(params.id)
     const appointment = await prisma.appointments.findUnique({
-      where: { appointment_id: Number(params.id) },
+      where: { appointment_id: appointmentId },
       include: {
         patient_details: true,
         doctors: true,
@@ -32,8 +33,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   try {
     const { date, timeslot, description, doctor_id, file_name, file_path, upload_date, patient } = await req.json()
 
+    const appointmentId = Number(params.id)
     const updatedAppointment = await prisma.appointments.update({
-      where: { appointment_id: Number(params.id) },
+      where: { appointment_id: appointmentId },
       data: {
         date,
         timeslot,
