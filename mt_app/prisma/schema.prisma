@@ -9,10 +9,14 @@ datasource db {
 
 model action_history {
   action_id   Int                         @id @default(autoincrement())
+  user_id     Int
   type_action action_history_type_action?
   timestamp   DateTime?                   @db.Timestamp(0)
   action      String?                     @db.VarChar(255)
   id          Int?
+  users       users                       @relation(fields: [user_id], references: [user_id], onUpdate: Restrict, map: "action_history_ibfk_1")
+
+  @@index([user_id], map: "user_id")
 }
 
 model appointments {
@@ -127,6 +131,7 @@ model hospitals {
   contact_info     String?            @db.VarChar(255)
   rating           Float?             @db.Float
   image            String?            @db.VarChar(255)
+  logo             String             @db.VarChar(255)
   create_at        DateTime?          @default(now()) @db.Timestamp(3)
   doctors          doctors[]
   hospital_images  hospital_images[]
@@ -511,6 +516,7 @@ model room_aggregate {
   aggregate_id   Int             @id @default(autoincrement())
   room_id        Int?
   booking_id     Int?
+  amount         Int
   hotel_rooms    hotel_rooms?    @relation(fields: [room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction, map: "room_aggregate_ibfk_1")
   hotel_bookings hotel_bookings? @relation(fields: [booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "room_aggregate_ibfk_2")
 
@@ -556,6 +562,7 @@ model users {
   nationality                          String?            @db.VarChar(255)
   contact_info                         String?            @db.VarChar(255)
   role                                 users_role?
+  action_history                       action_history[]
   chat_chat_user1_idTousers            chat[]             @relation("chat_user1_idTousers")
   chat_chat_user2_idTousers            chat[]             @relation("chat_user2_idTousers")
   login                                login[]

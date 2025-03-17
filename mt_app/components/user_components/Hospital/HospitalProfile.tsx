@@ -5,6 +5,47 @@ import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
+interface Doctor {
+  doctor_id: number;
+  name: string;
+  specialization: string;
+}
+
+interface HospitalImage {
+  image_id: number;
+  image_url: string;
+}
+
+interface MedicalService {
+  service_id: number;
+  service_name: string;
+}
+
+interface Package {
+  package_id: number;
+  package_name: string;
+}
+
+interface Review {
+  review_id: number;
+  reviewer_name: string;
+  comment: string;
+  rating: number;
+}
+
+interface Hospital {
+  hospital_id: number;
+  name: string;
+  location: string;
+  phone: string;
+  email: string;
+  doctors: Doctor[];
+  hospital_images: HospitalImage[];
+  medical_services: MedicalService[];
+  packages: Package[];
+  review_hospital: Review[];
+}
+
 interface HospitalData {
   name: string;
   rating: number;

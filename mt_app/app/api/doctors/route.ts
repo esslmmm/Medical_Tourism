@@ -9,14 +9,14 @@ export async function GET() {
       const doctors = await prisma.doctors.findMany();
       return NextResponse.json(doctors);
     } catch (error) {
-      console.error("Error fetching hospitals:", error);
-      return NextResponse.json({ error: "Failed to fetch hospitals" }, { status: 500 });
+      console.error("Error fetching doctors:", error);
+      return NextResponse.json({ error: "Failed to fetch doctors" }, { status: 500 });
     }
   }
 
 
 /**
- * POST: Add a new hospital
+ * POST: Add a new Doctor
  */
 export async function POST(request: Request) {
     try {

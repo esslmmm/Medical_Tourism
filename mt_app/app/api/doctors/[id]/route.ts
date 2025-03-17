@@ -8,33 +8,32 @@ const prisma = new PrismaClient();
  * GET: Fetch a doctor by ID
  */
 export async function GET(request: Request, { params }: { params: { id: string } }) {
-  try {
-    const doctor_id = parseInt(params.id, 10);
-
-    if (isNaN(doctor_id)) {
-      return NextResponse.json({ error: "Invalid doctor ID" }, { status: 400 });
+    try {
+      const doctor_id = parseInt(params.id, 10);
+  
+      if (isNaN(doctor_id)) {
+        return NextResponse.json({ error: "Invalid doctor ID" }, { status: 400 });
+      }
+  
+      const doctor = await prisma.doctors.findUnique({
+        where: { doctor_id },
+        include: {
+          doc_certificate: true,
+          doc_education: true,
+          doc_language: true,
+        },
+      });
+  
+      if (!doctor) {
+        return NextResponse.json({ error: "Doctor not found" }, { status: 404 });
+      }
+  
+      return NextResponse.json(doctor, { status: 200 });
+    } catch (error) {
+      console.error("Error fetching doctor:", error);
+      return NextResponse.json({ error: "Failed to fetch doctor" }, { status: 500 });
     }
-
-    // Fetch hospital along with associated doctors
-    const doctor = await prisma.doctors.findUnique({
-      where: { doctor_id },
-      include: {
-        doc_certificate: true,
-        doc_education : true,
-        doc_language : true,
-      },
-    });
-
-    if (!doctor) {
-      return NextResponse.json({ error: "doctor not found" }, { status: 404 });
-    }
-
-    return NextResponse.json(doctor, { status: 200 });
-  } catch (error) {
-    console.error("Error fetching doctor:", error);
-    return NextResponse.json({ error: "Failed to fetch doctor" }, { status: 500 });
   }
-}
 
 
 /**
