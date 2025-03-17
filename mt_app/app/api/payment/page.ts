@@ -17,7 +17,7 @@ export async function GET() {
 // POST: Create a new payment
 export async function POST(request: Request) {
   try {
-    const { uer_id, booking_id, payment_date, payment_method, amount, payment_status, transaction_id } =
+    const { user_id, booking_id, payment_date, payment_method, amount, payment_status, transaction_id } =
       await request.json();
 
     if (!booking_id || !payment_method || !amount) {
@@ -26,9 +26,9 @@ export async function POST(request: Request) {
 
     const newPayment = await prisma.payment.create({
       data: {
-        uer_id,
+        user_id,
         booking_id,
-        payment_date: payment_date ? new Date(payment_date) : null,
+        payment_date: payment_date ? new Date(payment_date) : new Date(), // ✅ Default to `new Date()`
         payment_method,
         amount,
         payment_status,

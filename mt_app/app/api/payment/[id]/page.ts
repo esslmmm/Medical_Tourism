@@ -6,8 +6,9 @@ const prisma = new PrismaClient();
 // GET: Fetch a single payment by ID
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
+    const paymentId = Number(params.id)
     const payment = await prisma.payment.findUnique({
-      where: { payment_id: parseInt(params.id) },
+      where: { payment_id: paymentId },
       include: {
         users: true, // Include user details
         package_bookings: true, // Include booking details
@@ -28,16 +29,16 @@ export async function GET(request: Request, { params }: { params: { id: string }
 // PUT: Update payment by ID
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
-    const payment_id = parseInt(params.id);
-    const { uer_id, booking_id, payment_date, payment_method, amount, payment_status, transaction_id } =
+    const paymentId = Number(params.id)
+    const { user_id, booking_id, payment_date, payment_method, amount, payment_status, transaction_id } =
       await request.json();
 
     const updatedPayment = await prisma.payment.update({
-      where: { payment_id },
+      where: { payment_id : paymentId },
       data: {
-        uer_id,
+        user_id,
         booking_id,
-        payment_date: payment_date ? new Date(payment_date) : null,
+        payment_date: payment_date ? { set: new Date(payment_date) } : undefined, // Fix here
         payment_method,
         amount,
         payment_status,
@@ -55,10 +56,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 // DELETE: Remove payment by ID
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
-    const payment_id = parseInt(params.id);
-
-    const deletedPayment = await prisma.payment.delete({
-      where: { payment_id },
+    const paymentId = Number(params.id)
+    await prisma.payment.delete({
+      where: { payment_id : paymentId },
     });
 
     return NextResponse.json({ message: "Payment deleted successfully" }, { status: 200 });
