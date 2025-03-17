@@ -29,7 +29,7 @@ model appointments {
   file_name        String?            @db.VarChar(255)
   file_path        String?            @db.VarChar(255)
   upload_date      DateTime?          @db.Timestamp(0)
-  patient_deatils  patient_details?   @relation(fields: [patient_id], references: [patient_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_1")
+  patient_details  patient_details?   @relation(fields: [patient_id], references: [patient_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_1")
   doctors          doctors?           @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_2")
   package_bookings package_bookings[]
 
