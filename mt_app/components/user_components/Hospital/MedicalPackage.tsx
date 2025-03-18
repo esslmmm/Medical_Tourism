@@ -4,59 +4,56 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
+import { useParams } from "next/navigation";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });
 
 interface Package {
-  id: number;
+  package_id: number;
   image: string;
-  name: string;
-  details: string;
-  expired: string;
+  package_name: string;
+  detail: string;
+  expired_date: string;
 }
 
-const packages: Package[] = [
-  {
-    id: 1,
-    image: "/img/Packages/medical1.png",
-    name: "CT Scan Heart & Lung",
-    details: "Package’s detail or promotion description",
-    expired: "Expired Date",
-  },
-  {
-    id: 2,
-    image: "/img/Packages/medical2.png",
-    name: "Best Medical Service",
-    details: "Package’s detail or promotion description",
-    expired: "Expired Date",
-  },
-  {
-    id: 3,
-    image: "/img/Packages/medical3.png",
-    name: "Know Your Rhythm",
-    details: "Package’s detail or promotion description",
-    expired: "Expired Date",
-  },
-  {
-    id: 4,
-    image: "/img/Packages/medical4.png",
-    name: "Robotic Assisted Surgery",
-    details: "Package’s detail or promotion description",
-    expired: "Expired Date",
-  },
-  {
-    id: 5,
-    image: "/img/Packages/package1.jpg",
-    name: "Advanced Medical Package",
-    details: "Package’s detail or promotion description",
-    expired: "Expired Date",
-  },
-];
+interface Hospital {
+  hospital_id: number;
+  name: string;
+  rating: number;
+  location: string;
+  reviews: number;
+  image: string;
+  description: string;
+  packages: Package[];
+}
 
 const MedicalPackage: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
   const [canScrollRight, setCanScrollRight] = useState<boolean>(true);
+  const { id } = useParams();
+  const [hospital, setHospital] = useState<Hospital | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchHospital() {
+      try {
+        const response = await fetch(`/api/hospitals/${id}`);
+        if (!response.ok) throw new Error("Failed to fetch hospital details");
+
+        const data = await response.json();
+        console.log("Hospital Data:", data); // ✅ Debugging log
+        setHospital(data);
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (id) fetchHospital();
+  }, [id]);
 
   useEffect(() => {
     checkScrollPosition();
@@ -85,6 +82,17 @@ const MedicalPackage: React.FC = () => {
     }
   };
 
+  const formatDate = (dateString: string | number | Date) => {
+    const date = new Date(dateString);
+    return !isNaN(date.getTime()) 
+        ? new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }).format(date) 
+        : "Invalid Date";
+  };
+
+  if (loading) return <p className="text-center text-gray-500">Loading hospital details...</p>;
+  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
+  if (!hospital) return <p className="text-center text-gray-500">Hospital not found</p>;
+
   return (
     <div className="container mx-auto p-12 relative">
       <h2 className="text-2xl font-semibold text-start pl-6 mb-6">Medical Packages</h2>
@@ -103,9 +111,9 @@ const MedicalPackage: React.FC = () => {
         className="overflow-hidden scrollbar-hide flex space-x-6 pl-5 pr-10 scroll-smooth"
         onScroll={checkScrollPosition}
       >
-        {packages.map((pkg) => (
+        {hospital.packages.map((pkg) => (
           <motion.div
-            key={pkg.id}
+            key={pkg.package_id}
             className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200"
             whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
             whileTap={{ scale: 0.98 }}
@@ -113,19 +121,19 @@ const MedicalPackage: React.FC = () => {
             <div className="relative w-full h-52">
               <Image
                 src={pkg.image}
-                alt={pkg.name}
+                alt={pkg.package_name}
                 layout="fill"
                 objectFit="cover"
                 className="rounded-lg"
               />
             </div>
             <h3 className={`${poppins.className} font-medium text-[#023F76] text-md mt-4`}>
-              {pkg.name}
+              {pkg.package_name}
             </h3>
             <p className={`${poppins.className} font-light text-[#023F76] text-sm`}>
-              {pkg.details}
+              {pkg.detail}
             </p>
-            <p className={`${poppins.className} font-medium text-black mt-4`}>{pkg.expired}</p>
+            <p className={`${poppins.className} font-medium text-black mt-4`}>{formatDate(pkg.expired_date)}</p>
           </motion.div>
         ))}
       </div>

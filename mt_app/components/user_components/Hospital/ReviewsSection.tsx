@@ -1,26 +1,60 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReviewCard from "./ReviewCard";
+import { useParams } from "next/navigation";
+
+
+interface Users{
+  user_id: number;
+  name: string;
+}
 
 interface Review {
-  name: string;
-  title: string;
+  user_id: number;
+  title_review: string;
   rating: number;
-  content: string;
+  comment: string;
+  users: Users[];
+}
+
+interface Hospital {
+  hospital_id: number;
+  name: string;
+  review_hospital: Review[];
 }
 
 const ReviewsSection: React.FC = () => {
   const [showAll, setShowAll] = useState<boolean>(false);
+  const { id } = useParams();
+  const [hospital, setHospital] = useState<Hospital | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const reviews: Review[] = [
-    { name: "Steve Brown", title: "Friendly Staff", rating: 4, content: "I had an amazing experience at MFU Hospital. The doctors and nurses were incredibly professional and compassionate. The facilities were clean ...." },
-    { name: "John Doe", title: "Great Service", rating: 5, content: "Excellent service and modern facilities. The staff was very kind and helpful. Would definitely recommend! ..." },
-    { name: "Jane Smith", title: "Highly Recommended", rating: 4.5, content: "The best medical experience I’ve had so far. Efficient, clean, and professional! Highly recommended ..." },
-    { name: "Emily Johnson", title: "Good Experience", rating: 4, content: "Doctors are great, but the waiting time was longer than expected. Otherwise, good experience ..." },
-    { name: "Michael Lee", title: "Professional Team", rating: 5, content: "Very professional doctors and staff. The treatment was excellent and I felt well taken care of ..." },
-  ];
+  useEffect(() => {
+    async function fetchHospital() {
+      try {
+        const response = await fetch(`/api/hospitals/${id}`);
+        if (!response.ok) throw new Error("Failed to fetch hospital details");
 
-  const displayedReviews = showAll ? reviews : reviews.slice(0, 3);
+        const data = await response.json();
+        console.log("Hospital Data:", data);
+        setHospital(data);
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (id) fetchHospital();
+  }, [id]);
+
+  if (loading) return <p className="text-center text-gray-500">Loading hospital details...</p>;
+  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
+  if (!hospital) return <p className="text-center text-gray-500">Hospital not found</p>;
+  if (hospital?.review_hospital?.length === 0) return <p className="text-center text-gray-500">No reviews available.</p>;
+
+  const displayedReviews = showAll ? hospital?.review_hospital ?? [] : hospital?.review_hospital?.slice(0, 3) ?? [];
 
   return (
     <div>
@@ -38,7 +72,7 @@ const ReviewsSection: React.FC = () => {
             onClick={() => setShowAll(!showAll)}
             className="text-black font-semibold hover:underline"
           >
-            {showAll ? "show less" : "show more"}
+            {showAll ? "Show less" : "Show more"}
           </button>
         </div>
       </div>

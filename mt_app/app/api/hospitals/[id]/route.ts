@@ -25,7 +25,15 @@ export async function GET(request: Request, { params }: { params: { id: string }
         hospital_images : true,
         medical_services : true,
         packages : true,
-        review_hospital: true,
+        review_hospital: {
+            include: {
+                users: {
+                    select: {
+                        name: true
+                    }
+                }
+            }
+        }
       },
     });
 

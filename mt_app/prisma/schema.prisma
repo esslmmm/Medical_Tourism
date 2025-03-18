@@ -375,8 +375,8 @@ model package_places {
   tour_id         Int?
   place_id        Int?
   date            DateTime? @db.Date
-  start           DateTime? @db.Time(0)
-  end             DateTime? @db.Time(0)
+  start           DateTime? @db.Timestamp(0)
+  end             DateTime? @db.Timestamp(0)
   tourismservices trips?    @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_1")
   places          places?   @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_2")
 
@@ -386,14 +386,13 @@ model package_places {
 
 model packages {
   package_id           Int                    @id @default(autoincrement())
-  package_name         String?                @db.VarChar(255)
-  package_type         packages_package_type?
-  hospital_id          Int?
-  tour_id              Int?
-  image                String?                @db.VarChar(255)
-  detail               String?                @db.VarChar(100)
-  duration             Int?
-  expired_date         DateTime?              @db.Date
+  package_name         String                 @db.VarChar(255)
+  package_type         packages_package_type
+  hospital_id          Int
+  image                String                 @db.VarChar(255)
+  detail               String                 @db.VarChar(100)
+  duration             Int
+  expired_date         DateTime               @db.Date
   create_at            DateTime               @default(now()) @db.Timestamp(0)
   description          description[]
   package_bookings     package_bookings[]
@@ -401,11 +400,10 @@ model packages {
   package_hotels       package_hotels[]
   package_image        package_image[]
   package_interpreters package_interpreters[]
-  hospitals            hospitals?             @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "packages_ibfk_1")
-  tourismservices      trips?                 @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "packages_ibfk_2")
+  hospitals            hospitals              @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "packages_ibfk_1")
+  trips                trips[]
 
   @@index([hospital_id], map: "hospital_id")
-  @@index([tour_id], map: "tour_id")
 }
 
 model payment {
@@ -428,7 +426,7 @@ model place_image {
   image_id Int     @id @default(autoincrement())
   place_id Int?
   image    String? @db.VarChar(255)
-  places   places? @relation(fields: [place_id], references: [place_id], onDelete: Restrict, onUpdate: Restrict, map: "place_image_ibfk_2")
+  places   places? @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction, map: "place_image_ibfk_2")
 
   @@index([place_id], map: "Place_id")
 }
@@ -589,12 +587,15 @@ model patient_details {
 }
 
 model trips {
-  tour_id          Int                @id
+  tour_id          Int                @id @default(autoincrement())
+  package_id       Int
   description      String?            @db.Text
   total_price      Float?             @db.Float
   package_places   package_places[]
-  packages         packages[]
   tourism_bookings tourism_bookings[]
+  packages         packages           @relation(fields: [package_id], references: [package_id], onUpdate: Restrict, map: "trips_ibfk_1")
+
+  @@index([package_id], map: "package_id")
 }
 
 enum action_history_type_action {

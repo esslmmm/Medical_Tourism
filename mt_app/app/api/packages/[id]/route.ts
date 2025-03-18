@@ -18,6 +18,11 @@ export async function GET(request: Request, { params }: { params: { id: string }
           package_interpreters: true,
           package_doc: true,
           package_hotels: true,
+          trips: {
+            include: {
+              package_places: true
+            }
+          },
           package_image: true,
           description:true,
         },
@@ -37,158 +42,224 @@ export async function GET(request: Request, { params }: { params: { id: string }
   /**
  * PUT: Update a hospital by ID
  */
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
-    try {
-      const package_id = parseInt(params.id, 10);
-  
-      if (isNaN(package_id)) {
-        return NextResponse.json({ error: "Invalid package ID" }, { status: 400 });
-      }
-  
-      const body = await request.json(); // Parse the request body
-  
-      // Check if the package exists
-      const existingPackage = await prisma.packages.findUnique({
-        where: { package_id },
-      });
-  
-      if (!existingPackage) {
-        return NextResponse.json({ error: "Package not found" }, { status: 404 });
-      }
-  
-      // ✅ Update the main package record
-      const updatedPackage = await prisma.packages.update({
-        where: { package_id },
-        data: {
-          package_name: body.package_name,
-          package_type: body.package_type,
-          hospital_id: body.hospital_id,
-          image: body.image,
-          detail: body.detail,
-          duration: body.duration,
-          expired_date: body.expired_date ? new Date(body.expired_date) : null,
-        },
-      });
-  
+// Function to convert `start` and `end` times to a valid timestamp format
+const convertToTimestamp = (date: string, time: string): Date => {
+  return new Date(`${date}T${time}:00Z`); // Formats as `YYYY-MM-DDTHH:MM:SSZ`
+};
 
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
+  try {
+      const package_id = parseInt(params.id, 10);
+      if (isNaN(package_id)) {
+          return NextResponse.json({ error: "Invalid package ID" }, { status: 400 });
+      }
+
+      const body = await request.json();
+
+      // Validate that package exists
+      const existingPackage = await prisma.packages.findUnique({
+          where: { package_id },
+      });
+
+      if (!existingPackage) {
+          return NextResponse.json({ error: "Package not found" }, { status: 404 });
+      }
+
+      // ✅ Update Package
+      const updatedPackage = await prisma.packages.update({
+          where: { package_id },
+          data: {
+              package_name: body.package_name,
+              package_type: body.package_type,
+              hospital_id: body.hospital_id,
+              image: body.image,
+              detail: body.detail,
+              duration: body.duration,
+              expired_date: new Date(body.expired_date),
+          },
+      });
+
+      // ✅ Update or Insert Images
       if (Array.isArray(body.images)) {
-        for (const img of body.images) {
-          if (img.id) {
-            await prisma.package_image.update({
-              where: { image_id: img.id },
-              data: { images: img.image_url },
-            });
-          } else {
-            await prisma.package_image.create({
-              data: {
-                package_id,
-                images: img.image_url,
-              },
-            });
+          for (const img of body.images) {
+              if (img.id) {
+                  await prisma.package_image.update({
+                      where: { image_id: img.id },
+                      data: { images: img.images },
+                  });
+              } else {
+                  await prisma.package_image.create({
+                      data: { package_id, images: img.images },
+                  });
+              }
           }
-        }
       }
-  
+
+      // ✅ Update or Insert Descriptions
       if (Array.isArray(body.descriptions)) {
-        for (const desc of body.descriptions) {
-          if (desc.id) {
-            await prisma.description.update({
-              where: { description_id: desc.id },
-              data: { details: desc.text },
-            });
-          } else {
-            await prisma.description.create({
-              data: {
-                package_id,
-                details: desc.text,
-              },
-            });
+          for (const desc of body.descriptions) {
+              if (desc.id) {
+                  await prisma.description.update({
+                      where: { description_id: desc.id },
+                      data: { details: desc.text },
+                  });
+              } else {
+                  await prisma.description.create({
+                      data: { package_id, details: desc.text },
+                  });
+              }
           }
-        }
       }
-  
-      return NextResponse.json(
-        { message: "Package, images, and descriptions updated successfully", updatedPackage },
-        { status: 200 }
-      );
-    } catch (error) {
+
+      // ✅ Update or Insert Trips
+      if (Array.isArray(body.trips)) {
+          for (const trip of body.trips) {
+              if (trip.id) {
+                  await prisma.trips.update({
+                      where: { tour_id: trip.id },
+                      data: { description: trip.description },
+                  });
+              } else {
+                  await prisma.trips.create({
+                      data: { package_id, description: trip.description },
+                  });
+              }
+          }
+      }
+
+      // ✅ Fetch Updated Trip IDs
+      const tripIds = await prisma.trips.findMany({
+          where: { package_id },
+          select: { tour_id: true },
+      });
+
+      console.log("Updated Trips:", tripIds);
+
+      // ✅ Update or Insert Package Places
+      if (Array.isArray(body.package_places) && tripIds.length > 0) {
+          const trip_id = tripIds[0].tour_id; // Use the first trip ID
+
+          for (const place of body.package_places) {
+              if (place.packplace_id) {
+                  await prisma.package_places.update({
+                      where: { packplace_id: place.packplace_id },
+                      data: {
+                          date: place.date ? new Date(place.date) : null,
+                          start: place.date && place.start ? convertToTimestamp(place.date, place.start) : null,
+                          end: place.date && place.end ? convertToTimestamp(place.date, place.end) : null,
+                      },
+                  });
+              } else {
+                  await prisma.package_places.create({
+                      data: {
+                          tour_id: trip_id,
+                          place_id: place.place_id,
+                          date: place.date ? new Date(place.date) : null,
+                          start: place.date && place.start ? convertToTimestamp(place.date, place.start) : null,
+                          end: place.date && place.end ? convertToTimestamp(place.date, place.end) : null,
+                      },
+                  });
+              }
+          }
+      }
+
+      return NextResponse.json({
+          message: "Package updated successfully",
+          updatedPackage,
+      }, { status: 200 });
+
+  } catch (error) {
       console.error("Error updating package:", error);
       return NextResponse.json({ error: "Failed to update package" }, { status: 500 });
-    }
   }
+}
+
 
 
   /**
-   * DELETE: Remove a hospital by ID
+   * DELETE: Remove a Package by ID
    */
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-    try {
-      const package_id = parseInt(params.id, 10); // Convert ID to integer
+  export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+      try {
+          const package_id = parseInt(params.id, 10); // Convert ID to integer
   
-      if (isNaN(package_id)) {
-        return NextResponse.json({ error: "Invalid package ID" }, { status: 400 });
+          if (isNaN(package_id)) {
+              return NextResponse.json({ error: "Invalid package ID" }, { status: 400 });
+          }
+  
+          // Check if the package exists before deleting
+          const existingPackage = await prisma.packages.findUnique({
+              where: { package_id },
+          });
+  
+          if (!existingPackage) {
+              return NextResponse.json({ error: "Package not found" }, { status: 404 });
+          }
+  
+          // ✅ Fetch all trips linked to this package before deletion
+          const trips = await prisma.trips.findMany({
+              where: { package_id },
+              select: { tour_id: true },
+          });
+  
+          const tripIds = trips.map(trip => trip.tour_id); // Extract tour IDs
+  
+          // ✅ Run all deletions inside a transaction to ensure data integrity
+          await prisma.$transaction(async (tx) => {
+              // Delete related records first (if CASCADE is not set in schema)
+              await tx.package_interpreters.deleteMany({ where: { package_id } });
+              await tx.package_doc.deleteMany({ where: { package_id } });
+  
+              // Delete package_places using retrieved trip IDs
+              if (tripIds.length > 0) {
+                  await tx.package_places.deleteMany({
+                      where: { tour_id: { in: tripIds } },
+                  });
+              }
+  
+              await tx.trips.deleteMany({ where: { package_id } });
+              await tx.package_hotels.deleteMany({ where: { package_id } });
+              await tx.package_image.deleteMany({ where: { package_id } });
+              await tx.description.deleteMany({ where: { package_id } });
+  
+              // Finally, delete the package
+              await tx.packages.delete({ where: { package_id } });
+          });
+  
+          return NextResponse.json({ 
+              message: "Package and related data deleted successfully",
+              deletedTrips: tripIds, 
+          }, { status: 200 });
+  
+      } catch (error) {
+          console.error("Error deleting package:", error);
+          return NextResponse.json({ error: "Failed to delete package" }, { status: 500 });
       }
-  
-      // Check if the package exists before deleting
-      const existingPackage = await prisma.packages.findUnique({
-        where: { package_id },
-      });
-  
-      if (!existingPackage) {
-        return NextResponse.json({ error: "Package not found" }, { status: 404 });
-      }
-  
-      // Delete related records first (if CASCADE is not set in schema)
-      await prisma.package_interpreters.deleteMany({
-        where: { package_id },
-      });
-  
-      await prisma.package_doc.deleteMany({
-        where: { package_id },
-      });
-  
-      await prisma.package_hotels.deleteMany({
-        where: { package_id },
-      });
-  
-      await prisma.package_image.deleteMany({
-        where: { package_id },
-      });
-  
-      await prisma.description.deleteMany({
-        where: { package_id },
-      });
-  
-      // Finally, delete the package
-      await prisma.packages.delete({
-        where: { package_id },
-      });
-  
-      return NextResponse.json({ message: "Package and related data deleted successfully" }, { status: 200 });
-    } catch (error) {
-      console.error("Error deleting package:", error);
-      return NextResponse.json({ error: "Failed to delete package" }, { status: 500 });
-    }
   }
+  
   
   /**
  * PUT: TEST CASE
  */
-//   {
-//     "package_name": "Updated Medical Package",
-//     "package_type": "Premium",
-//     "hospital_id": 3,
-//     "image": "https://example.com/updated-main.jpg",
-//     "detail": "Updated package details",
-//     "duration": "10 days",
-//     "expired_date": "2025-12-31",
-//     "create_at": "2025-03-10",
-//     "images": [
-//       { "id": 1, "image_url": "https://example.com/updated-image1.jpg" },  // Updates existing image
-//       { "image_url": "https://example.com/new-image.jpg" }                 // Creates new image
-//     ],
-//     "descriptions": [
-//       { "id": 5, "text": "Updated description text" },  // Updates existing description
-//       { "text": "Newly added description" }            // Creates new description
-//     ]
-//   }
+  // {
+//   "package_name": "Premium Health Package",
+//   "expired_date": "2025-12-31",
+
+//   "images": [
+//    { "images": "https://example.com/image2.jpg" }
+//   ],
+//   "descriptions": [
+//     { "id": 27, "text": "Includes full body check-up and diagnostic tests." }],
+//        "trips": [
+//     { "description": "Guided tour of the hospital facilities." }
+//   ],
+
+//   "package_places": [
+//     {
+//       "place_id": 1,
+//       "date": "2025-05-16",
+//       "start": "14:00",
+//       "end": "16:00"
+//     }
+//   ]
+// }

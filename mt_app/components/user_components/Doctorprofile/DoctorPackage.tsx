@@ -18,7 +18,7 @@ interface Package {
 
 interface PackageDoc {
   package_id: number;
-  packages: Package; // ✅ Nested package details inside package_doc
+  packages: Package;
 }
 
 interface Doctor {

@@ -32,21 +32,15 @@ export async function GET() {
             doctor_ids,
             hotel_ids,
             descriptions,
-            images
+            images,
+            trips,
+            package_places // New field for package_place entries
         } = await request.json();
 
         // Validate required fields
         if (!package_name || !package_type) {
             return NextResponse.json({ error: "Package name and type are required" }, { status: 400 });
         }
-
-        // Validate package_type (Ensure packages_package_type is properly defined)
-        if (typeof packages_package_type !== "undefined" && !Object.values(packages_package_type).includes(package_type)) {
-            return NextResponse.json({ error: "Invalid package type" }, { status: 400 });
-        }
-
-        // Ensure expired_date is correctly formatted
-        const formattedExpiredDate = expired_date ? new Date(expired_date) : null;
 
         // Step 1: Create the package and get its ID
         const newPackage = await prisma.packages.create({
@@ -57,13 +51,56 @@ export async function GET() {
                 image,
                 detail,
                 duration,
-                expired_date: formattedExpiredDate,
+                expired_date: new Date(expired_date),
                 create_at: create_at ? new Date(create_at) : new Date(),
             },
             select: { package_id: true }
         });
 
-        // Step 2: Insert related data if IDs exist
+        console.log("Trips Data Received:", trips); // ✅ Log incoming trips data
+
+        if (Array.isArray(trips) && trips.length > 0) {
+            console.log("Trips Array is Valid. Proceeding with insertion...");
+        
+            // Step 1: Create multiple trips
+            await prisma.trips.createMany({
+                data: trips.map(({ description }) => ({
+                    package_id: newPackage.package_id, // Ensure valid package_id
+                    description: description // Use correct field
+                })),
+                skipDuplicates: true // Avoid duplicate inserts
+            });
+        
+            // Step 2: Fetch newly created trip IDs
+            const tripIds = await prisma.trips.findMany({
+                where: { package_id: newPackage.package_id },
+                select: { tour_id: true }
+            });
+        
+            console.log("Created Trips:", tripIds);
+        
+            // Step 3: Insert into `package_places` using the first trip ID
+            if (Array.isArray(package_places) && package_places.length > 0 && tripIds.length > 0) {
+                const trip_id = tripIds[0].tour_id; // Use the first trip ID
+            
+                await prisma.package_places.createMany({
+                    data: package_places.map((place) => ({
+                        tour_id: trip_id,
+                        place_id: place.place_id,
+                        date: new Date(place.date), // Store date correctly
+                        start: new Date(place.start), // ✅ Convert TIME to full DateTime
+                        end: new Date(place.end), // ✅ Convert TIME to full DateTime
+                    })),
+                });
+            
+                console.log(`Inserted Package Places for Trip ID: ${trip_id}`);
+            }
+            
+        }
+        
+        
+        
+
         if (Array.isArray(interpreter_ids) && interpreter_ids.length > 0) {
             await prisma.package_interpreters.createMany({
                 data: interpreter_ids.map((interpreter_id: number) => ({
@@ -91,7 +128,6 @@ export async function GET() {
             });
         }
 
-
         if (Array.isArray(images) && images.length > 0) {
             await prisma.package_image.createMany({
                 data: images.map((images: string) => ({
@@ -100,7 +136,6 @@ export async function GET() {
                 })),
             });
         }
-
 
         if (Array.isArray(descriptions) && descriptions.length > 0) {
             await prisma.description.createMany({
@@ -111,10 +146,57 @@ export async function GET() {
             });
         }
 
-        return NextResponse.json({ message: "Package and related data created successfully", package_id: newPackage.package_id }, { status: 201 });
+        return NextResponse.json({ 
+            message: "Package and related data created successfully", 
+            package_id: newPackage.package_id 
+        }, { status: 201 });
+
     } catch (error) {
         console.error("Error creating package:", error);
         return NextResponse.json({ error: "Failed to create package" }, { status: 500 });
     }
 }
+
+
+
+// {
+//     "package_name": "Luxury Medical Package",
+//     "package_type": "Medical_Tourism",
+//     "hospital_id": 1,
+//     "image": "/img/Packages/medical4.png",
+//     "detail": "A premium medical package with top-tier services.",
+//     "duration": 7,
+//     "expired_date": "2025-12-31",
+//     "interpreter_ids": [1],
+//     "doctor_ids": [3],
+//     "hotel_ids": [1],
+//     "descriptions": [
+//       "Includes 24/7 medical consultation.",
+//       "Luxury accommodation in a 5-star hotel.",
+//       "Personal interpreter and medical concierge."
+//     ],
+//     "images": [
+//       "https://example.com/image1.jpg",
+//       "https://example.com/image2.jpg"
+//     ],
+//     "trips": [
+//       {"description": "hi"}
+//     ],
+//     "package_places": [
+//       {
+//     "place_id": 1,
+//     "date": "2025-04-02",
+//     "start": "2025-04-02T14:30:00Z",
+//     "end": "2025-04-02T16:45:00Z"
+//   }
+//   ,
+//       {
+//     "place_id": 1,
+//     "date": "2025-04-02",
+//     "start": "2025-04-02T14:30:00Z",
+//     "end": "2025-04-02T16:45:00Z"
+//   }
+  
+//     ]
+//   }
   
