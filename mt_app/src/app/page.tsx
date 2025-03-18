@@ -24,6 +24,7 @@ import PackageList from "./componants/Admin/AdminPackagelist/AdminPackagelist";
 import AdminPackage from "./componants/Admin/AdminPackage/AdminPackage";
 import AdminPackageAdd from "./componants/Admin/AdminPackageAdd/AdminPackageAdd";
 import AdminUserManagement from "./componants/Admin/AdminUserManagement/AdminUserManagement";
+import AdminPackageDetail from "./componants/Admin/AdminPackageDetail/AdminPackageDetail";
 import DoctorList from "./componants/Admin/AdminDoctorlist/AdminDoctorlist";
 import "./globals.css";
 
@@ -37,7 +38,7 @@ export default function HomePage({
     <html lang="en">
       <body>
         {/* <NavbarBookingEdit /> */}
-        <AdminUserManagement />
+        <AdminPackageDetail />
       </body>
       {/* <Footer /> */}
     </html>
