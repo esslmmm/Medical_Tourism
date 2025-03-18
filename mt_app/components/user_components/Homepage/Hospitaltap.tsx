@@ -10,7 +10,7 @@ import "../../../app/globals.css";
 const lato = Lato({ subsets: ["latin"], weight: ["400", "900"] });
 
 interface Hospital {
-  id: number;
+  hospital_id: number;
   name: string;
   location: string;
   image: string;
@@ -44,8 +44,8 @@ const Hospitaltap: React.FC = () => {
     fetchHospitals();
   }, []);
 
-  const navigateToHospitalPage = () => {
-    router.push("user/Hospital");
+  const navigateToHospitalPage = (hospitalId: number) => {
+    router.push(`/user/Hospital/${hospitalId}`);
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -86,7 +86,7 @@ const Hospitaltap: React.FC = () => {
         >
           {hospitals.map((hospital, index) => (
             <motion.div
-              key={hospital.id || `hospital-${index}`} // Fallback key in case `id` is missing
+              key={hospital.hospital_id || `hospital-${index}`} // Fallback key in case `id` is missing
               className="min-w-[380px] md:min-w-[650px] bg-white rounded-xl shadow-md p-5 border border-gray-200 flex-shrink-0 flex items-center"
               whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
               whileTap={{ scale: 0.98 }}
@@ -114,7 +114,7 @@ const Hospitaltap: React.FC = () => {
                   className="mt-4 px-6 py-2 border border-green-500 text-green-500 rounded-full hover:bg-green-500 hover:text-white w-full transition-all"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={navigateToHospitalPage}
+                  onClick={() => navigateToHospitalPage(hospital.hospital_id)}
                 >
                   SEE DETAIL
                 </motion.button>

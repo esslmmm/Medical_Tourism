@@ -21,7 +21,7 @@ export default function PaymentSelection() {
   });
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md flex gap-8">
+    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md flex gap-8 m-15">
       {/* Left Section - Payment Methods */}
       <div className="w-2/3">
         <h2 className="text-xl font-semibold">👋 Hi Ekkarat,</h2>

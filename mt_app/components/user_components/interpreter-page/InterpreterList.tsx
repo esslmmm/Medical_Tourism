@@ -19,6 +19,7 @@ const InterpreterList: React.FC<InterpreterListProps> = ({
 }) => {
   return (
     <div className="flex gap-4 overflow-x-auto pb-4 bg-background p-4 rounded-lg shadow-md">
+      
       {interpreters.map((item) => (
         <div
           key={item.id}

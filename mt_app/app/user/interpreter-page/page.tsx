@@ -1,10 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import InterpreterList from "../../../components/user_components/interpreter-page/InterpreterList";
-import InterpreterProfile from ".../../../components/user_components/interpreter-page/InterpreterProfile";
+import InterpreterProfile from "../../../components/user_components/interpreter-page/InterpreterProfile";
 import InterpreterBio from "../../../components/user_components/interpreter-page/InterpreterBio";
 import ReviewSection from "../../../components/user_components/interpreter-page/ReviewSection";
 import { Interpreter } from "../../../components/user_components/interpreter-page/types";
+import Footer from "../../../components/user_components/Main/Footer";
+import Navbar from "../../../components/user_components/Main/Navbar";
 
 // Define a type for reviews
 interface Review {
@@ -98,7 +100,9 @@ const UserInterpreterPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="p-6 max-w-6xl mx-auto font-sans">
+    <div>
+      <Navbar />
+      <div className="p-6 max-w-6xl mx-auto font-sans">
       <InterpreterList
         interpreters={clientInterpreters} // ✅ Now contains all interpreters
         selectedInterpreter={selectedInterpreter}
@@ -113,6 +117,8 @@ const UserInterpreterPage: React.FC = () => {
           <ReviewSection reviews={reviews} />
         </div>
       </div>
+      </div>
+      <Footer />
     </div>
   );
 };

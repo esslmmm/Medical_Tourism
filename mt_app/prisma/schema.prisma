@@ -649,13 +649,6 @@ enum hotel_bookings_status {
   Cancelled
 }
 
-enum package_bookings_status {
-  Pending
-  Approved
-  Rejected
-  Cancelled
-}
-
 enum interpreters_language {
   English
   Arabic
@@ -665,4 +658,12 @@ enum interpreters_language {
 enum patient_details_gender {
   Male
   Female
+}
+
+enum package_bookings_status {
+  Pending
+  Approved
+  Completed
+  Rejected
+  Cancelled
 }

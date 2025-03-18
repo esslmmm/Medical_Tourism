@@ -39,7 +39,7 @@ export default function ImageCarousel() {
       <img
         src={slides[index].image}
         alt={`Slide ${index + 1}`}
-        className="w-full h-full object-cover rounded-lg transition-opacity duration-500 ease-in-out"
+        className="w-full h-full object-cover transition-opacity duration-500 ease-in-out"
       />
       <div className="absolute inset-0 bg-black/30 flex flex-col justify-center items-center text-white text-center">
         <h2 className="text-2xl font-semibold">{slides[index].title}</h2>

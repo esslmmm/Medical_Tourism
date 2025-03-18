@@ -1,11 +1,11 @@
 import Navbar from "../components/user_components/Main/Navbar";
-import Advertisement from "../components/user_components/Homepage/Advertisement";
 import PackageList from "../components/user_components/Homepage/PackageList";
 import MedicalList from "../components/user_components/Homepage/MedicalList";
 import DoctorList from "../components/user_components/Homepage/DoctorList";
 import Hospitaltap from "../components/user_components/Homepage/Hospitaltap";
 import Footer from "../components/user_components/Main/Footer";
 import "./globals.css";
+import Advertisement from "../components/user_components/Homepage/Advertisement";
 
 interface HomePageProps {
   children: React.ReactNode;
