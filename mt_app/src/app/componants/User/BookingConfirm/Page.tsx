@@ -1,16 +1,16 @@
 'use client';
 
 import React from 'react';
-import ContactDetails from './Components/ContactDetails';
-import PatientDetails from './Components/PatientDetails';
-import MedicalService from './Components/MedicalService';
-import ConfirmButton from './Components/ConfirmButton';
-import PlaceToVisit from './Components/PlaceToVisit';
-import Accommodation from './Components/Accommodation';
-import Interpreter from './Components/Interpreter';
-import CarService from './Components/CarService';
-import NavbarBookingConfirm from "./Components/NavbarBookingConfirm";
-import Footer from "./Components/Footer";
+import ContactDetails from './BookingConfirm/ContactDetails';
+import PatientDetails from './BookingConfirm/PatientDetails';
+import MedicalService from './BookingConfirm/MedicalService';
+import ConfirmButton from './BookingConfirm/ConfirmButton';
+import PlaceToVisit from './BookingConfirm/PlaceToVisit';
+import Accommodation from './BookingConfirm/Accommodation';
+import Interpreter from './BookingConfirm/Interpreter';
+import CarService from './BookingConfirm/CarService';
+import NavbarBookingConfirm from "./BookingConfirm/NavbarBookingConfirm";
+import Footer from "./BookingConfirm/Footer";
 
 export default function ConfirmBody() {
     return (

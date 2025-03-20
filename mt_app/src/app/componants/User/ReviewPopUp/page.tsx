@@ -1,9 +1,9 @@
 'use client';
-import PackageCard from './Components/PackageCard';
-import StarRating from './Components/StarRating';
-import ReviewInput from './Components/ReviewInput';
-import NavbarReviewPopUp from "./Components/NavbarReviewPopUp";
-import Footer from "./Components/Footer";
+import PackageCard from './ReviewPopUp/PackageCard';
+import StarRating from './ReviewPopUp/StarRating';
+import ReviewInput from './ReviewPopUp/ReviewInput';
+import NavbarReviewPopUp from "./ReviewPopUp/NavbarReviewPopUp";
+import Footer from "./ReviewPopUp/Footer";
 
 const ReviewCard = () => {
     return (

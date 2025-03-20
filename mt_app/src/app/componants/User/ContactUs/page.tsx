@@ -1,7 +1,7 @@
-import FirstInputs from './Components/FirstInputs';
-import SecondInputs from './Components/SecondInputs';
-import NavbarContactUs from "./Components/NavbarContactUs";
-import Footer from "./Components/Footer";
+import FirstInputs from './ContactUs/FirstInputs';
+import SecondInputs from './ContactUs/SecondInputs';
+import NavbarContactUs from "./ContactUs/NavbarContactUs";
+import Footer from "./ContactUs/Footer";
 
 
 

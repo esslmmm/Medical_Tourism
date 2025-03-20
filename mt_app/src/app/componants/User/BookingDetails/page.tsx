@@ -1,14 +1,14 @@
 'use client';
 import { useState } from 'react';
-import ContactDetails from './Components/ContactDetails';
-import PatientDetails from './Components/PatientDetails';
-import MedicalService from './Components/MedicalService';
-import PlaceToVisit from './Components/PlaceToVisit';
-import Accommodation from './Components/Accommodation';
-import Interpreter from './Components/Interpreter';
-import CarService from './Components/CarService';
-import NavbarBookingDetails from "./Components/NavbarBookingDetails";
-import Footer from "./Components/Footer";
+import ContactDetails from './BookingDetails/ContactDetails';
+import PatientDetails from './BookingDetails/PatientDetails';
+import MedicalService from './BookingDetails/MedicalService';
+import PlaceToVisit from './BookingDetails/PlaceToVisit';
+import Accommodation from './BookingDetails/Accommodation';
+import Interpreter from './BookingDetails/Interpreter';
+import CarService from './BookingDetails/CarService';
+import NavbarBookingDetails from "./BookingDetails/NavbarBookingDetails";
+import Footer from "./BookingDetails/Footer";
 
 export default function AppointmentForm() {
     const [formData, setFormData] = useState({

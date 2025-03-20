@@ -1,8 +1,8 @@
 import Image from "next/image";
-import NavbarBookingDetails from "./componants/User/BookingDetails/Components/NavbarBookingDetails";
-import NavbarBookingEdit from "./componants/User/BookingEdit/Components/NavbarBookingEdit";
-import NavbarBookingConfirm from "./componants/User/BookingConfirm/Components/NavbarBookingConfirm";
-import Footer from "./componants/User/BookingDetails/Components/Footer";
+import NavbarBookingDetails from "./componants/User/BookingDetails/BookingDetails/NavbarBookingDetails";
+import NavbarBookingEdit from "./componants/User/BookingEdit/BookingEdit/NavbarBookingEdit";
+import NavbarBookingConfirm from "./componants/User/BookingConfirm/BookingConfirm/NavbarBookingConfirm";
+import Footer from "./componants/User/BookingDetails/BookingDetails/Footer";
 import MainPageBookingDetails from "./componants/User/BookingDetails/page";
 import MainPageBookingEdit from "./componants/User/BookingEdit/page";
 // import MainPageBookingConfirm from "./componants/User/BookingConfirm/Page";
