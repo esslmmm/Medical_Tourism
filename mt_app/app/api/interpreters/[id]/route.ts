@@ -23,6 +23,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
         inter_education: true,
         languages: true,
         review_inter: true,
+        inter_bookings: true,
       },
     });
 

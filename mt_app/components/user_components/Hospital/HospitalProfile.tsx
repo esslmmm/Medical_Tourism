@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { FaMapMarkerAlt, FaStar, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaMapMarkerAlt, FaStar, FaTimes, FaChevronLeft, FaChevronRight, FaStarHalfAlt } from "react-icons/fa";
 import { Inter } from "next/font/google";
 import { useParams } from "next/navigation";
 
@@ -61,7 +61,7 @@ const HospitalProfile: React.FC = () => {
         if (!response.ok) throw new Error("Failed to fetch hospital details");
 
         const data = await response.json();
-        console.log("Hospital Data:", data); // ✅ Debugging log
+        console.log("Hospital Data:", data);
         setHospital(data);
       } catch (error: any) {
         setError(error.message);
@@ -98,6 +98,16 @@ const HospitalProfile: React.FC = () => {
         : 0
     );
   };
+
+  const calculateAverageRating = (reviews: Review[]) => {
+    if (!reviews || reviews.length === 0) return 0; // Return 0 if no reviews
+  
+    // Calculate total rating sum and divide by the number of reviews
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return totalRating / reviews.length;
+  };
+
+  const averageRating = hospital?.review_hospital ? calculateAverageRating(hospital.review_hospital) : 0;
 
   return (
     <div className="bg-white p-8">
@@ -146,12 +156,12 @@ const HospitalProfile: React.FC = () => {
             {hospital.name}
           </h2>
           <div className="flex items-center text-yellow-500 mt-2">
-            {[...Array(hospital.rating)].map((_, i) => (
-              <FaStar key={i} />
-            ))}
-            <span className={`text-gray-600 ml-2 ${inter.className}`}>
-              ({hospital.reviews} reviews)
-            </span>
+            {Array.from({ length: Math.floor(averageRating) }).map((_, i) => (
+                                      <FaStar key={i} />
+                                    ))}{averageRating % 1 !== 0 && <FaStarHalfAlt />}
+            <span className="text-gray-700 ml-2">
+                {averageRating.toFixed(1)} ({hospital.review_hospital.length} reviews)
+              </span>
           </div>
           <div className={`${inter.className} flex items-center text-gray-600 mt-2`}>
           <FaMapMarkerAlt className="mr-2 text-red-500" />

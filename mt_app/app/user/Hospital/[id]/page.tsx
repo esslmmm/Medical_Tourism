@@ -39,7 +39,7 @@ const HomePage: React.FC = () => {
       <Navbarpro />
       <HospitalProfile />
       <MedicalPackage />
-      <h2 className="font-Inter text-6xl font-semibold text-center py-8 my-8 text-white bg-[#2BB08A] opacity-60">
+      <h2 className="font-Inter text-6xl font-semibold text-center py-8 my-3 text-white bg-[#2BB08A] opacity-60">
         DOCTORS
       </h2>
       <DoctorHos />

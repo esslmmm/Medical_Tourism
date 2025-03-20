@@ -243,6 +243,7 @@ model interpreters {
   nationality          String                 @db.VarChar(100)
   image                String                 @db.VarChar(255)
   birthofday           DateTime               @db.Date
+  experience           DateTime               @default(dbgenerated("('2025-02-02')")) @db.Date
   address              String                 @db.Text
   profile_summary      String                 @db.Text
   language             interpreters_language

@@ -101,7 +101,7 @@ const DoctorHos: React.FC = () => {
 
       <div
         ref={scrollRef}
-        className="overflow-hidden flex scrollbar-hide px-6 space-x-6 scroll-smooth"
+        className="overflow-hidden flex scrollbar-hide px-6 space-x-6 scroll-smooth py-5"
         onScroll={checkScrollPosition}
       >
         {hospital?.doctors?.map((doctor, index) => (

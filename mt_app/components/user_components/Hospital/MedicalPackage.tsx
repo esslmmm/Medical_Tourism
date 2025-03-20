@@ -43,7 +43,7 @@ const MedicalPackage: React.FC = () => {
         if (!response.ok) throw new Error("Failed to fetch hospital details");
 
         const data = await response.json();
-        console.log("Hospital Data:", data); // ✅ Debugging log
+        console.log("Hospital Data:", data);
         setHospital(data);
       } catch (error: any) {
         setError(error.message);
@@ -95,7 +95,7 @@ const MedicalPackage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-12 relative">
-      <h2 className="text-2xl font-semibold text-start pl-6 mb-6">Medical Packages</h2>
+      <h2 className="text-2xl font-semibold text-start pl-6 mb-3">Medical Packages</h2>
 
       {canScrollLeft && (
         <button
@@ -108,7 +108,7 @@ const MedicalPackage: React.FC = () => {
 
       <div
         ref={scrollRef}
-        className="overflow-hidden scrollbar-hide flex space-x-6 pl-5 pr-10 scroll-smooth"
+        className="overflow-hidden scrollbar-hide flex space-x-6 pl-5 pr-10 scroll-smooth py-3"
         onScroll={checkScrollPosition}
       >
         {hospital.packages.map((pkg) => (
