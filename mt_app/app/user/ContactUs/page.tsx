@@ -1,14 +1,14 @@
-import FirstInputs from './ContactUs/FirstInputs';
-import SecondInputs from './ContactUs/SecondInputs';
-import NavbarContactUs from "./ContactUs/NavbarContactUs";
-import Footer from "./ContactUs/Footer";
+import FirstInputs from '../../../components/user_components/ContactUs/FirstInputs';
+import SecondInputs from '../../../components/user_components/ContactUs/SecondInputs';
+// import NavbarContactUs from "../../../components/user_components/ContactUs/NavbarContactUs";
+// import Footer from "../../../components/user_components/ContactUs/Footer";
 
 
 
 const ContactForm = () => {
     return (
         <div>
-            <NavbarContactUs />
+            {/* <NavbarContactUs /> */}
             <div className="flex flex-col items-center py-12 px-4 bg-gray-200 text-black">
                 <h2 className="text-2xl font-semibold mb-6">Send us an Email</h2>
                 <form className="w-full max-w-3xl space-y-4">
@@ -22,7 +22,7 @@ const ContactForm = () => {
                     </button>
                 </form>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </div>
     );
 };
