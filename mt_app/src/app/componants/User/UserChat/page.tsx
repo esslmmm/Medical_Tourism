@@ -1,8 +1,8 @@
 'use client';
-import SideBar from './Components/SideBar';
-import Chat from './Components/Chat';
-import NavbarUserChat from "./Components/NavbarUserChat";
-import Footer from "./Components/Footer";
+import SideBar from './UserChat/SideBar';
+import Chat from './UserChat/Chat';
+import NavbarUserChat from "./UserChat/NavbarUserChat";
+import Footer from "./UserChat/Footer";
 
 export default function UserChat() {
 
