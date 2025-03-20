@@ -39,10 +39,11 @@ export async function GET(request: Request, { params }: { params: { id: string }
     }
   }
 
+
+  
   /**
  * PUT: Update a hospital by ID
  */
-// Function to convert `start` and `end` times to a valid timestamp format
 const convertToTimestamp = (date: string, time: string): Date => {
   return new Date(`${date}T${time}:00Z`); // Formats as `YYYY-MM-DDTHH:MM:SSZ`
 };
