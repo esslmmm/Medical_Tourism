@@ -16,7 +16,7 @@ export default function UserReviews() {
     ]);
 
     return (
-        <div className="flex h-screen">
+        <div className="flex full-screen">
             {/* Sidebar */}
             <aside className="w-64 bg-white border-r p-5 flex flex-col">
                 <nav className="mt-8">
