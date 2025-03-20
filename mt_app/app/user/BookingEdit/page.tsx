@@ -1,21 +1,21 @@
 'use client';
 import { useState } from 'react';
-import ContactDetails from './BookingEdit/ContactDetails';
-import PatientDetails from './BookingEdit/PatientDetails';
-import MedicalService from './BookingEdit/MedicalService';
-import PlaceToVisit from './BookingEdit/PlaceToVisit';
-import Accommodation from './BookingEdit/Accommodation';
-import Interpreter from './BookingEdit/Interpreter';
-import CarService from './BookingEdit/CarService';
-import NavbarBookingEdit from "./BookingEdit/NavbarBookingEdit";
-import Footer from "./BookingEdit/Footer";
+import ContactDetails from '../../../components/user_components/BookingEdit/ContactDetails';
+import PatientDetails from '../../../components/user_components/BookingEdit/PatientDetails';
+import MedicalService from '../../../components/user_components/BookingEdit/MedicalService';
+import PlaceToVisit from '../../../components/user_components/BookingEdit/PlaceToVisit';
+import Accommodation from '../../../components/user_components/BookingEdit/Accommodation';
+import Interpreter from '../../../components/user_components/BookingEdit/Interpreter';
+import CarService from '../../../components/user_components/BookingEdit/CarService';
+// import NavbarBookingEdit from "../../../components/user_components/BookingEdit/NavbarBookingEdit";
+// import Footer from "../../../components/user_components/BookingEdit/Footer";
 
 export default function AppointmentForm() {
 
 
     return (
         <div>
-            <NavbarBookingEdit />
+            {/* <NavbarBookingEdit /> */}
             <div className="flex min-h-screen bg-gray-100 p-10 flex-row gap-6">
                 <div className="flex flex-col gap-6 w-2/3">
                     <ContactDetails />
@@ -32,7 +32,7 @@ export default function AppointmentForm() {
                     </div>
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </div>
     );
 }

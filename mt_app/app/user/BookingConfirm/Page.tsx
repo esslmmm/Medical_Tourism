@@ -1,21 +1,21 @@
 'use client';
 
 import React from 'react';
-import ContactDetails from './BookingConfirm/ContactDetails';
-import PatientDetails from './BookingConfirm/PatientDetails';
-import MedicalService from './BookingConfirm/MedicalService';
-import ConfirmButton from './BookingConfirm/ConfirmButton';
-import PlaceToVisit from './BookingConfirm/PlaceToVisit';
-import Accommodation from './BookingConfirm/Accommodation';
-import Interpreter from './BookingConfirm/Interpreter';
-import CarService from './BookingConfirm/CarService';
-import NavbarBookingConfirm from "./BookingConfirm/NavbarBookingConfirm";
-import Footer from "./BookingConfirm/Footer";
+import ContactDetails from '../../../components/user_components/BookingConfirm/ContactDetails';
+import PatientDetails from '../../../components/user_components/BookingConfirm/PatientDetails';
+import MedicalService from '../../../components/user_components/BookingConfirm/MedicalService';
+import ConfirmButton from '../../../components/user_components/BookingConfirm/ConfirmButton';
+import PlaceToVisit from '../../../components/user_components/BookingConfirm/PlaceToVisit';
+import Accommodation from '../../../components/user_components/BookingConfirm/Accommodation';
+import Interpreter from '../../../components/user_components/BookingConfirm/Interpreter';
+import CarService from '../../../components/user_components/BookingConfirm/CarService';
+// import NavbarBookingConfirm from "../../../components/user_components/BookingConfirm/NavbarBookingConfirm";
+// import Footer from "../../../components/user_components/BookingConfirm/Footer";
 
 export default function ConfirmBody() {
     return (
         <div>
-            <NavbarBookingConfirm />
+            {/* <NavbarBookingConfirm /> */}
             <div className="flex justify-center bg-gray-100 py-10 px-6">
                 <div className="w-full max-w-6xl grid grid-cols-3 gap-8">
                     {/* Left Section: Contact & Patient Details */}
@@ -38,7 +38,7 @@ export default function ConfirmBody() {
                     </div>
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </div>
     );
 }

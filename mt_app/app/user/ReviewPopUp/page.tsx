@@ -1,9 +1,9 @@
 'use client';
-import PackageCard from './ReviewPopUp/PackageCard';
-import StarRating from './ReviewPopUp/StarRating';
-import ReviewInput from './ReviewPopUp/ReviewInput';
-import NavbarReviewPopUp from "./ReviewPopUp/NavbarReviewPopUp";
-import Footer from "./ReviewPopUp/Footer";
+import PackageCard from '../../../components/user_components/ReviewPopUp/PackageCard';
+import StarRating from '../../../components/user_components/ReviewPopUp/StarRating';
+import ReviewInput from '../../../components/user_components/ReviewPopUp/ReviewInput';
+import NavbarReviewPopUp from "../../../components/user_components/ReviewPopUp/NavbarReviewPopUp";
+import Footer from "../../../components/user_components/ReviewPopUp/Footer";
 
 const ReviewCard = () => {
     return (
