@@ -1,8 +1,8 @@
 'use client';
-import SideBar from '../Components/SideBar';
-import Header from '../Components/Header';
-import ContactDetails from '../Components/ContactDetails';
-import PatientDetails from '../Components/PatientDetails';
+import SideBar from './BookingManagement/SideBar';
+import Header from './BookingManagement/Header';
+import ContactDetails from './BookingManagement/ContactDetails';
+import PatientDetails from './BookingManagement/PatientDetails';
 
 export default function UserDetail() {
     return (
