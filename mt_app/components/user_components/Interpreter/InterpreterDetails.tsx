@@ -81,7 +81,7 @@ const calculate = (birthDate: string | Date) => {
 const InterpreterProfile: React.FC<InterpreterProfileProps> = ({ interpreter }) => {
   const approvedCount = interpreter?.inter_bookings.filter(booking => booking.status === "Approved").length;
   const calculateAverageRating = (reviews: Review[]) => {
-    if (!reviews || reviews.length === 0) return 0; // Return 0 if no reviews
+    if (!reviews || reviews.length === 0) return 0;
   
     // Calculate total rating sum and divide by the number of reviews
     const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
@@ -217,7 +217,6 @@ const InterpreterProfile: React.FC<InterpreterProfileProps> = ({ interpreter }) 
                           <FaStar key={i} />
                         ))}{averageRating % 1 !== 0 && <FaStarHalfAlt />}
                       </div>
-                      
                       <p className="text-gray-600 text-sm font-extralight">{review.comment}</p>
                       <p className="text-black font-thin text-sm">{formatDate(review.created_at)}</p>
                     </div>

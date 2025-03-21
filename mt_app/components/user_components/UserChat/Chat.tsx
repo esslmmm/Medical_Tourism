@@ -22,7 +22,7 @@ const Chat = () => {
         }
     };
   return (
-      <div><main className="flex flex-col flex-1 h-full w-full bg-gray-50 p-6">
+      <div className="flex flex-col flex-1 h-screen max-w">
           <div className="text-center text-gray-500 text-sm mb-4">Today, 9 Mar</div>
           <div className="flex-1 overflow-y-auto p-4 bg-white rounded-lg shadow-lg">
               {messages.map((msg, index) => (
@@ -47,7 +47,7 @@ const Chat = () => {
                   <IoSend size={20} />
               </button>
           </div>
-      </main></div>
+      </div>
   )
 }
 

@@ -4,7 +4,7 @@ import { MdOutlineEventAvailable } from "react-icons/md";
 
 const SideBar = () => {
   return (
-    <div><aside className="w-64 bg-white border-r p-5 flex flex-col h-full">
+    <div className="w-64 bg-white border-r p-5 flex flex-col h-full">
                     <nav className="mt-8">
                         <ul className="space-y-4">
                             <li className="flex items-center space-x-3 text-gray-600 hover:text-teal-600 cursor-pointer">
@@ -25,7 +25,7 @@ const SideBar = () => {
                             </li>
                         </ul>
                     </nav>
-                </aside></div>
+                </div>
   )
 }
 

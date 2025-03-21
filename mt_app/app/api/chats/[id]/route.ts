@@ -24,8 +24,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
             },
             include: {
                 messages: {
+                    include:{
+                        users_messages_receiver_idTousers: true,
+                    },
                     orderBy: { timestamp: "desc" },
-                    take: 1 // Get last message in chat
                 }
             }
         });
