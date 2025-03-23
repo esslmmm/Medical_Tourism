@@ -7,21 +7,21 @@ interface TimelineSelectorProps {
 
 const TimelineSelector: React.FC<TimelineSelectorProps> = ({ selectedDay, setSelectedDay }) => {
   return (
-    <div className="bg-white p-4 rounded-xl shadow-md mb-4">
+    <div className="bg-white p-5 rounded-[20px] shadow-md mb-4 border border-[#C5D1E0]">
       <h2 className="text-xl font-bold mb-3">Timeline</h2>
       <div className="flex gap-3">
         {/* ✅ Corrected `.map()` function */}
         {[1, 2, 3].map((day) => (
           <button
             key={day}
-            className={`px-4 py-2 rounded-lg ${selectedDay === day ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+            className={`px-4 font-semibold rounded-[15px] ${selectedDay === day ? "bg-blue-500 text-white" : "bg-gray-200"}`}
             onClick={() => setSelectedDay(day as 1 | 2 | 3)} // ✅ Explicitly cast day
           >
             Day {day}
           </button>
         ))}
         <button
-          className={`px-4 py-2 rounded-lg ${selectedDay === "all" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+          className={`px-4 py-2 font-semibold rounded-[15px] ${selectedDay === "all" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
           onClick={() => setSelectedDay("all")}
         >
           All Trip
