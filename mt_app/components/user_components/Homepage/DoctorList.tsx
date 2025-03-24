@@ -28,7 +28,7 @@ const DoctorList: React.FC = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await fetch("/api/doctors");
+        const response = await fetch("/api/services/doctors");
         if (!response.ok) {
           throw new Error("Failed to fetch doctors");
         }

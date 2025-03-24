@@ -202,6 +202,7 @@ model hotels {
   description      String?            @db.Text
   image            String?            @db.VarChar(255)
   contact_info     String?            @db.VarChar(255)
+  check_in_time    String             @default("1 PM") @db.VarChar(10)
   create_at        DateTime           @default(now()) @db.Timestamp(0)
   hotel_bookings   hotel_bookings[]
   hotel_facilities hotel_facilities[]
@@ -367,8 +368,8 @@ model package_places {
   tour_id         Int?
   place_id        Int?
   date            DateTime? @db.Date
-  start           DateTime? @db.Timestamp(0)
-  end             DateTime? @db.Timestamp(0)
+  start           DateTime? @db.Time(0)
+  end             DateTime? @db.Time(0)
   tourismservices trips?    @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_1")
   places          places?   @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_2")
 
@@ -516,19 +517,17 @@ model tourism_bookings {
 }
 
 model users {
-  user_id            Int       @id @default(autoincrement())
-  name          String?
-  email         String    @unique
-  password      String?
-  image         String?
-  role          String    @default("member") // Add a role field
-  emailVerified DateTime?
-  accounts      Account[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  user_id                              Int                @id @default(autoincrement())
+  name                                 String?            @db.VarChar(100)
+  email                                String?            @db.VarChar(100)
+  nationality                          String?            @db.VarChar(255)
+  contact_info                         String?            @db.VarChar(255)
+  image                                String             @db.VarChar(255)
+  role                                 users_role?
   action_history                       action_history[]
   chat_chat_user1_idTousers            chat[]             @relation("chat_user1_idTousers")
   chat_chat_user2_idTousers            chat[]             @relation("chat_user2_idTousers")
+  login                                login[]
   messages_messages_sender_idTousers   messages[]         @relation("messages_sender_idTousers")
   messages_messages_receiver_idTousers messages[]         @relation("messages_receiver_idTousers")
   package_bookings                     package_bookings[]
@@ -536,25 +535,6 @@ model users {
   review_hospital                      review_hospital[]
   review_hotel                         review_hotel[]
   review_inter                         review_inter[]
-}
-
-model Account {
-  id                 String  @id @default(cuid())
-  user_id             Int
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
-
-  user users @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
 }
 
 model hospital_images {
@@ -568,11 +548,11 @@ model hospital_images {
 
 model chat {
   chat_id                    Int        @id @default(autoincrement())
-  user1_id                   Int
-  user2_id                   Int
+  user1_id                   Int?
+  user2_id                   Int?
   timestamp                  DateTime   @default(now()) @db.Timestamp(0)
-  users_chat_user1_idTousers users      @relation("chat_user1_idTousers", fields: [user1_id], references: [user_id], onUpdate: Restrict, map: "chat_ibfk_1")
-  users_chat_user2_idTousers users      @relation("chat_user2_idTousers", fields: [user2_id], references: [user_id], onUpdate: Restrict, map: "chat_ibfk_2")
+  users_chat_user1_idTousers users?     @relation("chat_user1_idTousers", fields: [user1_id], references: [user_id], onDelete: Restrict, onUpdate: Restrict, map: "chat_ibfk_1")
+  users_chat_user2_idTousers users?     @relation("chat_user2_idTousers", fields: [user2_id], references: [user_id], onDelete: Restrict, onUpdate: Restrict, map: "chat_ibfk_2")
   messages                   messages[]
 
   @@index([user2_id], map: "user2_id")
@@ -612,19 +592,14 @@ model trips {
   @@index([package_id], map: "package_id")
 }
 
+model login {
+  login_id   Int       @id @default(autoincrement())
+  user_id    Int?
+  login_time DateTime? @db.Timestamp(0)
+  users      users?    @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "login_ibfk_1")
 
-model contactform {
-  id          Int      @id @default(autoincrement())
-  firstName   String
-  lastName    String
-  email       String  @unique
-  phoneNumber String
-  country     String
-  type        String
-  message     String
-  createdAt   DateTime @default(now())
+  @@index([user_id], map: "user_id")
 }
-
 
 enum action_history_type_action {
   Add
@@ -655,12 +630,6 @@ enum inter_bookings_status {
   Approved
   Rejected
   Cancelled
-}
-
-enum users_role {
-  customer
-  staff
-  admin
 }
 
 enum payment_payment_status {
@@ -694,4 +663,10 @@ enum package_bookings_status {
   Completed
   Rejected
   Cancelled
+}
+
+enum users_role {
+  customer
+  staff
+  admin
 }
