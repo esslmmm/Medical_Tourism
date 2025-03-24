@@ -1,3 +1,5 @@
+'use client'
+
 import Navbar from "../components/user_components/Main/Navbar";
 import PackageList from "../components/user_components/Homepage/PackageList";
 import MedicalList from "../components/user_components/Homepage/MedicalList";

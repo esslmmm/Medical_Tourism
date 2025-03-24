@@ -1,10 +1,14 @@
 "use client";
 
+
+
 import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { X } from "lucide-react";
 import { Poppins } from "next/font/google";
+import { signIn } from 'next-auth/react'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });
 
@@ -28,8 +32,44 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+
+
+
+
+  // const [email, setEmail] = useState('')
+  // const [password, setPassword] = useState('')
+  // const router = useRouter()
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+
+  //   e.preventDefault()
+  //   try{
+  //     const result = await signIn('credentials', {
+  //       redirect:false,
+  //       email,
+  //       password
+  //     })
+
+  //     if (!result) {
+  //       console.error('Sign-in request failed. No response received.')
+  //       return false
+  //     }
+
+  //     if(result.error){
+  //       console.error()
+  //       return false
+  //     }
+
+  //     //Login Success
+  //     router.push('/')
+  //   }catch(error){
+
+  //   }
+  // }
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/45 z-50">
+    <form className="fixed inset-0 flex items-center justify-center bg-black/45 z-50"
+    >
       <motion.div
         ref={modalRef}
         initial={{ opacity: 0, scale: 0.95 }}
@@ -68,7 +108,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             <hr className="border-black w-15" />
           </div>
           <div className="flex gap-4 justify-center">
-            <button className="flex w-30 items-center justify-center bg-white border border-[#BCBEC0] rounded-md py-2 hover:bg-gray-100">
+            <button className="flex w-30 items-center justify-center bg-white border border-[#BCBEC0] rounded-md py-2 hover:bg-gray-100"
+            onClick={() => signIn('google', { callbackUrl: '/profile ' })}>
               <img src="/img/Homepage/google.png" alt="Google" className="w-5 h-5" />
             </button>
             <button className="flex w-30 items-center justify-center bg-white border border-[#BCBEC0] rounded-md py-2 hover:bg-gray-100">
@@ -86,7 +127,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           />
         </div>
       </motion.div>
-    </div>
+    </form>
   );
 };
 
