@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 
 /*
-    GET: Retrieve all the chats for admin
+    GET: Retrieve all the chats (for admin and staff)
 */
 export async function GET() {
     try {

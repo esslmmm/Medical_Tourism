@@ -69,7 +69,7 @@ const BookingTabs: React.FC = () => {
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div className="w-4/5 max-w-4xl">
+    <div>
       {/* Tabs for Booking Status */}
         <div className="flex gap-50 text-lg font-bold cursor-pointer mb-6 relative">
           {["Pending", "Approved", "Completed"].map((tab) => (

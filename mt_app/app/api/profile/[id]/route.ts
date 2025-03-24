@@ -23,9 +23,33 @@ export async function GET(request: Request, { params }: { params: { id: string }
             packages: true
           }
         },
-        review_hospital: true,
-        review_hotel: true,
-        review_inter: true,
+        review_hospital: {
+          include: {
+            hospitals: {
+              select: {
+                name: true,
+              }
+            }
+          }
+        },
+        review_hotel: {
+          include: {
+            hotels: {
+              select: {
+                name: true,
+              }
+            }
+          }
+        },
+        review_inter: {
+          include: {
+            interpreters: {
+              select: {
+                name: true,
+              }
+            }
+          }
+        },
         chat_chat_user1_idTousers: true,
         chat_chat_user2_idTousers: true,
         messages_messages_receiver_idTousers: true,
