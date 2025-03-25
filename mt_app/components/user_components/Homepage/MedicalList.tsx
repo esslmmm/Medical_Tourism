@@ -36,7 +36,7 @@ const MedicalList: React.FC = () => {
     useEffect(() => {
       async function fetchPackages() {
         try {
-          const response = await fetch("/api/packages");
+          const response = await fetch("/api/services/packages");
           if (!response.ok) {
             throw new Error("Failed to fetch packages");
           }

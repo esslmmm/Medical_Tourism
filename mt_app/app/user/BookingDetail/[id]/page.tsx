@@ -1,14 +1,14 @@
 "use client";
 import React, { useRef, useState } from "react";
-import NavigationIcons from "../../../components/user_components/BookingDetail/NavigationIcons";
-import PackageType from "../../../components/user_components/BookingDetail/PackageType";
-import TimelineSelector from "../../../components/user_components/BookingDetail/TimelineSelector";
-import CarService from "../../../components/user_components/BookingDetail/CarService";
-import Navbarpro from "../../../components/user_components/Main/Navbarpro";
-import Footer from "../../../components/user_components/Main/Footer";
-import MedicalServiceCard from "../../../components/user_components/BookingDetail/MedicalService";
-import AccommodationCard from "../../../components/user_components/BookingDetail/AccommodationCard";
-import PlacesToVisit from "../../../components/user_components/BookingDetail/PlacesToVisit";
+import NavigationIcons from "../../../../components/user_components/BookingDetail/NavigationIcons";
+import PackageType from "../../../../components/user_components/BookingDetail/PackageType";
+import TimelineSelector from "../../../../components/user_components/BookingDetail/TimelineSelector";
+import CarService from "../../../../components/user_components/BookingDetail/CarService";
+import Navbarpro from "../../../../components/user_components/Main/Navbarpro";
+import Footer from "../../../../components/user_components/Main/Footer";
+import MedicalServiceCard from "../../../../components/user_components/BookingDetail/MedicalService";
+import AccommodationCard from "../../../../components/user_components/BookingDetail/AccommodationCard";
+import PlacesToVisit from "../../../../components/user_components/BookingDetail/PlacesToVisit";
 
 
 const UserTimeline = () => {

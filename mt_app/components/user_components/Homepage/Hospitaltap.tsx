@@ -27,7 +27,7 @@ const Hospitaltap: React.FC = () => {
   useEffect(() => {
     async function fetchHospitals() {
       try {
-        const response = await fetch("/api/hospitals");
+        const response = await fetch("/api/services/hospitals");
         if (!response.ok) {
           throw new Error("Failed to fetch hospitals");
         }
