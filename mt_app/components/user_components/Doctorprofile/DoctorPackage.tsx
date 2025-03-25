@@ -40,7 +40,7 @@ const DoctorPackage: React.FC = () => {
   useEffect(() => {
     async function fetchDoctor() {
       try {
-        const response = await fetch(`/api/doctors/${id}`);
+        const response = await fetch(`/api/services/doctors/${id}`);
         if (!response.ok) throw new Error("Failed to fetch doctor details");
 
         const data = await response.json();

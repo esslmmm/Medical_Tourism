@@ -37,7 +37,7 @@ const DoctorProfile = () => {
   useEffect(() => {
     async function fetchDoctor() {
       try {
-        const response = await fetch(`/api/doctors/${id}`);
+        const response = await fetch(`/api/services/doctors/${id}`);
         if (!response.ok) throw new Error("Failed to fetch doctor details");
 
         const doctorData = await response.json();
@@ -45,7 +45,7 @@ const DoctorProfile = () => {
 
         // Fetch hospital details using doctor.hospital_id
         if (doctorData.hospital_id) {
-          const hospitalResponse = await fetch(`/api/hospitals/${doctorData.hospital_id}`);
+          const hospitalResponse = await fetch(`/api/services/hospitals/${doctorData.hospital_id}`);
           if (!hospitalResponse.ok) throw new Error("Failed to fetch hospital details");
 
           const hospitalData = await hospitalResponse.json();

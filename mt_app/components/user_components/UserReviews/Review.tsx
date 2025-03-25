@@ -14,9 +14,9 @@ interface User {
   user_id: number;
   name: string;
   email: string;
-  review_inter: Review[];
-  review_hospital: Review[];
-  review_hotel: Review[];
+  interpreter_reviews: Review[];
+  hospital_reviews: Review[];
+  hotel_reviews: Review[];
 }
 
 interface Review {
@@ -63,17 +63,17 @@ const Review = () => {
 
         // Merge all reviews and extract the name of the reviewed entity
         const combinedReviews= [
-          ...data.review_inter.map((r) => ({
+          ...data.interpreter_reviews.map((r) => ({
             ...r,
             type: "Interpreter",
             reviewed_name: r.interpreters?.name ?? "Unknown Interpreter", // ✅ Extract interpreter name
           })),
-          ...data.review_hospital.map((r) => ({
+          ...data.hospital_reviews.map((r) => ({
             ...r,
             type: "Hospital",
             reviewed_name: r.hospitals?.name ?? "Unknown Hospital", // ✅ Extract hospital name
           })),
-          ...data.review_hotel.map((r) => ({
+          ...data.hotel_reviews.map((r) => ({
             ...r,
             type: "Hotel",
             reviewed_name: r.hotels?.name ?? "Unknown Hotel", // ✅ Extract hotel name

@@ -9,21 +9,21 @@ const prisma = new PrismaClient();
  */
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    const user_id = parseInt(params.id, 10);
+    const id = parseInt(params.id, 10);
 
-    if (isNaN(user_id)) {
+    if (isNaN(id)) {
       return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
     }
 
-    const user = await prisma.users.findUnique({
-      where: { user_id },
+    const user = await prisma.user.findUnique({
+      where: { id },
       include: {
         package_bookings: {
           include: {
             packages: true
           }
         },
-        review_hospital: {
+        hospital_reviews: {
           include: {
             hospitals: {
               select: {
@@ -32,7 +32,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
             }
           }
         },
-        review_hotel: {
+        hotel_reviews: {
           include: {
             hotels: {
               select: {
@@ -41,7 +41,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
             }
           }
         },
-        review_inter: {
+        interpreter_reviews: {
           include: {
             interpreters: {
               select: {
@@ -50,11 +50,11 @@ export async function GET(request: Request, { params }: { params: { id: string }
             }
           }
         },
-        chat_chat_user1_idTousers: true,
-        chat_chat_user2_idTousers: true,
-        messages_messages_receiver_idTousers: true,
-        messages_messages_sender_idTousers: true,
-        payment: true
+        chat_user1Id: true,
+        chat_user2Id: true,
+        messages_senderId: true,
+        messages_receiverId: true,
+        payments: true
       },
     });
 

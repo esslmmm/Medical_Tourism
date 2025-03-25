@@ -27,7 +27,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
         packages : true,
         review_hospital: {
             include: {
-                users: {
+                user: {
                     select: {
                         name: true
                     }

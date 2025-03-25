@@ -88,7 +88,7 @@ export default function InterpreterList({ setSelectedInterpreter, selectedInterp
       try {
         setLoading(true);
         setError(null);
-        const packageRes = await fetch(`/api/packages/${packageId}`);
+        const packageRes = await fetch(`/api/services/packages/${packageId}`);
 
         if (!packageRes.ok) {
           throw new Error("Failed to fetch package");
@@ -111,7 +111,7 @@ export default function InterpreterList({ setSelectedInterpreter, selectedInterp
       try {
         const fetchedInterpreters = await Promise.all(
           interpreterIds.map(async (id) => {
-            const res = await fetch(`/api/interpreters/${id}`);
+            const res = await fetch(`/api/services/interpreters/${id}`);
             if (!res.ok) throw new Error("Failed to fetch interpreter");
             return res.json();
           })

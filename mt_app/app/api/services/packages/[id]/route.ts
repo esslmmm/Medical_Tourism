@@ -44,9 +44,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
   /**
  * PUT: Update a hospital by ID
  */
-const convertToTimestamp = (date: string, time: string): Date => {
-  return new Date(`${date}T${time}:00Z`); // Formats as `YYYY-MM-DDTHH:MM:SSZ`
-};
+  function formatTime(timeString: string): string {
+    return timeString.padStart(5, "0"); // Ensure it's in "HH:mm" format
+}
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
@@ -138,31 +138,31 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
       // ✅ Update or Insert Package Places
       if (Array.isArray(body.package_places) && tripIds.length > 0) {
-          const trip_id = tripIds[0].tour_id; // Use the first trip ID
-
-          for (const place of body.package_places) {
-              if (place.packplace_id) {
-                  await prisma.package_places.update({
-                      where: { packplace_id: place.packplace_id },
-                      data: {
-                          date: place.date ? new Date(place.date) : null,
-                          start: place.date && place.start ? convertToTimestamp(place.date, place.start) : null,
-                          end: place.date && place.end ? convertToTimestamp(place.date, place.end) : null,
-                      },
-                  });
-              } else {
-                  await prisma.package_places.create({
-                      data: {
-                          tour_id: trip_id,
-                          place_id: place.place_id,
-                          date: place.date ? new Date(place.date) : null,
-                          start: place.date && place.start ? convertToTimestamp(place.date, place.start) : null,
-                          end: place.date && place.end ? convertToTimestamp(place.date, place.end) : null,
-                      },
-                  });
-              }
-          }
-      }
+        const trip_id = tripIds[0].tour_id; // Use the first trip ID
+    
+        for (const place of body.package_places) {
+            if (place.packplace_id) {
+                await prisma.package_places.update({
+                    where: { packplace_id: place.packplace_id },
+                    data: {
+                        date: place.date,
+                        start: place.start || null, // Store as string
+                        end: place.end || null,
+                    },
+                });
+            } else {
+                await prisma.package_places.create({
+                    data: {
+                        tour_id: trip_id,
+                        place_id: place.place_id,
+                        date: place.date,
+                        start: place.start || null, // Store as string
+                        end: place.end || null,
+                    },
+                });
+            }
+        }
+    }
 
       return NextResponse.json({
           message: "Package updated successfully",
@@ -242,7 +242,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   /**
  * PUT: TEST CASE
  */
-  // {
+//   {
 //   "package_name": "Premium Health Package",
 //   "expired_date": "2025-12-31",
 

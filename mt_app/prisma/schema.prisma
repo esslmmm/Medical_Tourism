@@ -1,702 +1,3 @@
-// generator client {
-//   provider = "prisma-client-js"
-// }
-
-// datasource db {
-//   provider = "mysql"
-//   url      = env("DATABASE_URL")
-// }
-
-// model action_history {
-//   action_id   Int                         @id @default(autoincrement())
-//   user_id     Int
-//   type_action action_history_type_action?
-//   timestamp   DateTime?                   @db.Timestamp(0)
-//   action      String?                     @db.VarChar(255)
-//   id          Int?
-//   users       users                       @relation(fields: [user_id], references: [user_id], onUpdate: Restrict, map: "action_history_ibfk_1")
-
-//   @@index([user_id], map: "user_id")
-// }
-
-// model appointments {
-//   appointment_id   Int                @id @default(autoincrement())
-//   date             DateTime?          @db.Date
-//   timeslot         String?            @db.VarChar(255)
-//   patient_id       Int?
-//   description      String?            @db.Text
-//   doctor_id        Int?
-//   file_name        String?            @db.VarChar(255)
-//   file_path        String?            @db.VarChar(255)
-//   upload_date      DateTime?          @db.Timestamp(0)
-//   patient_details  patient_details?   @relation(fields: [patient_id], references: [patient_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_1")
-//   doctors          doctors?           @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_2")
-//   package_bookings package_bookings[]
-
-//   @@index([doctor_id], map: "doctor_id")
-//   @@index([patient_id], map: "patient_id")
-// }
-
-// model cars {
-//   car_id           Int                @id @default(autoincrement())
-//   car_name         String?            @db.VarChar(50)
-//   phone            Int?
-//   email            String?            @db.VarChar(100)
-//   address          String?            @db.VarChar(255)
-//   city             String?            @db.VarChar(255)
-//   image            String?            @db.VarChar(255)
-//   description      String?            @db.Text
-//   fee              Float?             @db.Float
-//   capacity         Int?
-//   guide_license    String?            @db.VarChar(255)
-//   tourism_bookings tourism_bookings[]
-// }
-
-// model description {
-//   description_id Int       @id @default(autoincrement())
-//   package_id     Int?
-//   details        String?   @db.VarChar(255)
-//   packages       packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "description_ibfk_1")
-
-//   @@index([package_id], map: "package_id")
-// }
-
-// model doc_certificate {
-//   cerfiticate_id Int      @id @default(autoincrement())
-//   doctor_id      Int?
-//   field_of_study String?  @db.VarChar(255)
-//   institution    String?  @db.VarChar(255)
-//   year           Int?
-//   doctors        doctors? @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "doc_certificate_ibfk_1")
-
-//   @@index([doctor_id], map: "doctor_id")
-// }
-
-// model doc_education {
-//   education_id   Int      @id @default(autoincrement())
-//   doctor_id      Int?
-//   field_of_study String?  @db.VarChar(255)
-//   institution    String?  @db.VarChar(255)
-//   year           Int?
-//   doctors        doctors? @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "doc_education_ibfk_1")
-
-//   @@index([doctor_id], map: "doctor_id")
-// }
-
-// model doc_language {
-//   language_id Int      @id @default(autoincrement())
-//   doctor_id   Int?
-//   languages   String?  @db.VarChar(255)
-//   doctors     doctors? @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "doc_language_ibfk_1")
-
-//   @@index([doctor_id], map: "doctor_id")
-// }
-
-// model doctors {
-//   doctor_id       Int               @id @default(autoincrement())
-//   name            String?           @db.VarChar(255)
-//   specialization  String?           @db.VarChar(255)
-//   hospital_id     Int?
-//   experience      Int?
-//   description     String?           @db.VarChar(200)
-//   image           String?           @db.VarChar(255)
-//   create_at       DateTime?         @default(now())
-//   appointments    appointments[]
-//   doc_certificate doc_certificate[]
-//   doc_education   doc_education[]
-//   doc_language    doc_language[]
-//   hospitals       hospitals?        @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "doctors_ibfk_1")
-//   package_doc     package_doc[]
-
-//   @@index([hospital_id], map: "hospital_id")
-// }
-
-// model hospitals {
-//   hospital_id      Int                @id @default(autoincrement())
-//   name             String?            @db.VarChar(100)
-//   hospital_code    String?            @db.VarChar(20)
-//   location         String?            @db.VarChar(255)
-//   city             String?            @db.VarChar(50)
-//   description      String?            @db.Text
-//   contact_info     String?            @db.VarChar(255)
-//   rating           Float?             @db.Float
-//   image            String?            @db.VarChar(255)
-//   logo             String             @db.VarChar(255)
-//   create_at        DateTime?          @default(now()) @db.Timestamp(3)
-//   doctors          doctors[]
-//   hospital_images  hospital_images[]
-//   medical_services medical_services[]
-//   packages         packages[]
-//   review_hospital  review_hospital[]
-// }
-
-// model hotel_bookings {
-//   booking_id       Int                    @id @default(autoincrement())
-//   hotel_id         Int?
-//   check_in_date    DateTime?              @db.Date
-//   check_out_date   DateTime?              @db.Date
-//   guest_children   Int?
-//   guest_adult      Int?
-//   total_price      Float?                 @db.Float
-//   status           hotel_bookings_status?
-//   hotels           hotels?                @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_bookings_ibfk_1")
-//   package_bookings package_bookings[]
-//   room_aggregate   room_aggregate[]
-
-//   @@index([hotel_id], map: "hotel_id")
-// }
-
-// model hotel_facilities {
-//   facility_id   Int     @id @default(autoincrement())
-//   hotel_id      Int?
-//   facility_name String? @db.VarChar(100)
-//   description   String? @db.Text
-//   hotels        hotels? @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_facilities_ibfk_1")
-
-//   @@index([hotel_id], map: "hotel_id")
-// }
-
-// model hotel_images {
-//   image_id Int     @id @default(autoincrement())
-//   hotel_id Int?
-//   image    String? @db.VarChar(255)
-//   hotels   hotels? @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_images_ibfk_1")
-
-//   @@index([hotel_id], map: "hotel_id")
-// }
-
-// model hotel_room_facilities {
-//   room_facilitiy_id Int          @id @default(autoincrement())
-//   room_id           Int?
-//   facility_name     String?      @db.VarChar(100)
-//   description       String?      @db.Text
-//   hotel_rooms       hotel_rooms? @relation(fields: [room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_room_facilities_ibfk_1")
-
-//   @@index([room_id], map: "room_id")
-// }
-
-// model hotel_rooms {
-//   room_id               Int                     @id @default(autoincrement())
-//   hotel_id              Int?
-//   room_type             String?                 @db.VarChar(100)
-//   price_per_night       Float?                  @db.Float
-//   capacity              String?                 @db.VarChar(200)
-//   description           String?                 @db.Text
-//   image                 String?                 @db.VarChar(255)
-//   hotel_room_facilities hotel_room_facilities[]
-//   hotels                hotels?                 @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_rooms_ibfk_1")
-//   room_aggregate        room_aggregate[]
-//   room_image            room_image[]
-
-//   @@index([hotel_id], map: "hotel_id")
-// }
-
-// model hotels {
-//   hotel_id         Int                @id @default(autoincrement())
-//   name             String?            @db.VarChar(255)
-//   hotel_code       String?            @db.VarChar(20)
-//   location         String?            @db.VarChar(255)
-//   city             String?            @db.VarChar(100)
-//   rating           Float?             @db.Float
-//   email            String?            @db.VarChar(50)
-//   description      String?            @db.Text
-//   image            String?            @db.VarChar(255)
-//   contact_info     String?            @db.VarChar(255)
-//   create_at        DateTime           @default(now()) @db.Timestamp(0)
-//   hotel_bookings   hotel_bookings[]
-//   hotel_facilities hotel_facilities[]
-//   hotel_images     hotel_images[]
-//   hotel_rooms      hotel_rooms[]
-//   package_hotels   package_hotels[]
-//   review_hotel     review_hotel[]
-// }
-
-// model inter_bookings {
-//   booking_id       Int                    @id @default(autoincrement())
-//   interpreter_id   Int?
-//   start            DateTime?              @db.Date
-//   end              DateTime?              @db.Date
-//   status           inter_bookings_status?
-//   interpreters     interpreters?          @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "inter_bookings_ibfk_1")
-//   package_bookings package_bookings[]
-
-//   @@index([interpreter_id], map: "interpreter_id")
-// }
-
-// model inter_education {
-//   education_id   Int           @id @default(autoincrement())
-//   interpreter_id Int?
-//   degree         String?       @db.VarChar(50)
-//   field_of_study String?       @db.VarChar(255)
-//   institution    String?       @db.VarChar(100)
-//   interpreters   interpreters? @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "inter_education_ibfk_1")
-
-//   @@index([interpreter_id], map: "interpreter_id")
-// }
-
-// model interpreters {
-//   interpreter_id       Int                    @id @default(autoincrement())
-//   name                 String                 @db.VarChar(255)
-//   email                String                 @unique(map: "email") @db.VarChar(255)
-//   phone                String                 @db.VarChar(50)
-//   rating               Float                  @db.Float
-//   nationality          String                 @db.VarChar(100)
-//   image                String                 @db.VarChar(255)
-//   birthofday           DateTime               @db.Date
-//   experience           DateTime               @default(dbgenerated("('2025-02-02')")) @db.Date
-//   address              String                 @db.Text
-//   profile_summary      String                 @db.Text
-//   language             interpreters_language
-//   create_at            DateTime               @default(now()) @db.Timestamp(0)
-//   inter_bookings       inter_bookings[]
-//   inter_education      inter_education[]
-//   languages            languages[]
-//   package_interpreters package_interpreters[]
-//   review_inter         review_inter[]
-// }
-
-// model languages {
-//   lang_id        Int                    @id @default(autoincrement())
-//   interpreter_id Int?
-//   language_name  String?                @db.VarChar(100)
-//   proficiency    languages_proficiency?
-//   interpreters   interpreters?          @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "languages_ibfk_1")
-
-//   @@index([interpreter_id], map: "interpreter_id")
-// }
-
-// model medical_services {
-//   service_id   Int        @id @default(autoincrement())
-//   hospital_id  Int?
-//   service_name String?    @db.VarChar(255)
-//   description  String?    @db.VarChar(255)
-//   hospitals    hospitals? @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "medical_services_ibfk_1")
-
-//   @@index([hospital_id], map: "hospital_id")
-// }
-
-// model messages {
-//   message_id                        Int       @id @default(autoincrement())
-//   chat_id                           Int
-//   sender_id                         Int?
-//   receiver_id                       Int?
-//   message                           String?   @db.Text
-//   timestamp                         DateTime? @default(now()) @db.Timestamp(0)
-//   users_messages_sender_idTousers   users?    @relation("messages_sender_idTousers", fields: [sender_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_1")
-//   users_messages_receiver_idTousers users?    @relation("messages_receiver_idTousers", fields: [receiver_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_2")
-//   chat                              chat      @relation(fields: [chat_id], references: [chat_id], onUpdate: Restrict, map: "messages_ibfk_3")
-
-//   @@index([receiver_id], map: "receiver_id")
-//   @@index([sender_id], map: "sender_id")
-//   @@index([chat_id], map: "chat_id")
-// }
-
-// model package_bookings {
-//   booking_id         Int                     @id @default(autoincrement())
-//   user_id            Int
-//   package_id         Int
-//   tourism_booking_id Int
-//   appointment_id     Int
-//   hotel_booking_id   Int
-//   contact_id         Int
-//   inter_booking_id   Int
-//   create_at          DateTime                @default(now()) @db.Timestamp(0)
-//   status             package_bookings_status
-//   users              users                   @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_1")
-//   packages           packages                @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_2")
-//   tourism_bookings   tourism_bookings        @relation(fields: [tourism_booking_id], references: [tourism_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_3")
-//   appointments       appointments            @relation(fields: [appointment_id], references: [appointment_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_4")
-//   hotel_bookings     hotel_bookings          @relation(fields: [hotel_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_5")
-//   contact_deatils    contact_details         @relation(fields: [contact_id], references: [contact_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_6")
-//   inter_bookings     inter_bookings          @relation(fields: [inter_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_7")
-//   payment            payment[]
-
-//   @@index([appointment_id], map: "appointment_id")
-//   @@index([contact_id], map: "contact_id")
-//   @@index([hotel_booking_id], map: "hotel_booking_id")
-//   @@index([inter_booking_id], map: "inter_booking_id")
-//   @@index([package_id], map: "package_id")
-//   @@index([tourism_booking_id], map: "tourism_booking_id")
-//   @@index([user_id], map: "user_id")
-// }
-
-// model package_doc {
-//   doc_id     Int       @id @default(autoincrement())
-//   package_id Int?
-//   doctor_id  Int?
-//   packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_doc_ibfk_1")
-//   doctors    doctors?  @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "package_doc_ibfk_2")
-
-//   @@index([doctor_id], map: "doctor_id")
-//   @@index([package_id], map: "package_id")
-// }
-
-// model package_hotels {
-//   packhotel_id Int       @id @default(autoincrement())
-//   package_id   Int?
-//   hotel_id     Int?
-//   packages     packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_hotels_ibfk_1")
-//   hotels       hotels?   @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "package_hotels_ibfk_2")
-
-//   @@index([hotel_id], map: "hotel_id")
-//   @@index([package_id], map: "package_id")
-// }
-
-// model package_image {
-//   image_id   Int       @id @default(autoincrement())
-//   package_id Int?
-//   images     String?   @db.VarChar(255)
-//   packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_image_ibfk_1")
-
-//   @@index([package_id], map: "package_id")
-// }
-
-// model package_interpreters {
-//   inter_id       Int           @id @default(autoincrement())
-//   package_id     Int?
-//   interpreter_id Int?
-//   packages       packages?     @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_interpreters_ibfk_1")
-//   interpreters   interpreters? @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "package_interpreters_ibfk_2")
-
-//   @@index([interpreter_id], map: "interpreter_id")
-//   @@index([package_id], map: "package_id")
-// }
-
-// model package_places {
-//   packplace_id    Int       @id @default(autoincrement())
-//   tour_id         Int?
-//   place_id        Int?
-//   date            DateTime? @db.Date
-//   start           DateTime? @db.Timestamp(0)
-//   end             DateTime? @db.Timestamp(0)
-//   tourismservices trips?    @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_1")
-//   places          places?   @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_2")
-
-//   @@index([place_id], map: "place_id")
-//   @@index([tour_id], map: "tour_id")
-// }
-
-// model packages {
-//   package_id           Int                    @id @default(autoincrement())
-//   package_name         String                 @db.VarChar(255)
-//   package_type         packages_package_type
-//   hospital_id          Int
-//   image                String                 @db.VarChar(255)
-//   detail               String                 @db.VarChar(100)
-//   duration             Int
-//   expired_date         DateTime               @db.Date
-//   create_at            DateTime               @default(now()) @db.Timestamp(0)
-//   description          description[]
-//   package_bookings     package_bookings[]
-//   package_doc          package_doc[]
-//   package_hotels       package_hotels[]
-//   package_image        package_image[]
-//   package_interpreters package_interpreters[]
-//   hospitals            hospitals              @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "packages_ibfk_1")
-//   trips                trips[]
-
-//   @@index([hospital_id], map: "hospital_id")
-// }
-
-// model payment {
-//   payment_id       Int                    @id @default(autoincrement())
-//   user_id          Int
-//   booking_id       Int
-//   payment_date     DateTime               @db.DateTime(0)
-//   payment_method   String                 @db.VarChar(255)
-//   amount           Decimal                @db.Decimal(10, 0)
-//   payment_status   payment_payment_status
-//   transaction_id   String                 @db.VarChar(50)
-//   users            users                  @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_1")
-//   package_bookings package_bookings       @relation(fields: [booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_2")
-
-//   @@index([booking_id], map: "booking_id")
-//   @@index([user_id], map: "uer_id")
-// }
-
-// model place_image {
-//   image_id Int     @id @default(autoincrement())
-//   place_id Int?
-//   image    String? @db.VarChar(255)
-//   places   places? @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction, map: "place_image_ibfk_2")
-
-//   @@index([place_id], map: "Place_id")
-// }
-
-// model places {
-//   place_id       Int              @id @default(autoincrement())
-//   place_name     String?          @db.VarChar(100)
-//   contact_info   String?          @db.VarChar(255)
-//   location       String?          @db.VarChar(255)
-//   city           String?          @db.VarChar(255)
-//   image          String?          @db.VarChar(255)
-//   description    String?          @db.Text
-//   fee            Float?           @db.Float
-//   package_places package_places[]
-//   place_image    place_image[]
-// }
-
-// model review_hospital {
-//   review_id    Int       @id @default(autoincrement())
-//   user_id      Int
-//   hospital_id  Int
-//   rating       Float?    @db.Float
-//   title_review String?   @db.Text
-//   comment      String?   @db.Text
-//   created_at   DateTime? @default(now()) @db.Timestamp(0)
-//   users        users     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "review_hospital_ibfk_1")
-//   hospitals    hospitals @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "review_hospital_ibfk_2")
-
-//   @@index([hospital_id], map: "hospital_id")
-//   @@index([user_id], map: "user_id")
-// }
-
-// model review_hotel {
-//   review_id    Int       @id @default(autoincrement())
-//   user_id      Int
-//   hotel_id     Int
-//   rating       Float?    @db.Float
-//   title_review String?   @db.Text
-//   comment      String?   @db.Text
-//   created_at   DateTime? @default(now()) @db.Timestamp(0)
-//   users        users     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "review_hotel_ibfk_1")
-//   hotels       hotels    @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "review_hotel_ibfk_2")
-
-//   @@index([hotel_id], map: "hotel_id")
-//   @@index([user_id], map: "user_id")
-// }
-
-// model review_inter {
-//   review_id      Int          @id @default(autoincrement())
-//   user_id        Int
-//   interpreter_id Int
-//   rating         Float?       @db.Float
-//   title_review   String?      @db.Text
-//   comment        String?      @db.Text
-//   created_at     DateTime?    @default(now()) @db.Timestamp(0)
-//   users          users        @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "review_inter_ibfk_1")
-//   interpreters   interpreters @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "review_inter_ibfk_2")
-
-//   @@index([interpreter_id], map: "interpreter_id")
-//   @@index([user_id], map: "user_id")
-// }
-
-// model room_aggregate {
-//   aggregate_id   Int             @id @default(autoincrement())
-//   room_id        Int?
-//   booking_id     Int?
-//   amount         Int
-//   hotel_rooms    hotel_rooms?    @relation(fields: [room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction, map: "room_aggregate_ibfk_1")
-//   hotel_bookings hotel_bookings? @relation(fields: [booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "room_aggregate_ibfk_2")
-
-//   @@index([booking_id], map: "booking_id")
-//   @@index([room_id], map: "room_id")
-// }
-
-// model room_image {
-//   image_id    Int          @id @default(autoincrement())
-//   room_id     Int?
-//   image       String?      @db.VarChar(255)
-//   hotel_rooms hotel_rooms? @relation(fields: [room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction, map: "room_image_ibfk_1")
-
-//   @@index([room_id], map: "room_id")
-// }
-
-// model tourism_bookings {
-//   tourism_id       Int                      @id @default(autoincrement())
-//   tour_id          Int?
-//   car_id           Int?
-//   status           tourism_bookings_status?
-//   package_bookings package_bookings[]
-//   tourismservices  trips?                   @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "tourism_bookings_ibfk_1")
-//   cars             cars?                    @relation(fields: [car_id], references: [car_id], onDelete: NoAction, onUpdate: NoAction, map: "tourism_bookings_ibfk_2")
-
-//   @@index([car_id], map: "car_id")
-//   @@index([tour_id], map: "tour_id")
-// }
-
-// model users {
-//   user_id            Int       @id @default(autoincrement())
-//   name          String?
-//   email         String    @unique
-//   password      String?
-//   image         String?
-//   role          String    @default("member") // Add a role field
-//   emailVerified DateTime?
-//   accounts      Account[]
-//   createdAt     DateTime  @default(now())
-//   updatedAt     DateTime  @updatedAt
-//   action_history                       action_history[]
-//   chat_chat_user1_idTousers            chat[]             @relation("chat_user1_idTousers")
-//   chat_chat_user2_idTousers            chat[]             @relation("chat_user2_idTousers")
-//   messages_messages_sender_idTousers   messages[]         @relation("messages_sender_idTousers")
-//   messages_messages_receiver_idTousers messages[]         @relation("messages_receiver_idTousers")
-//   package_bookings                     package_bookings[]
-//   payment                              payment[]
-//   review_hospital                      review_hospital[]
-//   review_hotel                         review_hotel[]
-//   review_inter                         review_inter[]
-// }
-
-// model Account {
-//   id                 String  @id @default(cuid())
-//   user_id             Int
-//   type               String
-//   provider           String
-//   providerAccountId  String
-//   refresh_token      String?  @db.Text
-//   access_token       String?  @db.Text
-//   expires_at         Int?
-//   token_type         String?
-//   scope              String?
-//   id_token           String?  @db.Text
-//   session_state      String?
-
-//   user users @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-
-//   @@unique([provider, providerAccountId])
-// }
-
-// model hospital_images {
-//   image_id    Int        @id @default(autoincrement())
-//   hospital_id Int?
-//   image       String?    @db.VarChar(255)
-//   hospitals   hospitals? @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "hospital_images_ibfk_1")
-
-//   @@index([hospital_id], map: "hospital_id")
-// }
-
-// model chat {
-//   chat_id                    Int        @id @default(autoincrement())
-//   user1_id                   Int
-//   user2_id                   Int
-//   timestamp                  DateTime   @default(now()) @db.Timestamp(0)
-//   users_chat_user1_idTousers users      @relation("chat_user1_idTousers", fields: [user1_id], references: [user_id], onUpdate: Restrict, map: "chat_ibfk_1")
-//   users_chat_user2_idTousers users      @relation("chat_user2_idTousers", fields: [user2_id], references: [user_id], onUpdate: Restrict, map: "chat_ibfk_2")
-//   messages                   messages[]
-
-//   @@index([user2_id], map: "user2_id")
-//   @@index([user1_id], map: "user_id")
-// }
-
-// model contact_details {
-//   contact_id       Int                @id @default(autoincrement())
-//   firstname        String?            @db.VarChar(255)
-//   lastname         String?            @db.VarChar(255)
-//   email            String?            @db.VarChar(255)
-//   country          String?            @db.VarChar(255)
-//   phone            Int?
-//   package_bookings package_bookings[]
-// }
-
-// model patient_details {
-//   patient_id      Int                     @id @default(autoincrement())
-//   firstname       String?                 @db.VarChar(255)
-//   lastname        String?                 @db.VarChar(255)
-//   gender          patient_details_gender?
-//   dateofbirth     DateTime?               @db.Date
-//   nationality     String?                 @db.VarChar(255)
-//   passport_number String?                 @db.VarChar(255)
-//   appointments    appointments[]
-// }
-
-// model trips {
-//   tour_id          Int                @id @default(autoincrement())
-//   package_id       Int
-//   description      String?            @db.Text
-//   total_price      Float?             @db.Float
-//   package_places   package_places[]
-//   tourism_bookings tourism_bookings[]
-//   packages         packages           @relation(fields: [package_id], references: [package_id], onUpdate: Restrict, map: "trips_ibfk_1")
-
-//   @@index([package_id], map: "package_id")
-// }
-
-
-// model contactform {
-//   id          Int      @id @default(autoincrement())
-//   firstName   String
-//   lastName    String
-//   email       String  @unique
-//   phoneNumber String
-//   country     String
-//   type        String
-//   message     String
-//   createdAt   DateTime @default(now())
-// }
-
-
-// enum action_history_type_action {
-//   Add
-//   Remove
-//   Update
-// }
-
-// enum packages_package_type {
-//   Medical_Tourism      @map("Medical&Tourism")
-//   Medical_Service_Only @map("Medical Service Only")
-// }
-
-// enum languages_proficiency {
-//   Basic
-//   Conversational
-//   Fluent
-//   Native
-// }
-
-// enum tourism_bookings_status {
-//   Pending
-//   Approved
-//   Rejected
-// }
-
-// enum inter_bookings_status {
-//   Pending
-//   Approved
-//   Rejected
-//   Cancelled
-// }
-
-// enum users_role {
-//   customer
-//   staff
-//   admin
-// }
-
-// enum payment_payment_status {
-//   successful
-//   Failed
-//   Peding
-//   Refund
-// }
-
-// enum hotel_bookings_status {
-//   Pending
-//   Approved
-//   Rejected
-//   Cancelled
-// }
-
-// enum interpreters_language {
-//   English
-//   Arabic
-//   Burmese
-// }
-
-// enum patient_details_gender {
-//   Male
-//   Female
-// }
-
-// enum package_bookings_status {
-//   Pending
-//   Approved
-//   Completed
-//   Rejected
-//   Cancelled
-// }
-
-//--------------------------------------------
 generator client {
   provider = "prisma-client-js"
 }
@@ -706,207 +7,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User --------------------------------
+model action_history {
+  id          Int?
+  type_action action_history_type_action?
+  timestamp   DateTime?                   @db.Timestamp(0)
+  action      String?                     @db.VarChar(255)
+  action_id   Int                         @id @default(autoincrement())
+  user_id     Int
+  user        user                        @relation(fields: [user_id], references: [id], onUpdate: Restrict, map: "action_history_ibfk_1")
 
-model User {
-  id                                    Int       @id @default(autoincrement())
-  name                                  String?
-  email                                 String    @unique
-  password                              String?
-  image                                 String?
-  role                                  String    @default("user") // Add a role field
-  emailVerified                         DateTime?
-  createdAt                             DateTime  @default(now())
-  updatedAt                             DateTime  @updatedAt
-  accounts                              Account[]
-  action_histories                      Action_History[]
-  chat_user1Id                          Chat[]             @relation("chat_user1_idTousers")
-  chat_user2Id                          Chat[]             @relation("chat_user2_idTousers")
-  messages_senderId                     Messages[]         @relation("messages_sender_idTousers")
-  messages_receiverId                   Messages[]         @relation("messages_receiver_idTousers")
-  package_bookings                      Package_Booking[]
-  payments                              Payment[]
-  hospital_reviews                      Hospital_Review[]
-  hotel_reviews                         Hotel_Review[]
-  interpreter_reviews                   Interpreter_Review[]
+  @@index([user_id], map: "user_id")
 }
 
-model Account {
-  id                 String  @id @default(cuid())
-  userId             Int
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-}
-
-// Medical Provider --------------------------------
-
-model Hospital {
-  id               Int                @id @default(autoincrement())
-  name             String?            @db.VarChar(100)
-  hospital_code    String?            @db.VarChar(20)
-  location         String?            @db.VarChar(255)
-  city             String?            @db.VarChar(50)
+model appointments {
+  appointment_id   Int                @id @default(autoincrement())
+  date             DateTime?          @db.Date
+  timeslot         String?            @db.VarChar(255)
+  patient_id       Int?
   description      String?            @db.Text
-  contact_info     String?            @db.VarChar(255)
-  rating           Float?             @db.Float
-  image            String?            @db.VarChar(255)
-  logo             String             @db.VarChar(255)
-  createAt        DateTime?          @default(now()) @db.Timestamp(3)
-  doctors          Doctor[]
-  hospital_images  Hospital_Image[]
-  medical_services Medical_Service[]
-  packages         Package[]
-  hospital_reviews  Hospital_Review[]
+  doctor_id        Int?
+  file_name        String?            @db.VarChar(255)
+  file_path        String?            @db.VarChar(255)
+  upload_date      DateTime?          @db.Timestamp(0)
+  patient_details  patient_details?   @relation(fields: [patient_id], references: [patient_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_1")
+  doctors          doctors?           @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_2")
+  package_bookings package_bookings[]
+
+  @@index([doctor_id], map: "doctor_id")
+  @@index([patient_id], map: "patient_id")
 }
 
-model Hospital_Image {
-  id            Int        @id @default(autoincrement())
-  hospitalId    Int?
-  image        String?    @db.VarChar(255)
-  hospital      Hospital? @relation(fields: [hospitalId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "hospital_images_ibfk_1")
-
-  @@index([hospitalId], map: "hospitalId")
-}
-
-model Hospital_Review {
-  id    Int       @id @default(autoincrement())
-  userId      Int
-  hospitalId  Int
-  rating       Float?    @db.Float
-  review_title String?   @db.Text
-  comment      String?   @db.Text
-  createdAt   DateTime? @default(now()) @db.Timestamp(0)
-  user        User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_hospital_ibfk_1")
-  hospital    Hospital @relation(fields: [hospitalId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_hospital_ibfk_2")
-
-  @@index([hospitalId], map: "hospitalId")
-  @@index([userId], map: "userId")
-}
-
-model Doctor {
-  id       Int               @id @default(autoincrement())
-  name            String?           @db.VarChar(255)
-  specialization  String?           @db.VarChar(255)
-  hospitalId     Int?
-  experience      Int?
-  description     String?           @db.VarChar(200)
-  image           String?           @db.VarChar(255)
-  createAt       DateTime?         @default(now())
-  appointments    Appointment[]
-  doctor_certificates Doctor_Certificate[]
-  doctor_educations   Doctor_Education[]
-  doctor_languages    Doctor_Language[]
-  hospital       Hospital?        @relation(fields: [hospitalId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "doctors_ibfk_1")
-  doctors_in_package     Doctor_In_Package[]
-
-  @@index([hospitalId], map: "hospitalId")
-}
-
-model Doctor_Certificate {
-  id Int      @id @default(autoincrement())
-  doctorId      Int?
-  field_of_study String?  @db.VarChar(255)
-  institution    String?  @db.VarChar(255)
-  year           Int?
-  doctor        Doctor? @relation(fields: [doctorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "doc_certificate_ibfk_1")
-
-  @@index([doctorId], map: "doctorId")
-}
-
-model Doctor_Education {
-  id   Int      @id @default(autoincrement())
-  doctorId      Int?
-  field_of_study String?  @db.VarChar(255)
-  institution    String?  @db.VarChar(255)
-  year           Int?
-  doctor        Doctor? @relation(fields: [doctorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "doc_education_ibfk_1")
-
-  @@index([doctorId], map: "doctorId")
-}
-
-model Doctor_Language {
-  id Int      @id @default(autoincrement())
-  doctorId   Int?
-  languages   String?  @db.VarChar(255)
-  doctor     Doctor? @relation(fields: [doctorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "doc_language_ibfk_1")
-
-  @@index([doctorId], map: "doctorId")
-}
-
-model Medical_Service {
-  id   Int        @id @default(autoincrement())
-  hospitalId  Int?
-  service_name String?    @db.VarChar(255)
-  description  String?    @db.VarChar(255)
-  hospital    Hospital? @relation(fields: [hospitalId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "medical_services_ibfk_1")
-
-  @@index([hospitalId], map: "hospitalId")
-}
-
-// Trip --------------------------------
-
-model Trip {
-  id          Int                @id @default(autoincrement())
-  packageId       Int
-  description      String?            @db.Text
-  total_price      Float?             @db.Float
-  places_in_trip   Place_In_Trip[]
-  tourism_bookings Tourism_Booking[]
-  package         Package           @relation(fields: [packageId], references: [id], onUpdate: Restrict, map: "trips_ibfk_1")
-
-  @@index([packageId], map: "packageId")
-}
-
-model Place_In_Trip {
-  id    Int       @id @default(autoincrement())
-  tourId         Int?
-  placeId        Int?
-  date            DateTime? @db.Date
-  start           DateTime? @db.Timestamp(0)
-  end             DateTime? @db.Timestamp(0)
-  tourismservice Trip?    @relation(fields: [tourId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_1")
-  place          Place?   @relation(fields: [placeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_2")
-
-  @@index([placeId], map: "placeId")
-  @@index([tourId], map: "tourId")
-}
-
-model Place {
-  id       Int              @id @default(autoincrement())
-  place_name     String?          @db.VarChar(100)
-  contact_info   String?          @db.VarChar(255)
-  location       String?          @db.VarChar(255)
-  city           String?          @db.VarChar(255)
-  image          String?          @db.VarChar(255)
-  description    String?          @db.Text
-  fee            Float?           @db.Float
-  package_places Place_In_Trip[]
-  place_images    Place_Image[]
-}
-
-model Place_Image {
-  id Int     @id @default(autoincrement())
-  placeId Int?
-  image    String? @db.VarChar(255)
-  place   Place? @relation(fields: [placeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "place_image_ibfk_2")
-
-  @@index([placeId], map: "PlaceId")
-}
-
-model Car {
-  id           Int                @id @default(autoincrement())
+model cars {
+  car_id           Int                @id @default(autoincrement())
   car_name         String?            @db.VarChar(50)
   phone            Int?
   email            String?            @db.VarChar(100)
@@ -917,13 +49,150 @@ model Car {
   fee              Float?             @db.Float
   capacity         Int?
   guide_license    String?            @db.VarChar(255)
-  tourism_bookings Tourism_Booking[]
+  tourism_bookings tourism_bookings[]
 }
 
-// Accommodataion --------------------------------
+model description {
+  description_id Int       @id @default(autoincrement())
+  package_id     Int?
+  details        String?   @db.VarChar(255)
+  packages       packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "description_ibfk_1")
 
-model Hotel {
-  id         Int                @id @default(autoincrement())
+  @@index([package_id], map: "package_id")
+}
+
+model doc_certificate {
+  cerfiticate_id Int      @id @default(autoincrement())
+  doctor_id      Int?
+  field_of_study String?  @db.VarChar(255)
+  institution    String?  @db.VarChar(255)
+  year           Int?
+  doctors        doctors? @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "doc_certificate_ibfk_1")
+
+  @@index([doctor_id], map: "doctor_id")
+}
+
+model doc_education {
+  education_id   Int      @id @default(autoincrement())
+  doctor_id      Int?
+  field_of_study String?  @db.VarChar(255)
+  institution    String?  @db.VarChar(255)
+  year           Int?
+  doctors        doctors? @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "doc_education_ibfk_1")
+
+  @@index([doctor_id], map: "doctor_id")
+}
+
+model doc_language {
+  language_id Int      @id @default(autoincrement())
+  doctor_id   Int?
+  languages   String?  @db.VarChar(255)
+  doctors     doctors? @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "doc_language_ibfk_1")
+
+  @@index([doctor_id], map: "doctor_id")
+}
+
+model doctors {
+  doctor_id       Int               @id @default(autoincrement())
+  name            String?           @db.VarChar(255)
+  specialization  String?           @db.VarChar(255)
+  hospital_id     Int?
+  experience      Int?
+  description     String?           @db.VarChar(200)
+  image           String?           @db.VarChar(255)
+  create_at       DateTime?         @default(now())
+  appointments    appointments[]
+  doc_certificate doc_certificate[]
+  doc_education   doc_education[]
+  doc_language    doc_language[]
+  hospitals       hospitals?        @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "doctors_ibfk_1")
+  package_doc     package_doc[]
+
+  @@index([hospital_id], map: "hospital_id")
+}
+
+model hospitals {
+  hospital_id      Int                @id @default(autoincrement())
+  name             String?            @db.VarChar(100)
+  hospital_code    String?            @db.VarChar(20)
+  location         String?            @db.VarChar(255)
+  city             String?            @db.VarChar(50)
+  description      String?            @db.Text
+  contact_info     String?            @db.VarChar(255)
+  rating           Float?             @db.Float
+  image            String?            @db.VarChar(255)
+  logo             String             @db.VarChar(255)
+  create_at        DateTime?          @default(now()) @db.Timestamp(3)
+  doctors          doctors[]
+  hospital_images  hospital_images[]
+  medical_services medical_services[]
+  packages         packages[]
+  review_hospital  review_hospital[]
+}
+
+model hotel_bookings {
+  booking_id       Int                    @id @default(autoincrement())
+  hotel_id         Int?
+  check_in_date    DateTime?              @db.Date
+  check_out_date   DateTime?              @db.Date
+  guest_children   Int?
+  guest_adult      Int?
+  total_price      Float?                 @db.Float
+  status           hotel_bookings_status?
+  hotels           hotels?                @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_bookings_ibfk_1")
+  package_bookings package_bookings[]
+  room_aggregate   room_aggregate[]
+
+  @@index([hotel_id], map: "hotel_id")
+}
+
+model hotel_facilities {
+  facility_id   Int     @id @default(autoincrement())
+  hotel_id      Int?
+  facility_name String? @db.VarChar(100)
+  description   String? @db.Text
+  hotels        hotels? @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_facilities_ibfk_1")
+
+  @@index([hotel_id], map: "hotel_id")
+}
+
+model hotel_images {
+  image_id Int     @id @default(autoincrement())
+  hotel_id Int?
+  image    String? @db.VarChar(255)
+  hotels   hotels? @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_images_ibfk_1")
+
+  @@index([hotel_id], map: "hotel_id")
+}
+
+model hotel_room_facilities {
+  room_facilitiy_id Int          @id @default(autoincrement())
+  room_id           Int?
+  facility_name     String?      @db.VarChar(100)
+  description       String?      @db.Text
+  hotel_rooms       hotel_rooms? @relation(fields: [room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_room_facilities_ibfk_1")
+
+  @@index([room_id], map: "room_id")
+}
+
+model hotel_rooms {
+  room_id               Int                     @id @default(autoincrement())
+  hotel_id              Int?
+  room_type             String?                 @db.VarChar(100)
+  price_per_night       Float?                  @db.Float
+  capacity              String?                 @db.VarChar(200)
+  description           String?                 @db.Text
+  image                 String?                 @db.VarChar(255)
+  hotel_room_facilities hotel_room_facilities[]
+  hotels                hotels?                 @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_rooms_ibfk_1")
+  room_aggregate        room_aggregate[]
+  room_image            room_image[]
+
+  @@index([hotel_id], map: "hotel_id")
+}
+
+model hotels {
+  hotel_id         Int                @id @default(autoincrement())
   name             String?            @db.VarChar(255)
   hotel_code       String?            @db.VarChar(20)
   location         String?            @db.VarChar(255)
@@ -934,101 +203,39 @@ model Hotel {
   image            String?            @db.VarChar(255)
   contact_info     String?            @db.VarChar(255)
   create_at        DateTime           @default(now()) @db.Timestamp(0)
-  hotel_bookings   Hotel_Booking[]
-  hotel_facilities Hotel_Facility[]
-  hotel_images     Hotel_Image[]
-  hotel_rooms      Room_In_Hotel[]
-  package_hotels   Package_Hotel[]
-  review_hotel     Hotel_Review[]
+  hotel_bookings   hotel_bookings[]
+  hotel_facilities hotel_facilities[]
+  hotel_images     hotel_images[]
+  hotel_rooms      hotel_rooms[]
+  package_hotels   package_hotels[]
+  review_hotel     review_hotel[]
 }
 
-model Hotel_Image {
-  id Int     @id @default(autoincrement())
-  hotelId Int?
-  image    String? @db.VarChar(255)
-  hotel   Hotel? @relation(fields: [hotelId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_images_ibfk_1")
+model inter_bookings {
+  booking_id       Int                    @id @default(autoincrement())
+  interpreter_id   Int?
+  start            DateTime?              @db.Date
+  end              DateTime?              @db.Date
+  status           inter_bookings_status?
+  interpreters     interpreters?          @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "inter_bookings_ibfk_1")
+  package_bookings package_bookings[]
 
-  @@index([hotelId], map: "hotelId")
+  @@index([interpreter_id], map: "interpreter_id")
 }
 
-model Hotel_Facility {
-  id   Int     @id @default(autoincrement())
-  hotelId      Int?
-  facility_name String? @db.VarChar(100)
-  description   String? @db.Text
-  hotel        Hotel? @relation(fields: [hotelId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_facilities_ibfk_1")
+model inter_education {
+  education_id   Int           @id @default(autoincrement())
+  interpreter_id Int?
+  degree         String?       @db.VarChar(50)
+  field_of_study String?       @db.VarChar(255)
+  institution    String?       @db.VarChar(100)
+  interpreters   interpreters? @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "inter_education_ibfk_1")
 
-  @@index([hotelId], map: "hotelId")
+  @@index([interpreter_id], map: "interpreter_id")
 }
 
-model Room_In_Hotel {
-  id               Int                     @id @default(autoincrement())
-  hotelId              Int?
-  room_type             String?                 @db.VarChar(100)
-  price_per_night       Float?                  @db.Float
-  capacity              String?                 @db.VarChar(200)
-  description           String?                 @db.Text
-  image                 String?                 @db.VarChar(255)
-  hotel_room_facilities Room_Facility[]
-  hotel                Hotel?                 @relation(fields: [hotelId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_rooms_ibfk_1")
-  room_aggregates        Room_Aggregate[]
-  room_images            Room_Image[]
-
-  @@index([hotelId], map: "hotelId")
-}
-
-
-
-model Room_Facility {
-  id Int          @id @default(autoincrement())
-  roomId           Int?
-  facility_name     String?      @db.VarChar(100)
-  description       String?      @db.Text
-  hotel_rooms       Room_In_Hotel? @relation(fields: [roomId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_room_facilities_ibfk_1")
-
-  @@index([roomId], map: "roomId")
-}
-
-model Room_Aggregate {
-  id   Int             @id @default(autoincrement())
-  roomId        Int?
-  bookingId     Int?
-  amount         Int
-  hotel_room    Room_In_Hotel?    @relation(fields: [roomId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "room_aggregate_ibfk_1")
-  hotel_booking Hotel_Booking? @relation(fields: [bookingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "room_aggregate_ibfk_2")
-
-  @@index([bookingId], map: "booking_id")
-  @@index([roomId], map: "roomId")
-}
-
-model Room_Image {
-  image_id    Int          @id @default(autoincrement())
-  roomId     Int?
-  image       String?      @db.VarChar(255)
-  hotel_room Room_In_Hotel? @relation(fields: [roomId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "room_image_ibfk_1")
-
-  @@index([roomId], map: "roomId")
-}
-
-model Hotel_Review {
-  id    Int       @id @default(autoincrement())
-  userId      Int
-  hotelId     Int
-  rating       Float?    @db.Float
-  title_review String?   @db.Text
-  comment      String?   @db.Text
-  createdAt   DateTime? @default(now()) @db.Timestamp(0)
-  user        User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_hotel_ibfk_1")
-  hotel       Hotel    @relation(fields: [hotelId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_hotel_ibfk_2")
-
-  @@index([hotelId], map: "hotelId")
-  @@index([userId], map: "userId")
-}
-
-// Interpreter --------------------------------
-
-model Interpreter {
-  id       Int                    @id @default(autoincrement())
+model interpreters {
+  interpreter_id       Int                    @id @default(autoincrement())
   name                 String                 @db.VarChar(255)
   email                String                 @unique(map: "email") @db.VarChar(255)
   phone                String                 @db.VarChar(50)
@@ -1039,177 +246,442 @@ model Interpreter {
   experience           DateTime               @default(dbgenerated("('2025-02-02')")) @db.Date
   address              String                 @db.Text
   profile_summary      String                 @db.Text
-  native_language      Native_Language
-  createAt            DateTime               @default(now()) @db.Timestamp(0)
-  interpreter_bookings       Interpreter_Booking[]
-  interpreter_educaitons      Interpreter_Education[]
-  languages            Language[]
-  package_interpreters Package_Interpreter[]
-  interpreter_reviews         Interpreter_Review[]
+  language             interpreters_language
+  create_at            DateTime               @default(now()) @db.Timestamp(0)
+  inter_bookings       inter_bookings[]
+  inter_education      inter_education[]
+  languages            languages[]
+  package_interpreters package_interpreters[]
+  review_inter         review_inter[]
 }
 
-enum Native_Language {
-  English
-  Arabic
-  Burmese
-}
-
-model Language {
-  id        Int                    @id @default(autoincrement())
-  interpreterId Int?
+model languages {
+  lang_id        Int                    @id @default(autoincrement())
+  interpreter_id Int?
   language_name  String?                @db.VarChar(100)
-  proficiency    Language_Proficiency?
-  interpreters   Interpreter?          @relation(fields: [interpreterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "languages_ibfk_1")
+  proficiency    languages_proficiency?
+  interpreters   interpreters?          @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "languages_ibfk_1")
 
-  @@index([interpreterId], map: "interpreterId")
+  @@index([interpreter_id], map: "interpreter_id")
 }
 
-enum Language_Proficiency {
+model medical_services {
+  service_id   Int        @id @default(autoincrement())
+  hospital_id  Int?
+  service_name String?    @db.VarChar(255)
+  description  String?    @db.VarChar(255)
+  hospitals    hospitals? @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "medical_services_ibfk_1")
+
+  @@index([hospital_id], map: "hospital_id")
+}
+
+model messages {
+  message_id                        Int       @id @default(autoincrement())
+  message                           String?   @db.Text
+  timestamp                         DateTime? @default(now()) @db.Timestamp(0)
+  chat_id                           Int
+  receiver_id                       Int?
+  sender_id                         Int?
+  users_messages_sender_idTousers   user?     @relation("messages_sender_idTousers", fields: [sender_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_1")
+  users_messages_receiver_idTousers user?     @relation("messages_receiver_idTousers", fields: [receiver_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_2")
+  chat                              chat      @relation(fields: [chat_id], references: [chat_id], onUpdate: Restrict, map: "messages_ibfk_3")
+
+  @@index([receiver_id], map: "receiver_id")
+  @@index([sender_id], map: "sender_id")
+  @@index([chat_id], map: "chat_id")
+}
+
+model package_bookings {
+  booking_id          Int                     @id @default(autoincrement())
+  user_id             Int
+  package_id          Int
+  tourism_booking_id  Int
+  appointment_id      Int
+  hotel_booking_id    Int
+  contact_id          Int
+  inter_booking_id    Int
+  create_at           DateTime                @default(now()) @db.Timestamp(0)
+  status              package_bookings_status
+  user                user                    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_1")
+  packages            packages                @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_2")
+  tourism_bookings    tourism_bookings        @relation(fields: [tourism_booking_id], references: [tourism_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_3")
+  appointments        appointments            @relation(fields: [appointment_id], references: [appointment_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_4")
+  hotel_bookings      hotel_bookings          @relation(fields: [hotel_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_5")
+  user_contact_detail user_contact_detail     @relation(fields: [contact_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_6")
+  inter_bookings      inter_bookings          @relation(fields: [inter_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_7")
+  payment             payment[]
+
+  @@index([appointment_id], map: "appointment_id")
+  @@index([contact_id], map: "contact_id")
+  @@index([hotel_booking_id], map: "hotel_booking_id")
+  @@index([inter_booking_id], map: "inter_booking_id")
+  @@index([package_id], map: "package_id")
+  @@index([tourism_booking_id], map: "tourism_booking_id")
+  @@index([user_id], map: "user_id")
+}
+
+model package_doc {
+  doc_id     Int       @id @default(autoincrement())
+  package_id Int?
+  doctor_id  Int?
+  packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_doc_ibfk_1")
+  doctors    doctors?  @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "package_doc_ibfk_2")
+
+  @@index([doctor_id], map: "doctor_id")
+  @@index([package_id], map: "package_id")
+}
+
+model package_hotels {
+  packhotel_id Int       @id @default(autoincrement())
+  package_id   Int?
+  hotel_id     Int?
+  packages     packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_hotels_ibfk_1")
+  hotels       hotels?   @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "package_hotels_ibfk_2")
+
+  @@index([hotel_id], map: "hotel_id")
+  @@index([package_id], map: "package_id")
+}
+
+model package_image {
+  images     String?   @db.VarChar(255)
+  image_id   Int       @id @default(autoincrement())
+  package_id Int?
+  packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_image_ibfk_1")
+
+  @@index([package_id], map: "package_id")
+}
+
+model package_interpreters {
+  inter_id       Int           @id @default(autoincrement())
+  package_id     Int?
+  interpreter_id Int?
+  packages       packages?     @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_interpreters_ibfk_1")
+  interpreters   interpreters? @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "package_interpreters_ibfk_2")
+
+  @@index([interpreter_id], map: "interpreter_id")
+  @@index([package_id], map: "package_id")
+}
+
+model package_places {
+  packplace_id    Int     @id @default(autoincrement())
+  tour_id         Int?
+  place_id        Int?
+  date            Int
+  start           String  @db.VarChar(10)
+  end             String  @db.VarChar(10)
+  tourismservices trips?  @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_1")
+  places          places? @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_2")
+
+  @@index([place_id], map: "place_id")
+  @@index([tour_id], map: "tour_id")
+}
+
+model packages {
+  package_id           Int                    @id @default(autoincrement())
+  package_name         String                 @db.VarChar(255)
+  package_type         packages_package_type
+  hospital_id          Int
+  image                String                 @db.VarChar(255)
+  detail               String                 @db.VarChar(100)
+  duration             Int
+  expired_date         DateTime               @db.Date
+  create_at            DateTime               @default(now()) @db.Timestamp(0)
+  description          description[]
+  package_bookings     package_bookings[]
+  package_doc          package_doc[]
+  package_hotels       package_hotels[]
+  package_image        package_image[]
+  package_interpreters package_interpreters[]
+  hospitals            hospitals              @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "packages_ibfk_1")
+  trips                trips[]
+
+  @@index([hospital_id], map: "hospital_id")
+}
+
+model payment {
+  payment_date     DateTime               @db.DateTime(0)
+  payment_method   String                 @db.VarChar(255)
+  amount           Decimal                @db.Decimal(10, 0)
+  payment_status   payment_payment_status
+  transaction_id   String                 @db.VarChar(50)
+  booking_id       Int
+  payment_id       Int                    @id @default(autoincrement())
+  user_id          Int
+  user             user                   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_1")
+  package_bookings package_bookings       @relation(fields: [booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_2")
+
+  @@index([booking_id], map: "booking_id")
+  @@index([user_id], map: "uer_id")
+}
+
+model place_image {
+  image    String? @db.VarChar(255)
+  image_id Int     @id @default(autoincrement())
+  place_id Int?
+  places   places? @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction, map: "place_image_ibfk_2")
+
+  @@index([place_id], map: "Place_id")
+}
+
+model places {
+  place_id       Int              @id @default(autoincrement())
+  place_name     String?          @db.VarChar(100)
+  contact_info   String?          @db.VarChar(255)
+  location       String?          @db.VarChar(255)
+  city           String?          @db.VarChar(255)
+  image          String?          @db.VarChar(255)
+  description    String?          @db.Text
+  fee            Float?           @db.Float
+  package_places package_places[]
+  place_image    place_image[]
+}
+
+model review_hospital {
+  review_id    Int       @id @default(autoincrement())
+  user_id      Int
+  hospital_id  Int
+  rating       Float?    @db.Float
+  title_review String?   @db.Text
+  comment      String?   @db.Text
+  created_at   DateTime? @default(now()) @db.Timestamp(0)
+  user         user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_hospital_ibfk_1")
+  hospitals    hospitals @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "review_hospital_ibfk_2")
+
+  @@index([hospital_id], map: "hospital_id")
+  @@index([user_id], map: "user_id")
+}
+
+model review_hotel {
+  review_id    Int       @id @default(autoincrement())
+  user_id      Int
+  hotel_id     Int
+  rating       Float?    @db.Float
+  title_review String?   @db.Text
+  comment      String?   @db.Text
+  created_at   DateTime? @default(now()) @db.Timestamp(0)
+  User         user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_hotel_ibfk_1")
+  hotels       hotels    @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "review_hotel_ibfk_2")
+
+  @@index([hotel_id], map: "hotel_id")
+  @@index([user_id], map: "user_id")
+}
+
+model review_inter {
+  review_id      Int          @id @default(autoincrement())
+  user_id        Int
+  interpreter_id Int
+  rating         Float?       @db.Float
+  title_review   String?      @db.Text
+  comment        String?      @db.Text
+  created_at     DateTime?    @default(now()) @db.Timestamp(0)
+  user           user         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_inter_ibfk_1")
+  interpreters   interpreters @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "review_inter_ibfk_2")
+
+  @@index([interpreter_id], map: "interpreter_id")
+  @@index([user_id], map: "user_id")
+}
+
+model room_aggregate {
+  amount         Int
+  aggregate_id   Int             @id @default(autoincrement())
+  booking_id     Int?
+  room_id        Int?
+  hotel_rooms    hotel_rooms?    @relation(fields: [room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction, map: "room_aggregate_ibfk_1")
+  hotel_bookings hotel_bookings? @relation(fields: [booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "room_aggregate_ibfk_2")
+
+  @@index([booking_id], map: "booking_id")
+  @@index([room_id], map: "room_id")
+}
+
+model room_image {
+  image_id    Int          @id @default(autoincrement())
+  image       String?      @db.VarChar(255)
+  room_id     Int?
+  hotel_rooms hotel_rooms? @relation(fields: [room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction, map: "room_image_ibfk_1")
+
+  @@index([room_id], map: "room_id")
+}
+
+model tourism_bookings {
+  tourism_id       Int                      @id @default(autoincrement())
+  tour_id          Int?
+  car_id           Int?
+  status           tourism_bookings_status?
+  package_bookings package_bookings[]
+  tourismservices  trips?                   @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "tourism_bookings_ibfk_1")
+  cars             cars?                    @relation(fields: [car_id], references: [car_id], onDelete: NoAction, onUpdate: NoAction, map: "tourism_bookings_ibfk_2")
+
+  @@index([car_id], map: "car_id")
+  @@index([tour_id], map: "tour_id")
+}
+
+model hospital_images {
+  image_id    Int        @id @default(autoincrement())
+  hospital_id Int?
+  image       String?    @db.VarChar(255)
+  hospitals   hospitals? @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "hospital_images_ibfk_1")
+
+  @@index([hospital_id], map: "hospital_id")
+}
+
+model chat {
+  timestamp                  DateTime   @default(now()) @db.Timestamp(0)
+  chat_id                    Int        @id @default(autoincrement())
+  user1_id                   Int
+  user2_id                   Int
+  users_chat_user1_idTousers user       @relation("chat_user1_idTousers", fields: [user1_id], references: [id], onUpdate: Restrict, map: "chat_ibfk_1")
+  users_chat_user2_idTousers user       @relation("chat_user2_idTousers", fields: [user2_id], references: [id], onUpdate: Restrict, map: "chat_ibfk_2")
+  messages                   messages[]
+
+  @@index([user2_id], map: "user2_id")
+  @@index([user1_id], map: "user_id")
+}
+
+model patient_details {
+  patient_id      Int                     @id @default(autoincrement())
+  firstname       String?                 @db.VarChar(255)
+  lastname        String?                 @db.VarChar(255)
+  gender          patient_details_gender?
+  dateofbirth     DateTime?               @db.Date
+  nationality     String?                 @db.VarChar(255)
+  passport_number String?                 @db.VarChar(255)
+  appointments    appointments[]
+}
+
+model trips {
+  tour_id          Int                @id @default(autoincrement())
+  package_id       Int
+  description      String?            @db.Text
+  total_price      Float?             @db.Float
+  package_places   package_places[]
+  tourism_bookings tourism_bookings[]
+  packages         packages           @relation(fields: [package_id], references: [package_id], onUpdate: Restrict, map: "trips_ibfk_1")
+
+  @@index([package_id], map: "package_id")
+}
+
+model account {
+  id                String  @id
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              user    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Account_userId_fkey")
+
+  @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_key")
+  @@index([userId], map: "Account_userId_fkey")
+}
+
+model contact_us {
+  id          Int      @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  email       String   @unique(map: "Contact_Us_email_key")
+  phoneNumber String
+  country     String
+  type        String
+  message     String
+  createdAt   DateTime @default(now())
+}
+
+model user {
+  id                  Int                @id @default(autoincrement())
+  name                String?
+  email               String             @unique(map: "User_email_key")
+  nationality         String?            @db.VarChar(255)
+  password            String?
+  image               String?
+  role                user_role          @default(customer)
+  emailVerified       DateTime?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime
+  account             account[]
+  action_histories    action_history[]
+  chat_user1Id        chat[]             @relation("chat_user1_idTousers")
+  chat_user2Id        chat[]             @relation("chat_user2_idTousers")
+  messages_senderId   messages[]         @relation("messages_sender_idTousers")
+  messages_receiverId messages[]         @relation("messages_receiver_idTousers")
+  package_bookings    package_bookings[]
+  payments            payment[]
+  hospital_reviews    review_hospital[]
+  hotel_reviews       review_hotel[]
+  interpreter_reviews review_inter[]
+}
+
+model user_contact_detail {
+  id               Int                @id @default(autoincrement())
+  firstname        String?            @db.VarChar(255)
+  lastname         String?            @db.VarChar(255)
+  email            String?            @db.VarChar(255)
+  country          String?            @db.VarChar(255)
+  phone            Int?
+  package_bookings package_bookings[]
+}
+
+enum action_history_type_action {
+  Add
+  Remove
+  Update
+}
+
+enum packages_package_type {
+  Medical_Tourism      @map("Medical&Tourism")
+  Medical_Service_Only @map("Medical Service Only")
+}
+
+enum languages_proficiency {
   Basic
   Conversational
   Fluent
   Native
 }
 
-model Interpreter_Education {
-  id   Int           @id @default(autoincrement())
-  interpreterId Int?
-  degree         String?       @db.VarChar(50)
-  field_of_study String?       @db.VarChar(255)
-  institution    String?       @db.VarChar(100)
-  interpreters   Interpreter? @relation(fields: [interpreterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "inter_education_ibfk_1")
-
-  @@index([interpreterId], map: "interpreterId")
+enum tourism_bookings_status {
+  Pending
+  Approved
+  Rejected
 }
 
-model Interpreter_Review {
-  id      Int          @id @default(autoincrement())
-  userId        Int
-  interpreterId Int
-  rating         Float?       @db.Float
-  title_review   String?      @db.Text
-  comment        String?      @db.Text
-  createdAt     DateTime?    @default(now()) @db.Timestamp(0)
-  users          User        @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_inter_ibfk_1")
-  interpreters   Interpreter @relation(fields: [interpreterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_inter_ibfk_2")
-
-  @@index([interpreterId], map: "interpreterId")
-  @@index([userId], map: "userId")
+enum inter_bookings_status {
+  Pending
+  Approved
+  Rejected
+  Cancelled
 }
 
-
-// Package --------------------------------
-
-model Package {
-  id           Int                    @id @default(autoincrement())
-  package_name         String                 @db.VarChar(255)
-  package_type         Package_Type
-  hospitalId          Int
-  image                String                 @db.VarChar(255)
-  detail               String                 @db.VarChar(100)
-  duration             Int
-  expired_date         DateTime               @db.Date
-  create_at            DateTime               @default(now()) @db.Timestamp(0)
-  descriptions          Package_Description[]
-  package_bookings     Package_Booking[]
-  package_doctors          Doctor_In_Package[]
-  package_hotels       Package_Hotel[]
-  package_images        Package_Image[]
-  package_interpreters Package_Interpreter[]
-  hospital            Hospital              @relation(fields: [hospitalId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "packages_ibfk_1")
-  trips                Trip[]
-
-  @@index([hospitalId], map: "hospitalId")
+enum payment_payment_status {
+  successful
+  Failed
+  Peding
+  Refund
 }
 
-enum Package_Type {
-  Medical_Tourism      @map("Medical&Tourism")
-  Medical_Service_Only @map("Medical Service Only")
+enum hotel_bookings_status {
+  Pending
+  Approved
+  Rejected
+  Cancelled
 }
 
-model Package_Description {
-  id Int       @id @default(autoincrement())
-  packageId     Int?
-  details        String?   @db.VarChar(255)
-  packages       Package? @relation(fields: [packageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "description_ibfk_1")
-
-  @@index([packageId], map: "packageId")
+enum interpreters_language {
+  English
+  Arabic
+  Burmese
 }
 
-model Package_Image {
-  id   Int       @id @default(autoincrement())
-  packageId Int?
-  images     String?   @db.VarChar(255)
-  packages   Package? @relation(fields: [packageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_image_ibfk_1")
-
-  @@index([packageId], map: "packageId")
+enum patient_details_gender {
+  Male
+  Female
 }
 
-model Doctor_In_Package {
-  id     Int       @id @default(autoincrement())
-  packageId Int?
-  doctorId  Int?
-  packages   Package? @relation(fields: [packageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_doc_ibfk_1")
-  doctors    Doctor?  @relation(fields: [doctorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_doc_ibfk_2")
-
-  @@index([doctorId], map: "doctorId")
-  @@index([packageId], map: "packageId")
-}
-
-model Package_Hotel {
-  id Int       @id @default(autoincrement())
-  packageId   Int?
-  hotelId     Int?
-  package     Package? @relation(fields: [packageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_hotels_ibfk_1")
-  hotel       Hotel?   @relation(fields: [hotelId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_hotels_ibfk_2")
-
-  @@index([hotelId], map: "hotelId")
-  @@index([packageId], map: "packageId")
-}
-
-model Package_Interpreter {
-  id       Int           @id @default(autoincrement())
-  packageId     Int?
-  interpreterId Int?
-  packages       Package?     @relation(fields: [packageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_interpreters_ibfk_1")
-  interpreters   Interpreter? @relation(fields: [interpreterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_interpreters_ibfk_2")
-
-  @@index([interpreterId], map: "interpreterId")
-  @@index([packageId], map: "packageId")
-}
-
-// Booking --------------------------------
-
-model Package_Booking {
-  id         Int                     @id @default(autoincrement())
-  userId            Int
-  packageId         Int
-  tourism_bookingId Int
-  appointmentId     Int
-  hotel_bookingId   Int
-  user_contactId         Int
-  interpreter_bookingId   Int
-  createAt          DateTime                @default(now()) @db.Timestamp(0)
-  status             Package_Bookings_Status
-  user              User                   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_1")
-  package           Package                @relation(fields: [packageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_2")
-  tourism_booking   Tourism_Booking        @relation(fields: [tourism_bookingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_3")
-  appointment       Appointment            @relation(fields: [appointmentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_4")
-  hotel_booking     Hotel_Booking          @relation(fields: [hotel_bookingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_5")
-  use_contact_detail    User_Contact_Detail         @relation(fields: [user_contactId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_6")
-  interpreter_booking     Interpreter_Booking          @relation(fields: [interpreter_bookingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_7")
-  payments            Payment[]
-
-  @@index([appointmentId], map: "appointmentId")
-  @@index([user_contactId], map: "userContactId")
-  @@index([hotel_bookingId], map: "hotelBookingId")
-  @@index([interpreter_bookingId], map: "InterpreterBookingId")
-  @@index([packageId], map: "packageId")
-  @@index([tourism_bookingId], map: "tourismBookingId")
-  @@index([userId], map: "userId")
-}
-
-enum Package_Bookings_Status {
+enum package_bookings_status {
   Pending
   Approved
   Completed
@@ -1217,206 +689,8 @@ enum Package_Bookings_Status {
   Cancelled
 }
 
-// Appointment --------------------------------
-
-model Appointment {
-  id   Int                @id @default(autoincrement())
-  date             DateTime?          @db.Date
-  timeslot         String?            @db.VarChar(255)
-  patientId       Int?
-  description      String?            @db.Text
-  doctorId        Int?
-  file_name        String?            @db.VarChar(255)
-  file_path        String?            @db.VarChar(255)
-  upload_date      DateTime?          @db.Timestamp(0)
-  patient_detail  Patient_Detail?   @relation(fields: [patientId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_1")
-  doctor          Doctor?           @relation(fields: [doctorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_2")
-  package_bookings Package_Booking[]
-
-  @@index([doctorId], map: "doctorId")
-  @@index([patientId], map: "patientId")
-}
-
-// Tourism Booking --------------------------------
-model Tourism_Booking {
-  id       Int                      @id @default(autoincrement())
-  tripId          Int?
-  carId           Int?
-  status           Tourism_Booking_Status?
-  package_bookings Package_Booking[]
-  tourismservice  Trip?                   @relation(fields: [tripId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tourism_bookings_ibfk_1")
-  car             Car?                    @relation(fields: [carId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tourism_bookings_ibfk_2")
-
-  @@index([carId], map: "carId")
-  @@index([tripId], map: "tripId")
-}
-
-enum Tourism_Booking_Status {
-  Pending
-  Approved
-  Rejected
-}
-
-// Hotel_Booking --------------------------------
-
-model Hotel_Booking {
-  id       Int                    @id @default(autoincrement())
-  hotelId         Int?
-  check_in_date    DateTime?              @db.Date
-  check_out_date   DateTime?              @db.Date
-  guest_children   Int?
-  guest_adult      Int?
-  total_price      Float?                 @db.Float
-  status           Hotel_Booking_Status?
-  hotel           Hotel?                @relation(fields: [hotelId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_bookings_ibfk_1")
-  package_bookings Package_Booking[]
-  room_aggregate   Room_Aggregate[]
-
-  @@index([hotelId], map: "hotelId")
-}
-
-enum Hotel_Booking_Status {
-  Pending
-  Approved
-  Rejected
-  Cancelled
-}
-
-// Interpreter Booking --------------------------------
-
-model Interpreter_Booking {
-  id       Int                    @id @default(autoincrement())
-  interpreterId   Int?
-  start            DateTime?              @db.Date
-  end              DateTime?              @db.Date
-  status           Interpreter_Booking_Status?
-  interpreter     Interpreter?          @relation(fields: [interpreterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "inter_bookings_ibfk_1")
-  package_bookings Package_Booking[]
-
-  @@index([interpreterId], map: "interpreterId")
-}
-
-enum Interpreter_Booking_Status {
-  Pending
-  Approved
-  Rejected
-  Cancelled
-}
-
-// Payment --------------------------------
-
-model Payment {
-  id       Int                    @id @default(autoincrement())
-  userId          Int
-  bookingId       Int
-  payment_date     DateTime               @db.DateTime(0)
-  payment_method   String                 @db.VarChar(255)
-  amount           Decimal                @db.Decimal(10, 0)
-  payment_status   Payment_Payment_Status
-  transaction_id   String                 @db.VarChar(50)
-  user            User                  @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_1")
-  package_booking Package_Booking       @relation(fields: [bookingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_2")
-
-  @@index([bookingId], map: "bookingId")
-  @@index([userId], map: "uer_id")
-}
-
-enum Payment_Payment_Status {
-  successful
-  Failed
-  Peding
-  Refund
-}
-
-// User Booking Detail --------------------------------
-
-model User_Contact_Detail {
-  id       Int                @id @default(autoincrement())
-  firstname        String?            @db.VarChar(255)
-  lastname         String?            @db.VarChar(255)
-  email            String?            @db.VarChar(255)
-  country          String?            @db.VarChar(255)
-  phone            Int?
-  package_bookings Package_Booking[]
-}
-model Patient_Detail {
-  id      Int                     @id @default(autoincrement())
-  firstname       String?                 @db.VarChar(255)
-  lastname        String?                 @db.VarChar(255)
-  gender          Patient_Details_Gender?
-  dateofbirth     DateTime?               @db.Date
-  nationality     String?                 @db.VarChar(255)
-  passport_number String?                 @db.VarChar(255)
-  appointments    Appointment[]
-}
-
-
-enum Patient_Details_Gender {
-  Male
-  Female
-}
-
-// History --------------------------------
-
-model Action_History {
-  id   Int                         @id @default(autoincrement())
-  userId     Int
-  type_action Action_History_Type_Action?
-  timestamp   DateTime?                   @db.Timestamp(0)
-  action      String?                     @db.VarChar(255)
-  objectId          Int?
-  user        User                       @relation(fields: [userId], references: [id], onUpdate: Restrict, map: "action_history_ibfk_1")
-
-  @@index([userId], map: "userId")
-}
-
-enum Action_History_Type_Action {
-   Add
-   Remove
-   Update
- }
-
-// Chat --------------------------------
-
-model Chat {
-  id                    Int        @id @default(autoincrement())
-  user1Id                   Int
-  user2Id                   Int
-  timestamp                  DateTime   @default(now()) @db.Timestamp(0)
-  users_chat_user1_idTousers User       @relation("chat_user1_idTousers", fields: [user1Id], references: [id], onUpdate: Restrict, map: "chat_ibfk_1")
-  users_chat_user2_idTousers User       @relation("chat_user2_idTousers", fields: [user2Id], references: [id], onUpdate: Restrict, map: "chat_ibfk_2")
-  messages                   Messages[]
-
-  @@index([user2Id], map: "user2Id")
-  @@index([user1Id], map: "user1Id")
-}
-
-model Messages {
-  message_id                        Int       @id @default(autoincrement())
-  chatId                           Int
-  senderId                         Int?
-  receiverId                       Int?
-  message                           String?   @db.Text
-  timestamp                         DateTime? @default(now()) @db.Timestamp(0)
-  users_messages_sender_idTousers   User?     @relation("messages_sender_idTousers", fields: [senderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_1")
-  users_messages_receiver_idTousers User?     @relation("messages_receiver_idTousers", fields: [receiverId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_2")
-  chat                              Chat      @relation(fields: [chatId], references: [id], onUpdate: Restrict, map: "messages_ibfk_3")
-
-  @@index([receiverId], map: "receiverId")
-  @@index([senderId], map: "senderId")
-  @@index([chatId], map: "chatId")
-}
-
-//-----------------------------------
-
-model Contact_Us{
-  id          Int      @id @default(autoincrement())
-  firstName   String
-  lastName    String
-  email       String  @unique
-  phoneNumber String
-  country     String
-  type        String
-  message     String
-  createdAt   DateTime @default(now())
+enum user_role {
+  customer
+  staff
+  admin
 }
