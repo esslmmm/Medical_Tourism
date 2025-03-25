@@ -1,33 +1,39 @@
 'use client';
-import React from 'react'
+import React, { useState } from 'react';
 import { FaRegUser, FaRegCommentDots, FaStar } from "react-icons/fa";
 import { MdOutlineEventAvailable } from "react-icons/md";
 
 const SideBar = () => {
-  return (
-    <div><aside className="w-64 bg-white border-r p-5 flex flex-col">
-                    <nav className="mt-8">
-                        <ul className="space-y-4">
-                            <li className="flex items-center space-x-3 text-gray-600 hover:text-teal-600 cursor-pointer">
-                                <MdOutlineEventAvailable size={18} />
-                                <span>My bookings</span>
-                            </li>
-                            <li className="flex items-center space-x-3 text-gray-600 hover:text-teal-600 cursor-pointer">
-                                <FaStar size={18} />
-                                <span>Reviews</span>
-                            </li>
-                            <li className="flex items-center space-x-3 text-black bg-black text-white p-2 rounded-lg cursor-pointer">
-                                <FaRegUser size={18} />
-                                <span>Profile</span>
-                            </li>
-                            <li className="flex items-center space-x-3 text-gray-600 hover:text-teal-600 cursor-pointer relative">
-                                <FaRegCommentDots size={18} />
-                                <span>Chat</span>
-                            </li>
-                        </ul>
-                    </nav>
-                </aside></div>
-  )
-}
+  const [activeItem, setActiveItem] = useState("Profile"); // Default active item
 
-export default SideBar
+  const menuItems = [
+    { name: "My bookings", icon: <MdOutlineEventAvailable size={18} /> },
+    { name: "Reviews", icon: <FaStar size={18} /> },
+    { name: "Profile", icon: <FaRegUser size={18} /> },
+    { name: "Chat", icon: <FaRegCommentDots size={18} /> },
+  ];
+
+  return (
+    <aside className="w-96 bg-white border-r border-gray-300 p-5 flex flex-col shadow-md min-h-screen text-2xl">
+      <nav className="mt-8">
+        <ul className="space-y-4">
+          {menuItems.map((item) => (
+            <li
+              key={item.name}
+              className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all
+                ${activeItem === item.name 
+                  ? "bg-teal-600 text-white shadow-md" 
+                  : "text-gray-600 hover:text-teal-600 hover:bg-gray-100"}`}
+              onClick={() => setActiveItem(item.name)}
+            >
+              {item.icon}
+              <span>{item.name}</span>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </aside>
+  );
+};
+
+export default SideBar;
