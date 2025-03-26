@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 export async function GET(){
     try{
-    const newUser = await prisma.users.findMany()
+    const newUser = await prisma.user.findMany()
     return Response.json({
          message : 'get data',
          data: {
@@ -26,7 +26,7 @@ export async function POST(request : Request){
     try{
         const { name, email, password} = await request.json()
     const hashPassword = bcrypt.hashSync(password, 10)
-    const newUser = await prisma.users.create({
+    const newUser = await prisma.user.create({
         data:{ 
             name, 
             email, 

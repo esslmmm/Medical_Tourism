@@ -39,7 +39,7 @@ export const authOptions = {
       async authorize(credentials, req): Promise<User | null> {
         if (!credentials) return null;
       
-        const user = await prisma.users.findUnique({
+        const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
       
@@ -52,7 +52,7 @@ export const authOptions = {
       
         if (isValidPassword) {
           return {
-            id: user.user_id.toString(),
+            id: user.id.toString(),
             name: user.name,
             email: user.email,
             role: user.role, 

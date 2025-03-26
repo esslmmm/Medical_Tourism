@@ -560,23 +560,23 @@ model trips {
   @@index([package_id], map: "package_id")
 }
 
-model account {
-  id                String  @id
-  userId            Int
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-  user              user    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Account_userId_fkey")
+model Account {
+  id                 String  @id @default(cuid())
+  userId             Int
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
 
-  @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_key")
-  @@index([userId], map: "Account_userId_fkey")
+  user user @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
 
 model contact_us {
@@ -601,8 +601,8 @@ model user {
   role                user_role          @default(customer)
   emailVerified       DateTime?
   createdAt           DateTime           @default(now())
-  updatedAt           DateTime
-  account             account[]
+  updatedAt           DateTime           @updatedAt
+  account             Account[]
   action_histories    action_history[]
   chat_user1Id        chat[]             @relation("chat_user1_idTousers")
   chat_user2Id        chat[]             @relation("chat_user2_idTousers")
