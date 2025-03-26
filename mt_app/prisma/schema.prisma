@@ -583,7 +583,7 @@ model contact_us {
   id          Int      @id @default(autoincrement())
   firstName   String
   lastName    String
-  email       String   @unique(map: "Contact_Us_email_key")
+  email       String   
   phoneNumber String
   country     String
   type        String

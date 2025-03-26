@@ -68,3 +68,24 @@ export async function GET(request: Request, { params }: { params: { id: string }
     return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
   }
 }
+
+// PUT request - Update an appointment by ID
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
+  try {
+    const { name, email } = await req.json()
+
+    const userId = Number(params.id)
+    const updatedAppointment = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        name,
+        email
+      }
+    })
+
+    return NextResponse.json(updatedAppointment, { status: 200 })
+  } catch (error) {
+    console.error('Error updating user:', error)
+    return NextResponse.json({ error: 'Failed to update user' }, { status: 500 })
+  }
+}

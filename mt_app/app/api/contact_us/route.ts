@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 // GET: Fetch all payments
 export async function GET() {
   try {
-    const contactForm = await prisma.contactform.findMany();
+    const contactForm = await prisma.contact_us.findMany();
     return NextResponse.json(contactForm, { status: 200 });
   } catch (error) {
     console.error("Error fetching payments:", error);
@@ -18,14 +18,15 @@ export async function GET() {
 export async function POST(request: Request) {
     try {
       const { firstName, lastName, email, phoneNumber, country, type, message } = await request.json();
+
   
-      // Validate required fields
-      if (!firstName || !lastName || !email || !phoneNumber || !country || !type || !message) {
-        return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-      }
+      // // Validate required fields
+      // if (!firstName || !lastName || !email || !phoneNumber || !country || !type || !message) {
+      //   return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+      // }
   
       // Create a new contact form entry
-      const newContact = await prisma.contactform.create({
+      const newContact = await prisma.contact_us.create({
         data: {
           firstName,
           lastName,
@@ -34,7 +35,6 @@ export async function POST(request: Request) {
           country,
           type,
           message,
-          createdAt: new Date(),
         },
       });
   
