@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 // GET request - Fetch all appointments
 export async function GET() {
   try {
-    const appointments = await prisma.appointment.findMany()
+    const appointments = await prisma.appointments.findMany()
     return NextResponse.json(appointments, { status: 200 })
   } catch (error) {
     console.error('Error fetching appointments:', error)
@@ -17,18 +17,18 @@ export async function GET() {
 // POST request - Create a new appointment along with patient details
 export async function POST(req: Request) {
   try {
-    const { date, timeslot, description, doctorId, file_name, file_path, upload_date, patient } = await req.json()
+    const { date, timeslot, description, patient_id, file_name, file_path, upload_date, patient } = await req.json()
 
-    const newAppointment = await prisma.appointment.create({
+    const newAppointment = await prisma.appointments.create({
       data: {
         date,
         timeslot,
         description,
-        doctorId,
+        patient_id,
         file_name,
         file_path,
         upload_date,
-        patient_detail: {
+        patient_details: {
           create: {
             firstname: patient.firstname,
             lastname: patient.lastname,

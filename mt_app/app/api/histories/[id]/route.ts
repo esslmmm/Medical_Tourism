@@ -18,7 +18,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     const doctor = await prisma.action_history.findUnique({
       where: { action_id },
       include: {
-        users: true
+        user: true
       },
     });
 

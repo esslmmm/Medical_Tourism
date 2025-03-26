@@ -645,6 +645,7 @@ CREATE TABLE `package_bookings` (
     `create_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     `status` ENUM('Pending', 'Approved', 'Completed', 'Rejected', 'Cancelled') NOT NULL,
 
+    UNIQUE INDEX `package_bookings_contact_id_key`(`contact_id`),
     INDEX `appointment_id`(`appointment_id`),
     INDEX `contact_id`(`contact_id`),
     INDEX `hotel_booking_id`(`hotel_booking_id`),
@@ -652,6 +653,7 @@ CREATE TABLE `package_bookings` (
     INDEX `package_id`(`package_id`),
     INDEX `tourism_booking_id`(`tourism_booking_id`),
     INDEX `user_id`(`user_id`),
+    UNIQUE INDEX `unique_contact_per_booking`(`contact_id`),
     PRIMARY KEY (`booking_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -932,7 +934,7 @@ CREATE TABLE `user_contact_detail` (
     `lastname` VARCHAR(255) NULL,
     `email` VARCHAR(255) NULL,
     `country` VARCHAR(255) NULL,
-    `phone` INTEGER NULL,
+    `phone` VARCHAR(191) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -1013,7 +1015,7 @@ ALTER TABLE `package_bookings` ADD CONSTRAINT `package_bookings_ibfk_4` FOREIGN 
 ALTER TABLE `package_bookings` ADD CONSTRAINT `package_bookings_ibfk_5` FOREIGN KEY (`hotel_booking_id`) REFERENCES `hotel_bookings`(`booking_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE `package_bookings` ADD CONSTRAINT `package_bookings_ibfk_6` FOREIGN KEY (`contact_id`) REFERENCES `user_contact_detail`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `package_bookings` ADD CONSTRAINT `package_bookings_contact_id_fkey` FOREIGN KEY (`contact_id`) REFERENCES `user_contact_detail`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE `package_bookings` ADD CONSTRAINT `package_bookings_ibfk_7` FOREIGN KEY (`inter_booking_id`) REFERENCES `inter_bookings`(`booking_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;

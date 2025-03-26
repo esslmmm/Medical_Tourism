@@ -10,7 +10,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     const payment = await prisma.payment.findUnique({
       where: { payment_id: paymentId },
       include: {
-        users: true, // Include user details
+        user: true, // Include user details
         package_bookings: true, // Include booking details
       },
     });
