@@ -10,7 +10,7 @@ const DashboardCards = () => {
   ];
 
   return (
-    <div className="mt-8 bg-white p-6 rounded-lg shadow-md w-full max-w-3xl mx-auto flex justify-center gap-10">
+    <div className="mt-8 bg-white p-6 rounded-lg shadow-md w-full mx-auto flex justify-center gap-10">
       {cards.map(({ icon, number, text, color }, index) => (
         <div key={index} className="flex flex-col items-center text-center">
           <div className={`w-20 h-20 flex items-center justify-center rounded-full shadow-md text-white text-2xl ${color}`}>

@@ -16,6 +16,7 @@ interface PackageBooking {
   package_id: number;
   packages: Packages;
   appointments: Appointments;
+  hotel_bookings: HotelBookings; // ✅ Added hotel booking reference for check-in date
 }
 
 interface Appointments {
@@ -27,13 +28,21 @@ interface Appointments {
   file_path: string;
 }
 
+interface HotelBookings {
+  check_in_date: string;
+}
+
 interface Packages {
   package_id: number;
   image: string;
   package_name: string;
 }
 
-const MedicalServiceCard = () => {
+interface MedicalServiceCardProps {
+  selectedDay: number | "all"; // ✅ Accepts selectedDay as a prop
+}
+
+const MedicalServiceCard: React.FC<MedicalServiceCardProps> = ({ selectedDay }) => {
   const { id } = useParams();
   const [data, setData] = useState<PackageBooking | null>(null);
   const [loading, setLoading] = useState(true);
@@ -42,7 +51,7 @@ const MedicalServiceCard = () => {
   useEffect(() => {
     const fetchPackageBooking = async () => {
       try {
-        const response = await fetch(`/api/bookings/packages/${id}`);
+        const response = await fetch(`/api/booking/packages/${id}`);
         if (!response.ok) throw new Error("Failed to fetch data");
         const result = await response.json();
         setData(result);
@@ -56,23 +65,43 @@ const MedicalServiceCard = () => {
     fetchPackageBooking();
   }, [id]);
 
-  const formatDate = (timestamp: string | number | Date) => {
-    if (!timestamp) return "Invalid Date";
-    const date = new Date(timestamp);
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "Invalid Date";
+    const date = new Date(dateString);
     if (isNaN(date.getTime())) return "Invalid Date";
-  
-    return `${date.toLocaleDateString("en-GB", {
+
+    return date.toLocaleDateString("en-GB", {
       year: "numeric",
       month: "long",
       day: "numeric",
-    })}`;
+    });
   };
 
   if (loading)
     return <p className="text-center text-gray-500">Loading package booking details...</p>;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!data || !data.packages || !data.appointments)
+  if (!data || !data.packages || !data.appointments || !data.hotel_bookings)
     return <p className="text-center text-gray-500">No package booking found.</p>;
+
+  // ✅ Convert `check_in_date` and `appointments.date` into Date objects
+  const checkInDate = new Date(data.hotel_bookings.check_in_date);
+  const appointmentDate = new Date(data.appointments.date);
+
+  if (isNaN(checkInDate.getTime()) || isNaN(appointmentDate.getTime())) return null; // Prevents errors
+  // ✅ Calculate expected date based on check-in date and selectedDay
+  let showMedicalService = false;
+
+  if (selectedDay === "all") {
+    showMedicalService = true; // Show all if selectedDay is "all"
+  } else {
+    // ✅ Expected date should match the check-in date plus (selectedDay - 1)
+    const expectedDate = new Date(checkInDate);
+    expectedDate.setDate(checkInDate.getDate() + (selectedDay - 1));
+    // ✅ Compare the formatted dates
+    showMedicalService = appointmentDate.toDateString() === expectedDate.toDateString();
+  }
+
+  if (!showMedicalService) return null; // ✅ Hide component if not in selected day
 
   return (
     <div className={`${inter.className}`}>
@@ -95,7 +124,7 @@ const MedicalServiceCard = () => {
           <p className="text-md font-bold">
             Appointment Date / Time:{" "}
             <span className="font-normal">
-            {formatDate(data.appointments.date)}, {data.appointments.timeslot}
+              {formatDate(data.appointments.date)}, {data.appointments.timeslot}
             </span>
           </p>
           <p className="text-md font-bold">
@@ -108,9 +137,6 @@ const MedicalServiceCard = () => {
             Description: <span className="font-normal">{data.appointments.description}.</span>
           </p>
         </div>
-
-        {/* Edit Icon */}
-        {/* <FaEdit className="text-gray-500 cursor-pointer self-start" /> */}
       </div>
     </div>
   );

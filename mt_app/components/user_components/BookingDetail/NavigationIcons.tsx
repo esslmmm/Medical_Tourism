@@ -39,10 +39,10 @@ const NavigationIcons: React.FC<NavigationIconsProps> = ({ sections }) => {
   return (
     <div
       className={`w-[850px] mx-auto my-6 shadow-md border border-[#C5D1E0]
-        ${isSticky ? "fixed top-0 left-1/2 transform -translate-x-1/2 bg-white/75 shadow-md z-50 px-4 py-2 rounded-lg" 
+        ${isSticky ? "fixed top-20 left-6 bg-white/75 shadow-md z-50 px-4 py-2 rounded-lg w-auto" 
                    : "p-4 rounded-[20px]"}`}
     >
-      <div className={`flex gap-9 ${isSticky ? "justify-center" : ""}`}>
+      <div className={`flex flex-col   ${isSticky ? "items-start gap-5" : "items-center flex-row justify-center gap-12"}`}>
         {[
           { id: "timeline", img: "/img/BookingDetail/Timeline.png", text: "Timeline" },
           { id: "package", img: "/img/BookingDetail/Package.png", text: "Package" },
@@ -50,7 +50,6 @@ const NavigationIcons: React.FC<NavigationIconsProps> = ({ sections }) => {
           { id: "accommodation", img: "/img/BookingDetail/Accommodation.png", text: "Accommodation" },
           { id: "place", img: "/img/BookingDetail/Place to visit.png", text: "Place to Visit" },
           { id: "interpreter", img: "/img/BookingDetail/Interpreter.png", text: "Interpreter" },
-          { id: "car", img: "/img/BookingDetail/Car service.png", text: "Car Service" },
         ].map(({ id, img, text }, index) => (
           <div key={index} className="flex flex-col items-center">
             <motion.div

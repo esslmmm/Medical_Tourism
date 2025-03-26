@@ -33,7 +33,7 @@ const PackageType = () => {
   useEffect(() => {
     const fetchPackageBooking = async () => {
       try {
-        const bookingResponse = await fetch(`/api/bookings/packages/${id}`);
+        const bookingResponse = await fetch(`/api/booking/packages/${id}`);
         if (!bookingResponse.ok) throw new Error("Failed to fetch booking data");
         const bookingResult = await bookingResponse.json();
 
@@ -71,7 +71,7 @@ const PackageType = () => {
     setShowWarning(false);
 
     try {
-      const response = await fetch(`/api/bookings/packages/${id}`, {
+      const response = await fetch(`/api/booking/packages/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -110,13 +110,16 @@ const PackageType = () => {
           </span>
         ) : (
           <>
-            <button
-              onClick={handleShowWarning}
-              className="bg-[#FF0707] text-white px-4 py-1 rounded-[20px] shadow-lg"
-              disabled={isCanceling}
-            >
-              Cancel the Booking
-            </button>
+            {/* ✅ Hide the "Cancel the Booking" button if status is "Approved" */}
+            {bookingData.status !== "Approved"  && (
+              <button
+                onClick={handleShowWarning}
+                className="bg-[#FF0707] text-white px-4 py-1 rounded-[20px] shadow-lg"
+                disabled={isCanceling}
+              >
+                Cancel the Booking
+              </button>
+            )}
 
             <button
               className={`px-4 py-1 rounded-[20px] shadow-lg ${
@@ -128,6 +131,7 @@ const PackageType = () => {
           </>
         )}
       </div>
+
 
       {/* Warning Modal */}
       {showWarning && (

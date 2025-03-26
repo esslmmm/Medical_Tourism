@@ -201,6 +201,7 @@ model hotels {
   email            String?            @db.VarChar(50)
   description      String?            @db.Text
   image            String?            @db.VarChar(255)
+  check_in_time    String             @default("1 PM") @db.VarChar(10)
   contact_info     String?            @db.VarChar(255)
   create_at        DateTime           @default(now()) @db.Timestamp(0)
   hotel_bookings   hotel_bookings[]
@@ -298,7 +299,7 @@ model package_bookings {
   tourism_booking_id  Int
   appointment_id      Int
   hotel_booking_id    Int
-  contact_id          Int                     @unique  // Ensure One-to-One Relationship
+  contact_id          Int
   inter_booking_id    Int
   create_at           DateTime                @default(now()) @db.Timestamp(0)
   status              package_bookings_status
@@ -307,11 +308,10 @@ model package_bookings {
   tourism_bookings    tourism_bookings        @relation(fields: [tourism_booking_id], references: [tourism_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_3")
   appointments        appointments            @relation(fields: [appointment_id], references: [appointment_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_4")
   hotel_bookings      hotel_bookings          @relation(fields: [hotel_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_5")
-  user_contact_detail user_contact_detail?    @relation("UserContactBooking", fields: [contact_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_contact_detail user_contact_detail     @relation("UserContactBooking", fields: [contact_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_6")
   inter_bookings      inter_bookings          @relation(fields: [inter_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_7")
   payment             payment[]
 
-  @@unique([contact_id], map: "unique_contact_per_booking")  // Enforce One-to-One Relationship
   @@index([appointment_id], map: "appointment_id")
   @@index([contact_id], map: "contact_id")
   @@index([hotel_booking_id], map: "hotel_booking_id")
@@ -561,30 +561,11 @@ model trips {
   @@index([package_id], map: "package_id")
 }
 
-model Account {
-  id                 String  @id @default(cuid())
-  userId             Int
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
-
-  user user @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-}
-
 model contact_us {
   id          Int      @id @default(autoincrement())
   firstName   String
   lastName    String
-  email       String   
+  email       String   @unique(map: "Contact_Us_email_key")
   phoneNumber String
   country     String
   type        String
@@ -603,7 +584,7 @@ model user {
   emailVerified       DateTime?
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
-  account             Account[]
+  account             account[]
   action_histories    action_history[]
   chat_user1Id        chat[]             @relation("chat_user1_idTousers")
   chat_user2Id        chat[]             @relation("chat_user2_idTousers")
@@ -622,8 +603,27 @@ model user_contact_detail {
   lastname         String?            @db.VarChar(255)
   email            String?            @db.VarChar(255)
   country          String?            @db.VarChar(255)
-  phone            String?
-  package_bookings package_bookings?  @relation("UserContactBooking") // Relation Name
+  phone            Int?
+  package_bookings package_bookings[] @relation("UserContactBooking")
+}
+
+model account {
+  id                String  @id
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              user    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Account_userId_fkey")
+
+  @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_key")
+  @@index([userId], map: "Account_userId_fkey")
 }
 
 enum action_history_type_action {

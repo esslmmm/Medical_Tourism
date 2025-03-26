@@ -3,16 +3,16 @@ import React, { useRef, useState } from "react";
 import NavigationIcons from "../../../../components/user_components/BookingDetail/NavigationIcons";
 import PackageType from "../../../../components/user_components/BookingDetail/PackageType";
 import TimelineSelector from "../../../../components/user_components/BookingDetail/TimelineSelector";
-import CarService from "../../../../components/user_components/BookingDetail/CarService";
 import Navbarpro from "../../../../components/user_components/Main/Navbarpro";
 import Footer from "../../../../components/user_components/Main/Footer";
 import MedicalServiceCard from "../../../../components/user_components/BookingDetail/MedicalService";
 import AccommodationCard from "../../../../components/user_components/BookingDetail/AccommodationCard";
 import PlacesToVisit from "../../../../components/user_components/BookingDetail/PlacesToVisit";
+import Interpreter from "../../../../components/user_components/BookingDetail/Interpreter";
 
 
 const UserTimeline = () => {
-  const [selectedDay, setSelectedDay] = useState<1 | 2 | 3 | "all">(1);
+  const [selectedDay, setSelectedDay] = useState<number | "all">(1);
   
   const sections = {
     timeline: useRef<HTMLDivElement>(null),
@@ -42,19 +42,19 @@ const UserTimeline = () => {
         </div>
 
         <div ref={sections.medical}>
-          <MedicalServiceCard />
+          <MedicalServiceCard selectedDay={selectedDay}/>
         </div>
 
         <div ref={sections.accommodation}>
-          <AccommodationCard />
+          <AccommodationCard selectedDay={selectedDay}/>
         </div>
 
         <div ref={sections.place}>
-          <PlacesToVisit />
+          <PlacesToVisit selectedDay={selectedDay}/>
         </div>
 
-        <div ref={sections.car}>
-          <CarService />
+        <div ref={sections.interpreter}>
+          <Interpreter selectedDay={selectedDay}/>
         </div>
       </div>
       <Footer />

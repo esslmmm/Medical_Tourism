@@ -3,11 +3,9 @@ import { FaUser, FaCalendarAlt, FaCommentDots } from "react-icons/fa";
 
 const Sidebar = () => {
   return (
-    <div className="w-64 bg-gray-200 p-5 flex flex-col justify-between shadow-lg">
+    <div className="w-64 bg-white p-5 flex flex-col justify-between">
       <div>
         <div className="text-2xl font-bold leading-tight">
-          <span className="block text-green-500">Medical</span>
-          <span className="block text-blue-500">Tourism</span>
         </div>
         <ul className="mt-5 space-y-3">
           <li className="flex items-center gap-2 cursor-pointer text-gray-700"><FaUser /> Profile</li>

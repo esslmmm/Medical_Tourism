@@ -4,7 +4,7 @@ import { Card, CardContent } from "./widgets/card";
 const ContactDetails = () => {
   return (
       <div><Card>
-          <CardContent className="p-6">
+          <CardContent>
               <h3 className="text-black font-semibold mb-4">Contact Detail</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
