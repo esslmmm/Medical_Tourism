@@ -1,6 +1,13 @@
 import React from "react";
+import { motion } from "framer-motion";
 import BookingTable from "./BookingTable";
 import History from "./History";
+import { Inter } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
 
 interface BookingTabsProps {
   activeTab: "process" | "history";
@@ -9,13 +16,39 @@ interface BookingTabsProps {
 
 const BookingTabs: React.FC<BookingTabsProps> = ({ activeTab, setActiveTab }) => {
   return (
-    <div className="mt-10 bg-white p-6 rounded-lg shadow-md">
-      <div className="flex gap-5 text-lg font-semibold cursor-pointer border-b">
-        <span onClick={() => setActiveTab("process")} className={activeTab === "process" ? "text-blue-500 border-b-2 border-blue-500 pb-2" : "text-gray-500"}>In Process</span>
-        <span onClick={() => setActiveTab("history")} className={activeTab === "history" ? "text-blue-500 border-b-2 border-blue-500 pb-2" : "text-gray-500"}>History</span>
+    <div className="mt-10 bg-white p-6 rounded-[30px] shadow-md border border-[#C5D1E0]">
+      {/* Tab Selection */}
+      <div className={`flex items-center gap-8 mb-6`} style={{fontSize: "20px"}}>
+        {["process", "history"].map((tab) => (
+          <div
+            key={tab}
+            onClick={() => setActiveTab(tab as "process" | "history")}
+            className={`ml-5 relative px-55 py-3 rounded-[25px] font-semibold cursor-pointer transition-all ${
+              activeTab === tab ? "text-white bg-blue-500 shadow-lg" : "text-gray-500"
+            }`}
+          >
+            {activeTab === tab && (
+              <motion.div
+                layoutId="tabIndicator"
+                className="absolute inset-0 rounded-[25px]"
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              />
+            )}
+            <span className={`relative z-10 ${inter.className}`}>{tab === "process" ? "In Process" : "History"}</span>
+          </div>
+        ))}
       </div>
 
-      {activeTab === "process" ? <BookingTable /> : <History />}
+      {/* Tab Content */}
+      <motion.div
+        key={activeTab}
+        initial={{ opacity: 0, x: 50 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -50 }}
+        transition={{ duration: 0.3 }}
+      >
+        {activeTab === "process" ? <BookingTable /> : <History />}
+      </motion.div>
     </div>
   );
 };

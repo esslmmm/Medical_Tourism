@@ -9,7 +9,8 @@ const PackageCard = () => {
               <h3 className="text-lg font-semibold">Basic Check-Up And Travel Package</h3>
               <p className="text-sm text-gray-600">MFU Hospital</p>
           </div>
-      </div></div>
+      </div>
+      </div>
   )
 }
 

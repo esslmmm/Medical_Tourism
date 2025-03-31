@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import axios from 'axios';
 import { FiEdit2 } from "react-icons/fi";
-import SideBar from "../../../../components/user_components/UserProfile/SideBar";
+import SideBar from "../../../../../components/user_components/UserProfile/SideBar";
 
 export default function UserProfile({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter();

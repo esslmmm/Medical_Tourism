@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import Sidebar from "../../components/staff_component/booking-management/Sidebar";
-import ProfileHeader from "../../components/staff_component/booking-management/ProfileHeader";
+import Sidebar from "../../components/staff_component/Main/Sidebar";
+import ProfileHeader from "../../components/staff_component/Main/ProfileHeader";
 
 
 

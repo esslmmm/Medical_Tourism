@@ -120,7 +120,7 @@ const Review = () => {
                 <div className="text-yellow-400 flex items-center gap-1">
                   <h3 className="font-semibold text-black flex items-center text-lg mr-3">
                     {review.type} Review for {review.reviewed_name}  -  
-                    "{review.title_review}"  {/* ✅ Show reviewed entity name */}
+                    "{review.title_review}" 
                   </h3>
                   {Array.from({ length: Math.floor(review.rating) }).map((_, i) => (
                     <FaStar key={i} />

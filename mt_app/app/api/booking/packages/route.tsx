@@ -6,7 +6,11 @@ const prisma = new PrismaClient()
 // GET request - Fetch all package bookings
 export async function GET() {
   try {
-    const packageBookings = await prisma.package_bookings.findMany()
+    const packageBookings = await prisma.package_bookings.findMany({
+      include: {
+        packages: true,
+      }
+    })
     return NextResponse.json(packageBookings, { status: 200 })
   } catch (error) {
     console.error('Error fetching package bookings:', error)
