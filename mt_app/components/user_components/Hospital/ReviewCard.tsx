@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
 
-interface Users {
+interface User {
   user_id: number;
   name: string;
 }
@@ -11,7 +11,7 @@ interface Review {
   title_review: string;
   rating: number;
   comment: string;
-  users: Users[];
+  user: User;
 }
 
 interface ReviewCardProps {
@@ -38,7 +38,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
 
   return (
     <div className="bg-white shadow-lg border border-gray-200 p-6 w-full max-w-sm rounded-2xl">
-      <h3 className="items-start font-bold">{review.users.name || "Anonymous"}</h3>
+      <h3 className="items-start font-bold">{review.user.name || "Anonymous"}</h3>
       <p className="text-sm font-semibold">"{review.title_review}"</p>
       <div className="flex items-center mt-2">{renderStars(review.rating)}</div>
 

@@ -120,7 +120,7 @@ const ChatApp: React.FC = () => {
                 className="flex items-center p-2 cursor-pointer hover:bg-gray-200"
               >
                 <img
-                  src={`/avatars/user-${chat.user2_id}.jpg`} // Placeholder avatar
+                  src={`/img/image.png`} // Placeholder avatar
                   className="w-10 h-10 rounded-full"
                   alt="User Avatar"
                 />
@@ -146,7 +146,7 @@ const ChatApp: React.FC = () => {
             {/* Display Receiver's Name */}
             <div className="p-4 border-b bg-white flex items-center rounded-t-lg">
               <img
-                src={`/avatars/user-${selectedChat.user2_id}.jpg`}
+                src={`/img/image.png`}
                 className="w-10 h-10 rounded-full"
                 alt="Chat User"
               />
