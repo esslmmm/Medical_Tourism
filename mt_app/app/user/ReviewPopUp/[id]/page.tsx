@@ -1,139 +1,88 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { Inter } from "next/font/google";
-import { FaStar } from "react-icons/fa";
-import { useParams, useRouter } from 'next/navigation';
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-});
+import { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 
-interface Booking {
-    booking_id: number;
-    package_id: number;
-    create_at: Date;
-    status:"Completed";
-    packages: Packages;
-  }
-  
-  interface Packages {
-    package_id: number;
-    image: string;
-    package_name: string;
-  }
-  
-  interface User {
-    user_id: number;
-    name: string;
-    email: string;
-    package_bookings: Booking[];
-  }
+import HospitalReview from '../../../../components/user_components/ReviewPopUp/hospitalReview';
+import HotelReview from '../../../../components/user_components/ReviewPopUp/hotelReview';
+import InterpreterReview from '../../../../components/user_components/ReviewPopUp/interReview';
 
-  interface UserWithLatestBooking extends User {
-    latestCompletedBooking?: Booking | null;
-  }
+interface MultiStepReviewModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  id: number;
+}
 
-const ReviewCard = () => {
-    const [rating, setRating] = useState(0);
-    const [review, setReview] = useState("");
-    const { id } = useParams();
-    const [user, setUser] = useState<UserWithLatestBooking | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    
-    useEffect(() => {
-      if (!id) return;
-    
-      async function fetchUser() {
-        try {
-          const response = await fetch(`/api/profile/${id}`);
-          if (!response.ok) {
-            throw new Error("Failed to fetch user");
-          }
-    
-          const data: User = await response.json(); // Ensure correct typing
-    
-          // Ensure package_bookings exists before filtering
-          if (!data.package_bookings || !Array.isArray(data.package_bookings)) {
-            throw new Error("package_bookings is not available");
-          }
-    
-          // Filter bookings with "Completed" status
-          const completedBookings = data.package_bookings.filter(
-            (booking) => booking.status === "Completed"
-          );
-    
-          // Sort by date (latest first)
-          const latestCompletedBooking = completedBookings.sort(
-            (a, b) => new Date(b.create_at).getTime() - new Date(a.create_at).getTime()
-          )[0] || null;
-    
-          // Store user data with latestCompletedBooking
-          setUser({ ...data, latestCompletedBooking });
-        } catch (error) {
-          setError("Error fetching user data. Please try again.");
-          console.error(error);
-        } finally {
-          setLoading(false);
-        }
+const steps = ['interpreter','hotel','hospital'] as const;
+type StepType = typeof steps[number];
+
+const MultiStepReviewModal: React.FC<MultiStepReviewModalProps> = ({ isOpen, onClose, id }) => {
+  const [currentStep, setCurrentStep] = useState<StepType>('interpreter');
+  const [isReviewFinished, setIsReviewFinished] = useState(false);
+  const modalRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
       }
-    
-      fetchUser();
-    }, [id]);
-    
-      if (loading) return <p className="text-center text-gray-500">Loading user details...</p>;
-      if (error) return <p className="text-center text-red-500">{error}</p>;
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onClose]);
 
-    return (
-            <div className="flex justify-center items-center min-h-screen bg-gray-100">
-                <div className={`w-full max-w-md bg-white shadow-lg rounded-[30px] p-6 text-black ${inter.className}`}>
+  useEffect(() => {
+    if (!isOpen) {
+      setCurrentStep('interpreter'); // Reset when closed
+      setIsReviewFinished(false);
+    }
+  }, [isOpen]);
 
-                    {/* Package Details Card */}
-                    <div className="flex items-center space-x-4 bg-gray-100 p-4 rounded-lg shadow-md">
-                        <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
-                        <div>
-                            <h3 className="text-lg font-semibold">Basic Check-Up And Travel Package</h3>
-                            <p className="text-sm text-gray-600">MFU Hospital</p>
-                        </div>
-                    </div>
+  if (!isOpen) return null;
 
-                    {/* Star Rating Section */}
-                    <div className="mt-6 text-center">
-                        <h4 className="text-sm font-medium">What is your rate</h4>
-                        <div className="flex justify-center space-x-1 mt-2">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                                <FaStar
-                                    key={star}
-                                    size={24}
-                                    className={`cursor-pointer ${star <= rating ? "text-yellow-500" : "text-gray-300"
-                                        }`}
-                                    onClick={() => setRating(star)}
-                                />
-                            ))}
-                        </div>
-                    </div>
+  const handleNext = () => {
+    const currentIndex = steps.indexOf(currentStep);
+    if (currentIndex < steps.length - 1) {
+      setCurrentStep(steps[currentIndex + 1]);
+    } else {
+      setIsReviewFinished(true);
+    }
+  };
 
-                    {/* Review Input Section */}
-                    <div className="mt-6 text-center">
-                        <label className="text-sm font-medium block">
-                            Please share your opinion about the service
-                        </label>
-                        <textarea
-                            className="w-full mt-2 border rounded-md p-2 h-24 text-black"
-                            value={review}
-                            onChange={(e) => setReview(e.target.value)}
-                        />
-                    </div>
+  const renderStepComponent = () => {
+    switch (currentStep) {
+      case 'hospital':
+        return <HospitalReview id={id} onSubmitted={handleNext} />;
+      case 'hotel':
+        return <HotelReview id={id} onSubmitted={handleNext} />;
+      case 'interpreter':
+        return <InterpreterReview id={id} onSubmitted={handleNext} />;
+      default:
+        return null;
+    }
+  };
 
-                    {/* Submit Button */}
-                    <button className="mt-6 w-full bg-[#D35239] text-white py-2 rounded-lg hover:bg-gray-600">
-                        SEND REVIEW
-                    </button>
-                </div>
-            </div>
-    );
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black/45 z-50">
+      <motion.div
+        ref={modalRef}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.2 }}
+      >
+        {isReviewFinished ? (
+          <div className="text-center space-y-4">
+            <h2 className="text-xl font-bold text-white">Thank you for your feedback!</h2>
+          </div>
+        ) : (
+          <>
+            {renderStepComponent()}
+          </>
+        )}
+      </motion.div>
+    </div>
+  );
 };
 
-export default ReviewCard;
-
+export default MultiStepReviewModal;

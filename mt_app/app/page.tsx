@@ -8,12 +8,16 @@ import Hospitaltap from "../components/user_components/Homepage/Hospitaltap";
 import Footer from "../components/user_components/Main/Footer";
 import "./globals.css";
 import Advertisement from "../components/user_components/Homepage/Advertisement";
+import { useState } from "react";
+import MultiStepReviewModal from "./user/ReviewPopUp/[id]/page";
 
 interface HomePageProps {
   children: React.ReactNode;
 }
 
 const HomePage: React.FC<HomePageProps> = ({ children }) => {
+  const [showModal, setShowModal] = useState(false);
+  
   return (
     <div>
       <Navbar />
@@ -33,6 +37,22 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
       <DoctorList />
       <MedicalList />
       <Hospitaltap />
+      {/* Show Modal if `showModal` is true */}
+        {/* <div className="p-4">
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+        >
+          Leave a Review
+        </button> */}
+
+        {/* Pass the ID to the ReviewCard */}
+        {/* <MultiStepReviewModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          id={1}
+        />
+        </div> */}
       <Footer />
       {children} {/* Renders the page content that is passed from the individual page component */}
     </div>
@@ -40,3 +60,5 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
 };
 
 export default HomePage;
+
+
