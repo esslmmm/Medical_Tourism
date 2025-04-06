@@ -20,17 +20,18 @@ model action_history {
 }
 
 model appointments {
-  appointment_id   Int                @id @default(autoincrement())
-  date             DateTime?          @db.Date
-  timeslot         String?            @db.VarChar(255)
+  appointment_id   Int                 @id @default(autoincrement())
+  date             DateTime?           @db.Date
+  timeslot         String?             @db.VarChar(255)
   patient_id       Int?
-  description      String?            @db.Text
+  description      String?             @db.Text
   doctor_id        Int?
-  file_name        String?            @db.VarChar(255)
-  file_path        String?            @db.VarChar(255)
-  upload_date      DateTime?          @db.Timestamp(0)
-  patient_details  patient_details?   @relation(fields: [patient_id], references: [patient_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_1")
-  doctors          doctors?           @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_2")
+  file_name        String?             @db.VarChar(255)
+  file_path        String?             @db.VarChar(255)
+  upload_date      DateTime?           @db.Timestamp(0)
+  status           appointments_status
+  patient_details  patient_details?    @relation(fields: [patient_id], references: [patient_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_1")
+  doctors          doctors?            @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_2")
   package_bookings package_bookings[]
 
   @@index([doctor_id], map: "doctor_id")
@@ -296,20 +297,20 @@ model package_bookings {
   booking_id          Int                     @id @default(autoincrement())
   user_id             Int
   package_id          Int
-  tourism_booking_id  Int
-  appointment_id      Int
-  hotel_booking_id    Int
-  contact_id          Int
-  inter_booking_id    Int
+  tourism_booking_id  Int?
+  appointment_id      Int?
+  hotel_booking_id    Int?
+  contact_id          Int?
+  inter_booking_id    Int?
   create_at           DateTime                @default(now()) @db.Timestamp(0)
   status              package_bookings_status
   user                user                    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_1")
   packages            packages                @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_2")
-  tourism_bookings    tourism_bookings        @relation(fields: [tourism_booking_id], references: [tourism_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_3")
-  appointments        appointments            @relation(fields: [appointment_id], references: [appointment_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_4")
-  hotel_bookings      hotel_bookings          @relation(fields: [hotel_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_5")
-  user_contact_detail user_contact_detail     @relation("UserContactBooking", fields: [contact_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_6")
-  inter_bookings      inter_bookings          @relation(fields: [inter_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_7")
+  tourism_bookings    tourism_bookings?       @relation(fields: [tourism_booking_id], references: [tourism_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_3")
+  appointments        appointments?           @relation(fields: [appointment_id], references: [appointment_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_4")
+  hotel_bookings      hotel_bookings?         @relation(fields: [hotel_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_5")
+  user_contact_detail user_contact_detail?    @relation("UserContactBooking", fields: [contact_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_6")
+  inter_bookings      inter_bookings?         @relation(fields: [inter_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_7")
   payment             payment[]
 
   @@index([appointment_id], map: "appointment_id")
@@ -694,4 +695,12 @@ enum user_role {
   customer
   staff
   admin
+}
+
+enum appointments_status {
+  Pending
+  Approved
+  Rejected
+  Completed
+  Cancelled
 }
