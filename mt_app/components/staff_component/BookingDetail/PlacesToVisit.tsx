@@ -19,6 +19,7 @@ interface PackageBooking {
 
 interface TourismTrip {
   tourism_id: number;
+  status: string;
   tourismservices: {
     tour_id: number;
     package_places: PackagePlaces[];
@@ -150,6 +151,41 @@ const filteredPlaces = tripData?.tourismservices.package_places.filter(place =>
   selectedDay === "all" || parseInt(place.date) === selectedDay
 );
 
+const handleStatusChange = async (newStatus: string) => {
+  if (!tripData) return;
+
+  try {
+    const response = await fetch(`/api/booking/trips/${tripData.tourism_id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        status: newStatus, // Only send the status
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update status");
+    }
+
+    const updated = await response.json();
+
+    // Update local state
+    setTripData((prev) =>
+      prev
+        ? {
+            ...prev,
+            status: newStatus,
+          }
+        : prev
+    );
+  } catch (err) {
+    console.error("Error updating status:", err);
+    alert("Could not update status");
+  }
+};
+
 
 if (loading) return <p className="text-center text-gray-500">Loading place details...</p>;
 if (error) return <p className="text-center text-red-500">Error: {error}</p>;
@@ -159,9 +195,9 @@ if (!filteredPlaces || filteredPlaces.length === 0)
   return null;
 
 return (
-  <div className={`${inter.className}`}>
+  <div className={`${inter.className} mb-8`}>
   <h2 className="ml-2 text-lg font-bold mb-2" style={{ fontSize: "25px" }}>Places to Visit</h2>
-  <div className="w-[850px] mx-auto bg-white p-4 rounded-xl shadow-md border border-[#C5D1E0]">
+  <div className="border border-[#C5D1E0] w-[850px] p-4 rounded-xl shadow-md bg-white relative">
     {filteredPlaces.map((place, index) => (
       <div
         key={place.packplace_id}
@@ -169,6 +205,23 @@ return (
           index !== filteredPlaces.length - 1 ? "border-b border-[#C5D1E0]" : ""
         }`}
       >
+        {/* Status Dropdown - Top Right */}
+      <div className="absolute top-4 right-4">
+        <select
+          id="status"
+          value={tripData?.status}
+          onChange={(e) => handleStatusChange(e.target.value)}
+          className={`border rounded-[18px] px-2 py-1 text-sm focus:outline-none focus:ring-2
+            ${tripData?.status === 'Pending' ? 'text-white bg-[#FFCC00] border-[#C5D1E0] focus:ring-yellow-300' : ''}
+            ${tripData?.status === 'Approved' ? 'text-white bg-[#28A83D] border-[#C5D1E0] focus:ring-green-300' : ''}
+            ${tripData?.status === 'Rejected' ? 'text-white bg-[#FB5626] border-[#C5D1E0] focus:ring-red-300' : ''}
+          `}
+        >
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </div>
         <img src={place.places.image} alt={place.places.place_name} className="w-50 h-30 rounded-[15px] object-cover" />
 
         <div className="flex-1 space-y-2">

@@ -32,20 +32,29 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 // PUT request - Update an interpreter booking by ID
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
-    const { interpreter_id, start, end, status } = await req.json()
+    const { interpreter_id, start, end, status } = await req.json();
+    const interpreterBookingId = Number(params.id);
 
-    const interpreterBookingId = Number(params.id)
+    // Prepare the update data conditionally
+    const dataToUpdate: any = {};
+    if (status) dataToUpdate.status = status;
+    if (interpreter_id) dataToUpdate.interpreter_id = interpreter_id;
+    if (start) dataToUpdate.start = new Date(start);
+    if (end) dataToUpdate.end = new Date(end);
+
     const updatedInterpreterBooking = await prisma.inter_bookings.update({
       where: { booking_id: interpreterBookingId },
-      data: { interpreter_id, start, end, status }
-    })
+      data: dataToUpdate,
+    });
 
-    return NextResponse.json(updatedInterpreterBooking, { status: 200 })
+    return NextResponse.json(updatedInterpreterBooking, { status: 200 });
   } catch (error) {
-    console.error('Error updating interpreter booking:', error)
-    return NextResponse.json({ error: 'Failed to update interpreter booking' }, { status: 500 })
+    console.error('Error updating interpreter booking:', error);
+    return NextResponse.json({ error: 'Failed to update interpreter booking' }, { status: 500 });
   }
 }
+
+
 
 // DELETE request - Delete an interpreter booking by ID
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {

@@ -21,6 +21,7 @@ interface HotelBooking {
   check_in_date: string;
   check_out_date: string;
   total_price: number;
+  status: string;
   guest_adult: string | null;
   guest_children: string | null;
   hotels: Hotels;
@@ -33,6 +34,7 @@ interface Hotels {
   contact_info: string;
   check_in_time: string;
   image: string;
+  hotel_code: number;
 }
 
 interface RoomAggregate {
@@ -107,6 +109,41 @@ const AccommodationCard: React.FC<AccommodationCardProps> = ({ selectedDay }) =>
     return date;
   };
 
+  const handleStatusChange = async (newStatus: string) => {
+    if (!hotelBooking) return;
+  
+    try {
+      const response = await fetch(`/api/booking/hotels/${hotelBooking.booking_id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: newStatus, // Only send the status
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to update status");
+      }
+  
+      const updated = await response.json();
+  
+      // Update local state
+      setHotelBooking((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: newStatus,
+            }
+          : prev
+      );
+    } catch (err) {
+      console.error("Error updating status:", err);
+      alert("Could not update status");
+    }
+  };
+
   if (loading) return <p className="text-center text-gray-500">Loading accommodation details...</p>;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
   if (!packageBooking) return <p className="text-center text-gray-500">No package booking found.</p>;
@@ -135,12 +172,30 @@ const AccommodationCard: React.FC<AccommodationCardProps> = ({ selectedDay }) =>
   return (
     <div className={`${inter.className} mt-2`}>
       <h2 className="ml-2 text-lg font-bold mb-2" style={{ fontSize: "25px" }}>Accommodation</h2>
-      <div className="border border-[#C5D1E0] p-4 rounded-xl shadow-md bg-white flex gap-4 items-start w-[850px] mx-auto mb-4">
+      <div className="border border-[#C5D1E0] p-4 rounded-xl shadow-md bg-white flex gap-4 items-start w-[850px] mx-auto mb-4 relative">
+        {/* Status Dropdown - Top Right */}
+      <div className="absolute top-4 right-4">
+        <select
+          id="status"
+          value={hotelBooking?.status}
+          onChange={(e) => handleStatusChange(e.target.value)}
+          className={`border rounded-[18px] px-2 py-1 text-sm focus:outline-none focus:ring-2
+            ${hotelBooking?.status === 'Pending' ? 'text-white bg-[#FFCC00] border-[#C5D1E0] focus:ring-yellow-300' : ''}
+            ${hotelBooking?.status === 'Approved' ? 'text-white bg-[#28A83D] border-[#C5D1E0] focus:ring-green-300' : ''}
+            ${hotelBooking?.status === 'Rejected' ? 'text-white bg-[#FB5626] border-[#C5D1E0] focus:ring-red-300' : ''}
+          `}
+        >
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </div>
+
         {/* Left Side: Hotel Image */}
         <img
           src={hotelBooking.hotels?.image ?? "/default-hotel.jpg"} // ✅ Fallback image if not available
           alt={hotelBooking.hotels?.name ?? "Hotel Image"}
-          className="w-55 h-40 rounded-[15px] object-cover"
+          className="w-55 h-45 rounded-[15px] object-cover"
         />
         
         {/* Right Side: Details */}
@@ -165,6 +220,9 @@ const AccommodationCard: React.FC<AccommodationCardProps> = ({ selectedDay }) =>
           </p>
           <p className="text-md font-bold">
             Contact Number: <span className="font-normal">{hotelBooking.hotels?.contact_info ?? "N/A"}</span>
+          </p>
+          <p className="text-md font-bold">
+            Code: <span className="font-normal">{hotelBooking.hotels?.hotel_code ?? "N/A"}</span>
           </p>
         </div>
       </div>

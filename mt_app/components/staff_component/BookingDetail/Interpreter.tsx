@@ -16,6 +16,7 @@ interface InterBooking {
   interpreter_id: number;
   start: string;
   end: string;
+  status: string;
   interpreters: Interpreters;
 }
 
@@ -105,6 +106,42 @@ const Interpreter: React.FC<InterpreterProps> = ({ selectedDay }) => {
     return selectedDate >= startDate && selectedDate <= endDate;
   };
 
+  const handleStatusChange = async (newStatus: string) => {
+    if (!interBooking) return;
+  
+    try {
+      const response = await fetch(`/api/booking/interpreters/${interBooking.booking_id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: newStatus, // Only send the status
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to update status");
+      }
+  
+      const updated = await response.json();
+  
+      // Update local state
+      setInterBooking((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: newStatus,
+            }
+          : prev
+      );
+    } catch (err) {
+      console.error("Error updating status:", err);
+      alert("Could not update status");
+    }
+  };
+  
+
   // ✅ Hide the component if the interpreter is not available on the selected day
   if (!isInterpreterAvailable()) return null;
 
@@ -124,8 +161,25 @@ const Interpreter: React.FC<InterpreterProps> = ({ selectedDay }) => {
   if (!interBooking) return <p className="text-center text-gray-500">Loading interpreter details...</p>;
 
   return (
-    <div className={`bg-white p-6 rounded-xl shadow-md mt-6 border border-[#C5D1E0] ${inter.className}`}>
+    <div className={`border border-[#C5D1E0] w-[850px] p-4 rounded-xl shadow-md bg-white relative ${inter.className}`}>
       <h2 className="text-xl font-bold mb-4" style={{ fontSize: "25px" }}>Interpreter</h2>
+      {/* Status Dropdown - Top Right */}
+      <div className="absolute top-4 right-4">
+        <select
+          id="status"
+          value={interBooking?.status}
+          onChange={(e) => handleStatusChange(e.target.value)}
+          className={`border rounded-[18px] px-2 py-1 text-sm focus:outline-none focus:ring-2
+            ${interBooking?.status === 'Pending' ? 'text-white bg-[#FFCC00] border-[#C5D1E0] focus:ring-yellow-300' : ''}
+            ${interBooking?.status === 'Approved' ? 'text-white bg-[#28A83D] border-[#C5D1E0] focus:ring-green-300' : ''}
+            ${interBooking?.status === 'Rejected' ? 'text-white bg-[#FB5626] border-[#C5D1E0] focus:ring-red-300' : ''}
+          `}
+        >
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </div>
 
       <div className="flex items-start">
         {/* Interpreter Image */}

@@ -35,43 +35,56 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
     const {
-        hotel_id,
-        check_in_date,
-        check_out_date,
-        guest_children,
-        guest_adult,
-        total_price,
-        status,
-        room_aggregate
-      } = await req.json();
+      hotel_id,
+      check_in_date,
+      check_out_date,
+      guest_children,
+      guest_adult,
+      total_price,
+      status,
+      room_aggregate,
+    } = await req.json();
 
-      const hotelBookingId = Number(params.id)
+    const hotelBookingId = Number(params.id);
+
+    // Prepare the update data
+    const updateData: any = {
+      hotel_id,
+      check_in_date,
+      check_out_date,
+      guest_children,
+      guest_adult,
+      total_price,
+      status,
+    };
+
+    // Conditionally add room_aggregate update if it exists
+    if (room_aggregate && Array.isArray(room_aggregate)) {
+      updateData.room_aggregate = {
+        update: room_aggregate.map((room: { room_id: number, amount: number }) => ({
+          where: { room_id: room.room_id }, // Assuming there's a unique constraint on room_id
+          data: {
+            amount: room.amount
+          }
+        }))
+      };
+    }
 
     const updatedHotelBooking = await prisma.hotel_bookings.update({
       where: { booking_id: hotelBookingId },
-      data: {
-        hotel_id,
-        check_in_date,
-        check_out_date,
-        guest_children,
-        guest_adult,
-        total_price,
-        status,
-        room_aggregate: {
-            create: room_aggregate.map((room: { room_id: number, amount:number }) => ({
-              room_id: room.room_id,
-              amount: room.amount
-            })),
-          },
-      },
-    })
+      data: updateData,
+    });
 
-    return NextResponse.json(updatedHotelBooking, { status: 200 })
+    return NextResponse.json(updatedHotelBooking, { status: 200 });
   } catch (error) {
-    console.error('Error updating hotel booking:', error)
-    return NextResponse.json({ error: 'Failed to update hotel booking' }, { status: 500 })
+    console.error("Error updating hotel booking:", error);
+    return NextResponse.json(
+      { error: "Failed to update hotel booking" },
+      { status: 500 }
+    );
   }
 }
+
 
 
 // DELETE request - Delete a hotel booking by ID and its associated room_aggregate entries

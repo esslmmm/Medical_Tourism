@@ -31,37 +31,57 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 // PUT request - Update an appointment by ID
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
-    const { date, timeslot, description, doctor_id, file_name, file_path, upload_date,status, patient } = await req.json()
+    const {
+      date,
+      timeslot,
+      description,
+      doctor_id,
+      file_name,
+      file_path,
+      upload_date,
+      status,
+      patient,
+    } = await req.json();
 
-    const appointmentId = Number(params.id)
+    const appointmentId = Number(params.id);
+
+    const updateData: any = {
+      date,
+      timeslot,
+      description,
+      doctor_id,
+      file_name,
+      file_path,
+      upload_date,
+      status,
+    };
+
+    // If patient data exists, add the update for patient_details
+    if (patient) {
+      updateData.patient_details = {
+        update: {
+          firstname: patient.firstname,
+          lastname: patient.lastname,
+          gender: patient.gender,
+          dateofbirth: patient.dateofbirth,
+          nationality: patient.nationality,
+          passport_number: patient.passport_number,
+        },
+      };
+    }
+
     const updatedAppointment = await prisma.appointments.update({
       where: { appointment_id: appointmentId },
-      data: {
-        date,
-        timeslot,
-        description,
-        doctor_id,
-        file_name,
-        file_path,
-        upload_date,
-        status,
-        patient_details: {
-          create: {
-            firstname: patient.firstname,
-            lastname: patient.lastname,
-            gender: patient.gender,
-            dateofbirth: patient.dateofbirth,
-            nationality: patient.nationality,
-            passport_number: patient.passport_number,
-          },
-        },
-      }
-    })
+      data: updateData,
+    });
 
-    return NextResponse.json(updatedAppointment, { status: 200 })
+    return NextResponse.json(updatedAppointment, { status: 200 });
   } catch (error) {
-    console.error('Error updating appointment:', error)
-    return NextResponse.json({ error: 'Failed to update appointment' }, { status: 500 })
+    console.error("Error updating appointment:", error);
+    return NextResponse.json(
+      { error: "Failed to update appointment" },
+      { status: 500 }
+    );
   }
 }
 

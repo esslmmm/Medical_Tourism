@@ -22,6 +22,7 @@ interface PackageBooking {
 interface Appointments {
   appointment_id: number;
   date: string;
+  status: string;
   timeslot: string;
   description: string;
   file_name: string;
@@ -96,27 +97,44 @@ const MedicalServiceCard: React.FC<MedicalServiceCardProps> = ({ selectedDay }) 
   };
 
   const handleStatusChange = async (newStatus: string) => {
+    if (!data) return;
+  
     try {
-      const response = await fetch(`/api/booking/appointments/${data?.appointment_id}`, {
+      const response = await fetch(`/api/booking/appointments/${data.appointment_id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify({
+          status: newStatus,
+          
+        }),
       });
   
       if (!response.ok) {
         throw new Error("Failed to update status");
       }
   
-      // Optimistically update UI
-      setData((prev) => prev ? { ...prev, status: newStatus } : prev);
+      const updated = await response.json();
+  
+      // Update local state
+      setData((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: newStatus,
+              appointments: {
+                ...prev.appointments,
+                status: newStatus,
+              },
+            }
+          : prev
+      );
     } catch (err) {
       console.error("Error updating status:", err);
       alert("Could not update status");
     }
   };
-  
 
   if (loading)
     return <p className="text-center text-gray-500">Loading package booking details...</p>;
@@ -151,18 +169,22 @@ const MedicalServiceCard: React.FC<MedicalServiceCardProps> = ({ selectedDay }) 
       </h2>
       <div className="border border-[#C5D1E0] w-[850px] p-4 rounded-xl shadow-md bg-white relative">
         {/* Status Dropdown - Top Right */}
-        <div className="absolute top-4 right-4">
-          <select
-            id="status"
-            value={data?.status}
-            onChange={(e) => handleStatusChange(e.target.value)}
-            className="border border-gray-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
-        </div>
+      <div className="absolute top-4 right-4">
+        <select
+          id="status"
+          value={data?.appointments.status}
+          onChange={(e) => handleStatusChange(e.target.value)}
+          className={`border rounded-[18px] px-2 py-1 text-sm focus:outline-none focus:ring-2
+            ${data?.appointments.status === 'Pending' ? 'text-white bg-[#FFCC00] border-[#C5D1E0] focus:ring-yellow-300' : ''}
+            ${data?.appointments.status === 'Approved' ? 'text-white bg-[#28A83D] border-[#C5D1E0] focus:ring-green-300' : ''}
+            ${data?.appointments.status === 'Rejected' ? 'text-white bg-[#FB5626] border-[#C5D1E0] focus:ring-red-300' : ''}
+          `}
+        >
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </div>
 
         {/* Top Section - Package Details */}
         <div className="flex gap-4 items-start mx-auto mb-4 border-b border-[#C5D1E0] pb-4">
