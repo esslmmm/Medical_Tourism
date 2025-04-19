@@ -1,33 +1,43 @@
+"use client";
+import { useRouter } from "next/navigation";
+
 export default function OfferService() {
-    const services = [
-      {
-        title: "General health screening",
-        description: "Blood tests, cholesterol, diabetes check, etc.",
-      },
-      {
-        title: "Physical examination",
-        description: "By a certified doctor.",
-      },
-      {
-        title: "ECG and chest X-ray.",
-        description: "",
-      },
-      {
-        title: "Consultation and health report",
-        description: "With recommendations.",
-      },
-      {
-        title: "Ultrasound or other diagnostic tests.",
-        description: "",
-      },
-    ];
-  
-    return (
-      <div>
-        <div className="bg-green-400 text-center text-white m-10 p-3 mx-50 rounded-2xl ">
-        <button className="flex-1/2">Book</button>
-        </div>
-        <section className="py-12 px-6 bg-white text-center">
+  const router = useRouter();
+
+  const services = [
+    {
+      title: "General health screening",
+      description: "Blood tests, cholesterol, diabetes check, etc.",
+    },
+    {
+      title: "Physical examination",
+      description: "By a certified doctor.",
+    },
+    {
+      title: "ECG and chest X-ray.",
+      description: "",
+    },
+    {
+      title: "Consultation and health report",
+      description: "With recommendations.",
+    },
+    {
+      title: "Ultrasound or other diagnostic tests.",
+      description: "",
+    },
+  ];
+
+  const navigateToMedicalAppointment = () => {
+    router.push(`/user/medical_appointment`);
+  };
+
+  return (
+    <div>
+      <div className="bg-green-400 text-center text-green-600  m-10 p-3 mx-50 rounded-2xl hover:bg-green-500 hover:text-white transition duration-300">
+      <button className="px-6 py-2   font-semibold rounded-xl  transition" onClick={navigateToMedicalAppointment}>Book</button>
+      </div>
+
+      <section className="py-12 px-6 bg-white text-center">
         <h2 className="text-2xl font-bold mb-6">Offer Service</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {services.map((service, index) => (
@@ -43,8 +53,6 @@ export default function OfferService() {
           ))}
         </div>
       </section>
-      </div>
-      
-    );
-  }
-  
+    </div>
+  );
+}

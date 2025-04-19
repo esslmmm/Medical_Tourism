@@ -5,9 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import "../../../app/globals.css";
 
 const images = [
-  "/img/Homepage/Test.jpg",
-  "/img/Packages/basiccheckup.webp",
-  "/img/Packages/medical2.png",
+  "/img/landing01.jpg",
+  "/img/landing02.jpeg",
+  "/img/landing03.jpg",
+  `/img/landing04.jpg`
 ];
 
 const Advertisement = () => {
@@ -35,22 +36,30 @@ const Advertisement = () => {
           <img
             src={images[index]}
             alt="Advertisement"
-            className="w-full h-full object-cover brightness-90"
+            className="w-full h-full object-cover brightness-90 opacity-50 
+
+Button B
+"
           />
         </motion.div>
       </AnimatePresence>
 
       {/* Overlay Content */}
-      <div className="absolute inset-0 flex flex-col items-start justify-center p-6 md:p-16 text-left">
-        <h2 className="font-semibold text-[#4D4D4D] mb-4 text-4xl md:text-5xl leading-tight">
-          Detail of package or<br /> promotion ads
-        </h2>
-        <p className="text-lg text-[#717171] mb-6">
-          Hospital’s name, benefit, or package’s name
+      <div className="absolute inset-0 flex flex-col items-center justify-end p-6 md:p-16 text-left">
+        <div >
+        <img
+              src="/img/Footer&Navbar/carepath_logo.png"
+              alt="Logo"
+              className="w-35 h-auto mx-auto"
+            />
+            <p className="font-semibold text-[#4D4D4D] mb-4 text-4xl md:text-5xl leading-tight">
+          CAREPATH
         </p>
-        <button className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-all">
-          SEE DETAIL
-        </button>
+        </div>
+        
+        <p className="text-lg text-[#4D4D4D] mb-6">
+        We help international patients access medical service in Thailand easier
+        </p>
       </div>
 
       {/* Navigation Dots */}

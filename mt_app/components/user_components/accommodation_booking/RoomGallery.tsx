@@ -5,12 +5,12 @@ import { useState } from "react";
 
 const RoomGallery = () => {
   const images = [
-    "/img/room1.png",
-    "/img/room2.png",
-    "/img/room3.png",
-    "/img/room1.png",
-    "/img/room2.png",
-    "/img/room3.png"
+    "/img/wanasom03.jpg",
+    "/img/wanasom01.jpg",
+    "/img/wanasom04.jpg",
+    "/img/wanasom05.jpg",
+    "/img/wanasom06.jpg",
+    "/img/wanasom08.jpg"
   ];
 
   const [mainImage, setMainImage] = useState(images[0]); // Default main image

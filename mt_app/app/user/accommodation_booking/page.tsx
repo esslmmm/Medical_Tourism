@@ -9,12 +9,11 @@ import SelectRoom from "../../../components/user_components/accommodation_bookin
 const AccommodationBooking = () => {
   return (
     <div>
-    <SelectAccommodation />
     <RoomGallery />
     <AccommodationDetails />
     <SelectRoom />
     <RoomOptionCard />
-    <ReviewSection /></div>
+</div>
   )
 }
 export default AccommodationBooking

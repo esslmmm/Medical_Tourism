@@ -5,19 +5,19 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const slides = [
   {
-    image: '/img/place.png',
+    image: '/img/landing04.jpg',
     title: 'Medical Check-Up at MFU Hospital',
-    expiry: 'Expire Date 31/12/2025',
+    expiry: 'Protect your health, protect your future',
   },
   {
-    image: '/img/medical.png',
-    title: 'Advanced Health Screening',
-    expiry: 'Expire Date 30/06/2025',
+    image: '/img/wanasom01.jpg',
+    title: 'Wanasom Resort',
+    expiry: 'Conveniently situated in the Tha Sut part of Chiang Rai',
   },
   {
-    image: '/img/interpreter.png',
-    title: 'Comprehensive Wellness Package',
-    expiry: 'Expire Date 31/12/2024',
+    image: '/img/landing02.jpeg',
+    title: 'Mae Fah Luang University Medical Center Hospital',
+    expiry: 'We care for everyone equally with world-class medical standards',
   },
 ];
 

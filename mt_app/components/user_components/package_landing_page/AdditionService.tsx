@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type ServiceType = "accommodation" | "interpreter";
 
@@ -9,6 +10,11 @@ const AdditionService: React.FC = () => {
     accommodation: false,
     interpreter: false,
   });
+  const router = useRouter();
+
+  const navigateToHospitalPage = () => {
+    router.push(`/user/package_landing_page`);
+  };
 
   const toggleSelection = (service: ServiceType) => {
     setSelectedServices((prev) => ({
@@ -18,21 +24,13 @@ const AdditionService: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#d4e7df] flex justify-center items-center p-6">
+    <div className=" bg-green-100 flex justify-center items-center p-10">
       <div className="w-full max-w-4xl">
         <h1 className="text-4xl font-extrabold text-center mb-8 text-gray-800">
           Addition Service
         </h1>
 
-        {/* Selected Services Section */}
-        <div className="mb-6 bg-white p-4 rounded-xl shadow-md">
-          <h3 className="text-xl font-semibold text-gray-800">Selected Services:</h3>
-          <p className="text-gray-600 text-lg">
-            {selectedServices.accommodation && "Accommodation "}
-            {selectedServices.interpreter && "Interpreter"}
-            {!selectedServices.accommodation && !selectedServices.interpreter && "None"}
-          </p>
-        </div>
+        
 
         {/* Service Cards */}
         <div className="space-y-6">
@@ -63,38 +61,6 @@ const AdditionService: React.FC = () => {
                 </li>
                 <li className="bg-gray-100 px-4 py-3 rounded-lg shadow-sm hover:bg-gray-200 transition">
                   Le Meridien Chiang Rai Resort, Thailand
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Interpreter Card */}
-          <div
-            title="Click to select or deselect Interpreter"
-            className={`flex items-center p-6 rounded-2xl shadow-lg transition-all duration-300 cursor-pointer border-2 relative ${
-              selectedServices.interpreter
-                ? "bg-green-100 border-green-500 scale-105"
-                : "bg-white border-gray-300 hover:shadow-xl hover:scale-105"
-            }`}
-            onClick={() => toggleSelection("interpreter")}
-          >
-            <img
-              src="/img/interpreter.png"
-              alt="Interpreter"
-              className="w-1/3 h-40 object-cover rounded-lg"
-            />
-            <div className="ml-6 flex-1">
-              <h2 className="text-2xl font-bold text-gray-800">Interpreter</h2>
-              <p className="text-gray-600 text-lg mt-2">Options:</p>
-              <ul className="mt-3 space-y-3">
-                <li className="bg-gray-100 px-4 py-3 rounded-lg shadow-sm hover:bg-gray-200 transition">
-                  English Language
-                </li>
-                <li className="bg-gray-100 px-4 py-3 rounded-lg shadow-sm hover:bg-gray-200 transition">
-                  Burmese Language
-                </li>
-                <li className="bg-gray-100 px-4 py-3 rounded-lg shadow-sm hover:bg-gray-200 transition">
-                  Arabic Language
                 </li>
               </ul>
             </div>

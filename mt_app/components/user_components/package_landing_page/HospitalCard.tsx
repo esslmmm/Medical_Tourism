@@ -1,5 +1,7 @@
+"use client";
 import Image from "next/image";
 import { FaMapMarkerAlt } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 const hospital = {
   name: "Mae Fah Luang Medical Center Hospital",
@@ -7,7 +9,15 @@ const hospital = {
   image: "/img/hospital.png",
 };
 
+
+
+
+
 const HospitalCard = () => {
+  const router = useRouter();
+  const navigateToHospitalPage = () => {
+    router.push(`/user/Hospital`);
+  };
   return (
     <div>
       <div className="border border-t border-gray-200 mx-50 my-5"></div>
@@ -33,7 +43,7 @@ const HospitalCard = () => {
           </p>
 
           {/* Button */}
-          <button className="mt-3 px-4 py-2 text-green-500 border border-green-300 rounded-full text-sm hover:bg-green-100 transition">
+          <button className="mt-3 px-4 py-2 text-green-500 border border-green-300 rounded-full text-sm hover:bg-green-100 transition" onClick={navigateToHospitalPage}>
             See details
           </button>
         </div>

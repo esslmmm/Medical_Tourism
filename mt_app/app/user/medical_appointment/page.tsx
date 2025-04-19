@@ -3,7 +3,7 @@ import BookAnAppointment from "../../../components/user_components/medical_appoi
 
 const MedicalAppointment = () => {
   return (
-    <div>
+    <div className="bg-green-100 h-full">
         <BookAnAppointment/>
 
     </div>
