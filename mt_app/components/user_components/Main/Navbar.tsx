@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
           <div className="absolute left-0 hidden group-hover:flex flex-col bg-white shadow-md border border-gray-200 mt-2 w-56 rounded-md z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
             <ul className="text-gray-700">
               {[
-                { name: "Chat Service", path: "/contact/support" },
+                { name: "Chat Service", path: "/user/profile/UserChat/1" },
                 { name: "Technical Feedback", path: "/contact/form" },
                 { name: "Help Center", path: "/contact/locations" },
               ].map((item, index) => (

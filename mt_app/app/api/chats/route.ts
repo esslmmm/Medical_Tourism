@@ -17,9 +17,7 @@ export async function GET() {
       return NextResponse.json({ error: "Failed to fetch chats" }, { status: 500 });
     }
   }
-
-
-
+  
 
 /*
     POST: Create or find the existing chat box

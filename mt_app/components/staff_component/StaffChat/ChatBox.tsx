@@ -42,7 +42,10 @@ const ChatApp: React.FC = () => {
   const [message, setMessage] = useState<string>("");
   const chatEndRef = useRef<HTMLDivElement | null>(null);
   const socket = useRef<any>(null);
-
+  const [activeTab, setActiveTab] = useState('in_process');
+  const [allChats, setChatsall] = useState<Chat[]>([]);
+  const [errorchats, setErrorchats] = useState<string | null>(null);
+  
   // Socket setup
   useEffect(() => {
     socket.current = io("http://localhost:3001");
@@ -91,6 +94,24 @@ useEffect(() => {
     if (userId) fetchChats();
   }, [userId]);
 
+  //Get all chats
+  useEffect(() => {
+    const fetchChats = async () => {
+      try {
+        const res = await fetch('/api/chats');
+        if (!res.ok) {
+          throw new Error('Failed to fetch chats');
+        }
+        const data = await res.json();
+        setChatsall(data);
+      } catch (err: any) {
+        setErrorchats(err.message);
+      }
+    };
+
+    fetchChats();
+  }, []);
+
   // Select chat
   const selectChat = (chat: Chat) => {
     setSelectedChat(chat);
@@ -136,47 +157,75 @@ useEffect(() => {
       console.error("Error sending message:", error);
     }
   };
-
+  
+   // Use `chats` for in process, `allChats` for waiting
+   const filteredChats =
+   activeTab === 'in_process'
+     ? chats.filter((chat) => chat.user2_id !== null)
+     : allChats.filter((chat) => chat.user2_id === null);
   
 
   return (
     <div className="flex h-screen bg-gray-300">
       {/* Sidebar */}
       <aside className="w-1/4 bg-white shadow-lg border p-4 rounded-lg m-2">
-        <input
-          type="text"
-          placeholder="Search name"
-          className="w-full p-2 border rounded-lg"
-        />
-        <h3 className="text-lg font-bold my-3">Chats</h3>
-        <ul>
-          {chats.map((chat) => {
-            const lastMessage = chat.messages[0] || null;
-            return (
-              <li
-                key={chat.chat_id}
-                onClick={() => selectChat(chat)}
-                className="flex items-center p-2 cursor-pointer hover:bg-gray-200"
-              >
-                <img
-                  src={`/img/image.png`}
-                  className="w-10 h-10 rounded-full"
-                  alt="User Avatar"
-                />
-                <div className="ml-3 flex-1">
-                  <h4 className="font-semibold">Chat {chat.chat_id}</h4>
-                  <p className="text-sm text-gray-500 truncate w-32">
-                    {lastMessage ? lastMessage.message : "No messages yet"}
-                  </p>
-                </div>
-                <span className="text-xs text-gray-500">
-                  {lastMessage ? new Date(lastMessage.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      </aside>
+      <h3 className="text-lg font-bold mb-3">Chats</h3>
+
+      {/* Tabs */}
+      <div className="flex mb-4 space-x-2">
+        <button
+          onClick={() => setActiveTab('in_process')}
+          className={`px-3 py-1 rounded-full ${
+            activeTab === 'in_process' ? 'bg-blue-500 text-white' : 'bg-gray-200'
+          }`}
+        >
+          In Process
+        </button>
+        <button
+          onClick={() => setActiveTab('waiting')}
+          className={`px-3 py-1 rounded-full ${
+            activeTab === 'waiting' ? 'bg-blue-500 text-white' : 'bg-gray-200'
+          }`}
+        >
+          Waiting
+        </button>
+      </div>
+
+      {/* Chat List */}
+      <ul>
+        {filteredChats.map((chat) => {
+          const lastMessage = chat.messages?.[0] || null;
+          return (
+            <li
+              key={chat.chat_id}
+              onClick={() => selectChat(chat)}
+              className="flex items-center p-2 cursor-pointer hover:bg-gray-200 rounded"
+            >
+              <img
+                src={`/img/image.png`}
+                className="w-10 h-10 rounded-full"
+                alt="User Avatar"
+              />
+              <div className="ml-3 flex-1">
+                <h4 className="font-semibold">Chat {chat.chat_id}</h4>
+                <p className="text-sm text-gray-500 truncate w-32">
+                  {lastMessage ? lastMessage.message : "No messages yet"}
+                </p>
+              </div>
+              <span className="text-xs text-gray-500">
+                {lastMessage
+                  ? new Date(lastMessage.timestamp).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })
+                  : ''}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </aside>
+
 
       {/* Chat */}
       <div className="w-3/4 flex flex-col m-2">

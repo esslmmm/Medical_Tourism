@@ -530,9 +530,9 @@ model chat {
   timestamp                  DateTime   @default(now()) @db.Timestamp(0)
   chat_id                    Int        @id @default(autoincrement())
   user1_id                   Int
-  user2_id                   Int
+  user2_id                   Int?
   users_chat_user1_idTousers user       @relation("chat_user1_idTousers", fields: [user1_id], references: [id], onUpdate: Restrict, map: "chat_ibfk_1")
-  users_chat_user2_idTousers user       @relation("chat_user2_idTousers", fields: [user2_id], references: [id], onUpdate: Restrict, map: "chat_ibfk_2")
+  users_chat_user2_idTousers user?      @relation("chat_user2_idTousers", fields: [user2_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "chat_ibfk_2")
   messages                   messages[]
 
   @@index([user2_id], map: "user2_id")

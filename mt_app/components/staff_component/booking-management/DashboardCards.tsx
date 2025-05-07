@@ -40,7 +40,7 @@ const DashboardCards = () => {
         setCount(data.length);
         setPendingCount(data.filter((booking) => booking.status === "Pending").length);
         setApprovedCount(data.filter((booking) => booking.status === "Approved").length);
-        setDisapprovedCount(data.filter((booking) => booking.status === "Disapproved").length);
+        setDisapprovedCount(data.filter((booking) => booking.status === "Rejected").length);
       } catch (err: any) {
         console.error("Error fetching bookings:", err);
         setError(err.message || "An unexpected error occurred.");
