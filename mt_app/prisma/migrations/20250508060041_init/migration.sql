@@ -1,355 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the `Action_History` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Appointment` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Car` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Chat` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Contact_Us` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Doctor` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Doctor_Certificate` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Doctor_Education` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Doctor_In_Package` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Doctor_Language` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Hospital` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Hospital_Image` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Hospital_Review` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Hotel` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Hotel_Booking` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Hotel_Facility` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Hotel_Image` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Hotel_Review` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Interpreter` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Interpreter_Booking` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Interpreter_Education` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Interpreter_Review` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Language` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Medical_Service` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Messages` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Package` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Package_Booking` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Package_Description` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Package_Hotel` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Package_Image` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Package_Interpreter` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Patient_Detail` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Payment` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Place` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Place_Image` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Place_In_Trip` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Room_Aggregate` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Room_Facility` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Room_Image` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Room_In_Hotel` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Tourism_Booking` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Trip` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `User_Contact_Detail` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropForeignKey
-ALTER TABLE `Account` DROP FOREIGN KEY `Account_userId_fkey`;
-
--- DropForeignKey
-ALTER TABLE `Action_History` DROP FOREIGN KEY `action_history_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Appointment` DROP FOREIGN KEY `appointments_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Appointment` DROP FOREIGN KEY `appointments_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Chat` DROP FOREIGN KEY `chat_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Chat` DROP FOREIGN KEY `chat_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Doctor` DROP FOREIGN KEY `doctors_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Doctor_Certificate` DROP FOREIGN KEY `doc_certificate_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Doctor_Education` DROP FOREIGN KEY `doc_education_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Doctor_In_Package` DROP FOREIGN KEY `package_doc_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Doctor_In_Package` DROP FOREIGN KEY `package_doc_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Doctor_Language` DROP FOREIGN KEY `doc_language_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Hospital_Image` DROP FOREIGN KEY `hospital_images_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Hospital_Review` DROP FOREIGN KEY `review_hospital_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Hospital_Review` DROP FOREIGN KEY `review_hospital_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Hotel_Booking` DROP FOREIGN KEY `hotel_bookings_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Hotel_Facility` DROP FOREIGN KEY `hotel_facilities_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Hotel_Image` DROP FOREIGN KEY `hotel_images_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Hotel_Review` DROP FOREIGN KEY `review_hotel_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Hotel_Review` DROP FOREIGN KEY `review_hotel_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Interpreter_Booking` DROP FOREIGN KEY `inter_bookings_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Interpreter_Education` DROP FOREIGN KEY `inter_education_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Interpreter_Review` DROP FOREIGN KEY `review_inter_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Interpreter_Review` DROP FOREIGN KEY `review_inter_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Language` DROP FOREIGN KEY `languages_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Medical_Service` DROP FOREIGN KEY `medical_services_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Messages` DROP FOREIGN KEY `messages_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Messages` DROP FOREIGN KEY `messages_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Messages` DROP FOREIGN KEY `messages_ibfk_3`;
-
--- DropForeignKey
-ALTER TABLE `Package` DROP FOREIGN KEY `packages_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Package_Booking` DROP FOREIGN KEY `package_bookings_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Package_Booking` DROP FOREIGN KEY `package_bookings_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Package_Booking` DROP FOREIGN KEY `package_bookings_ibfk_3`;
-
--- DropForeignKey
-ALTER TABLE `Package_Booking` DROP FOREIGN KEY `package_bookings_ibfk_4`;
-
--- DropForeignKey
-ALTER TABLE `Package_Booking` DROP FOREIGN KEY `package_bookings_ibfk_5`;
-
--- DropForeignKey
-ALTER TABLE `Package_Booking` DROP FOREIGN KEY `package_bookings_ibfk_6`;
-
--- DropForeignKey
-ALTER TABLE `Package_Booking` DROP FOREIGN KEY `package_bookings_ibfk_7`;
-
--- DropForeignKey
-ALTER TABLE `Package_Description` DROP FOREIGN KEY `description_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Package_Hotel` DROP FOREIGN KEY `package_hotels_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Package_Hotel` DROP FOREIGN KEY `package_hotels_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Package_Image` DROP FOREIGN KEY `package_image_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Package_Interpreter` DROP FOREIGN KEY `package_interpreters_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Package_Interpreter` DROP FOREIGN KEY `package_interpreters_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Payment` DROP FOREIGN KEY `payment_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Payment` DROP FOREIGN KEY `payment_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Place_Image` DROP FOREIGN KEY `place_image_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Place_In_Trip` DROP FOREIGN KEY `package_places_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Place_In_Trip` DROP FOREIGN KEY `package_places_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Room_Aggregate` DROP FOREIGN KEY `room_aggregate_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Room_Aggregate` DROP FOREIGN KEY `room_aggregate_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Room_Facility` DROP FOREIGN KEY `hotel_room_facilities_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Room_Image` DROP FOREIGN KEY `room_image_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Room_In_Hotel` DROP FOREIGN KEY `hotel_rooms_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Tourism_Booking` DROP FOREIGN KEY `tourism_bookings_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE `Tourism_Booking` DROP FOREIGN KEY `tourism_bookings_ibfk_2`;
-
--- DropForeignKey
-ALTER TABLE `Trip` DROP FOREIGN KEY `trips_ibfk_1`;
-
--- DropIndex
-DROP INDEX `Account_userId_fkey` ON `Account`;
-
--- DropTable
-DROP TABLE `Action_History`;
-
--- DropTable
-DROP TABLE `Appointment`;
-
--- DropTable
-DROP TABLE `Car`;
-
--- DropTable
-DROP TABLE `Chat`;
-
--- DropTable
-DROP TABLE `Contact_Us`;
-
--- DropTable
-DROP TABLE `Doctor`;
-
--- DropTable
-DROP TABLE `Doctor_Certificate`;
-
--- DropTable
-DROP TABLE `Doctor_Education`;
-
--- DropTable
-DROP TABLE `Doctor_In_Package`;
-
--- DropTable
-DROP TABLE `Doctor_Language`;
-
--- DropTable
-DROP TABLE `Hospital`;
-
--- DropTable
-DROP TABLE `Hospital_Image`;
-
--- DropTable
-DROP TABLE `Hospital_Review`;
-
--- DropTable
-DROP TABLE `Hotel`;
-
--- DropTable
-DROP TABLE `Hotel_Booking`;
-
--- DropTable
-DROP TABLE `Hotel_Facility`;
-
--- DropTable
-DROP TABLE `Hotel_Image`;
-
--- DropTable
-DROP TABLE `Hotel_Review`;
-
--- DropTable
-DROP TABLE `Interpreter`;
-
--- DropTable
-DROP TABLE `Interpreter_Booking`;
-
--- DropTable
-DROP TABLE `Interpreter_Education`;
-
--- DropTable
-DROP TABLE `Interpreter_Review`;
-
--- DropTable
-DROP TABLE `Language`;
-
--- DropTable
-DROP TABLE `Medical_Service`;
-
--- DropTable
-DROP TABLE `Messages`;
-
--- DropTable
-DROP TABLE `Package`;
-
--- DropTable
-DROP TABLE `Package_Booking`;
-
--- DropTable
-DROP TABLE `Package_Description`;
-
--- DropTable
-DROP TABLE `Package_Hotel`;
-
--- DropTable
-DROP TABLE `Package_Image`;
-
--- DropTable
-DROP TABLE `Package_Interpreter`;
-
--- DropTable
-DROP TABLE `Patient_Detail`;
-
--- DropTable
-DROP TABLE `Payment`;
-
--- DropTable
-DROP TABLE `Place`;
-
--- DropTable
-DROP TABLE `Place_Image`;
-
--- DropTable
-DROP TABLE `Place_In_Trip`;
-
--- DropTable
-DROP TABLE `Room_Aggregate`;
-
--- DropTable
-DROP TABLE `Room_Facility`;
-
--- DropTable
-DROP TABLE `Room_Image`;
-
--- DropTable
-DROP TABLE `Room_In_Hotel`;
-
--- DropTable
-DROP TABLE `Tourism_Booking`;
-
--- DropTable
-DROP TABLE `Trip`;
-
--- DropTable
-DROP TABLE `User`;
-
--- DropTable
-DROP TABLE `User_Contact_Detail`;
-
 -- CreateTable
 CREATE TABLE `action_history` (
     `id` INTEGER NULL,
@@ -374,6 +22,7 @@ CREATE TABLE `appointments` (
     `file_name` VARCHAR(255) NULL,
     `file_path` VARCHAR(255) NULL,
     `upload_date` TIMESTAMP(0) NULL,
+    `status` ENUM('Pending', 'Approved', 'Rejected', 'Completed', 'Cancelled') NOT NULL,
 
     INDEX `doctor_id`(`doctor_id`),
     INDEX `patient_id`(`patient_id`),
@@ -545,6 +194,7 @@ CREATE TABLE `hotels` (
     `email` VARCHAR(50) NULL,
     `description` TEXT NULL,
     `image` VARCHAR(255) NULL,
+    `check_in_time` VARCHAR(10) NOT NULL DEFAULT '1 PM',
     `contact_info` VARCHAR(255) NULL,
     `create_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
@@ -637,15 +287,14 @@ CREATE TABLE `package_bookings` (
     `booking_id` INTEGER NOT NULL AUTO_INCREMENT,
     `user_id` INTEGER NOT NULL,
     `package_id` INTEGER NOT NULL,
-    `tourism_booking_id` INTEGER NOT NULL,
-    `appointment_id` INTEGER NOT NULL,
-    `hotel_booking_id` INTEGER NOT NULL,
-    `contact_id` INTEGER NOT NULL,
-    `inter_booking_id` INTEGER NOT NULL,
+    `tourism_booking_id` INTEGER NULL,
+    `appointment_id` INTEGER NULL,
+    `hotel_booking_id` INTEGER NULL,
+    `contact_id` INTEGER NULL,
+    `inter_booking_id` INTEGER NULL,
     `create_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     `status` ENUM('Pending', 'Approved', 'Completed', 'Rejected', 'Cancelled') NOT NULL,
 
-    UNIQUE INDEX `package_bookings_contact_id_key`(`contact_id`),
     INDEX `appointment_id`(`appointment_id`),
     INDEX `contact_id`(`contact_id`),
     INDEX `hotel_booking_id`(`hotel_booking_id`),
@@ -653,7 +302,6 @@ CREATE TABLE `package_bookings` (
     INDEX `package_id`(`package_id`),
     INDEX `tourism_booking_id`(`tourism_booking_id`),
     INDEX `user_id`(`user_id`),
-    UNIQUE INDEX `unique_contact_per_booking`(`contact_id`),
     PRIMARY KEY (`booking_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -864,7 +512,7 @@ CREATE TABLE `chat` (
     `timestamp` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     `chat_id` INTEGER NOT NULL AUTO_INCREMENT,
     `user1_id` INTEGER NOT NULL,
-    `user2_id` INTEGER NOT NULL,
+    `user2_id` INTEGER NULL,
 
     INDEX `user2_id`(`user2_id`),
     INDEX `user_id`(`user1_id`),
@@ -907,6 +555,7 @@ CREATE TABLE `contact_us` (
     `message` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
+    UNIQUE INDEX `Contact_Us_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -934,8 +583,28 @@ CREATE TABLE `user_contact_detail` (
     `lastname` VARCHAR(255) NULL,
     `email` VARCHAR(255) NULL,
     `country` VARCHAR(255) NULL,
-    `phone` VARCHAR(191) NULL,
+    `phone` INTEGER NULL,
 
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `account` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` INTEGER NOT NULL,
+    `type` VARCHAR(191) NOT NULL,
+    `provider` VARCHAR(191) NOT NULL,
+    `providerAccountId` VARCHAR(191) NOT NULL,
+    `refresh_token` TEXT NULL,
+    `access_token` TEXT NULL,
+    `expires_at` INTEGER NULL,
+    `token_type` VARCHAR(191) NULL,
+    `scope` VARCHAR(191) NULL,
+    `id_token` TEXT NULL,
+    `session_state` VARCHAR(191) NULL,
+
+    INDEX `Account_userId_fkey`(`userId`),
+    UNIQUE INDEX `Account_provider_providerAccountId_key`(`provider`, `providerAccountId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -1015,7 +684,7 @@ ALTER TABLE `package_bookings` ADD CONSTRAINT `package_bookings_ibfk_4` FOREIGN 
 ALTER TABLE `package_bookings` ADD CONSTRAINT `package_bookings_ibfk_5` FOREIGN KEY (`hotel_booking_id`) REFERENCES `hotel_bookings`(`booking_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE `package_bookings` ADD CONSTRAINT `package_bookings_contact_id_fkey` FOREIGN KEY (`contact_id`) REFERENCES `user_contact_detail`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `package_bookings` ADD CONSTRAINT `package_bookings_ibfk_6` FOREIGN KEY (`contact_id`) REFERENCES `user_contact_detail`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE `package_bookings` ADD CONSTRAINT `package_bookings_ibfk_7` FOREIGN KEY (`inter_booking_id`) REFERENCES `inter_bookings`(`booking_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -1105,4 +774,4 @@ ALTER TABLE `chat` ADD CONSTRAINT `chat_ibfk_2` FOREIGN KEY (`user2_id`) REFEREN
 ALTER TABLE `trips` ADD CONSTRAINT `trips_ibfk_1` FOREIGN KEY (`package_id`) REFERENCES `packages`(`package_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 -- AddForeignKey
-ALTER TABLE `Account` ADD CONSTRAINT `Account_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `account` ADD CONSTRAINT `Account_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
