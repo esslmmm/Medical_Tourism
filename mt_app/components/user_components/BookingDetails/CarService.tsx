@@ -2,7 +2,7 @@ import React from 'react'
 
 const CarService = () => {
   return (
-      <div><div className="bg-white p-6 rounded-lg shadow-lg">
+      <div><div className="bg-white p-6 border-b border-[#E0E0E0]">
           <h3 className="font-semibold text-black">Car Service</h3>
           <div className="flex items-center mt-4">
               <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>

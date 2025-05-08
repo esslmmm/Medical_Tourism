@@ -17,7 +17,7 @@ interface Doctor {
 }
 
 const DoctorList: React.FC = () => {
-  const router = useRouter(); // Navigation hook
+  const router = useRouter();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
   const [canScrollRight, setCanScrollRight] = useState<boolean>(true);

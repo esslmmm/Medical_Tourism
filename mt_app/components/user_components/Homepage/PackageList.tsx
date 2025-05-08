@@ -6,6 +6,7 @@ import Image from "next/image";
 import "../../../app/globals.css";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
+import { useRouter } from "next/navigation";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });
 
@@ -18,46 +19,6 @@ interface Package {
   package_type: string;
 }
 
-
-
-// const packages: Package[] = [
-//   {
-//     id: 1,
-//     image: "/img/Packages/basiccheckup.webp",
-//     name: "CT Scan Heart & Lung",
-//     details: "Package’s detail or promotion description",
-//     expired: "Expired Date",
-//   },
-//   {
-//     id: 2,
-//     image: "/img/Homepage/health-checkup.jpg",
-//     name: "X-Ray Chest",
-//     details: "Package’s detail or promotion description",
-//     expired: "Expired Date",
-//   },
-//   {
-//     id: 3,
-//     image: "/img/Packages/package3.jpg",
-//     name: "Health Check-Up",
-//     details: "Package’s detail or promotion description",
-//     expired: "Expired Date",
-//   },
-//   {
-//     id: 4,
-//     image: "/img/Packages/package2.jpg",
-//     name: "Basic Health Check-Up",
-//     details: "Package’s detail or promotion description",
-//     expired: "Expired Date",
-//   },
-//   {
-//     id: 5,
-//     image: "/img/Packages/package1.jpg",
-//     name: "Advanced Medical Package",
-//     details: "Package’s detail or promotion description",
-//     expired: "Expired Date",
-//   },
-// ];
-
 const PackageList: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
@@ -65,6 +26,7 @@ const PackageList: React.FC = () => {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchPackages() {
@@ -148,6 +110,7 @@ const PackageList: React.FC = () => {
             key={pkg.package_id}
             className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200 snap-center"
             whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
+            onClick={() => router.push(`/user/package_landing_page`)} // Navigate to doctor details
             whileTap={{ scale: 0.98 }}
           >
             <div className="relative w-full h-52">

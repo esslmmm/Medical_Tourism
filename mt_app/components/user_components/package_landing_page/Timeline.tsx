@@ -6,22 +6,22 @@ const events = [
   {
     title: "Medical Check-Up at MFU",
     time: "11:00 - 12:00 | Day 1",
-    image: "/img/medical.png",
+    image: "/img/package_detail/landing02.jpeg",
   },
   {
     title: "Khon Kron Waterfall",
     time: "13:00 - 15:00 | Day 1",
-    image: "/img/medical.png",
+    image: "/img/Places/khunkorn.png",
   },
   {
-    title: "Khon Kron Waterfall",
+    title: "Wat Rong Khun",
     time: "15:00 - 17:00 | Day 1",
-    image: "/img/medical.png",
+    image: "/img/Places/Wat_Rong_Khun.jpg",
   },
   {
-    title: "Khon Kron Waterfall",
+    title: "Singha Park",
     time: "15:00 - 17:00 | Day 2",
-    image: "/img/medical.png",
+    image: "/img/Places/singha-park.jpg",
   },
 ];
 

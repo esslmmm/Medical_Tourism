@@ -3,16 +3,11 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-
-// import ContactDetails from '../../../components/user_components/BookingDetails/ContactDetails';
-// import PatientDetails from '../../../components/user_components/BookingDetails/PatientDetails';
 import MedicalService from '../../../components/user_components/BookingDetails/MedicalService';
 import PlaceToVisit from '../../../components/user_components/BookingDetails/PlaceToVisit';
 import Accommodation from '../../../components/user_components/BookingDetails/Accommodation';
 import Interpreter from '../../../components/user_components/BookingDetails/Interpreter';
 import CarService from '../../../components/user_components/BookingDetails/CarService';
-// import NavbarBookingDetails from "../../../components/user_components/BookingDetails/NavbarBookingDetails";
-// import Footer from "../../../components/user_components/BookingDetails/Footer";
 
 export default function UserForm() {
     const [firstName, setFirstName] = useState('');
@@ -24,8 +19,6 @@ export default function UserForm() {
     const router = useRouter();
 
     const handleSubmit = async (event: React.FormEvent) => {
-        
-        
         if (loading) return; // Avoid duplicate requests
         setLoading(true);
 

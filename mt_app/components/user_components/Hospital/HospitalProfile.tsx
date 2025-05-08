@@ -41,7 +41,7 @@ interface Hospital {
   reviews: number;
   image: string;
   description: string;
-  hospital_images: HospitalImage[]; // ✅ Changed from images to hospital_images
+  hospital_images: HospitalImage[];
   medical_services: MedicalService[];
   packages: Package[];
   review_hospital: Review[];

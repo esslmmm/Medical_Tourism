@@ -4,23 +4,23 @@ import Image from "next/image";
 const trips = [
   {
     id: 1,
-    name: "Khon Kron Waterfall",
-    image: "/img/place.png", // Replace with actual images
+    name: "Khun Korn Waterfall",
+    image: "/img/Places/khunkorn.png", // Replace with actual images
   },
   {
     id: 2,
     name: "White Temple",
-    image: "/img/place.png", // Replace with actual images
+    image: "/img/Places/Wat_Rong_Khun.jpg", // Replace with actual images
   },
   {
     id: 3,
     name: "Phi Phi Islands",
-    image: "/img/place.png", // Replace with actual images
+    image: "/img/Places/ppisland.jpg", // Replace with actual images
   },
   {
     id: 4,
-    name: "Phi Phi Islands",
-    image: "/img/place.png", // Replace with actual images
+    name: "Singha Park",
+    image: "/img/Places/singha-park.jpg", // Replace with actual images
   },
 ];
 

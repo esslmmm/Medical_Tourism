@@ -1,3 +1,6 @@
+"use client";
+import { useRouter } from "next/navigation";
+
 const accommodations = [
   {
     id: 1,
@@ -27,6 +30,12 @@ const accommodations = [
 ];
 
 const AccommodationDetails = () => {
+  const router =useRouter();
+
+  const navigateToInterpreter = () => {
+    router.push(`/user/interpreter`);
+  }
+  
   return (
     <div className="p-10 flex justify-center">
       {accommodations.map((hotel) => (
@@ -73,13 +82,14 @@ const AccommodationDetails = () => {
             <div className="flex justify-between font-bold text-lg mt-1">
               <span>Total price</span> <span>{hotel.discountPrice.toLocaleString()} USD</span>
             </div>
-            <p className="text-gray-500 text-sm flex justify-center mt-20 ">
-              You save <p className="text-black ">{hotel.originalPrice - hotel.discountPrice} </p> USD on this booking
+            <p className="text-gray-500 text-sm flex justify-center mt-20">
+              You save <span className="text-black">{hotel.originalPrice - hotel.discountPrice}</span> USD on this booking
             </p>
+
             
             
           </div>
-          <button className="w-full bg-green-500 text-white py-3 rounded-lg mt-4 hover:bg-green-600">
+          <button className="w-full bg-green-500 text-white py-3 rounded-lg mt-4 hover:bg-green-600" onClick={navigateToInterpreter}>
               Book Now
             </button>
           </div>

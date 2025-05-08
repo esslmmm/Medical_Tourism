@@ -79,7 +79,7 @@ const AdditionService: React.FC = () => {
             onClick={() => toggleSelection("interpreter")}
           >
             <img
-              src="/img/interpreter.png"
+              src="/img/package_detail/interpreter.png"
               alt="Interpreter"
               className="w-1/3 h-40 object-cover rounded-lg"
             />
