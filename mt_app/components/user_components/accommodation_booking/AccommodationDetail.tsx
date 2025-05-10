@@ -33,7 +33,7 @@ const AccommodationDetails = () => {
   const router =useRouter();
 
   const navigateToInterpreter = () => {
-    router.push(`/user/interpreter`);
+    router.push(`/user/Interpreter`);
   }
   
   return (

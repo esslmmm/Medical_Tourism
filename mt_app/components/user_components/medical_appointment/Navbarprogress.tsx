@@ -4,12 +4,25 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import LoginModal from "../Homepage/LoginModal";
+import React from "react";
+import { usePathname, useRouter } from "next/navigation";
+
+const sidebarItems = [
+  { label: "Customer Info", path: "/user/Form/medical_appointment" },
+  { label: "Confirm", path: "/user/Form/BookingConfirm" },
+];
 
 const Navbarpro: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [currency, setCurrency] = useState<string>("USD");
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
+  const pathname = usePathname();
+  const router = useRouter();
+
+    const currentStep = sidebarItems.findIndex(item => pathname.startsWith(item.path));
+
+
 
   const toggleCurrency = () => setCurrency(currency === "USD" ? "THB" : "USD");
 
@@ -36,26 +49,28 @@ const Navbarpro: React.FC = () => {
         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      <div className="flex items-center justify-center">
-        {/* Step 1 */}
-        <div className="flex flex-col items-center">
-          <div className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-500 text-white font-bold">
-            1
+      <div className="flex justify-center">
+      {sidebarItems.map((item, index) => (
+        <React.Fragment key={item.label}>
+          <div className="flex flex-col items-center cursor-pointer" onClick={() => router.push(item.path)}>
+            <div
+              className={`w-8 h-8 flex items-center justify-center rounded-full font-bold ${
+                index === currentStep ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
+              }`}
+            >
+              {index + 1}
+            </div>
+            <span className="text-sm mt-1 text-black">
+              {item.label.replace("_", " ")}
+            </span>
           </div>
-          <span className="text-sm mt-1 text-black">Customer Info</span>
-        </div>
 
-        {/* Line between steps */}
-        <div className="w-12 h-1 bg-black"></div>
-
-        {/* Step 2 */}
-        <div className="flex flex-col items-center">
-          <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-black font-bold">
-            2
-          </div>
-          <span className="text-sm mt-1 text-black">Confirm</span>
-        </div>
-      </div>
+          {index < sidebarItems.length - 1 && (
+            <div className="w-12 h-1 bg-black mt-4 mx-2"></div>
+          )}
+        </React.Fragment>
+      ))}
+    </div>
 
 
       <div className="flex items-center gap-4">

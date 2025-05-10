@@ -60,9 +60,11 @@ export default function InterpreterPage() {
 
     const handleContinue = () => {
       if (selectedInterpreter) {
-        router.push(`/user/interpreter/${selectedInterpreter.interpreter_id}`);
+        router.push(`/user/Form/medical_appointment`);
       }
     };
+
+
   
     return (
       <div>

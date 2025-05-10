@@ -28,7 +28,7 @@ export default function OfferService() {
   ];
 
   const navigateToMedicalAppointment = () => {
-    router.push(`/user/medical_appointment`);
+    router.push(`/user/accommodation_booking`);
   };
 
   return (

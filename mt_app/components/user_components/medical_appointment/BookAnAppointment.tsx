@@ -26,7 +26,7 @@ export default function MedicalAppointment() {
   });
 
   const navigateTohotels = () => {
-    router.push(`/user/accommodation_booking`);
+    router.push(`/user/Form/BookingConfirm`);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -243,7 +243,7 @@ export default function MedicalAppointment() {
     </div>
 
       {/* Continue Button */}
-      <button className="w-full py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600" onClick={navigateTohotels}>
+      <button className="w-full py-3 text-white bg-[#2196F3] rounded-lg hover:bg-blue-600" onClick={navigateTohotels}>
         Continue
       </button>
     </div>
