@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
 
 interface User {
-  user_id: number;
+  id: number;
   name: string;
 }
 

@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 export async function GET() {
   try {
     const hotelRooms = await prisma.hotel_rooms.findMany();
-
     return NextResponse.json(hotelRooms, { status: 200 });
   } catch (error) {
     console.error('Error fetching hotel rooms:', error);

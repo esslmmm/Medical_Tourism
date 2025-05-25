@@ -21,7 +21,15 @@ export async function GET(request: Request, context: { params: { id: string } })
             where: { hotel_id: hotelIdParsed },
             include: {
                 hotel_rooms: true,
-                review_hotel: true,
+                review_hotel: {
+                    include: {
+                        user: {
+                            select: {
+                                name: true
+                            }
+                        }
+                    }
+                },
                 hotel_facilities: true,
                 hotel_images: true
             },

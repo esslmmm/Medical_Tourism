@@ -213,9 +213,9 @@ const InterpreterProfile: React.FC<InterpreterProfileProps> = ({ interpreter }) 
                       <h3 className="font-semibold text-black flex items-center text-lg mr-3">
                         "{review.title_review}" 
                       </h3>
-                      {Array.from({ length: Math.floor(averageRating) }).map((_, i) => (
+                      {Array.from({ length: Math.floor(review.rating) }).map((_, i) => (
                           <FaStar key={i} />
-                        ))}{averageRating % 1 !== 0 && <FaStarHalfAlt />}
+                        ))}{review.rating % 1 !== 0 && <FaStarHalfAlt />}
                       </div>
                       <p className="text-gray-600 text-sm font-extralight">{review.comment}</p>
                       <p className="text-black font-thin text-sm">{formatDate(review.created_at)}</p>

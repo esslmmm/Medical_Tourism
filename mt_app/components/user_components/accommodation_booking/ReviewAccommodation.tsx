@@ -1,42 +1,74 @@
-const reviews = [
-  {
-    id: 1,
-    title: "Friendly staff",
-    content:
-      "Stayed during a storm in Chiang Rai, power outage occurred unexpectedly. Staff didn't know what to do. However, they tried their best to provide service with their limited resources. Room had a decent water pressure. Breakfast had a variety of options but tasted average. Comfortable bed made it hard to get up. Spacious room with good air conditioning.",
-    reviewer: "Ekkarat Singhala",
-    date: "April 25, 2023",
-    rating: 5,
-  },
-  {
-    id: 2,
-    title: "First trip to Chiang Rai.",
-    content:
-      "I took my family to Chiang Rai for the first time and we stayed in a great family room with two bedrooms. It was very clean and my partner and children loved it. The room was spacious and comfortable, but the downside was that the plugs were difficult to use. The breakfast was varied and included many international options. Additionally, they provided sour noodle soup and it was very delicious. We were impressed and would choose to stay here again if we have the opportunity. ❤️❤️",
-    reviewer: "Ekkarat Singhala",
-    date: "November 04, 2023",
-    rating: 4.5,
-  },
-];
+"use client";
 
-const ReviewSection = () => {
+import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+
+
+interface Accommodation {
+  hotel_id: number;
+  name: string;
+  hotel_cod: string;
+  location: string;
+  city: string;
+  rating: number;
+  email: string;
+  description: string;
+  image: string;
+  check_in_time: string;
+  contact_info: string;
+  review_hotel: review_hotel[];
+}
+
+interface review_hotel {
+  review_id: number;
+  user_id: number;
+  rating: number;
+  title_review: string;
+  comment: string;
+  created_at: string;
+  user: user;
+}
+
+interface user {
+  user_id: number;
+  name: string;
+}
+
+interface AccommodationProfileProps {
+  accommodation: Accommodation | null;
+}
+
+const ReviewSection: React.FC<AccommodationProfileProps> = ({ accommodation }) => {
+    if (!accommodation) return <p>No accommodation info available.</p>;
+    
+    const formatDate = (timestamp: string | number | Date) => {
+    if (!timestamp) return "Invalid Date";
+    const date = new Date(timestamp);
+    if (isNaN(date.getTime())) return "Invalid Date";
+  
+    return `Reviewed ${date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })}`;
+  };
+
   return (
     <div className="bg-[#D2ECE4] py-10 flex flex-col items-center">
       <h2 className="text-3xl font-bold mb-6">Review</h2>
       <div className="max-w-4xl w-full space-y-6">
-        {reviews.map((review) => (
-          <div key={review.id} className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold">"{review.title}"</h3>
-            <p className="mt-2 text-gray-700">{review.content}</p>
+        {accommodation?.review_hotel.map((review) => (
+          <div key={review.review_id} className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="text-xl font-semibold">"{review.title_review}"</h3>
+            <p className="mt-2 text-gray-700">{review.comment}</p>
             <div className="mt-4 text-sm text-gray-500">
-              Reviewed {review.date}
+              {formatDate(review.created_at)}
             </div>
-            <div className="font-semibold mt-2">{review.reviewer}</div>
+            <div className="font-semibold mt-2">{review.user.name}</div>
             <div className="flex items-center mt-2">
-              {Array.from({ length: Math.floor(review.rating) }, (_, index) => (
-                <span key={index} className="text-yellow-500">⭐</span>
+              {Array.from({ length: Math.floor(review.rating) }, (_, i) => (
+                <FaStar className="text-yellow-500" key={i} />
               ))}
-              {review.rating % 1 !== 0 && <span className="text-yellow-500">⭐️</span>}
+              {review.rating % 1 !== 0 && <FaStarHalfAlt className="text-yellow-500" />}
             </div>
           </div>
         ))}

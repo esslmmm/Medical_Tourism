@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 
 
 interface User{
-  user_id: number;
+  id: number;
   name: string;
 }
 
