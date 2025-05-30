@@ -1,6 +1,7 @@
 "use client";
+import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { useStepNavigator } from "../../../app/user/package_landing_page/goToNextStep";
 
 interface Accommodation {
   hotel_id: number;
@@ -44,7 +45,7 @@ interface review_hotel {
 interface AccommodationDetailsProps {
   accommodation: Accommodation | null;
   quantities: { [roomId: number]: number };
-  selectedRooms: { room_id: number; quantity: number }[]; // <- Add this line
+  selectedRooms: { room_id: number; quantity: number }[];
   nights: number;
   adults: number;
   children: number;
@@ -63,6 +64,9 @@ const AccommodationDetails: React.FC<AccommodationDetailsProps> = ({
   // setQuantities
 }) => {
   if (!accommodation) return null;
+  const { id } = useParams();
+  const goToNextStep = useStepNavigator();
+  
 
   const selectedRoomDetails = selectedRooms.map((selected) => {
     const roomInfo = accommodation.hotel_rooms.find(
@@ -75,10 +79,10 @@ const AccommodationDetails: React.FC<AccommodationDetailsProps> = ({
       price: roomInfo?.price_per_night || 0,
     };
   });
-  const router = useRouter();
 
-  const navigateToInterpreter = () => {
-    router.push(`/user/Interpreter`);
+  const handleNext = () => {
+    // process selection...
+    goToNextStep();
   };
 
   // const increment = (roomId: number) => {
@@ -212,7 +216,7 @@ const AccommodationDetails: React.FC<AccommodationDetailsProps> = ({
           </p>
           <button
             className="w-full bg-green-500 text-white py-3 rounded-lg mt-4 hover:bg-green-600"
-            onClick={navigateToInterpreter}
+            onClick={handleNext}
           >
             Book Now
           </button>
@@ -223,3 +227,4 @@ const AccommodationDetails: React.FC<AccommodationDetailsProps> = ({
 };
 
 export default AccommodationDetails;
+

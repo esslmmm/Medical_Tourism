@@ -1,41 +1,80 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function OfferService() {
+interface Packages {
+  package_id: number;
+  package_name: string;
+  description: description[]
+}
+interface description {
+  description_id: number;
+  title: string;
+  details: string;
+}
+type ServiceType = "accommodation_booking" | "Interpreter";
+
+interface ServicesProps {
+  selectedServices: Record<ServiceType, boolean>;
+}
+
+const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
+  const { id } = useParams();
+  const [data, setData] = useState<Packages | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const services = [
-    {
-      title: "General health screening",
-      description: "Blood tests, cholesterol, diabetes check, etc.",
-    },
-    {
-      title: "Physical examination",
-      description: "By a certified doctor.",
-    },
-    {
-      title: "ECG and chest X-ray.",
-      description: "",
-    },
-    {
-      title: "Consultation and health report",
-      description: "With recommendations.",
-    },
-    {
-      title: "Ultrasound or other diagnostic tests.",
-      description: "",
-    },
-  ];
+  //Getting the Package data
+    useEffect(() => {
+      const fetchPackage = async () => {
+        try {
+          const res = await fetch(`/api/services/packages/${id}`);
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || 'Unknown error');
+          }
+  
+          const json = await res.json();
+          setData(json);
+        } catch (err: any) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchPackage();
+    }, [id]);
 
   const navigateToMedicalAppointment = () => {
-    router.push(`/user/accommodation_booking`);
+    router.push(`/user/accommodation_booking/${id}`);
   };
+
+  const handleStart = () => {
+  const selected = Object.entries(selectedServices)
+    .filter(([_, value]) => value)
+    .map(([key]) => key as ServiceType);
+
+  if (selected.length === 0) {
+    alert('Please select at least one service.');
+    return;
+  }
+
+  localStorage.setItem('selectedSteps', JSON.stringify(selected));
+  localStorage.setItem('currentStepIndex', '0');
+
+  router.push(`/user/${selected[0]}/${id}`);
+};
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
       {/* Book Button Styled as a Div */}
         <div
-          onClick={navigateToMedicalAppointment}
+          onClick={handleStart}
           className="cursor-pointer w-2/3 sm:w-1/2 md:w-2/3 bg-green-400 text-white text-lg px-8 py-4 font-semibold rounded-2xl hover:bg-green-700 transition duration-300 flex justify-center mx-auto"
         >
           Book
@@ -45,14 +84,14 @@ export default function OfferService() {
       <section className="py-12 text-center">
         <h2 className="text-2xl text-[#000000] font-bold mb-6">Offer Service</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {services.map((service, index) => (
+          {data?.description.map((service, index) => (
             <div
               key={index}
               className="bg-white shadow-md rounded-xl p-6 border border-gray-200 hover:shadow-lg transition"
             >
               <h3 className="font-semibold text-[#000000] text-lg">{service.title}</h3>
-              {service.description && (
-                <p className="text-gray-600 text-sm mt-2">{service.description}</p>
+              {service.details && (
+                <p className="text-gray-600 text-sm mt-2">{service.details}</p>
               )}
             </div>
           ))}
@@ -61,3 +100,5 @@ export default function OfferService() {
     </div>
   );
 }
+
+export default OfferService;

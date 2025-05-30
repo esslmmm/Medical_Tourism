@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FaChevronLeft, FaChevronRight, FaStar, FaStarHalfAlt } from "react-icons/fa";
 
@@ -68,13 +69,13 @@ interface InterpreterListProps {
 }
 
 export default function InterpreterList({ setSelectedInterpreter, selectedInterpreter }: InterpreterListProps) {
+  const { id } = useParams();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
   const [interpreterData, setInterpreterData] = useState<Interpreter[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const packageId = 34;
 
   // Function to Calculate Average Rating
   const calculateAverageRating = (reviews: Review[]) => {
@@ -88,7 +89,7 @@ export default function InterpreterList({ setSelectedInterpreter, selectedInterp
       try {
         setLoading(true);
         setError(null);
-        const packageRes = await fetch(`/api/services/packages/${packageId}`);
+        const packageRes = await fetch(`/api/services/packages/${id}`);
 
         if (!packageRes.ok) {
           throw new Error("Failed to fetch package");

@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from "next/navigation";
-import Footer from '../../../components/user_components/Main/Footer';
-import Navbar from '../../../components/user_components/Main/Navbar';
-import InterpreterDetails from '../../../components/user_components/Interpreter/InterpreterDetails';
-import InterpreterList from '../../../components/user_components/Interpreter/InterpreterList';
+import Footer from '../../../../components/user_components/Main/Footer';
+import Navbar from '../../../../components/user_components/Main/Navbar';
+import InterpreterDetails from '../../../../components/user_components/Interpreter/InterpreterDetails';
+import InterpreterList from '../../../../components/user_components/Interpreter/InterpreterList';
+import { useStepNavigator } from '../../package_landing_page/goToNextStep';
 
 
 // Define Type for an Interpreter
@@ -56,13 +57,12 @@ interface Education {
 
 export default function InterpreterPage() {
     const [selectedInterpreter, setSelectedInterpreter] = useState<Interpreter | null>(null);
-    const router = useRouter();
+    const goToNextStep = useStepNavigator();
 
-    const handleContinue = () => {
-      if (selectedInterpreter) {
-        router.push(`/user/Form/medical_appointment`);
-      }
-    };
+    const handleNext = () => {
+    // process selection...
+    goToNextStep();
+  };
 
 
   
@@ -89,7 +89,7 @@ export default function InterpreterPage() {
           {selectedInterpreter && (
         <div className="flex justify-end mt-6 mr-25">
           <button
-            onClick={handleContinue}
+            onClick={handleNext}
             className="w-35 bg-gradient-to-r from-gray-900 to-gray-700 text-white py-3 px-6 
             rounded-lg text-md font-semibold shadow-lg hover:shadow-xl 
             hover:from-gray-800 hover:to-gray-600 transition duration-300 ease-in-out 
@@ -104,4 +104,4 @@ export default function InterpreterPage() {
       </div>
     );
   }
-  
+

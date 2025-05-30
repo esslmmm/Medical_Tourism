@@ -20,7 +20,11 @@ export async function GET(request: Request, { params }: { params: { id: string }
           package_hotels: true,
           trips: {
             include: {
-              package_places: true
+              package_places: {
+                include: {
+                    places: true
+                }
+              }
             }
           },
           package_image: true,

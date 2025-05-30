@@ -1,30 +1,70 @@
 'use client';
-
+import { useParams } from "next/navigation";
 import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const slides = [
-  {
-    image: '/img/package_detail/landing04.jpg',
-    title: 'Medical Check-Up at MFU Hospital',
-    expiry: 'Protect your health, protect your future',
-  },
-  {
-    image: '/img/hotels/wanasom01.jpg',
-    title: 'Wanasom Resort',
-    expiry: 'Conveniently situated in the Tha Sut part of Chiang Rai',
-  },
-  {
-    image: '/img/package_detail/landing02.jpeg',
-    title: 'Mae Fah Luang University Medical Center Hospital',
-    expiry: 'We care for everyone equally with world-class medical standards',
-  },
-];
+// const slides = [
+//   {
+//     image: '/img/package_detail/landing04.jpg',
+//     title: 'Medical Check-Up at MFU Hospital',
+//     expiry: 'Protect your health, protect your future',
+//   },
+//   {
+//     image: '/img/hotels/wanasom01.jpg',
+//     title: 'Wanasom Resort',
+//     expiry: 'Conveniently situated in the Tha Sut part of Chiang Rai',
+//   },
+//   {
+//     image: '/img/package_detail/landing02.jpeg',
+//     title: 'Mae Fah Luang University Medical Center Hospital',
+//     expiry: 'We care for everyone equally with world-class medical standards',
+//   },
+// ];
+
+interface Packages {
+  package_id: number;
+  package_name: string;
+  package_image: package_image[]
+}
+
+interface package_image {
+  image_id: number;
+  images: string;
+  title: string;
+  detail: string
+}
 
 export default function ImageCarousel() {
+  const { id } = useParams();
+  const [data, setData] = useState<Packages | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
+
+  //Getting the Package data
+  useEffect(() => {
+    const fetchPackage = async () => {
+      try {
+        const res = await fetch(`/api/services/packages/${id}`);
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || 'Unknown error');
+        }
+
+        const json = await res.json();
+        setData(json);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPackage();
+  }, [id]);
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -36,13 +76,14 @@ export default function ImageCarousel() {
   }, []);
 
   useEffect(() => {
-    if (!isMobile) {
-      const interval = setInterval(() => {
-        setIndex((prev) => (prev + 1) % slides.length);
-      }, 3000);
-      return () => clearInterval(interval);
-    }
-  }, [isMobile]);
+  if (!isMobile && data?.package_image.length) {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % data.package_image.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }
+}, [isMobile, data]);
+
 
   // Sync scroll to index for desktop
   useEffect(() => {
@@ -64,9 +105,23 @@ export default function ImageCarousel() {
     }
   };
 
-  const prevSlide = () =>
-    setIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  const nextSlide = () => setIndex((prev) => (prev + 1) % slides.length);
+const prevSlide = () =>
+  setIndex((prev) =>
+    data && data.package_image.length
+      ? (prev === 0 ? data.package_image.length - 1 : prev - 1)
+      : 0
+  );
+
+const nextSlide = () =>
+  setIndex((prev) =>
+    data && data.package_image.length
+      ? (prev + 1) % data.package_image.length
+      : 0
+  );
+
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <div className="relative w-full h-[500px] overflow-hidden">
@@ -80,19 +135,19 @@ export default function ImageCarousel() {
             : 'overflow-hidden'
         }`}
       >
-        {slides.map((slide, i) => (
+        {data?.package_image.map((slide, i) => (
           <div
             key={i}
             className="w-full flex-shrink-0 h-full snap-center relative"
           >
             <img
-              src={slide.image}
+              src={slide.images}
               alt={slide.title}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black/30 flex flex-col justify-center items-center text-white text-center px-4">
               <h2 className="text-2xl font-semibold">{slide.title}</h2>
-              <p className="text-lg mt-2">{slide.expiry}</p>
+              <p className="text-lg mt-2">{slide.detail}</p>
             </div>
           </div>
         ))}
@@ -118,7 +173,7 @@ export default function ImageCarousel() {
 
       {/* Dots */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-        {slides.map((_, i) => (
+        {data?.package_image.map((_, i) => (
           <span
             key={i}
             className={`w-3 h-3 rounded-full ${

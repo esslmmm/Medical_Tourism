@@ -54,10 +54,11 @@ model cars {
 }
 
 model description {
-  description_id Int       @id @default(autoincrement())
-  package_id     Int?
-  details        String?   @db.VarChar(255)
-  packages       packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "description_ibfk_1")
+  description_id Int      @id @default(autoincrement())
+  package_id     Int
+  title          String   @db.VarChar(100)
+  details        String   @db.VarChar(255)
+  packages       packages @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "description_ibfk_1")
 
   @@index([package_id], map: "package_id")
 }
@@ -348,6 +349,8 @@ model package_image {
   images     String?   @db.VarChar(255)
   image_id   Int       @id @default(autoincrement())
   package_id Int?
+  title      String    @db.Text
+  detail     String    @db.Text
   packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_image_ibfk_1")
 
   @@index([package_id], map: "package_id")

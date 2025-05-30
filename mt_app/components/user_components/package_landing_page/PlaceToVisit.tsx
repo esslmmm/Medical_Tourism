@@ -1,42 +1,81 @@
 "use client";
+import { useParams,  useRouter } from "next/navigation";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
-const trips = [
-  {
-    id: 1,
-    name: "Khun Korn Waterfall",
-    image: "/img/Places/khunkorn.png", // Replace with actual images
-  },
-  {
-    id: 2,
-    name: "White Temple",
-    image: "/img/Places/Wat_Rong_Khun.jpg", // Replace with actual images
-  },
-  {
-    id: 3,
-    name: "Phi Phi Islands",
-    image: "/img/Places/ppisland.jpg", // Replace with actual images
-  },
-  {
-    id: 4,
-    name: "Singha Park",
-    image: "/img/Places/singha-park.jpg", // Replace with actual images
-  },
-];
+interface Packages {
+  package_id: number;
+  package_name: string;
+  trips: trips[]
+}
+
+interface trips {
+  tour_id: number;
+  package_places: package_places[]
+}
+
+interface package_places {
+  packplace_id: number;
+  tour_id: number;
+  place_id: number;
+  date: string;
+  start: string;
+  end: string;
+  places: places
+}
+
+interface places {
+  place_id: number;
+  place_name: string;
+  image: string;
+  description: string;
+}
 
 export default function Trips() {
+  const { id } = useParams();
+  const [data, setData] = useState<Packages | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+
+  //Getting the Package data
+    useEffect(() => {
+      const fetchPackage = async () => {
+        try {
+          const res = await fetch(`/api/services/packages/${id}`);
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || 'Unknown error');
+          }
+  
+          const json = await res.json();
+          setData(json);
+        } catch (err: any) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchPackage();
+    }, [id]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
+
   return (
     <section className="bg-[#D8EAE4] py-12 px-20 text-center">
       <h2 className="text-3xl font-bold text-gray-800 mb-8">Place to Visit</h2>
       <div className="grid md:grid-cols-4 gap-6 justify-center">
-        {trips.map((trip) => (
+        {data?.trips?.flatMap(trip => trip.package_places)?.map((place) => (
           <div
-            key={trip.id}
+            key={place.place_id}
             className="relative rounded-lg shadow-lg overflow-hidden cursor-pointer transition-transform transform hover:scale-105 hover:shadow-2xl duration-300"
           >
             <Image
-              src={trip.image}
-              alt={trip.name}
+              src={place.places.image}
+              alt={place.places.place_name}
               width={400}
               height={500}
               className="object-cover w-full h-72"
@@ -52,10 +91,13 @@ export default function Trips() {
 
                 <div className="relative z-10">
                   {/* Hotel Name */}
-                  <div className="text-white text-md font-semibold mb-5">{trip.name}</div>
-                  <button className=" bg-white text-green-500 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-gray-200">
-                View More
-                 </button>
+                  <div className="text-white text-md font-semibold mb-5">{place.places.place_name}</div>
+                  <button
+                    onClick={() => router.push(`/places/${place.place_id}`)}
+                    className="bg-white text-green-500 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-gray-200"
+                  >
+                    View More
+                  </button>
                 </div>
               </div>
           </div>

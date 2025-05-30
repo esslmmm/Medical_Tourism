@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from "react";
+type ServiceType = "accommodation_booking" | "Interpreter";
 
-type ServiceType = "accommodation" | "interpreter";
+interface ServicesProps {
+  selectedServices: Record<ServiceType, boolean>;
+  setSelectedServices: React.Dispatch<React.SetStateAction<Record<ServiceType, boolean>>>;
+}
 
-const AdditionService: React.FC = () => {
-  const [selectedServices, setSelectedServices] = useState<Record<ServiceType, boolean>>({
-    accommodation: false,
-    interpreter: false,
-  });
+const AdditionService: React.FC<ServicesProps> = ({selectedServices, setSelectedServices}) => {
 
   const toggleSelection = (service: ServiceType) => {
     setSelectedServices((prev) => ({
@@ -16,6 +15,7 @@ const AdditionService: React.FC = () => {
       [service]: !prev[service],
     }));
   };
+
 
   return (
     <div className="min-h-screen bg-[#d4e7df] flex justify-center items-center p-6">
@@ -28,9 +28,9 @@ const AdditionService: React.FC = () => {
         <div className="mb-6 bg-white p-4 rounded-xl shadow-md">
           <h3 className="text-xl font-semibold text-gray-800">Selected Services:</h3>
           <p className="text-gray-600 text-lg">
-            {selectedServices.accommodation && "Accommodation "}
-            {selectedServices.interpreter && "Interpreter"}
-            {!selectedServices.accommodation && !selectedServices.interpreter && "None"}
+            {selectedServices.accommodation_booking && "Accommodation "}
+            {selectedServices.Interpreter && "Interpreter"}
+            {!selectedServices.accommodation_booking && !selectedServices.Interpreter && "None"}
           </p>
         </div>
 
@@ -40,11 +40,11 @@ const AdditionService: React.FC = () => {
           <div
             title="Click to select or deselect Accommodation"
             className={`flex items-center p-6 rounded-2xl shadow-lg transition-all duration-300 cursor-pointer border-2 relative ${
-              selectedServices.accommodation
+              selectedServices.accommodation_booking
                 ? "bg-green-100 border-green-500 scale-105"
                 : "bg-white border-gray-300 hover:shadow-xl hover:scale-105"
             }`}
-            onClick={() => toggleSelection("accommodation")}
+            onClick={() => toggleSelection("accommodation_booking")}
           >
             <img
               src="/img/room1.png"
@@ -72,11 +72,11 @@ const AdditionService: React.FC = () => {
           <div
             title="Click to select or deselect Interpreter"
             className={`flex items-center p-6 rounded-2xl shadow-lg transition-all duration-300 cursor-pointer border-2 relative ${
-              selectedServices.interpreter
+              selectedServices.Interpreter
                 ? "bg-green-100 border-green-500 scale-105"
                 : "bg-white border-gray-300 hover:shadow-xl hover:scale-105"
             }`}
-            onClick={() => toggleSelection("interpreter")}
+            onClick={() => toggleSelection("Interpreter")}
           >
             <img
               src="/img/package_detail/interpreter.png"

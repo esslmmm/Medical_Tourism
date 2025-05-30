@@ -1,5 +1,5 @@
 "use client";
-
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import Image from "next/image";
@@ -110,7 +110,8 @@ export default function AccommodationCard({
   const [accommodationData, setAccommodationData] = useState<accommodations[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const packageId = 34;
+  const { id } = useParams();
+  
 
   const calculateAverageRating = (reviews: review_hotel[]) => {
     if (!reviews || reviews.length === 0) return 0;
@@ -123,7 +124,7 @@ export default function AccommodationCard({
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch(`/api/services/packages/${packageId}`);
+        const res = await fetch(`/api/services/packages/${id}`);
         if (!res.ok) throw new Error("Failed to fetch package");
 
         const packageJson: Package = await res.json();
