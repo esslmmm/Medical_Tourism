@@ -110,7 +110,7 @@ const PackageList: React.FC = () => {
             key={pkg.package_id}
             className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200 snap-center"
             whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
-            onClick={() => router.push(`/user/package_landing_page`)} // Navigate to doctor details
+            onClick={() => router.push(`/user/package_landing_page/${pkg.package_id}`)} // Navigate to doctor details
             whileTap={{ scale: 0.98 }}
           >
             <div className="relative w-full h-52">

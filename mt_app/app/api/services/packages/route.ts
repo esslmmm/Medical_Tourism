@@ -97,9 +97,6 @@ export async function GET() {
             }
             
         }
-        
-        
-        
 
         if (Array.isArray(interpreter_ids) && interpreter_ids.length > 0) {
             await prisma.package_interpreters.createMany({

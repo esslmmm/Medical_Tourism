@@ -17,12 +17,11 @@ export async function GET() {
 // POST request - Create a new tourism booking
 export async function POST(req: Request) {
   try {
-    const { tour_id, car_id, status } = await req.json()
+    const { tour_id, status } = await req.json()
 
     const newTourismBooking = await prisma.tourism_bookings.create({
       data: {
         tour_id,
-        car_id,
         status,
       },
     })

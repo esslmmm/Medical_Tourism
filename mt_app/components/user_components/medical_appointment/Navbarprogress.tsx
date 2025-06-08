@@ -5,20 +5,23 @@ import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import LoginModal from "../Homepage/LoginModal";
 import React from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 
-const sidebarItems = [
-  { label: "Customer Info", path: "/user/Form/medical_appointment" },
-  { label: "Confirm", path: "/user/Form/BookingConfirm" },
-];
+
 
 const Navbarpro: React.FC = () => {
+  const { id } = useParams();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [currency, setCurrency] = useState<string>("USD");
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const pathname = usePathname();
   const router = useRouter();
+
+  const sidebarItems = [
+  { label: "Customer Info", path: `/user/Form/medical_appointment/${id}` },
+  { label: "Confirm", path: `/user/Form/BookingConfirm/${id}` },
+];
 
     const currentStep = sidebarItems.findIndex(item => pathname.startsWith(item.path));
 

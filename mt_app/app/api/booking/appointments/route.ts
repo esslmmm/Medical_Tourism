@@ -17,7 +17,7 @@ export async function GET() {
 // POST request - Create a new appointment along with patient details
 export async function POST(req: Request) {
   try {
-    const { date, timeslot, description, patient_id, file_name, file_path, upload_date, patient } = await req.json()
+    const { date, timeslot, description, patient_id, file_name, file_path, upload_date, status, patient } = await req.json()
 
     const newAppointment = await prisma.appointments.create({
       data: {
@@ -28,6 +28,7 @@ export async function POST(req: Request) {
         file_name,
         file_path,
         upload_date,
+        status,
         patient_details: {
           create: {
             firstname: patient.firstname,
@@ -39,7 +40,7 @@ export async function POST(req: Request) {
           },
         },
       }
-    })
+    });
 
     return NextResponse.json(newAppointment, { status: 201 })
   } catch (error) {

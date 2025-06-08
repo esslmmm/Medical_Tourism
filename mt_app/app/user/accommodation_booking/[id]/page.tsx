@@ -97,7 +97,16 @@ const AccommodationBooking = () => {
   const [selectedAccommodation, setSelectedAccommodation] = useState<accommodation | null>(null);
   const [quantities, setQuantities] = useState<{ [roomId: number]: number }>({});
   const [selectedRooms, setSelectedRooms] = useState<{ room_id: number; quantity: number }[]>([]);
-  
+  const [range, setRange] = useState<Range[]>([
+        {
+            startDate: new Date(),
+            endDate: addDays(new Date(), 1),
+            key: 'selection',
+          },
+        ]);
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
+
 //Might be use later
 //   const increment = (roomId: number) => {
 //   setQuantities((prev) => ({
@@ -126,20 +135,7 @@ const AccommodationBooking = () => {
     });
   };
   
-  // Night and Guests value
-   const [range, setRange] = useState<Range[]>([
-  {
-      startDate: new Date(),
-      endDate: addDays(new Date(), 1),
-      key: 'selection',
-    },
-  ]);
-  const [adults, setAdults] = useState(1);
-  const [children, setChildren] = useState(0);
-
-  const nights = range[0].startDate && range[0].endDate
-    ? differenceInCalendarDays(range[0].endDate, range[0].startDate)
-    : 0;
+  
 
   useEffect(() => {
   if (selectedAccommodation) {
@@ -179,7 +175,7 @@ const AccommodationBooking = () => {
             accommodation={selectedAccommodation}
             quantities={quantities}
             selectedRooms={selectedRooms}
-            nights={nights}
+            ranges={range}
             adults={adults}
             children={children}
             // setQuantities={setQuantities}

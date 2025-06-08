@@ -5,6 +5,9 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
+import { useRouter } from "next/navigation";
+
+
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });
 
@@ -32,6 +35,8 @@ const MedicalList: React.FC = () => {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  
   
     useEffect(() => {
       async function fetchPackages() {
@@ -112,6 +117,7 @@ const MedicalList: React.FC = () => {
           <motion.div
             key={pkg.package_id}
             className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200"
+            onClick={() => router.push(`/user/package_landing_page/${pkg.package_id}`)} // Navigate to doctor details
             whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
             whileTap={{ scale: 0.98 }}
           >

@@ -4,7 +4,8 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { AppointmentFormData } from "../../../app/user/Form/form";
 
 const timeSlots = [
   "7:00 - 7:30", "7:30 - 8:00", "8:00 - 8:30", "8:30 - 9:00", 
@@ -13,27 +14,37 @@ const timeSlots = [
 ];
 
 export default function MedicalAppointment() {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [file, setFile] = useState<File | null>(null);
-  const [details, setDetails] = useState("");
+  const { id } = useParams();
+  const [form, setForm] = useState<AppointmentFormData>({
+    selectedDate: new Date(),
+    selectedTime: '',
+    file: null,
+    details: '',
+    contact: {
+      firstname: '', lastname: '', email: '', country: '', dialCode: '', phoneNumber: ''
+    },
+    patient: {
+      gender: '', firstname: '', lastname: '', dob: '', passportId: ''
+    }
+  })
   const router = useRouter();
-  const [contact, setContact] = useState({
-    firstName: "", lastName: "", email: "", country: "", dialCode: "", phoneNumber: ""
-  });
-  const [patient, setPatient] = useState({
-    gender: "", firstName: "", lastName: "", dob: "", passportId: ""
-  });
 
-  const navigateTohotels = () => {
-    router.push(`/user/Form/BookingConfirm`);
-  };
+
+  const navigateTocheck = () => {
+  localStorage.setItem('appointmentFormData', JSON.stringify(form));
+  router.push(`/user/Form/BookingConfirm/${id}`);
+};
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setFile(event.target.files[0]);
-    }
-  };
+  if (event.target.files && event.target.files.length > 0) {
+    const selectedFile = event.target.files[0];
+    setForm((prev) => ({
+      ...prev,
+      file: selectedFile
+    }));
+  }
+};
+
 
   const countries = [
     { name: "United States", dial_code: "+1" },
@@ -59,13 +70,15 @@ export default function MedicalAppointment() {
           <div>
             <label className="block text-[#000000] font-semibold mb-2">📅 Select Date</label>
             <DatePicker
-              selected={selectedDate}
-              onChange={(date) => setSelectedDate(date)}
+              selected={form.selectedDate}
+              onChange={(date) =>
+                setForm((prev) => ({ ...prev, selectedDate: date || new Date() }))
+              }
               dateFormat="MMMM d, yyyy"
               className="border text-[#000000] border-gray-300 bg-gray-50 p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
             />
             <p className="text-sm text-gray-500 mt-2">
-              {selectedDate ? format(selectedDate, "EEEE, MMMM d, yyyy") : "Choose a date"}
+              {form.selectedDate ? format(form.selectedDate, "EEEE, MMMM d, yyyy") : "Choose a date"}
             </p>
           </div>
 
@@ -76,9 +89,11 @@ export default function MedicalAppointment() {
                 <button
                   type="button"
                   key={time}
-                  onClick={() => setSelectedTime(time)}
+                  onClick={() =>
+                    setForm((prev) => ({ ...prev, selectedTime: time }))
+                  }
                   className={`p-2  text-sm border rounded-lg transition ${
-                    selectedTime === time
+                    form.selectedTime === time
                       ? "bg-green-100 text-green-700 border-green-500 font-medium"
                       : "bg-gray-50 border-gray-300 hover:bg-gray-100"
                   }`}
@@ -98,8 +113,16 @@ export default function MedicalAppointment() {
         <div className="mb-4">
           <label className="block font-medium mb-2">Medical Report</label>
           <label className="flex items-center justify-between w-full p-3 border bg-gray-50 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100">
-            <span className="text-gray-500">{file ? file.name : "Select File"}</span>
-            <input type="file" className="hidden" onChange={handleFileChange} />
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-blue-50 file:text-blue-700
+                        hover:file:bg-blue-100"
+            />
           </label>
         </div>
         {/* Textarea for Symptoms Details */}
@@ -109,8 +132,10 @@ export default function MedicalAppointment() {
             className="w-full p-3 border bg-gray-50 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows={4}
             placeholder="Fill details"
-            value={details}
-            onChange={(e) => setDetails(e.target.value)}
+            value={form.details}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, details: e.target.value }))
+            }
           />
         </div>
       </div>
@@ -121,9 +146,9 @@ export default function MedicalAppointment() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
   {/* First Name, Last Name, Email */}
   {[ 
-    { label: "First Name", value: contact.firstName, key: "firstName" },
-    { label: "Last Name", value: contact.lastName, key: "lastName" },
-    { label: "Email", value: contact.email, key: "email" },
+    { label: "First name", value: form.contact.firstname, key: "firstname" },
+    { label: "Last name", value: form.contact.lastname, key: "lastname" },
+    { label: "Email", value: form.contact.email, key: "email" },
   ].map(({ label, value, key }) => (
     <label
       key={key}
@@ -133,7 +158,15 @@ export default function MedicalAppointment() {
       <input
         type="text"
         value={value}
-        onChange={(e) => setContact({ ...contact, [key]: e.target.value })}
+        onChange={(e) =>
+          setForm((prev) => ({
+            ...prev,
+            contact: {
+              ...prev.contact,
+              [key]: e.target.value
+            }
+          }))
+        }
         className="bg-transparent outline-none text-black"
       />
     </label>
@@ -143,14 +176,17 @@ export default function MedicalAppointment() {
   <label className="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
     <span className="font-medium text-sm text-black">Country</span>
     <select
-      value={contact.country}
+      value={form.contact.country}
       onChange={(e) => {
         const selected = countries.find(c => c.name === e.target.value);
-        setContact({
-          ...contact,
-          country: e.target.value,
-          dialCode: selected?.dial_code || ""
-        });
+        setForm((prev) => ({
+          ...prev,
+          contact: {
+            ...prev.contact,
+            country: e.target.value,
+            dialCode: selected?.dial_code || ""
+          }
+        }));
       }}
       className="bg-transparent outline-none text-black"
     >
@@ -166,8 +202,16 @@ export default function MedicalAppointment() {
     <label className="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition sm:col-span-1">
       <span className="font-medium text-sm text-black">Dial Code</span>
       <select
-        value={contact.dialCode}
-        onChange={(e) => setContact({ ...contact, dialCode: e.target.value })}
+        value={form.contact.dialCode}
+        onChange={(e) =>
+          setForm((prev) => ({
+            ...prev,
+            contact: {
+              ...prev.contact,
+              dialCode: e.target.value
+            }
+          }))
+        }
         className="bg-transparent outline-none text-black"
       >
         <option value="">Select Code</option>
@@ -183,18 +227,21 @@ export default function MedicalAppointment() {
       <span className="font-medium text-sm text-black">Phone Number</span>
       <input
         type="text"
-        value={contact.phoneNumber}
-        onChange={(e) => setContact({ ...contact, phoneNumber: e.target.value })}
+        value={form.contact.phoneNumber}
+        onChange={(e) =>
+          setForm((prev) => ({
+            ...prev,
+            contact: {
+              ...prev.contact,
+              phoneNumber: e.target.value
+            }
+          }))
+        }
         className="bg-transparent outline-none text-black"
       />
     </label>
   </div>
 </div>
-
-
-
-
-
 
 
       {/* Patient Details */}
@@ -204,14 +251,22 @@ export default function MedicalAppointment() {
         <div className="col-span-1 sm:col-span-2">
           <span className="font-medium text-sm text-black">Gender</span>
           <div className="flex items-center gap-6 mt-2">
-            {["male", "female"].map((g) => (
+            {["Male", "Female"].map((g) => (
               <label key={g} className="flex items-center gap-2 text-black cursor-pointer">
                 <input
                   type="radio"
                   name="gender"
                   value={g}
-                  checked={patient.gender === g}
-                  onChange={(e) => setPatient({ ...patient, gender: e.target.value })}
+                  checked={form.patient.gender === g}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      patient: {
+                        ...prev.patient,
+                        gender: e.target.value
+                      }
+                    }))
+                  }
                 />
                 {g.charAt(0).toUpperCase() + g.slice(1)}
               </label>
@@ -220,10 +275,10 @@ export default function MedicalAppointment() {
         </div>
 
         {[
-          { label: "First Name", value: patient.firstName, key: "firstName" },
-          { label: "Last Name", value: patient.lastName, key: "lastName" },
-          { label: "Date of Birth", value: patient.dob, key: "dob", type: "date" },
-          { label: "Passport ID", value: patient.passportId, key: "passportId" },
+          { label: "First name", value: form.patient.firstname, key: "firstname" },
+          { label: "Last name", value: form.patient.lastname, key: "lastname" },
+          { label: "Date of Birth", value: form.patient.dob, key: "dob", type: "date" },
+          { label: "Passport ID", value: form.patient.passportId, key: "passportId" },
         ].map(({ label, value, key, type = "text" }) => (
           <label
             key={key}
@@ -233,7 +288,15 @@ export default function MedicalAppointment() {
             <input
               type={type}
               value={value}
-              onChange={(e) => setPatient({ ...patient, [key]: e.target.value })}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  patient: {
+                    ...prev.patient,
+                    [key]: e.target.value
+                  }
+                }))
+              }
               className="bg-transparent outline-none text-black"
             />
           </label>
@@ -243,7 +306,7 @@ export default function MedicalAppointment() {
     </div>
 
       {/* Continue Button */}
-      <button className="w-full py-3 text-white bg-[#2196F3] rounded-lg hover:bg-blue-600" onClick={navigateTohotels}>
+      <button className="w-full py-3 text-white bg-[#2196F3] rounded-lg hover:bg-blue-600" onClick={navigateTocheck}>
         Continue
       </button>
     </div>

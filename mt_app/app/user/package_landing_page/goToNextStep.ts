@@ -14,7 +14,7 @@ export function useStepNavigator() {
     index += 1;
 
     if (index >= steps.length) {
-      router.push('/user//Form/medical_appointment');
+      router.push(`/user//Form/medical_appointment/${id}`);
     } else {
       localStorage.setItem('currentStepIndex', index.toString());
       router.push(`/user/${steps[index]}/${id}`);

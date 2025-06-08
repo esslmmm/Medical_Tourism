@@ -2,11 +2,10 @@
 
 import { CalendarIcon, HomeIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useState, useRef, useEffect } from "react";
-import { differenceInCalendarDays } from "date-fns";
 import { DateRange, Range } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
 
 interface Accommodation {
   hotel_id: number;

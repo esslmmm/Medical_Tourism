@@ -29,35 +29,20 @@ model appointments {
   file_name        String?             @db.VarChar(255)
   file_path        String?             @db.VarChar(255)
   upload_date      DateTime?           @db.Timestamp(0)
-  status           appointments_status
+  status           appointments_status @default(In_Progress)
   patient_details  patient_details?    @relation(fields: [patient_id], references: [patient_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_1")
   doctors          doctors?            @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_2")
   package_bookings package_bookings[]
 
-  @@index([doctor_id], map: "doctor_id")
   @@index([patient_id], map: "patient_id")
-}
-
-model cars {
-  car_id           Int                @id @default(autoincrement())
-  car_name         String?            @db.VarChar(50)
-  phone            Int?
-  email            String?            @db.VarChar(100)
-  address          String?            @db.VarChar(255)
-  city             String?            @db.VarChar(255)
-  image            String?            @db.VarChar(255)
-  description      String?            @db.Text
-  fee              Float?             @db.Float
-  capacity         Int?
-  guide_license    String?            @db.VarChar(255)
-  tourism_bookings tourism_bookings[]
+  @@index([doctor_id], map: "doctor_id")
 }
 
 model description {
   description_id Int      @id @default(autoincrement())
   package_id     Int
-  title          String   @db.VarChar(100)
   details        String   @db.VarChar(255)
+  title          String   @db.VarChar(100)
   packages       packages @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "description_ibfk_1")
 
   @@index([package_id], map: "package_id")
@@ -140,7 +125,9 @@ model hotel_bookings {
   guest_children   Int?
   guest_adult      Int?
   total_price      Float?                 @db.Float
-  status           hotel_bookings_status?
+  status           hotel_bookings_status? @default(In_Progress)
+  created_at       DateTime               @default(now()) @db.Timestamp(0)
+  updated_at       DateTime               @default(now()) @db.Timestamp(0)
   hotels           hotels?                @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_bookings_ibfk_1")
   package_bookings package_bookings[]
   room_aggregate   room_aggregate[]
@@ -219,7 +206,9 @@ model inter_bookings {
   interpreter_id   Int?
   start            DateTime?              @db.Date
   end              DateTime?              @db.Date
-  status           inter_bookings_status?
+  status           inter_bookings_status? @default(In_Progress)
+  created_at       DateTime               @default(now()) @db.Timestamp(0)
+  updated_at       DateTime               @default(now()) @db.Timestamp(0)
   interpreters     interpreters?          @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "inter_bookings_ibfk_1")
   package_bookings package_bookings[]
 
@@ -304,7 +293,7 @@ model package_bookings {
   contact_id          Int?
   inter_booking_id    Int?
   create_at           DateTime                @default(now()) @db.Timestamp(0)
-  status              package_bookings_status
+  status              package_bookings_status @default(In_Progress)
   user                user                    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_1")
   packages            packages                @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_2")
   tourism_bookings    tourism_bookings?       @relation(fields: [tourism_booking_id], references: [tourism_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_3")
@@ -349,8 +338,8 @@ model package_image {
   images     String?   @db.VarChar(255)
   image_id   Int       @id @default(autoincrement())
   package_id Int?
-  title      String    @db.Text
   detail     String    @db.Text
+  title      String    @db.Text
   packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_image_ibfk_1")
 
   @@index([package_id], map: "package_id")
@@ -510,13 +499,12 @@ model room_image {
 model tourism_bookings {
   tourism_id       Int                      @id @default(autoincrement())
   tour_id          Int?
-  car_id           Int?
-  status           tourism_bookings_status?
+  status           tourism_bookings_status? @default(In_Progress)
+  created_at       DateTime                 @default(now()) @db.Timestamp(0)
+  updated_at       DateTime                 @default(now()) @db.Timestamp(0)
   package_bookings package_bookings[]
   tourismservices  trips?                   @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "tourism_bookings_ibfk_1")
-  cars             cars?                    @relation(fields: [car_id], references: [car_id], onDelete: NoAction, onUpdate: NoAction, map: "tourism_bookings_ibfk_2")
 
-  @@index([car_id], map: "car_id")
   @@index([tour_id], map: "tour_id")
 }
 
@@ -636,11 +624,6 @@ enum action_history_type_action {
   Update
 }
 
-enum packages_package_type {
-  Medical_Tourism      @map("Medical&Tourism")
-  Medical_Service_Only @map("Medical Service Only")
-}
-
 enum languages_proficiency {
   Basic
   Conversational
@@ -648,31 +631,11 @@ enum languages_proficiency {
   Native
 }
 
-enum tourism_bookings_status {
-  Pending
-  Approved
-  Rejected
-}
-
-enum inter_bookings_status {
-  Pending
-  Approved
-  Rejected
-  Cancelled
-}
-
 enum payment_payment_status {
   successful
   Failed
   Peding
   Refund
-}
-
-enum hotel_bookings_status {
-  Pending
-  Approved
-  Rejected
-  Cancelled
 }
 
 enum interpreters_language {
@@ -686,24 +649,54 @@ enum patient_details_gender {
   Female
 }
 
-enum package_bookings_status {
-  Pending
-  Approved
-  Completed
-  Rejected
-  Cancelled
-}
-
 enum user_role {
   customer
   staff
   admin
 }
 
+enum tourism_bookings_status {
+  In_Progress
+  Pending
+  Approved
+  Rejected
+}
+
+enum inter_bookings_status {
+  In_Progress
+  Pending
+  Approved
+  Rejected
+  Cancelled
+}
+
+enum hotel_bookings_status {
+  In_Progress
+  Pending
+  Approved
+  Rejected
+  Cancelled
+}
+
+enum package_bookings_status {
+  In_Progress
+  Pending
+  Approved
+  Completed
+  Rejected
+  Cancelled
+}
+
 enum appointments_status {
+  In_Progress
   Pending
   Approved
   Rejected
   Completed
   Cancelled
+}
+
+enum packages_package_type {
+  Medical_Tourism
+  Medical_Service_Only
 }

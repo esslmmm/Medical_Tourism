@@ -90,11 +90,11 @@ export async function PUT(request: Request, { params }: { params: { id: string }
               if (img.id) {
                   await prisma.package_image.update({
                       where: { image_id: img.id },
-                      data: { images: img.images },
+                      data: { images: img.images, detail: img.detail, title: img.title },
                   });
               } else {
                   await prisma.package_image.create({
-                      data: { package_id, images: img.images },
+                      data: { package_id, images: img.images, detail: img.detail, title: img.title },
                   });
               }
           }
@@ -106,11 +106,11 @@ export async function PUT(request: Request, { params }: { params: { id: string }
               if (desc.id) {
                   await prisma.description.update({
                       where: { description_id: desc.id },
-                      data: { details: desc.text },
+                      data: { details: desc.text, title: desc.title },
                   });
               } else {
                   await prisma.description.create({
-                      data: { package_id, details: desc.text },
+                      data: { package_id, details: desc.text, title: desc.title },
                   });
               }
           }

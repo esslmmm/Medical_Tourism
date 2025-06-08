@@ -1,12 +1,23 @@
 "use client";
+import { packages_package_type } from "@prisma/client";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { updatePackageBooking } from "../../../app/api/booking/packages/updatePackageBooking";
+import { createtrip } from "../../../app/api/booking/trips/createtrip";
 
 interface Packages {
   package_id: number;
   package_name: string;
-  description: description[]
+  packages_package_type: string;
+  description: description[];
+  trips: trips[]
 }
+
+interface trips {
+  tour_id: number;
+  package_id: number;
+}
+
 interface description {
   description_id: number;
   title: string;
@@ -23,6 +34,7 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
   const [data, setData] = useState<Packages | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [startloading, setstartLoading] = useState(false); // Optional loading state
   const router = useRouter();
 
   //Getting the Package data
@@ -34,7 +46,6 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
             const errorData = await res.json();
             throw new Error(errorData.error || 'Unknown error');
           }
-  
           const json = await res.json();
           setData(json);
         } catch (err: any) {
@@ -47,25 +58,89 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
       fetchPackage();
     }, [id]);
 
-  const navigateToMedicalAppointment = () => {
-    router.push(`/user/accommodation_booking/${id}`);
-  };
+    const handleStart = async () => {
+      if (startloading) return; // Prevent double submission
+      setstartLoading(true);
 
-  const handleStart = () => {
-  const selected = Object.entries(selectedServices)
-    .filter(([_, value]) => value)
-    .map(([key]) => key as ServiceType);
+      const selected = Object.entries(selectedServices)
+        .filter(([_, value]) => value)
+        .map(([key]) => key as ServiceType);
 
-  if (selected.length === 0) {
-    alert('Please select at least one service.');
-    return;
-  }
+      if (selected.length === 0) {
+        alert('Please select at least one service.');
+        setstartLoading(false);
+        return;
+      }
 
-  localStorage.setItem('selectedSteps', JSON.stringify(selected));
-  localStorage.setItem('currentStepIndex', '0');
+      try {
+        const payload = {
+          user_id: 1,
+          package_id: Number(id),
+          tourism_booking_id: null,
+          appointment_id: null,
+          hotel_booking_id: null,
+          contact_id: null,
+          inter_booking_id: null,
+          status: 'In_Progress',
+        };
 
-  router.push(`/user/${selected[0]}/${id}`);
-};
+        const res = await fetch('/api/booking/packages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const error = await res.json();
+          alert(`Booking failed: ${error.error}`);
+          setstartLoading(false);
+          return;
+        }
+
+        const result = await res.json();
+        const package_booking_id = result.booking_id;
+
+        // If Medical_Tourism, proceed with creating tourism booking
+        if ( data?.trips[0]?.tour_id) {
+          const tourPayload = {
+            tour_id: data.trips[0].tour_id,
+            status: 'In_Progress',
+          };
+
+          console.log('Sending trip payload:', tourPayload);
+          const response = await createtrip(tourPayload);
+
+          if (!response || response.error) {
+            throw new Error(response?.error || 'Failed to create tourism booking');
+          }
+
+          const tourism_booking_id = response.tourism_id;
+
+          if (!package_booking_id || !tourism_booking_id) {
+            throw new Error('Missing booking ID(s).');
+          }
+
+          // Update package booking with tourism_booking_id (assuming backend supports this)
+          await updatePackageBooking(Number(package_booking_id), {
+            tourism_booking_id,
+          });
+        }
+
+
+        localStorage.setItem('package_booking_id', package_booking_id);
+        localStorage.setItem('selectedSteps', JSON.stringify(selected));
+        localStorage.setItem('currentStepIndex', '0');
+
+        router.push(`/user/${selected[0]}/${id}`);
+      } catch (error) {
+        console.error('Error creating booking:', error);
+        alert('Something went wrong while creating the booking.');
+      } finally {
+        setstartLoading(false);
+      }
+    };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
@@ -75,11 +150,33 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
       {/* Book Button Styled as a Div */}
         <div
           onClick={handleStart}
-          className="cursor-pointer w-2/3 sm:w-1/2 md:w-2/3 bg-green-400 text-white text-lg px-8 py-4 font-semibold rounded-2xl hover:bg-green-700 transition duration-300 flex justify-center mx-auto"
+          className={`cursor-pointer w-2/3 sm:w-1/2 md:w-2/3 bg-green-400 text-white text-lg px-8 py-4 font-semibold rounded-2xl hover:bg-green-700 transition duration-300 flex justify-center items-center mx-auto ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
         >
-          Book
+          {startloading ? (
+            <svg
+              className="animate-spin h-6 w-6 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 11-8 8z"
+              />
+            </svg>
+          ) : (
+            'Book'
+          )}
         </div>
-
       {/* Services Section */}
       <section className="py-12 text-center">
         <h2 className="text-2xl text-[#000000] font-bold mb-6">Offer Service</h2>
