@@ -112,7 +112,6 @@ export default function AccommodationCard({
   const [error, setError] = useState<string | null>(null);
   const { id } = useParams();
   
-
   const calculateAverageRating = (reviews: review_hotel[]) => {
     if (!reviews || reviews.length === 0) return 0;
     const total = reviews.reduce((sum, r) => sum + r.rating, 0);

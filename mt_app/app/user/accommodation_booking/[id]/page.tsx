@@ -134,8 +134,6 @@ const AccommodationBooking = () => {
       return [...prev, { room_id, quantity }];
     });
   };
-  
-  
 
   useEffect(() => {
   if (selectedAccommodation) {

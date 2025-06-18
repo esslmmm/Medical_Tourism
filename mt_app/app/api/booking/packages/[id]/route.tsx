@@ -15,9 +15,21 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
           packages: true,
           tourism_bookings: true,
           appointments: true,
-          hotel_bookings: true,
+          hotel_bookings: {
+            include: {
+              room_aggregate: {
+                include: {
+                  hotel_rooms: true
+                }
+              }
+            }
+          },
           user_contact_detail: true,
-          inter_bookings: true,
+          inter_bookings: {
+            include: {
+              interpreters: true
+            }
+          },
           payment: true,
         },
       })

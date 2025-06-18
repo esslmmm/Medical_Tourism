@@ -63,51 +63,49 @@ export default function InterpreterPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-  const handleNext = async () => {
-  setLoading(true);
-  setError(null);
+    const handleNext = async () => {
+    setLoading(true);
+    setError(null);
 
-  if (!selectedInterpreter || Number(selectedInterpreter) <= 0) {
-    setError('Some booking details are missing or invalid. Please check again.');
-    setLoading(false);
-    return;
-  }
-
-  const bookingData = {
-    interpreter_id: Number(selectedInterpreter.interpreter_id),
-    start: null,
-    end: null,
-    status: 'In_Progress',
-  };
-
-  try {
-    const response = await submitInterBooking(bookingData);
-
-    if (!response || response.error) {
-      throw new Error(response?.error || 'Server error');
+    if (!selectedInterpreter || Number(selectedInterpreter) <= 0) {
+      setError('Some booking details are missing or invalid. Please check again.');
+      setLoading(false);
+      return;
     }
 
-    const inter_booking_id = response.booking_id;
-    const package_booking_id = localStorage.getItem('package_booking_id');
+    const bookingData = {
+      interpreter_id: Number(selectedInterpreter.interpreter_id),
+      start: null,
+      end: null,
+      status: 'In_Progress',
+    };
 
-    if (!package_booking_id || !inter_booking_id) {
-        throw Error('Missing booking ID(s).');
+    try {
+      const response = await submitInterBooking(bookingData);
+
+      if (!response || response.error) {
+        throw new Error(response?.error || 'Server error');
       }
 
-    await updatePackageBooking(Number (package_booking_id), { inter_booking_id });
+      const inter_booking_id = response.booking_id;
+      const package_booking_id = localStorage.getItem('package_booking_id');
 
-    goToNextStep();
-  } catch (err) {
-    console.error('Booking failed:', err);
-    setError('Booking failed. Please try again.');
-  } finally {
-    setLoading(false);
-  }
-};
+      if (!package_booking_id || !inter_booking_id) {
+          throw Error('Missing booking ID(s).');
+        }
+
+      await updatePackageBooking(Number (package_booking_id), { inter_booking_id });
+
+      goToNextStep();
+    } catch (err) {
+      console.error('Booking failed:', err);
+      setError('Booking failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
-
-  
     return (
       <div>
         <Navbar />

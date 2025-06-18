@@ -1,9 +1,37 @@
+"use client";
 import { Inter } from "next/font/google";
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+import { AppointmentFormData } from "../../../app/user/Form/form";
 const inter = Inter({ subsets: ["latin"], weight: ["100","200","300","400","500","600","700","800","900"] });
 
 const MedicalService = () => {
+  const router = useRouter();
+  const { id } = useParams();
+  const [form, setForm] = useState<AppointmentFormData | null>(null);
+  const rawDate = form?.selectedDate;
+const date = rawDate ? new Date(rawDate) : null;
+
+const formattedDate =
+  date instanceof Date && !isNaN(date.getTime())
+    ? new Intl.DateTimeFormat('en-US', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      }).format(date)
+    : '';
+
+  useEffect(() => {
+          const savedForm = localStorage.getItem('appointmentFormData');
+          if (savedForm) {
+            setForm(JSON.parse(savedForm));
+          } else {
+            router.push(`/user/Form/medical_appointment/${id}`); // fallback if user lands directly
+          }
+        }, []);
+      
   return (
     <div className="bg-white p-6 pt-20 pb-10 border-b border-[#E0E0E0]">
     {/* Header */}
@@ -24,9 +52,9 @@ const MedicalService = () => {
   
       {/* Text Details */}
       <div className='space-y-1'>
-        <p className="text-sm text-black font-bold">Appointment - Sat, Feb 8, 2025</p>
-        <p className="text-sm text-black">Time - 9:00 - 12:00</p>
-        <p className="text-sm text-black">Service: Medical check-up</p>
+        <p className="text-sm text-black font-bold">Appointment - {formattedDate}</p>
+        <p className="text-sm text-black">Time : {form?.selectedTime}</p>
+        <p className="text-sm text-black">Service: *Medical check-up*</p>
       </div>
     </div>
   </div>
