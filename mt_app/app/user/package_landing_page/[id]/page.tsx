@@ -15,7 +15,6 @@ const PackageLandingPage = () => {
     accommodation_booking: false,
     Interpreter: false,
   });
-  const [selectedID, setSelectedID] = useState("");
 
   
   return (

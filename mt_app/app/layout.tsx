@@ -21,23 +21,21 @@ export const metadata: Metadata = {
 
 
 //SessionProvider
-import { getServerSession } from "next-auth"
 import SessionProvider from './components/SessionProvider'
+import { auth } from "./api/auth/auth" // Import your auth configuration
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-  const session = await getServerSession() //fetch session from server
+  const session = await auth() // Use auth() instead of getServerSession()
+  
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {/* pass session and check to SessionProvider */}
-       <SessionProvider session={session}>{children}</SessionProvider> </body> 
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <SessionProvider session={session}>{children}</SessionProvider> 
+      </body> 
     </html>
   );
 }

@@ -1,14 +1,10 @@
 "use client";
 
-
-
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
-import { signIn } from 'next-auth/react'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react' // Use client-side signIn
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });
 
@@ -19,6 +15,7 @@ interface LoginModalProps {
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
+  const [hoveredButton, setHoveredButton] = useState(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -31,6 +28,26 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   }, [onClose]);
 
   if (!isOpen) return null;
+
+  // Handle Google sign in - NextAuth handles everything automatically
+    const handleGoogleSignIn = async () => {
+      try {
+        // Store current page and booking intent
+        const currentPath = window.location.pathname;
+        const currentSearch = window.location.search;
+        const fullCurrentUrl = `${currentPath}${currentSearch}`;
+        
+        // Store for after login
+        localStorage.setItem('loginReturnUrl', fullCurrentUrl);
+        
+        await signIn('google', { 
+          callbackUrl: fullCurrentUrl, // Use current page as callback
+        });
+        
+      } catch (error) {
+        console.error('Google sign in failed:', error);
+      }
+    };
 
   // const [email, setEmail] = useState('')
   // const [password, setPassword] = useState('')
@@ -57,6 +74,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   //     }
 
   //     //Login Success
+  //     // After successful login, call handleSuccessfulLogin with user data
+  //     // handleSuccessfulLogin({
+  //     //   name: result.user.name,
+  //     //   email: result.user.email,
+  //     //   avatar: result.user.image
+  //     // });
   //     router.push('/')
   //   }catch(error){
 
@@ -104,12 +127,64 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             <hr className="border-black w-15" />
           </div>
           <div className="flex gap-4 justify-center">
-            <button className="flex w-30 items-center justify-center bg-white border border-[#BCBEC0] rounded-md py-2 hover:bg-gray-100"
-            onClick={() => signIn('google', { callbackUrl: '/profile ' })}>
-              <img src="/img/Homepage/google.png" alt="Google" className="w-5 h-5" />
+            {/* Google Button */}
+            <button 
+              type="button"
+              className="group relative flex w-32 items-center justify-center bg-white border border-[#BCBEC0] rounded-lg py-3 px-4 overflow-hidden transition-all duration-300 ease-out hover:border-[#1A901A] hover:shadow-lg hover:shadow-green-100 hover:-translate-y-1 active:scale-95 active:translate-y-0 cursor-pointer"
+              onClick={handleGoogleSignIn}
+            >
+              {/* Background animation */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-red-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              
+              {/* Ripple effect */}
+              <div className="absolute inset-0 rounded-lg opacity-0 group-active:opacity-100 bg-gray-200 animate-ping"></div>
+              
+              {/* Icon container */}
+              <div className="relative z-10 flex items-center gap-2">
+                <div className={`transition-transform duration-300 ${hoveredButton === 'google' ? 'scale-110 rotate-12' : ''}`}>
+                  <img 
+                    src="/img/Homepage/google.png" 
+                    alt="Google" 
+                    className="w-5 h-5" 
+                  />
+                </div>
+                {/* <span className={`text-sm font-medium text-gray-700 transition-all duration-300 ${hoveredButton === 'google' ? 'translate-x-1' : ''}`}>
+                  Google
+                </span> */}
+              </div>
+              
+              {/* Shine effect */}
+              <div className="absolute inset-0 -top-1 -bottom-1 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30 transform -skew-x-12 group-hover:animate-pulse"></div>
             </button>
-            <button className="flex w-30 items-center justify-center bg-white border border-[#BCBEC0] rounded-md py-2 hover:bg-gray-100">
-              <img src="/img/Homepage/facebook.png" alt="Facebook" className="w-5 h-5" />
+
+            {/* Facebook Button */}
+            <button 
+              type="button"
+              className="group relative flex w-32 items-center justify-center bg-white border border-[#BCBEC0] rounded-lg py-3 px-4 overflow-hidden transition-all duration-300 ease-out hover:border-[#1877F2] hover:shadow-lg hover:shadow-blue-100 hover:-translate-y-1 active:scale-95 active:translate-y-0 cursor-pointer"
+              // onClick={handleFacebookSignIn}
+            >
+              {/* Background animation */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              
+              {/* Ripple effect */}
+              <div className="absolute inset-0 rounded-lg opacity-0 group-active:opacity-100 bg-gray-200 animate-ping"></div>
+              
+              {/* Icon container */}
+              <div className="relative z-10 flex items-center gap-2">
+                <div className={`transition-transform duration-300 ${hoveredButton === 'facebook' ? 'scale-110 rotate-12' : ''}`}>
+                  <img 
+                    src="/img/Homepage/facebook.png" 
+                    alt="Facebook" 
+                    className="w-5 h-5" 
+                  />
+                </div>
+                {/* <span className={`text-sm font-medium text-gray-700 transition-all duration-300 ${hoveredButton === 'facebook' ? 'translate-x-1' : ''}`}>
+                  Facebook
+                </span> */}
+              </div>
+              
+              {/* Shine effect */}
+              <div className="absolute inset-0 -top-1 -bottom-1 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30 transform -skew-x-12 group-hover:animate-pulse"></div>
             </button>
           </div>
         </div>
@@ -128,3 +203,4 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 };
 
 export default LoginModal;
+

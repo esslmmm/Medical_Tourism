@@ -1,9 +1,10 @@
 "use client";
-import { packages_package_type } from "@prisma/client";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { updatePackageBooking } from "../../../app/api/booking/packages/updatePackageBooking";
 import { createtrip } from "../../../app/api/booking/trips/createtrip";
+import { useSession, signIn } from 'next-auth/react';
+import LoginModal from "../Homepage/LoginModal";
 
 interface Packages {
   package_id: number;
@@ -31,6 +32,8 @@ interface ServicesProps {
 
 const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
   const { id } = useParams();
+  const { data: session, status } = useSession();
+  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const [data, setData] = useState<Packages | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -58,6 +61,7 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
       fetchPackage();
     }, [id]);
 
+
     const handleStart = async () => {
       if (startloading) return; // Prevent double submission
       setstartLoading(true);
@@ -73,8 +77,27 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
       }
 
       try {
+        // Check authentication first
+        const isAuthenticated = await checkUserAuth();
+        
+        if (!isAuthenticated) {
+          // Store booking intent
+          localStorage.setItem('bookingIntent', JSON.stringify({
+            selectedServices: selected,
+            packageId: id,
+            packageData: data,
+            redirectTo: `/user/${selected[0]}/${id}`
+          }));
+          
+          // Show modal instead of redirecting
+          setIsLoginOpen(true);
+          setstartLoading(false);
+          return;
+        }
+
+        // User is authenticated, proceed with booking creation
         const payload = {
-          user_id: 1,
+          user_id: 1, // You might want to get this from authenticated user context
           package_id: Number(id),
           tourism_booking_id: null,
           appointment_id: null,
@@ -94,6 +117,20 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
 
         if (!res.ok) {
           const error = await res.json();
+          
+          // If it's an authentication error, redirect to login
+          if (res.status === 401 || res.status === 403) {
+            localStorage.setItem('bookingIntent', JSON.stringify({
+              selectedServices: selected,
+              packageId: id,
+              packageData: data,
+              redirectTo: `/user/${selected[0]}/${id}`
+            }));
+            router.push('/login');
+            setstartLoading(false);
+            return;
+          }
+          
           alert(`Booking failed: ${error.error}`);
           setstartLoading(false);
           return;
@@ -103,7 +140,7 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
         const package_booking_id = result.booking_id;
 
         // If Medical_Tourism, proceed with creating tourism booking
-        if ( data?.trips[0]?.tour_id) {
+        if (data?.trips[0]?.tour_id) {
           const tourPayload = {
             tour_id: data.trips[0].tour_id,
             status: 'In_Progress',
@@ -122,12 +159,11 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
             throw new Error('Missing booking ID(s).');
           }
 
-          // Update package booking with tourism_booking_id (assuming backend supports this)
+          // Update package booking with tourism_booking_id
           await updatePackageBooking(Number(package_booking_id), {
             tourism_booking_id,
           });
         }
-
 
         localStorage.setItem('package_booking_id', package_booking_id);
         localStorage.setItem('selectedSteps', JSON.stringify(selected));
@@ -141,6 +177,11 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
         setstartLoading(false);
       }
     };
+
+    const checkUserAuth = () => {
+        // No need for async/await since session data is already available
+        return status === 'authenticated' && session?.user;
+      };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
@@ -194,8 +235,17 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
           ))}
         </div>
       </section>
+
+        <LoginModal 
+          isOpen={isLoginOpen} 
+          onClose={() => setIsLoginOpen(false)}
+        />
+
     </div>
+
+    
   );
 }
 
 export default OfferService;
+

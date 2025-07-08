@@ -1,26 +1,24 @@
-'use client'
 
-import Navbar from "../components/user_components/Main/Navbar";
 import PackageList from "../components/user_components/Homepage/PackageList";
 import MedicalList from "../components/user_components/Homepage/MedicalList";
 import DoctorList from "../components/user_components/Homepage/DoctorList";
 import Hospitaltap from "../components/user_components/Homepage/Hospitaltap";
 import Footer from "../components/user_components/Main/Footer";
-import "./globals.css";
 import Advertisement from "../components/user_components/Homepage/Advertisement";
-import { useState } from "react";
+import AuthenticatedNavbar from "../components/user_components/Main/AuthenticatedNavbar";
 import MultiStepReviewModal from "./user/ReviewPopUp/[id]/page";
+import "./globals.css";
 
 interface HomePageProps {
   children: React.ReactNode;
 }
 
 const HomePage: React.FC<HomePageProps> = ({ children }) => {
-  const [showModal, setShowModal] = useState(false);
+  // const [showModal, setShowModal] = useState(false);
   
   return (
     <div>
-      <Navbar />
+      <AuthenticatedNavbar />
       <Advertisement />
       <div className="text-center pt-10 pb-8">
         <h1 className="font-semibold text-[#4D4D4D]" style={{ fontSize: 35 }}>
