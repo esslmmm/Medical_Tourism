@@ -22,7 +22,7 @@ const Navbarpro: React.FC = () => {
   { label: "Confirm", path: `/user/Form/BookingConfirm/${id}` },
 ];
 
-    const currentStep = sidebarItems.findIndex(item => pathname.startsWith(item.path));
+    const currentStep = sidebarItems.findIndex(item => pathname?.startsWith(item.path));
 
 
 

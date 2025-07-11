@@ -9,8 +9,8 @@ export async function GET() {
       const packages = await prisma.packages.findMany();
       return NextResponse.json(packages);
     } catch (error) {
-      console.error("Error fetching hospitals:", error);
-      return NextResponse.json({ error: "Failed to fetch hospitals" }, { status: 500 });
+      console.error("Error fetching Packages:", error);
+      return NextResponse.json({ error: "Failed to fetch Packages" }, { status: 500 });
     }
   }
 

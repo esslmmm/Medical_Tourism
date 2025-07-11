@@ -1,3 +1,4 @@
+"use client"
 
 import PackageList from "../components/user_components/Homepage/PackageList";
 import MedicalList from "../components/user_components/Homepage/MedicalList";
@@ -7,7 +8,9 @@ import Footer from "../components/user_components/Main/Footer";
 import Advertisement from "../components/user_components/Homepage/Advertisement";
 import AuthenticatedNavbar from "../components/user_components/Main/AuthenticatedNavbar";
 import MultiStepReviewModal from "./user/ReviewPopUp/[id]/page";
+import { useSearchParams } from 'next/navigation';
 import "./globals.css";
+import { useEffect, useState } from 'react';
 
 interface HomePageProps {
   children: React.ReactNode;
@@ -15,10 +18,19 @@ interface HomePageProps {
 
 const HomePage: React.FC<HomePageProps> = ({ children }) => {
   // const [showModal, setShowModal] = useState(false);
+  const searchParams = useSearchParams();
+  const [emailFromQuery, setEmailFromQuery] = useState<string>('');
   
+  useEffect(() => {
+    const email = searchParams?.get('email');
+    if (email) {
+      setEmailFromQuery(email);
+    }
+  }, [searchParams]);
+
   return (
     <div>
-      <AuthenticatedNavbar />
+      <AuthenticatedNavbar initialEmail={emailFromQuery} />
       <Advertisement />
       <div className="text-center pt-10 pb-8">
         <h1 className="font-semibold text-[#4D4D4D]" style={{ fontSize: 35 }}>

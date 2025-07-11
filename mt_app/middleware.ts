@@ -30,7 +30,7 @@ import { NextResponse } from "next/server"
 export default auth((req) => {
   const token = req.auth
   const isAuth = !!token
-  const isAuthPage = req.nextUrl.pathname.startsWith('/auth')
+  const isAuthPage = req.nextUrl.pathname.startsWith('/verify-otp')
   
   // Clean array approach for protected routes
   const protectedRoutes = [
@@ -75,6 +75,7 @@ export const config = {
     '/user/profile/:path*',
     '/auth/:path*',
     '/api/:path*',
-    '/user/Test'
+    '/user/Test',
+    '/verify-otp/:path*'
   ]
 }

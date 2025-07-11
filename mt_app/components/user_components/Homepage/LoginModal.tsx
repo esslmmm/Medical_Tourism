@@ -1,93 +1,87 @@
-"use client";
-
 import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { signIn } from 'next-auth/react' // Use client-side signIn
+import { useRouter } from "next/navigation";
+import { handleGoogleSignIn } from "../../Reuseable-Function/GoogleSignin";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialEmail?: string;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
+interface ApiResponse {
+  message: string;
+  email?: string;
+}
+
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, initialEmail }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [hoveredButton, setHoveredButton] = useState(null);
+  const [email, setEmail] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [otpSent, setOtpSent] = useState<boolean>(false);
+  const router = useRouter()
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [onClose]);
+      // Update email when initialEmail changes
+      useEffect(() => {
+        if (initialEmail) {
+          setEmail(initialEmail);
+        }
+      }, [initialEmail]);
+      
+      useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+          if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+            onClose();
+          }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+      }, [onClose]);
 
-  if (!isOpen) return null;
+      if (!isOpen) return null;
 
-  // Handle Google sign in - NextAuth handles everything automatically
-    const handleGoogleSignIn = async () => {
-      try {
-        // Store current page and booking intent
-        const currentPath = window.location.pathname;
-        const currentSearch = window.location.search;
-        const fullCurrentUrl = `${currentPath}${currentSearch}`;
-        
-        // Store for after login
-        localStorage.setItem('loginReturnUrl', fullCurrentUrl);
-        
-        await signIn('google', { 
-          callbackUrl: fullCurrentUrl, // Use current page as callback
-        });
-        
-      } catch (error) {
-        console.error('Google sign in failed:', error);
-      }
-    };
+        const handleSendOTP = async (e: React.FormEvent) => {
+          e.preventDefault();
+          setLoading(true);
+          setError('');
 
-  // const [email, setEmail] = useState('')
-  // const [password, setPassword] = useState('')
-  // const router = useRouter()
+          try {
+            const response = await fetch('/api/auth/send-otp', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ email }),
+            });
 
-  // const handleSubmit = async (e: React.FormEvent) => {
+            const data: ApiResponse = await response.json();
 
-  //   e.preventDefault()
-  //   try{
-  //     const result = await signIn('credentials', {
-  //       redirect:false,
-  //       email,
-  //       password
-  //     })
-
-  //     if (!result) {
-  //       console.error('Sign-in request failed. No response received.')
-  //       return false
-  //     }
-
-  //     if(result.error){
-  //       console.error()
-  //       return false
-  //     }
-
-  //     //Login Success
-  //     // After successful login, call handleSuccessfulLogin with user data
-  //     // handleSuccessfulLogin({
-  //     //   name: result.user.name,
-  //     //   email: result.user.email,
-  //     //   avatar: result.user.image
-  //     // });
-  //     router.push('/')
-  //   }catch(error){
-
-  //   }
-  // }
+            if (response.ok) {
+              setOtpSent(true); // Keep this for state tracking
+              // Navigate only after successful OTP sending
+              router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
+              onClose(); // Close the modal
+            } else {
+              setError(data.message);
+            }
+          } catch (error) {
+            setError('An error occurred. Please try again.');
+          } finally {
+            setLoading(false);
+          }
+        };
 
   return (
-    <form className="fixed inset-0 flex items-center justify-center bg-black/45 z-50"
+    <form 
+      onSubmit={handleSendOTP}
+      className="fixed inset-0 flex items-center justify-center bg-black/45 z-50"
     >
       <motion.div
         ref={modalRef}
@@ -106,19 +100,43 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           <p className={`text-[#636364] text-center mb-6 font-light ${poppins.className}`} style={{ fontSize: "14px" }}>
             Welcome! Please enter your email.
           </p>
-          <div className="flex justify-center">
-            <input
-              type="email"
-              placeholder="Enter your email address"
-              className={`font-light w-70 px-4 py-3 border border-[#C4C4C4] rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 shadow-sm ${poppins.className}`}
-              style={{ fontSize: "13px" }}
-            />
-          </div>
-          <div className="flex justify-center">
-            <button className={`${poppins.className} w-70 bg-[#1A901A] text-white py-2 rounded-lg mt-4 hover:bg-green-700 transition`} style={{ fontSize: "15px" }}>
-              CONTINUE
-            </button>
-          </div>
+            <div className="flex justify-center">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email address"
+                className={`font-light w-70 px-4 py-3 border border-[#C4C4C4] rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 shadow-sm ${poppins.className}`}
+                style={{ fontSize: "13px" }}
+                required
+              />
+            </div>
+              {error && (
+                <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                  {error}
+                </div>
+              )}
+            <div className="flex justify-center">
+              <motion.button
+      type="submit"
+      disabled={loading}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
+      className={`${poppins.className} w-70 bg-[#1A901A] text-white py-2 rounded-lg mt-4 hover:bg-green-700 transition flex items-center justify-center gap-2`}
+      style={{ fontSize: '15px', position: 'relative', minHeight: '40px' }}
+    >
+      {loading ? (
+        <div className="flex items-center gap-1">
+          <span>Loading</span>
+          <span className="dot-1">.</span>
+          <span className="dot-2">.</span>
+          <span className="dot-3">.</span>
+        </div>
+      ) : (
+        'CONTINUE'
+      )}
+    </motion.button>
+            </div>
           <div className="flex items-center justify-center my-4">
             <hr className="border-black w-15" />
             <span className={`${poppins.className} mx-2 text-[#9D9A9A] text-sm`} style={{ fontSize: "10px" }}>

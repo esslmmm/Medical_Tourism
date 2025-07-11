@@ -6,7 +6,11 @@ import { useSession, signOut } from 'next-auth/react'; // Import NextAuth hooks
 import LoginModal from "../Homepage/LoginModal";
 import { useSearchParams } from 'next/navigation';
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  initialEmail?: string;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [currency, setCurrency] = useState<string>("USD");
@@ -20,7 +24,7 @@ const Navbar: React.FC = () => {
   const user = session?.user;
 
   useEffect(() => {
-    if (searchParams.get('isLoginOpen') === 'true' && !session) {
+    if (searchParams?.get('isLoginOpen') === 'true' && !session) {
       setIsLoginOpen(true);
     }
   }, [searchParams, session]);
@@ -221,6 +225,7 @@ const Navbar: React.FC = () => {
       <LoginModal 
         isOpen={shouldShowModal} 
         onClose={() => setIsLoginOpen(false)}
+        initialEmail={initialEmail}
       />
     </nav>
   );
