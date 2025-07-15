@@ -10,7 +10,8 @@ const prisma = new PrismaClient();
  */
 export async function GET(request: Request, { params }: { params: { id: string } }) {
     try {
-        const chatId = parseInt(params.id, 10);
+        const resolvedParams = await params;
+        const chatId = parseInt(resolvedParams.id, 10);
 
         if (isNaN(chatId)) {
             return NextResponse.json({ error: "Invalid chat ID" }, { status: 400 });

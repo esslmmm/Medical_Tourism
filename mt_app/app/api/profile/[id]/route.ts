@@ -9,7 +9,8 @@ const prisma = new PrismaClient();
  */
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    const id = parseInt(params.id, 10);
+    const resolvedParams = await params;
+    const id = parseInt(resolvedParams.id, 10);
 
     if (isNaN(id)) {
       return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
@@ -23,7 +24,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
             packages: true
           }
         },
-        hospital_reviews: {
+        review_hospital: {
           include: {
             hospitals: {
               select: {
@@ -32,7 +33,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
             }
           }
         },
-        hotel_reviews: {
+        review_hotel: {
           include: {
             hotels: {
               select: {
@@ -41,7 +42,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
             }
           }
         },
-        interpreter_reviews: {
+        review_inter: {
           include: {
             interpreters: {
               select: {
@@ -50,11 +51,11 @@ export async function GET(request: Request, { params }: { params: { id: string }
             }
           }
         },
-        chat_user1Id: true,
-        chat_user2Id: true,
-        messages_senderId: true,
-        messages_receiverId: true,
-        payments: true
+        chat_chat_user1_idTouser: true,
+        chat_chat_user2_idTouser: true,
+        messages_messages_sender_idTouser: true,
+        messages_messages_receiver_idTouser: true,
+        payment: true
       },
     });
 

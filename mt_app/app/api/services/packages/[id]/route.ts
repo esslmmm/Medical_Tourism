@@ -5,7 +5,8 @@ const prisma = new PrismaClient();
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
     try {
-      const package_id = parseInt(params.id, 10); // Convert ID to integer
+        const resolvedParams = await params;
+        const package_id = parseInt(resolvedParams.id, 10); // Convert ID to integer
   
       if (isNaN(package_id)) {
         return NextResponse.json({ error: "Invalid package ID" }, { status: 400 });

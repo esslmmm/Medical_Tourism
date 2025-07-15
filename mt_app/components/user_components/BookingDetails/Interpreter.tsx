@@ -66,8 +66,8 @@ const Interpreter = () => {
                     />
                 </div>
               <div className='space-y-1'>
-                  <p className="font-bold text-black text-md">{data?.inter_bookings.interpreters?.name}</p>
-                  <p className="text-sm text-black">{data?.inter_bookings.interpreters?.language} to Thai Language</p>
+                  <p className="font-bold text-black text-md">{data?.inter_bookings?.interpreters?.name}</p>
+                  <p className="text-sm text-black">{data?.inter_bookings?.interpreters?.language} to Thai Language</p>
                   <p className="text-sm text-black">{formatDate(data?.inter_bookings?.start)} - {formatDate(data?.inter_bookings?.end)}</p>
               </div>
           </div>

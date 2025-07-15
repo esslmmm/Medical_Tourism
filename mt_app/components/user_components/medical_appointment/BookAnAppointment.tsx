@@ -15,6 +15,7 @@ const timeSlots = [
 
 export default function MedicalAppointment() {
   const { id } = useParams();
+  const [fileDataUrl, setFileDataUrl] = useState<string | null>(null);
   const [form, setForm] = useState<AppointmentFormData>({
     selectedDate: new Date(),
     selectedTime: '',
@@ -26,24 +27,55 @@ export default function MedicalAppointment() {
     patient: {
       gender: '', firstname: '', lastname: '', dob: '', passportId: ''
     }
-  })
+  });
   const router = useRouter();
 
 
-  const navigateTocheck = () => {
-  localStorage.setItem('appointmentFormData', JSON.stringify(form));
-  router.push(`/user/Form/BookingConfirm/${id}`);
-};
+const handleFormSubmit = () => {
+    // Save form data to localStorage
+    const formDataForStorage = {
+      ...form,
+      file: null // Don't store file object directly
+    };
+    
+    localStorage.setItem('appointmentFormData', JSON.stringify(formDataForStorage));
+    
+    // Navigate to confirmation page
+    router.push(`/user/Form/BookingConfirm/${id}`);
+    alert('Form saved! Navigate to confirmation page.');
+  };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  if (event.target.files && event.target.files.length > 0) {
-    const selectedFile = event.target.files[0];
-    setForm((prev) => ({
-      ...prev,
-      file: selectedFile
-    }));
-  }
-};
+
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const selectedFile = event.target.files[0];
+      
+      // Convert file to base64 for storage
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64String = e.target?.result as string;
+        setFileDataUrl(base64String);
+        
+        // Store file data in localStorage
+        const fileData = {
+          name: selectedFile.name,
+          size: selectedFile.size,
+          type: selectedFile.type,
+          lastModified: selectedFile.lastModified,
+          base64: base64String
+        };
+        
+        localStorage.setItem('selectedFile', JSON.stringify(fileData));
+      };
+      reader.readAsDataURL(selectedFile);
+      
+      setForm(prev => ({
+        ...prev,
+        file: selectedFile
+      }));
+    }
+  };
 
 
   const countries = [
@@ -113,9 +145,14 @@ export default function MedicalAppointment() {
         <div className="mb-4">
           <label className="block font-medium mb-2">Medical Report</label>
           <label className="flex items-center justify-between w-full p-3 border bg-gray-50 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100">
+            {/* <CloudinaryUpload
+              userId= '10'
+              onUploadComplete={handleFileSelect}
+            /> */}
             <input
               type="file"
-              onChange={handleFileChange}
+              accept=".pdf,.jpeg,.jpg,.png"
+              onChange={handleFileSelect}
               className="block w-full text-sm text-gray-500
                         file:mr-4 file:py-2 file:px-4
                         file:rounded-full file:border-0
@@ -306,7 +343,7 @@ export default function MedicalAppointment() {
     </div>
 
       {/* Continue Button */}
-      <button className="w-full py-3 text-white bg-[#2196F3] rounded-lg hover:bg-blue-600" onClick={navigateTocheck}>
+      <button className="w-full py-3 text-white bg-[#2196F3] rounded-lg hover:bg-blue-600" onClick={handleFormSubmit}>
         Continue
       </button>
     </div>

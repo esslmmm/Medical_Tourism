@@ -9,7 +9,8 @@ const prisma = new PrismaClient();
  */
 export async function GET(request: Request, { params }: { params: { id: string } }) {
     try {
-      const doctor_id = parseInt(params.id, 10);
+        const resolvedParams = await params;
+      const doctor_id = parseInt(resolvedParams.id, 10);
   
       if (isNaN(doctor_id)) {
         return NextResponse.json({ error: "Invalid doctor ID" }, { status: 400 });

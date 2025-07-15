@@ -6,7 +6,8 @@ const prisma = new PrismaClient();
 // GET: Fetch a single payment by ID
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    const paymentId = Number(params.id)
+    const resolvedParams = await params;
+    const paymentId = Number(resolvedParams.id)
     const payment = await prisma.payment.findUnique({
       where: { payment_id: paymentId },
       include: {

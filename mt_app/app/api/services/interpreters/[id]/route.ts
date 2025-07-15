@@ -11,7 +11,8 @@ const prisma = new PrismaClient();
  */
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    const interpreter_id = parseInt(params.id, 10);
+    const resolvedParams = await params;
+    const interpreter_id = parseInt(resolvedParams.id, 10);
 
     if (isNaN(interpreter_id)) {
       return NextResponse.json({ error: "Invalid interpreter ID" }, { status: 400 });

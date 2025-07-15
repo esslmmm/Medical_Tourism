@@ -6,8 +6,8 @@ const prisma = new PrismaClient();
 // GET a hotel room by ID
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
-
-    const roomID = Number(params.id)
+    const resolvedParams = await params
+    const roomID = Number(resolvedParams.id)
     const room = await prisma.hotel_rooms.findUnique({
       where: { room_id: roomID },
       include: {
@@ -92,8 +92,8 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
         facilities,
         images,
       } = await req.json();
-  
-      const roomId = Number(params.id);
+      const resolvedParams = await params
+      const roomId = Number(resolvedParams.id);
   
       if (!room_type || !price_per_night || !capacity || !description) {
         return NextResponse.json({ error: "Missing required fields" }, { status: 400 });

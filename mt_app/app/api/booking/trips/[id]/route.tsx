@@ -7,10 +7,12 @@ const prisma = new PrismaClient()
 // GET request - Fetch a single tourism booking by ID
 export async function GET(req: Request, { params }: { params: { id: string } }) {
     try {
+    
+      const resolvedParams = await params;
       const tourismBooking = await prisma.tourism_bookings.findUnique({
-        where: { tourism_id: Number(params.id) },
+        where: { tourism_id: Number(resolvedParams.id) },
         include: {
-          tourismservices: {
+          trips: {
             include: {
               package_places: {
                 include: {
@@ -19,7 +21,6 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
               }
             }
           },
-          cars: true,
           package_bookings: true,
         },
       })
@@ -48,7 +49,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       where: { tourism_id: tourismBookingId },
       data:{
         tour_id,
-        car_id,
         status,
       }
     })

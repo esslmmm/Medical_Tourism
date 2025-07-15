@@ -11,7 +11,8 @@ const prisma = new PrismaClient();
  */
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    const hospital_id = parseInt(params.id, 10); // Convert ID to integer
+    const resolvedParams = await params;
+    const hospital_id = parseInt(resolvedParams.id, 10); // Convert ID to integer
 
     if (isNaN(hospital_id)) {
       return NextResponse.json({ error: "Invalid hospital ID" }, { status: 400 });

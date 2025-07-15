@@ -19,7 +19,7 @@ interface PackageBooking {
 
 interface TourismTrip {
   tourism_id: number;
-  tourismservices: {
+  trips: {
     tour_id: number;
     package_places: PackagePlaces[];
   };
@@ -146,14 +146,14 @@ const PlacesToVisit: React.FC<PlacesToVisitProps> = ({ selectedDay }) => {
     return `${formattedHours}:${formattedMinutes} ${period}`;
   };
 
-const filteredPlaces = tripData?.tourismservices.package_places.filter(place =>
+const filteredPlaces = tripData?.trips?.package_places.filter(place =>
   selectedDay === "all" || parseInt(place.date) === selectedDay
 );
 
 
 if (loading) return <p className="text-center text-gray-500">Loading place details...</p>;
 if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-if (!tripData || !tripData.tourismservices?.package_places?.length)
+if (!tripData || !tripData.trips?.package_places?.length)
   return <p className="text-center text-gray-500">No places to visit found.</p>;
 if (!filteredPlaces || filteredPlaces.length === 0)
   return null;

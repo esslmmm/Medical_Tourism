@@ -5,7 +5,8 @@ const prisma = new PrismaClient();
 
 export async function GET(request: Request, context: { params: { id: string } }) {
     try {
-        const {id} = context.params;
+        
+        const {id} = await context.params;
 
         if (!id) {
             return NextResponse.json({ error: "Hotel ID is required" }, { status: 400 });

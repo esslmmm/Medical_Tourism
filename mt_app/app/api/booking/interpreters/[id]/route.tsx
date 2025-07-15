@@ -6,7 +6,8 @@ const prisma = new PrismaClient()
 // GET request - Fetch a single interpreter booking by ID
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
-    const interpreterBookingId = Number(params.id)
+    const resolvedParams = await params;
+    const interpreterBookingId = Number(resolvedParams.id)
     const interpreterBooking = await prisma.inter_bookings.findUnique({
       where: { booking_id: interpreterBookingId },
       include: {

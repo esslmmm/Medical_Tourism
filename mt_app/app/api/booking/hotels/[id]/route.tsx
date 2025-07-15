@@ -6,7 +6,8 @@ const prisma = new PrismaClient()
 // GET request - Fetch a single hotel booking by ID
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
-    const hotelBookingId = Number(params.id)
+    const resolvedParams = await params;
+    const hotelBookingId = Number(resolvedParams.id)
     const hotelBooking = await prisma.hotel_bookings.findUnique({
       where: { booking_id: hotelBookingId },
       include: {

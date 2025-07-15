@@ -34,7 +34,7 @@ export async function GET() {
             descriptions,
             images,
             trips,
-            package_places // New field for package_place entries
+            package_places
         } = await request.json();
 
         // Validate required fields

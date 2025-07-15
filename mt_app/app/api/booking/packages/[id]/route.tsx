@@ -7,14 +7,23 @@ const prisma = new PrismaClient()
 // GET request - Fetch a single package booking by ID
 export async function GET(req: Request, { params }: { params: { id: string } }) {
     try {
-    const packageBookingId = Number(params.id)
+    const resolvedParams = await params;
+    const packageBookingId = Number(resolvedParams.id)
       const packageBooking = await prisma.package_bookings.findUnique({
         where: { booking_id: packageBookingId },
         include: {
           user: true,
           packages: true,
           tourism_bookings: true,
-          appointments: true,
+          appointments: {
+            include: {
+              appointment_files: {
+                include: {
+                  files: true,
+                }
+              }
+            }
+          },
           hotel_bookings: {
             include: {
               room_aggregate: {
@@ -58,7 +67,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
         inter_booking_id,
         status,
       } = await req.json();
-      const packageBookingId = Number(params.id)
+      
+      const resolvedParams = await params;
+      const packageBookingId = Number(resolvedParams.id)
       const updatedPackageBooking = await prisma.package_bookings.update({
         where: { booking_id: packageBookingId },
         data: {
