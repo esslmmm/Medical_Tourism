@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 //SessionProvider
 import SessionProvider from './components/SessionProvider'
 import { auth } from "./api/auth/auth" // Import your auth configuration
+import SessionWarning from "./components/SessionWarning";
 
 export default async function RootLayout({
   children,
@@ -34,8 +35,15 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <SessionProvider session={session}>{children}</SessionProvider> 
+        <SessionProvider>
+          <div>
+            {children}
+            {/* <SessionWarning />  */}
+            </div>
+        </SessionProvider> 
       </body> 
     </html>
   );
 }
+
+

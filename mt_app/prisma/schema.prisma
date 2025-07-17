@@ -20,7 +20,7 @@ model action_history {
 }
 
 model File {
-  id                Int               @id @default(autoincrement())
+  id                String                     @id @default(uuid())
   userId            Int
   originalName      String
   fileName          String
@@ -41,8 +41,8 @@ model File {
 
 model AppointmentFile {
   id            Int          @id @default(autoincrement())
-  appointmentId Int
-  fileId        Int
+  appointmentId String
+  fileId        String
   createdAt     DateTime     @default(now())
   appointments  appointments @relation(fields: [appointmentId], references: [appointment_id], onDelete: Cascade)
   files         File         @relation(fields: [fileId], references: [id], onDelete: Cascade)
@@ -55,7 +55,7 @@ model AppointmentFile {
 model ChatFile {
   id        Int      @id @default(autoincrement())
   chatId    Int
-  fileId    Int
+  fileId    String
   createdAt DateTime @default(now())
   chat      chat     @relation(fields: [chatId], references: [chat_id], onDelete: Cascade)
   files     File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
@@ -66,12 +66,12 @@ model ChatFile {
 }
 
 model appointments {
-  appointment_id    Int                 @id @default(autoincrement())
+  appointment_id    String                     @id @default(uuid())
   date              DateTime?           @db.Date
   timeslot          String?             @db.VarChar(255)
   patient_id        Int?
   description       String?             @db.Text
-  doctor_id         Int?
+  doctor_id         String?
   status            appointments_status @default(In_Progress)
   appointment_files AppointmentFile[]
   patient_details   patient_details?    @relation(fields: [patient_id], references: [patient_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_1")
@@ -84,7 +84,7 @@ model appointments {
 
 model description {
   description_id Int      @id @default(autoincrement())
-  package_id     Int
+  package_id     String
   details        String   @db.VarChar(255)
   title          String   @db.VarChar(100)
   packages       packages @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "description_ibfk_1")
@@ -94,7 +94,7 @@ model description {
 
 model doc_certificate {
   cerfiticate_id Int      @id @default(autoincrement())
-  doctor_id      Int?
+  doctor_id      String?
   field_of_study String?  @db.VarChar(255)
   institution    String?  @db.VarChar(255)
   year           Int?
@@ -105,7 +105,7 @@ model doc_certificate {
 
 model doc_education {
   education_id   Int      @id @default(autoincrement())
-  doctor_id      Int?
+  doctor_id      String?
   field_of_study String?  @db.VarChar(255)
   institution    String?  @db.VarChar(255)
   year           Int?
@@ -116,7 +116,7 @@ model doc_education {
 
 model doc_language {
   language_id Int      @id @default(autoincrement())
-  doctor_id   Int?
+  doctor_id   String?
   languages   String?  @db.VarChar(255)
   doctors     doctors? @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "doc_language_ibfk_1")
 
@@ -124,10 +124,10 @@ model doc_language {
 }
 
 model doctors {
-  doctor_id       Int               @id @default(autoincrement())
+  doctor_id       String                     @id @default(uuid())
   name            String?           @db.VarChar(255)
   specialization  String?           @db.VarChar(255)
-  hospital_id     Int?
+  hospital_id     String?
   experience      Int?
   description     String?           @db.VarChar(200)
   image           String?           @db.VarChar(255)
@@ -143,7 +143,7 @@ model doctors {
 }
 
 model hospitals {
-  hospital_id      Int                @id @default(autoincrement())
+  hospital_id      String                     @id @default(uuid())
   name             String?            @db.VarChar(100)
   hospital_code    String?            @db.VarChar(20)
   location         String?            @db.VarChar(255)
@@ -303,7 +303,7 @@ model languages {
 
 model medical_services {
   service_id   Int        @id @default(autoincrement())
-  hospital_id  Int?
+  hospital_id  String?
   service_name String?    @db.VarChar(255)
   description  String?    @db.VarChar(255)
   hospitals    hospitals? @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "medical_services_ibfk_1")
@@ -328,13 +328,13 @@ model messages {
 }
 
 model package_bookings {
-  booking_id          Int                     @id @default(autoincrement())
+  booking_id          String                     @id @default(uuid())
   user_id             Int
-  package_id          Int
-  tourism_booking_id  Int?
-  appointment_id      Int?
+  package_id          String
+  tourism_booking_id  String?
+  appointment_id      String?
   hotel_booking_id    Int?
-  contact_id          Int?
+  contact_id          String?
   inter_booking_id    Int?
   create_at           DateTime                @default(now()) @db.Timestamp(0)
   status              package_bookings_status @default(In_Progress)
@@ -358,8 +358,8 @@ model package_bookings {
 
 model package_doc {
   doc_id     Int       @id @default(autoincrement())
-  package_id Int?
-  doctor_id  Int?
+  package_id String?
+  doctor_id  String?
   packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_doc_ibfk_1")
   doctors    doctors?  @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "package_doc_ibfk_2")
 
@@ -369,7 +369,7 @@ model package_doc {
 
 model package_hotels {
   packhotel_id Int       @id @default(autoincrement())
-  package_id   Int?
+  package_id   String?
   hotel_id     Int?
   packages     packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_hotels_ibfk_1")
   hotels       hotels?   @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "package_hotels_ibfk_2")
@@ -381,7 +381,7 @@ model package_hotels {
 model package_image {
   images     String?   @db.VarChar(255)
   image_id   Int       @id @default(autoincrement())
-  package_id Int?
+  package_id String?
   detail     String    @db.Text
   title      String    @db.Text
   packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_image_ibfk_1")
@@ -391,7 +391,7 @@ model package_image {
 
 model package_interpreters {
   inter_id       Int           @id @default(autoincrement())
-  package_id     Int?
+  package_id     String?
   interpreter_id Int?
   packages       packages?     @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_interpreters_ibfk_1")
   interpreters   interpreters? @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "package_interpreters_ibfk_2")
@@ -403,7 +403,7 @@ model package_interpreters {
 model package_places {
   packplace_id Int     @id @default(autoincrement())
   tour_id      Int?
-  place_id     Int?
+  place_id     String?
   date         Int
   start        String  @db.VarChar(10)
   end          String  @db.VarChar(10)
@@ -415,10 +415,10 @@ model package_places {
 }
 
 model packages {
-  package_id           Int                    @id @default(autoincrement())
+  package_id           String                     @id @default(uuid())
   package_name         String                 @db.VarChar(255)
   package_type         packages_package_type
-  hospital_id          Int
+  hospital_id          String
   image                String                 @db.VarChar(255)
   detail               String                 @db.VarChar(100)
   duration             Int
@@ -442,8 +442,8 @@ model payment {
   amount           Decimal                @db.Decimal(10, 0)
   payment_status   payment_payment_status
   transaction_id   String                 @db.VarChar(50)
-  booking_id       Int
-  payment_id       Int                    @id @default(autoincrement())
+  booking_id       String
+  payment_id       String                     @id @default(uuid())
   user_id          Int
   user             user                   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_1")
   package_bookings package_bookings       @relation(fields: [booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_2")
@@ -455,14 +455,14 @@ model payment {
 model place_image {
   image    String? @db.VarChar(255)
   image_id Int     @id @default(autoincrement())
-  place_id Int?
+  place_id String?
   places   places? @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction, map: "place_image_ibfk_2")
 
   @@index([place_id], map: "place_image_ibfk_2")
 }
 
 model places {
-  place_id       Int              @id @default(autoincrement())
+  place_id       String                     @id @default(uuid())
   place_name     String?          @db.VarChar(100)
   contact_info   String?          @db.VarChar(255)
   location       String?          @db.VarChar(255)
@@ -477,7 +477,7 @@ model places {
 model review_hospital {
   review_id    Int       @id @default(autoincrement())
   user_id      Int
-  hospital_id  Int
+  hospital_id  String
   rating       Float?    @db.Float
   title_review String?   @db.Text
   comment      String?   @db.Text
@@ -541,7 +541,7 @@ model room_image {
 }
 
 model tourism_bookings {
-  tourism_id       Int                      @id @default(autoincrement())
+  tourism_id       String                     @id @default(uuid())
   tour_id          Int?
   status           tourism_bookings_status? @default(In_Progress)
   created_at       DateTime                 @default(now()) @db.Timestamp(0)
@@ -554,7 +554,7 @@ model tourism_bookings {
 
 model hospital_images {
   image_id    Int        @id @default(autoincrement())
-  hospital_id Int?
+  hospital_id String?
   image       String?    @db.VarChar(255)
   hospitals   hospitals? @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "hospital_images_ibfk_1")
 
@@ -588,7 +588,7 @@ model patient_details {
 
 model trips {
   tour_id          Int                @id @default(autoincrement())
-  package_id       Int
+  package_id       String
   description      String?            @db.Text
   total_price      Float?             @db.Float
   package_places   package_places[]
@@ -638,7 +638,7 @@ model user {
 }
 
 model user_contact_detail {
-  id               Int                @id @default(autoincrement())
+  id               String                     @id @default(uuid())
   firstname        String?            @db.VarChar(255)
   lastname         String?            @db.VarChar(255)
   email            String?            @db.VarChar(255)

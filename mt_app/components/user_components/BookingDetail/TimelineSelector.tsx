@@ -1,6 +1,7 @@
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Inter } from "next/font/google";
+import TimelineSkeleton from "../skeleton-screen/BookingDetail/TimelineSkeleton";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -79,7 +80,9 @@ const TimelineSelector: React.FC<TimelineSelectorProps> = ({ selectedDay, setSel
     });
   };
 
-  if (loading) return <p className="text-center text-gray-500">Loading package details...</p>;
+  if (loading) {
+    return <TimelineSkeleton />
+  }
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
   if (!bookingData || !packageData) return <p className="text-center text-gray-500">No data found.</p>;
 

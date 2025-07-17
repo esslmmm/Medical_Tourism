@@ -1,30 +1,4 @@
-// import { getToken } from 'next-auth/jwt'
-// import { NextRequest, NextResponse } from 'next/server'
-
-// export async function middleware(request : NextRequest) {
-//   const user = await getToken({
-//     req: request,
-//     secret: process.env.AUTH_SECRET,
-//   })
-
-//   // console.log('user', user)
-
-//   // Get the pathname of the request
-//   const { pathname } = request.nextUrl
-
-//   // If the pathname starts with /protected and the user is not an admin, redirect to the home page
-//   // if (
-//   //   pathname.startsWith('/profile') &&
-//   //   (!user || user.role !== 'member')
-//   // ) {
-//   //   return NextResponse.redirect(new URL('/', request.url))
-//   // }
-
-//   // Continue with the request if the user is an admin or the route is not protected
-//   return NextResponse.next()
-// }
-
-import { auth } from "./app/api/auth/auth" // Import your auth configuration
+import { auth } from "./app/api/auth/auth"
 import { NextResponse } from "next/server"
 
 export default auth((req) => {
@@ -32,7 +6,6 @@ export default auth((req) => {
   const isAuth = !!token
   const isAuthPage = req.nextUrl.pathname.startsWith('/verify-otp')
   
-  // Clean array approach for protected routes
   const protectedRoutes = [
     '/user/Form',
     '/user/profile',
@@ -45,12 +18,38 @@ export default auth((req) => {
     req.nextUrl.pathname.startsWith(route)
   )
 
+  // Check session expiry if user is authenticated
+  if (isAuth && token) {
+    const currentTime = Math.floor(Date.now() / 1000)
+    
+    // Check if token is expired
+    if (token.exp && token.exp < currentTime) {
+      const response = NextResponse.redirect(
+        new URL(`/?isLoginOpen=true&expired=true`, req.url)
+      )
+      // Clear session cookies
+      response.cookies.delete('authjs.session-token')
+      response.cookies.delete('__Secure-authjs.session-token')
+      return response
+    }
+    
+    // Check if token is about to expire (within 5 minutes)
+    const expiryWarning = 5 * 60 // 5 minutes
+    if (token.exp && (token.exp - currentTime) < expiryWarning) {
+      const response = NextResponse.next()
+      response.headers.set('X-Session-Expiry-Warning', 'true')
+      response.headers.set('X-Time-Left', String(token.exp - currentTime))
+      response.headers.set('X-Auth-Method', token.authMethod || 'unknown')
+      return response
+    }
+  }
+
   // Redirect authenticated users away from auth pages
   if (isAuthPage) {
     if (isAuth) {
       return NextResponse.redirect(new URL('/', req.url))
     }
-    return NextResponse.next() // Allow access to auth pages for unauthenticated users
+    return NextResponse.next()
   }
 
   // Redirect unauthenticated users to login for protected routes
@@ -70,12 +69,11 @@ export default auth((req) => {
 
 export const config = {
   matcher: [
-    // More efficient matcher - covers all your protected routes
     '/user/Form/:path*',
     '/user/profile/:path*',
-    '/auth/:path*',
-    '/api/:path*',
-    '/user/Test',
+    '/user/accommodation_booking/:path*',
+    '/user/Interpreter/:path*',
+    '/user/Test/:path*', 
     '/verify-otp/:path*'
   ]
 }

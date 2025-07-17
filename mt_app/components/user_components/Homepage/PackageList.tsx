@@ -7,6 +7,7 @@ import "../../../app/globals.css";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
 import { useRouter } from "next/navigation";
+import PackagesSkeleton from "../skeleton-screen/DoctorProfile/PackageSkeleton";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });
 
@@ -81,6 +82,12 @@ const PackageList: React.FC = () => {
         : "Invalid Date";
 };
 
+  if (loading) {
+      return <PackagesSkeleton />;
+    }
+  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
+
+
   return (
     <div className="container mx-auto p-12 relative">
       <h2 className="text-2xl font-semibold text-start pl-6 mb-6">
@@ -95,11 +102,7 @@ const PackageList: React.FC = () => {
           <ChevronLeftIcon className="w-6 h-6 text-gray-700" />
         </button>
       )}
-      {loading ? (
-        <p className="text-gray-500">Loading packages...</p>
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
-      ) : (
+
       <div
         ref={scrollRef}
         className="overflow-hidden scrollbar-hide flex space-x-6 pl-5 pr-10 scroll-smooth snap-x"
@@ -108,7 +111,7 @@ const PackageList: React.FC = () => {
         {packages.filter(pkg => pkg.package_type === "Medical_Tourism").map((pkg) => (
           <motion.div
             key={pkg.package_id}
-            className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200 snap-center"
+            className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200 snap-center cursor-pointer"
             whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
             onClick={() => router.push(`/user/package_landing_page/${pkg.package_id}`)} // Navigate to doctor details
             whileTap={{ scale: 0.98 }}
@@ -134,7 +137,7 @@ const PackageList: React.FC = () => {
           </motion.div>
         ))}
       </div>
-      )}
+      
       {canScrollRight && (
         <button
           onClick={scrollRight}

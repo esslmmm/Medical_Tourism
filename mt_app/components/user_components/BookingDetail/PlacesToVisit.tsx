@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Inter } from "next/font/google";
 import { useParams } from "next/navigation";
+import PlacesSkeleton from "../skeleton-screen/BookingDetail/PlacesSkeleton";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -151,7 +152,9 @@ const filteredPlaces = tripData?.trips?.package_places.filter(place =>
 );
 
 
-if (loading) return <p className="text-center text-gray-500">Loading place details...</p>;
+if (loading) {
+  return <PlacesSkeleton />
+}
 if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 if (!tripData || !tripData.trips?.package_places?.length)
   return <p className="text-center text-gray-500">No places to visit found.</p>;
@@ -160,7 +163,7 @@ if (!filteredPlaces || filteredPlaces.length === 0)
 
 return (
   <div className={`${inter.className}`}>
-  <h2 className="ml-2 text-lg font-bold mb-2" style={{ fontSize: "25px" }}>Places to Visit</h2>
+    <h2 className="ml-2 text-lg font-bold mb-2" style={{ fontSize: "25px" }}>Places to Visit</h2>
   <div className="w-[850px] mx-auto bg-white p-4 rounded-xl shadow-md border border-[#C5D1E0]">
     {filteredPlaces.map((place, index) => (
       <div

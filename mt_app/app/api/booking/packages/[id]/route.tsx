@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { NextResponse } from 'next/server'
+import { auth } from '../../../auth/auth';
 
 const prisma = new PrismaClient()
 
@@ -7,8 +8,15 @@ const prisma = new PrismaClient()
 // GET request - Fetch a single package booking by ID
 export async function GET(req: Request, { params }: { params: { id: string } }) {
     try {
+    const session = await auth();
+
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+    const userId = Number(session.user.id);
+
     const resolvedParams = await params;
-    const packageBookingId = Number(resolvedParams.id)
+    const packageBookingId = resolvedParams.id;
       const packageBooking = await prisma.package_bookings.findUnique({
         where: { booking_id: packageBookingId },
         include: {
@@ -46,6 +54,10 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       if (!packageBooking) {
         return NextResponse.json({ error: 'Package booking not found' }, { status: 404 })
       }
+
+      if (packageBooking.user_id !== userId) {
+            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
   
       return NextResponse.json(packageBooking, { status: 200 })
     } catch (error) {
@@ -69,7 +81,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       } = await req.json();
       
       const resolvedParams = await params;
-      const packageBookingId = Number(resolvedParams.id)
+      const packageBookingId = resolvedParams.id
       const updatedPackageBooking = await prisma.package_bookings.update({
         where: { booking_id: packageBookingId },
         data: {
@@ -94,7 +106,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   // DELETE request - Delete a package booking by ID
   export async function DELETE(req: Request, { params }: { params: { id: string } }) {
     try {
-        const packageBookingId = Number(params.id)
+        const packageBookingId = params.id;
       await prisma.package_bookings.delete({
         where: { booking_id: packageBookingId },
       })

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Inter } from "next/font/google";
 import { useParams } from "next/navigation";
 import { FileText, X, Loader2 } from 'lucide-react';
+import ServiceSkeleton from "../skeleton-screen/BookingDetail/BookingSkeleton";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -143,7 +144,9 @@ const MedicalServiceCard: React.FC<MedicalServiceCardProps> = ({ selectedDay }) 
     });
   };
 
-  if (loading) return <p className="text-center text-gray-500">Loading package booking details...</p>;
+  if (loading) {
+    return <ServiceSkeleton />
+  }
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
   if (!data || !data.packages || !data.appointments || !data.hotel_bookings)
     return <p className="text-center text-gray-500">No package booking found.</p>;

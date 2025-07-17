@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
 import { useParams } from "next/navigation";
+import PackagesSkeleton from "../skeleton-screen/DoctorProfile/PackageSkeleton";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });
 
@@ -83,9 +84,10 @@ const DoctorPackage: React.FC = () => {
     }
   };
 
-  if (loading) return <p className="text-center text-gray-500">Loading doctor details...</p>;
+  if (loading || !doctor) {
+    return <PackagesSkeleton />;
+  }
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!doctor) return <p className="text-center text-gray-500">Doctor not found</p>;
 
   return (
     <div className="container mx-auto p-8 relative">

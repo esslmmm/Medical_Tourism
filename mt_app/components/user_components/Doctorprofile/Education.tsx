@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import EducationSkeleton from "../skeleton-screen/DoctorProfile/EducationSkeleton";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "600", "700"] });
 
@@ -49,7 +50,9 @@ const EducationSection = () => {
     if (id) fetchDoctor();
   }, [id]);
 
-  if (loading) return <p className="text-center text-gray-500">Loading doctor details...</p>;
+  if (loading) {
+    return <EducationSkeleton />;
+  }
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
   if (!doctor) return <p className="text-center text-gray-500">Doctor not found</p>;
 

@@ -7,11 +7,11 @@ import { updatePackageBooking } from '../../../app/api/booking/packages/updatePa
 import { createAppointmentFile } from '../../../app/api/files/createAppointmentFile';
 
 const ConfirmButton = () => {
-  const router = useRouter();
-  const { id } = useParams();
-  const [form, setForm] = useState<AppointmentFormData | null>(null);
-  const [fileData, setFileData] = useState<any | null>(null);
-  const [uploading, setUploading] = useState(false);
+	const { id } = useParams();
+	const [form, setForm] = useState<AppointmentFormData | null>(null);
+	const [fileData, setFileData] = useState<any | null>(null);
+	const [uploading, setUploading] = useState(false);
+	const router = useRouter();
 
     useEffect(() => {
       const savedForm = localStorage.getItem('appointmentFormData');
@@ -41,8 +41,6 @@ const ConfirmButton = () => {
 
       const uploadToCloudinary = async (file: File, userId: string): Promise<any> => {
 		const isPDF = file.type === 'application/pdf';
-		const resourceType = isPDF ? 'raw' : 'image'; // Or use 'auto' if you change your preset
-
 		const endpoint = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`;
 
 		const formData = new FormData();
@@ -180,7 +178,7 @@ const ConfirmButton = () => {
 			}
 
 			// Update package booking
-			const updateResponse = await updatePackageBooking(Number(package_booking_id), {
+			const updateResponse = await updatePackageBooking(package_booking_id, {
 			appointment_id,
 			contact_id,
 			status
@@ -197,7 +195,7 @@ const ConfirmButton = () => {
 
 			
 			// Navigate to success page
-			router.push('/user/profile/approval-status/1');
+			router.push(`/user/profile/approval-status`);
 
 		} catch (err) {
 			console.error('Failed to confirm booking:', err);

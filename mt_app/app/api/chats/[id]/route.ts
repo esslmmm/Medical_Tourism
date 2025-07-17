@@ -26,7 +26,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
             include: {
                 messages: {
                     include:{
-                        users_messages_receiver_idTousers: true,
+                        user_messages_receiver_idTouser: true,
                     },
                     orderBy: { timestamp: "desc" },
                 }

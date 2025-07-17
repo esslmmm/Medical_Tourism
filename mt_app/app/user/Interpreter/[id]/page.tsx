@@ -94,7 +94,7 @@ export default function InterpreterPage() {
           throw Error('Missing booking ID(s).');
         }
 
-      await updatePackageBooking(Number (package_booking_id), { inter_booking_id });
+      await updatePackageBooking(package_booking_id, { inter_booking_id });
 
       goToNextStep();
     } catch (err) {

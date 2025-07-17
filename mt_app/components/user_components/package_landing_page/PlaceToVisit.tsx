@@ -2,6 +2,7 @@
 import { useParams,  useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import PlaceToVisitSkeleton from "../skeleton-screen/package_landing_page/PlaceToVisitSkeleton";
 
 interface Packages {
   package_id: number;
@@ -61,7 +62,9 @@ export default function Trips() {
       fetchPackage();
     }, [id]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return <PlaceToVisitSkeleton />;
+  }
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (

@@ -2,6 +2,7 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import CarouselSkeleton from "../skeleton-screen/package_landing_page/CarouselSkeleton";
 
 // const slides = [
 //   {
@@ -120,7 +121,9 @@ const nextSlide = () =>
   );
 
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return <CarouselSkeleton />
+  }
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (

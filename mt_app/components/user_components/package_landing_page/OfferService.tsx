@@ -3,8 +3,9 @@ import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { updatePackageBooking } from "../../../app/api/booking/packages/updatePackageBooking";
 import { createtrip } from "../../../app/api/booking/trips/createtrip";
-import { useSession, signIn } from 'next-auth/react';
 import LoginModal from "../Homepage/LoginModal";
+import OfferServiceSkeleton from "../skeleton-screen/package_landing_page/OfferServiceSkeleton";
+import { useUserId } from "../../../hooks/useUserId";
 
 interface Packages {
   package_id: number;
@@ -32,7 +33,7 @@ interface ServicesProps {
 
 const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
   const { id } = useParams();
-  const { data: session, status } = useSession();
+  const { userId, isLoading, isAuthenticated } = useUserId();
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const [data, setData] = useState<Packages | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -77,9 +78,6 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
       }
 
       try {
-        // Check authentication first
-        const isAuthenticated = await checkUserAuth();
-        
         if (!isAuthenticated) {
           // Store booking intent
           localStorage.setItem('bookingIntent', JSON.stringify({
@@ -97,7 +95,7 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
 
         // User is authenticated, proceed with booking creation
         const payload = {
-          user_id: 1, // You might want to get this from authenticated user context
+          user_id: Number(userId), // You might want to get this from authenticated user context
           package_id: Number(id),
           tourism_booking_id: null,
           appointment_id: null,
@@ -160,7 +158,7 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
           }
 
           // Update package booking with tourism_booking_id
-          await updatePackageBooking(Number(package_booking_id), {
+          await updatePackageBooking(package_booking_id, {
             tourism_booking_id,
           });
         }
@@ -178,12 +176,9 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
       }
     };
 
-    const checkUserAuth = () => {
-        // No need for async/await since session data is already available
-        return status === 'authenticated' && session?.user;
-      };
-
-  if (loading) return <p>Loading...</p>;
+  if (loading || isLoading) { 
+    return <OfferServiceSkeleton />
+  }
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
@@ -221,10 +216,26 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
       {/* Services Section */}
       <section className="py-12 text-center">
         <h2 className="text-2xl text-[#000000] font-bold mb-6">Offer Service</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {data?.description.map((service, index) => (
+        {/* Top row - first 3 items */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-6">
+          {data?.description.slice(0, 3).map((service, index) => (
             <div
               key={index}
+              className="bg-white shadow-md rounded-xl p-6 border border-gray-200 hover:shadow-lg transition"
+            >
+              <h3 className="font-semibold text-[#000000] text-lg">{service.title}</h3>
+              {service.details && (
+                <p className="text-gray-600 text-sm mt-2">{service.details}</p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom row - remaining items (2 cards centered) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+          {data?.description.slice(3).map((service, index) => (
+            <div
+              key={index + 3}
               className="bg-white shadow-md rounded-xl p-6 border border-gray-200 hover:shadow-lg transition"
             >
               <h3 className="font-semibold text-[#000000] text-lg">{service.title}</h3>

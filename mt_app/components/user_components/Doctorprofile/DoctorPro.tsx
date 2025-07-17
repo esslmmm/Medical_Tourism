@@ -4,6 +4,8 @@ import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import DoctorCardSkeleton from "../skeleton-screen/DoctorProfile/DoctorCardSkeleton";
+// import DoctorCardSkeleton from "../skeleton-screen/DoctorCardSkeleton"
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500", "700"] });
 
@@ -62,10 +64,12 @@ const DoctorProfile = () => {
     if (id) fetchDoctor();
   }, [id]);
 
-  if (loading) return <p className="text-center">Loading...</p>;
+  if (loading || !doctor) {
+    return <DoctorCardSkeleton />;
+  }
   if (error) return <p className="text-center text-red-500">{error}</p>;
-  if (!doctor) return <p className="text-center">Doctor not found.</p>;
 
+  
   return (
     <div>
       <div className="flex items-center justify-center mx-auto w-270 h-60 shadow-lg shadow-[#792AA7]/15 rounded-2xl p-6 border border-[#DBCEF8] m-10 bg-[#F2F2F8]/70">
@@ -92,14 +96,14 @@ const DoctorProfile = () => {
           <p className={`ml-5 mr-10 text-[#000000] font-light mt-1 ${poppins.className}`} style={{ fontSize: "16px" }}>
             {doctor.description}
           </p>
-          <p className={`ml-4 mt-5 text-[#47764C] font-bold mt-1 ${poppins.className}`} style={{ fontSize: "30px" }}>
+          <p className={`ml-4 mt-5 text-[#47764C] font-bold ${poppins.className}`} style={{ fontSize: "30px" }}>
             {doctor.specialization}
           </p>
         </div>
       </div>
 
       {/* Bottom Section */}
-      <div className="mt-4 bg-gray-100 rounded-4xl flex items-center px-6 py-3 mx-auto w-270 h-15 shadow-lg shadow-[#792AA7]/15 bg-white">
+      <div className="mt-4  rounded-4xl flex items-center px-6 py-3 mx-auto w-270 h-15 shadow-lg shadow-[#792AA7]/15 bg-white">
         {/* First Part */}
         <p className={`flex-1 text-center font-bold text-[#382E2E] text-xl ${poppins.className}`}>
           {doctor.specialization}
@@ -130,3 +134,4 @@ const DoctorProfile = () => {
 };
 
 export default DoctorProfile;
+

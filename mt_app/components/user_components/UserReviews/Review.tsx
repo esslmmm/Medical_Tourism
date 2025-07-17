@@ -6,6 +6,7 @@ import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { Poppins } from "next/font/google";
 import { Inter } from "next/font/google";
 import "../../../app/globals.css";
+import { useUserId } from "../../../hooks/useUserId";
 
 const inter = Inter({ subsets: ["latin"], weight: ["100","200","300","400","500","600", "700","800","900"] });
 const poppins = Poppins({ subsets: ["latin"], weight: ["100","200","300","400","500","600", "700","800","900"] });
@@ -14,9 +15,9 @@ interface User {
   user_id: number;
   name: string;
   email: string;
-  interpreter_reviews: Review[];
-  hospital_reviews: Review[];
-  hotel_reviews: Review[];
+  review_inter: Review[];
+  review_hospital: Review[];
+  review_hotel: Review[];
 }
 
 interface Review {
@@ -36,63 +37,62 @@ interface Review {
   comment: string;
   created_at: string;
   type: "Interpreter" | "Hospital" | "Hotel";
-  reviewed_name: string; // ✅ Store the entity name
-  hospitals?: { name: string }; // ✅ Ensure optional property
+  reviewed_name: string;
+  hospitals?: { name: string };
   hotels?: { name: string };
   interpreters?: { name: string };
 }
 
 const Review = () => {
-  const { id } = useParams();
   const [user, setUser] = useState<User | null>(null);
+  const { userId, isLoading, isAuthenticated } = useUserId();
   const [allReviews, setAllReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+
   useEffect(() => {
-    if (!id) return;
-
     async function fetchUser() {
-      try {
-        const response = await fetch(`/api/profile/${id}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch user");
+        try {
+            const response = await fetch(`/api/profile`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch user");
+            }
+            const data: User = await response.json();
+            setUser(data);
+
+            const combinedReviews = [
+                ...data.review_inter.map((r) => ({
+                    ...r,
+                    type: "Interpreter",
+                    reviewed_name: r.interpreters?.name ?? "Unknown Interpreter",
+                })),
+                ...data.review_hospital.map((r) => ({
+                    ...r,
+                    type: "Hospital",
+                    reviewed_name: r.hospitals?.name ?? "Unknown Hospital",
+                })),
+                ...data.review_hotel.map((r) => ({
+                    ...r,
+                    type: "Hotel",
+                    reviewed_name: r.hotels?.name ?? "Unknown Hotel",
+                })),
+            ] as Review[];
+
+            combinedReviews.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+            setAllReviews(combinedReviews);
+        } catch (error) {
+            setError("Error fetching user data. Please try again.");
+            console.error(error);
+        } finally {
+            setLoading(false);
         }
-        const data: User = await response.json();
-        setUser(data);
-
-        // Merge all reviews and extract the name of the reviewed entity
-        const combinedReviews= [
-          ...data.interpreter_reviews.map((r) => ({
-            ...r,
-            type: "Interpreter",
-            reviewed_name: r.interpreters?.name ?? "Unknown Interpreter", // ✅ Extract interpreter name
-          })),
-          ...data.hospital_reviews.map((r) => ({
-            ...r,
-            type: "Hospital",
-            reviewed_name: r.hospitals?.name ?? "Unknown Hospital", // ✅ Extract hospital name
-          })),
-          ...data.hotel_reviews.map((r) => ({
-            ...r,
-            type: "Hotel",
-            reviewed_name: r.hotels?.name ?? "Unknown Hotel", // ✅ Extract hotel name
-          })),
-        ] as Review[];
-
-        // Sort reviews by created_at (newest first)
-        combinedReviews.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-        setAllReviews(combinedReviews);
-      } catch (error) {
-        setError("Error fetching user data. Please try again.");
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
     }
 
     fetchUser();
-  }, [id]);
+}, []);
+
+
 
   const formatDate = (timestamp: string | number | Date) => {
     if (!timestamp) return "Invalid Date";
@@ -106,7 +106,7 @@ const Review = () => {
     })}`;
   };
 
-  if (loading) return <p className="text-center text-gray-500">Loading user details...</p>;
+  if (loading || isLoading) return <p className="text-center text-gray-500">Loading details...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (

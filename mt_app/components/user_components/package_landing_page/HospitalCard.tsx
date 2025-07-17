@@ -3,6 +3,7 @@ import Image from "next/image";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import HospitalDetailsSkeleton from "../skeleton-screen/package_landing_page/HospitalDetailsSkeleton";
 
 interface Packages {
   package_id: number;
@@ -67,7 +68,9 @@ useEffect(() => {
     router.push(`/user/Hospital/${hospital?.hospital_id}`);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return <HospitalDetailsSkeleton />;
+  }
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (

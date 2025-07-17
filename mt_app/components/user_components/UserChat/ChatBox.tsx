@@ -1,10 +1,10 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import React, { useState, useRef, useEffect } from "react";
 import { FaPaperclip } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
 import io from "socket.io-client";
+import { useUserId } from "../../../hooks/useUserId";
 
 interface Chat {
   chat_id: number;
@@ -17,7 +17,7 @@ interface Chat {
 interface Message {
   message_id: number;
   chat_id: number;
-  sender_id: number;
+  sender_id?: string;
   receiver_id: number;
   message: string;
   timestamp: string;
@@ -34,8 +34,7 @@ interface Receiver {
 }
 
 const ChatApp: React.FC = () => {
-  const { id } = useParams();
-  const userId = Number(id);
+  const { userId, isLoading, isAuthenticated } = useUserId();
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -104,7 +103,7 @@ useEffect(() => {
     if (!message.trim() || !selectedChat) return;
 
     const receiverId =
-      selectedChat.user1_id === userId
+      selectedChat?.user1_id === Number(userId)
         ? selectedChat.user2_id
         : selectedChat.user1_id;
 

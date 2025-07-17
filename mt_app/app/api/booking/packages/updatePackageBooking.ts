@@ -1,6 +1,6 @@
 
 
-export async function updatePackageBooking(bookingId: number, data: any) {
+export async function updatePackageBooking(bookingId: string, data: any) {
   const response = await fetch(`/api/booking/packages/${bookingId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },

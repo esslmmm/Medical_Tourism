@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useUserId } from "../../../hooks/useUserId";
 
 interface Booking {
   booking_id: number;
@@ -26,7 +27,6 @@ interface User {
 }
 
 const BookingTabs: React.FC = () => {
-  const { id } = useParams();
   const [activeTab, setActiveTab] = useState<"Pending" | "Approved" | "Completed">("Pending");
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -34,11 +34,9 @@ const BookingTabs: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!id) return;
-
     async function fetchUser() {
       try {
-        const response = await fetch(`/api/profile/${id}`);
+        const response = await fetch(`/api/profile`);
         if (!response.ok) {
           throw new Error("Failed to fetch user");
         }
@@ -53,7 +51,7 @@ const BookingTabs: React.FC = () => {
     }
 
     fetchUser();
-  }, [id]);
+  }, []);
 
   const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);

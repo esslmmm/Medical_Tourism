@@ -55,3 +55,34 @@ body {
   }
 }
 
+
+/* Custom pulse animation for skeleton */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Shimmer effect (alternative to pulse) */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
+  background: linear-gradient(90deg, #f0f0f0 0px, rgba(229, 229, 229, 0.8) 40px, #f0f0f0 80px);
+  background-size: 200px;
+}
+

@@ -146,7 +146,7 @@ const AccommodationDetails: React.FC<AccommodationDetailsProps> = ({
       }
 
       // ✅ Update package booking with hotel_booking_id
-      await updatePackageBooking(Number(package_booking_id), {
+      await updatePackageBooking(package_booking_id, {
         hotel_booking_id,
       });
 
@@ -158,22 +158,6 @@ const AccommodationDetails: React.FC<AccommodationDetailsProps> = ({
       setLoading(false);
     }
   };
-
-
-
-  // const increment = (roomId: number) => {
-  //   setQuantities((prev) => ({
-  //     ...prev,
-  //     [roomId]: (prev[roomId] || 0) + 1,
-  //   }));
-  // };
-
-  // const decrement = (roomId: number) => {
-  //   setQuantities((prev) => ({
-  //     ...prev,
-  //     [roomId]: Math.max((prev[roomId] || 0) - 1, 0),
-  //   }));
-  // };
 
 
   if (!accommodation) return <p className="p-10 text-center">No accommodation data available.</p>;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Inter } from "next/font/google";
 import { useParams } from "next/navigation";
+import ServiceSkeleton from "../skeleton-screen/BookingDetail/BookingSkeleton";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -107,7 +108,9 @@ const AccommodationCard: React.FC<AccommodationCardProps> = ({ selectedDay }) =>
     return date;
   };
 
-  if (loading) return <p className="text-center text-gray-500">Loading accommodation details...</p>;
+  if (loading) {
+    return <ServiceSkeleton />
+  }
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
   if (!packageBooking) return <p className="text-center text-gray-500">No package booking found.</p>;
   if (!packageBooking.hotel_booking_id) return <p className="text-center text-gray-500">No hotel booking associated with this package.</p>;

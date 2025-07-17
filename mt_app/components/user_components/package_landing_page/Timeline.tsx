@@ -2,6 +2,7 @@
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import TimelineSkeleton from "../skeleton-screen/package_landing_page/TimelineSkeleton";
 
 // const events = [
 //   {
@@ -87,7 +88,9 @@ export default function Timeline() {
     setIsTimelineVisible((prev) => !prev);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading){
+    return <TimelineSkeleton />
+  }
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (

@@ -1,5 +1,7 @@
 'use client';
-import ChatBox from "../../../../../components/user_components/UserChat/ChatBox";
+
+import ChatBox from "../../../../components/user_components/UserChat/ChatBox";
+
 
 
 export default function UserChat() {

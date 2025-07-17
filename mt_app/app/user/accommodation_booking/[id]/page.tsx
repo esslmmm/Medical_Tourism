@@ -1,5 +1,4 @@
 "use client";
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import AccommodationDetails from "../../../../components/user_components/accommodation_booking/AccommodationDetail";
 import ReviewSection from "../../../../components/user_components/accommodation_booking/ReviewAccommodation";
@@ -9,7 +8,6 @@ import SelectAccommodation from "../../../../components/user_components/accommod
 import SelectRoom from "../../../../components/user_components/accommodation_booking/SelectRoom";
 import { addDays, differenceInCalendarDays } from "date-fns";
 import { Range } from 'react-date-range';
-// import Original from "../../../components/user_components/accommodation_booking/Original"; // optional
 
 interface accommodation {
   hotel_id: number;

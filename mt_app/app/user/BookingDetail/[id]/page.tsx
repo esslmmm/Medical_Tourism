@@ -33,27 +33,28 @@ const UserTimeline = () => {
         <NavigationIcons sections={sections} />
 
         {/* Sections with Proper Refs */}
-        <div ref={sections.package}>
+        <div ref={sections?.package}>
           <PackageType />
         </div>
 
-        <div ref={sections.timeline}>
+
+        <div ref={sections?.timeline}>
           <TimelineSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
         </div>
 
-        <div ref={sections.medical}>
+        <div ref={sections?.medical}>
           <MedicalServiceCard selectedDay={selectedDay}/>
         </div>
 
-        <div ref={sections.accommodation}>
+        <div ref={sections?.accommodation}>
           <AccommodationCard selectedDay={selectedDay}/>
         </div>
 
-        <div ref={sections.place}>
+        <div ref={sections?.place}>
           <PlacesToVisit selectedDay={selectedDay}/>
         </div>
 
-        <div ref={sections.interpreter}>
+        <div ref={sections?.interpreter}>
           <Interpreter selectedDay={selectedDay}/>
         </div>
       </div>

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
 import { useRouter } from "next/navigation";
+import PackagesSkeleton from "../skeleton-screen/DoctorProfile/PackageSkeleton";
 
 
 
@@ -90,6 +91,11 @@ const MedicalList: React.FC = () => {
         : "Invalid Date";
 };
 
+  if (loading) {
+      return <PackagesSkeleton />;
+    }
+  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
+
   return (
     <div className="relative container mx-auto p-12">
       <h2 className="text-2xl font-semibold text-start pl-6 mb-6">Medical Packages</h2>
@@ -103,12 +109,6 @@ const MedicalList: React.FC = () => {
         </button>
       )}
 
-      {loading ? (
-        <p className="text-gray-500">Loading packages...</p>
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
-      ) : (
-
       <div
         ref={scrollRef}
         className="flex space-x-6 pl-5 pr-10 scroll-smooth overflow-hidden"
@@ -116,7 +116,7 @@ const MedicalList: React.FC = () => {
         {packages.filter(pkg => pkg.package_type === "Medical_Service_Only").map((pkg) => (
           <motion.div
             key={pkg.package_id}
-            className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200"
+            className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200 cursor-pointer"
             onClick={() => router.push(`/user/package_landing_page/${pkg.package_id}`)} // Navigate to doctor details
             whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
             whileTap={{ scale: 0.98 }}
@@ -134,8 +134,6 @@ const MedicalList: React.FC = () => {
           </motion.div>
         ))}
       </div>
-
-      )}
       
       {canScrollRight && (
         <button

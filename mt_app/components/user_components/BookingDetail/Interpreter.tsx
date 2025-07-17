@@ -119,9 +119,7 @@ const Interpreter: React.FC<InterpreterProps> = ({ selectedDay }) => {
   
   if (loading) return <p className="text-center text-gray-500">Loading interpreter details...</p>;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!packageBooking) return <p className="text-center text-gray-500">No package booking found.</p>;
-  if (!packageBooking.inter_booking_id) return <p className="text-center text-gray-500">No interpreter booking associated with this package.</p>;
-  if (!interBooking) return <p className="text-center text-gray-500">Loading interpreter details...</p>;
+  if (!interBooking) return <p className="text-center text-gray-500"></p>;
 
   return (
     <div className={`bg-white p-6 rounded-xl shadow-md mt-6 border border-[#C5D1E0] ${inter.className}`}>

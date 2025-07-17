@@ -2,14 +2,29 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { LogOut, Menu, User, X } from "lucide-react";
 import LoginModal from "../Homepage/LoginModal";
+import { FaCalendarAlt, FaCommentDots, FaRegStar } from "react-icons/fa";
+import { useSession, signOut } from 'next-auth/react';
+
 
 const Navbarpro: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [currency, setCurrency] = useState<string>("USD");
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState<boolean>(false);
+  // Use NextAuth session instead of manual state
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === 'authenticated';
+  const user = session?.user;
+
+  // Handle logout using NextAuth
+    const handleLogout = async () => {
+      await signOut({ redirect: true });
+      setIsProfileDropdownOpen(false);
+    };
+
 
   const toggleCurrency = () => setCurrency(currency === "USD" ? "THB" : "USD");
 
@@ -76,13 +91,95 @@ const Navbarpro: React.FC = () => {
           )}
         </div>
 
-        <button onClick={() => setIsLoginOpen(true)} className="px-4 py-2 text-green-600 hover:bg-gray-200 rounded-lg transition">
-          Login
-        </button>
+        {/* Show loading state while checking authentication */}
+        {status === 'loading' ? (
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : !isLoggedIn ? (
+          // Show when NOT logged in
+          <>
+            <button onClick={() => setIsLoginOpen(true)} className="px-4 py-2 text-green-600 hover:bg-gray-200 rounded-lg transition">
+              Login
+            </button>
+            <Link href="/signup" className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+              Sign Up
+            </Link>
+          </>
+        ) : (
+          // Show when logged in
+          <>
+            {/* Notifications (optional) */}
+            {/* <div className="relative">
+              <Bell className="w-6 h-6 text-gray-600 cursor-pointer hover:text-green-600 transition" />
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                3
+              </span>
+            </div> */}
 
-        <Link href="/signup" className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-          Sign Up
-        </Link>
+            {/* Profile Dropdown */}
+            <div className="relative profile-dropdown">
+              <div 
+                className="flex items-center cursor-pointer p-2 rounded-md hover:bg-gray-200 transition"
+                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+              >
+                {user?.image ? (
+                  <img src={user.image} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
+                ) : (
+                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
+                )}
+                <span className="ml-2 text-gray-700 font-medium hidden md:block">{user?.name || user?.email}</span>
+              </div>
+
+              {/* Profile Dropdown Menu */}
+              {isProfileDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white shadow-lg border border-gray-200 rounded-md z-50">
+                  <div className="p-4 border-b border-gray-200">
+                    <p className="font-medium text-gray-900">{user?.name || 'User'}</p>
+                    <p className="text-sm text-gray-500">{user?.email}</p>
+                  </div>
+                  <ul className="py-2">
+                    <li>
+                      <Link href="/profile" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <User className="w-4 h-4 mr-3" />
+                        My Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href={`/user/profile/UserReviews`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <FaRegStar  className="w-4 h-4 mr-3" />
+                          Reviews
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href={`/user/profile/approval-status`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <FaCalendarAlt className="w-4 h-4 mr-3" />
+                        My Bookings
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href={`/user/profile/UserChat`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <FaCommentDots className="w-4 h-4 mr-3" />
+                        Chat
+                      </Link>
+                    </li>
+                    <li className="border-t border-gray-200 mt-2 pt-2">
+                      <button 
+                        onClick={handleLogout}
+                        className="flex items-center w-full px-4 py-2 text-red-600 hover:bg-red-50 transition"
+                      >
+                        <LogOut className="w-4 h-4 mr-3" />
+                        Logout
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />

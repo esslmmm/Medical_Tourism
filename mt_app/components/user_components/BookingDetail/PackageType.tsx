@@ -1,5 +1,6 @@
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import PackageTypeSkeleton from "../skeleton-screen/BookingDetail/PackageTypeSkeleton";
 
 interface PackageBooking {
   booking_id: number;
@@ -94,7 +95,9 @@ const PackageType = () => {
     }
   };
 
-  if (loading) return <p className="text-center text-gray-500">Loading package details...</p>;
+  if (loading) {
+    return <PackageTypeSkeleton />;
+  }
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
   if (!bookingData || !packageData) return <p className="text-center text-gray-500">No data found.</p>;
 

@@ -12,6 +12,48 @@ CREATE TABLE `action_history` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `files` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `userId` INTEGER NOT NULL,
+    `originalName` VARCHAR(191) NOT NULL,
+    `fileName` VARCHAR(191) NOT NULL,
+    `fileType` VARCHAR(191) NOT NULL,
+    `fileSize` INTEGER NOT NULL,
+    `cloudinaryId` VARCHAR(191) NOT NULL,
+    `url` VARCHAR(191) NOT NULL,
+    `uploadedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `category` ENUM('CHAT_ATTACHMENT', 'MEDICAL_REPORT', 'DOCUMENT') NOT NULL,
+    `description` VARCHAR(191) NULL,
+
+    INDEX `files_userId_fkey`(`userId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `appointment_files` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `appointmentId` INTEGER NOT NULL,
+    `fileId` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    INDEX `appointment_files_appointmentId_fkey`(`appointmentId`),
+    INDEX `appointment_files_fileId_fkey`(`fileId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `chat_files` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `chatId` INTEGER NOT NULL,
+    `fileId` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    INDEX `chat_files_chatId_fkey`(`chatId`),
+    INDEX `chat_files_fileId_fkey`(`fileId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `appointments` (
     `appointment_id` INTEGER NOT NULL AUTO_INCREMENT,
     `date` DATE NULL,
@@ -19,38 +61,19 @@ CREATE TABLE `appointments` (
     `patient_id` INTEGER NULL,
     `description` TEXT NULL,
     `doctor_id` INTEGER NULL,
-    `file_name` VARCHAR(255) NULL,
-    `file_path` VARCHAR(255) NULL,
-    `upload_date` TIMESTAMP(0) NULL,
-    `status` ENUM('Pending', 'Approved', 'Rejected', 'Completed', 'Cancelled') NOT NULL,
+    `status` ENUM('In_Progress', 'Pending', 'Approved', 'Rejected', 'Completed', 'Cancelled') NOT NULL DEFAULT 'In_Progress',
 
-    INDEX `doctor_id`(`doctor_id`),
     INDEX `patient_id`(`patient_id`),
+    INDEX `doctor_id`(`doctor_id`),
     PRIMARY KEY (`appointment_id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `cars` (
-    `car_id` INTEGER NOT NULL AUTO_INCREMENT,
-    `car_name` VARCHAR(50) NULL,
-    `phone` INTEGER NULL,
-    `email` VARCHAR(100) NULL,
-    `address` VARCHAR(255) NULL,
-    `city` VARCHAR(255) NULL,
-    `image` VARCHAR(255) NULL,
-    `description` TEXT NULL,
-    `fee` FLOAT NULL,
-    `capacity` INTEGER NULL,
-    `guide_license` VARCHAR(255) NULL,
-
-    PRIMARY KEY (`car_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `description` (
     `description_id` INTEGER NOT NULL AUTO_INCREMENT,
-    `package_id` INTEGER NULL,
-    `details` VARCHAR(255) NULL,
+    `package_id` INTEGER NOT NULL,
+    `details` VARCHAR(255) NOT NULL,
+    `title` VARCHAR(100) NOT NULL,
 
     INDEX `package_id`(`package_id`),
     PRIMARY KEY (`description_id`)
@@ -131,9 +154,11 @@ CREATE TABLE `hotel_bookings` (
     `guest_children` INTEGER NULL,
     `guest_adult` INTEGER NULL,
     `total_price` FLOAT NULL,
-    `status` ENUM('Pending', 'Approved', 'Rejected', 'Cancelled') NULL,
+    `status` ENUM('In_Progress', 'Pending', 'Approved', 'Rejected', 'Cancelled') NULL DEFAULT 'In_Progress',
+    `created_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `updated_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
-    INDEX `hotel_id`(`hotel_id`),
+    INDEX `hotel_bookings_ibfk_1`(`hotel_id`),
     PRIMARY KEY (`booking_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -144,7 +169,7 @@ CREATE TABLE `hotel_facilities` (
     `facility_name` VARCHAR(100) NULL,
     `description` TEXT NULL,
 
-    INDEX `hotel_id`(`hotel_id`),
+    INDEX `hotel_facilities_ibfk_1`(`hotel_id`),
     PRIMARY KEY (`facility_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -154,7 +179,7 @@ CREATE TABLE `hotel_images` (
     `hotel_id` INTEGER NULL,
     `image` VARCHAR(255) NULL,
 
-    INDEX `hotel_id`(`hotel_id`),
+    INDEX `hotel_images_ibfk_1`(`hotel_id`),
     PRIMARY KEY (`image_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -165,7 +190,7 @@ CREATE TABLE `hotel_room_facilities` (
     `facility_name` VARCHAR(100) NULL,
     `description` TEXT NULL,
 
-    INDEX `room_id`(`room_id`),
+    INDEX `hotel_room_facilities_ibfk_1`(`room_id`),
     PRIMARY KEY (`room_facilitiy_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -179,7 +204,7 @@ CREATE TABLE `hotel_rooms` (
     `description` TEXT NULL,
     `image` VARCHAR(255) NULL,
 
-    INDEX `hotel_id`(`hotel_id`),
+    INDEX `hotel_rooms_ibfk_1`(`hotel_id`),
     PRIMARY KEY (`room_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -207,9 +232,11 @@ CREATE TABLE `inter_bookings` (
     `interpreter_id` INTEGER NULL,
     `start` DATE NULL,
     `end` DATE NULL,
-    `status` ENUM('Pending', 'Approved', 'Rejected', 'Cancelled') NULL,
+    `status` ENUM('In_Progress', 'Pending', 'Approved', 'Rejected', 'Cancelled') NULL DEFAULT 'In_Progress',
+    `created_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `updated_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
-    INDEX `interpreter_id`(`interpreter_id`),
+    INDEX `inter_bookings_ibfk_1`(`interpreter_id`),
     PRIMARY KEY (`booking_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -221,7 +248,7 @@ CREATE TABLE `inter_education` (
     `field_of_study` VARCHAR(255) NULL,
     `institution` VARCHAR(100) NULL,
 
-    INDEX `interpreter_id`(`interpreter_id`),
+    INDEX `inter_education_ibfk_1`(`interpreter_id`),
     PRIMARY KEY (`education_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -241,7 +268,6 @@ CREATE TABLE `interpreters` (
     `language` ENUM('English', 'Arabic', 'Burmese') NOT NULL,
     `create_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
-    UNIQUE INDEX `email`(`email`),
     PRIMARY KEY (`interpreter_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -252,7 +278,7 @@ CREATE TABLE `languages` (
     `language_name` VARCHAR(100) NULL,
     `proficiency` ENUM('Basic', 'Conversational', 'Fluent', 'Native') NULL,
 
-    INDEX `interpreter_id`(`interpreter_id`),
+    INDEX `languages_ibfk_1`(`interpreter_id`),
     PRIMARY KEY (`lang_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -263,7 +289,7 @@ CREATE TABLE `medical_services` (
     `service_name` VARCHAR(255) NULL,
     `description` VARCHAR(255) NULL,
 
-    INDEX `hospital_id`(`hospital_id`),
+    INDEX `medical_services_ibfk_1`(`hospital_id`),
     PRIMARY KEY (`service_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -276,9 +302,9 @@ CREATE TABLE `messages` (
     `receiver_id` INTEGER NULL,
     `sender_id` INTEGER NULL,
 
-    INDEX `receiver_id`(`receiver_id`),
-    INDEX `sender_id`(`sender_id`),
-    INDEX `chat_id`(`chat_id`),
+    INDEX `messages_ibfk_1`(`sender_id`),
+    INDEX `messages_ibfk_2`(`receiver_id`),
+    INDEX `messages_ibfk_3`(`chat_id`),
     PRIMARY KEY (`message_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -293,15 +319,15 @@ CREATE TABLE `package_bookings` (
     `contact_id` INTEGER NULL,
     `inter_booking_id` INTEGER NULL,
     `create_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `status` ENUM('Pending', 'Approved', 'Completed', 'Rejected', 'Cancelled') NOT NULL,
+    `status` ENUM('In_Progress', 'Pending', 'Approved', 'Completed', 'Rejected', 'Cancelled') NOT NULL DEFAULT 'In_Progress',
 
-    INDEX `appointment_id`(`appointment_id`),
-    INDEX `contact_id`(`contact_id`),
-    INDEX `hotel_booking_id`(`hotel_booking_id`),
-    INDEX `inter_booking_id`(`inter_booking_id`),
-    INDEX `package_id`(`package_id`),
-    INDEX `tourism_booking_id`(`tourism_booking_id`),
-    INDEX `user_id`(`user_id`),
+    INDEX `package_bookings_ibfk_1`(`user_id`),
+    INDEX `package_bookings_ibfk_2`(`package_id`),
+    INDEX `package_bookings_ibfk_3`(`tourism_booking_id`),
+    INDEX `package_bookings_ibfk_4`(`appointment_id`),
+    INDEX `package_bookings_ibfk_5`(`hotel_booking_id`),
+    INDEX `package_bookings_ibfk_6`(`contact_id`),
+    INDEX `package_bookings_ibfk_7`(`inter_booking_id`),
     PRIMARY KEY (`booking_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -311,8 +337,8 @@ CREATE TABLE `package_doc` (
     `package_id` INTEGER NULL,
     `doctor_id` INTEGER NULL,
 
-    INDEX `doctor_id`(`doctor_id`),
-    INDEX `package_id`(`package_id`),
+    INDEX `package_doc_ibfk_1`(`package_id`),
+    INDEX `package_doc_ibfk_2`(`doctor_id`),
     PRIMARY KEY (`doc_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -322,8 +348,8 @@ CREATE TABLE `package_hotels` (
     `package_id` INTEGER NULL,
     `hotel_id` INTEGER NULL,
 
-    INDEX `hotel_id`(`hotel_id`),
-    INDEX `package_id`(`package_id`),
+    INDEX `package_hotels_ibfk_1`(`package_id`),
+    INDEX `package_hotels_ibfk_2`(`hotel_id`),
     PRIMARY KEY (`packhotel_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -332,8 +358,10 @@ CREATE TABLE `package_image` (
     `images` VARCHAR(255) NULL,
     `image_id` INTEGER NOT NULL AUTO_INCREMENT,
     `package_id` INTEGER NULL,
+    `detail` TEXT NOT NULL,
+    `title` TEXT NOT NULL,
 
-    INDEX `package_id`(`package_id`),
+    INDEX `package_image_ibfk_1`(`package_id`),
     PRIMARY KEY (`image_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -343,8 +371,8 @@ CREATE TABLE `package_interpreters` (
     `package_id` INTEGER NULL,
     `interpreter_id` INTEGER NULL,
 
-    INDEX `interpreter_id`(`interpreter_id`),
-    INDEX `package_id`(`package_id`),
+    INDEX `package_interpreters_ibfk_1`(`package_id`),
+    INDEX `package_interpreters_ibfk_2`(`interpreter_id`),
     PRIMARY KEY (`inter_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -357,8 +385,8 @@ CREATE TABLE `package_places` (
     `start` VARCHAR(10) NOT NULL,
     `end` VARCHAR(10) NOT NULL,
 
-    INDEX `place_id`(`place_id`),
-    INDEX `tour_id`(`tour_id`),
+    INDEX `package_places_ibfk_1`(`tour_id`),
+    INDEX `package_places_ibfk_2`(`place_id`),
     PRIMARY KEY (`packplace_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -366,7 +394,7 @@ CREATE TABLE `package_places` (
 CREATE TABLE `packages` (
     `package_id` INTEGER NOT NULL AUTO_INCREMENT,
     `package_name` VARCHAR(255) NOT NULL,
-    `package_type` ENUM('Medical&Tourism', 'Medical Service Only') NOT NULL,
+    `package_type` ENUM('Medical_Tourism', 'Medical_Service_Only') NOT NULL,
     `hospital_id` INTEGER NOT NULL,
     `image` VARCHAR(255) NOT NULL,
     `detail` VARCHAR(100) NOT NULL,
@@ -374,7 +402,7 @@ CREATE TABLE `packages` (
     `expired_date` DATE NOT NULL,
     `create_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
-    INDEX `hospital_id`(`hospital_id`),
+    INDEX `packages_ibfk_1`(`hospital_id`),
     PRIMARY KEY (`package_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -389,8 +417,8 @@ CREATE TABLE `payment` (
     `payment_id` INTEGER NOT NULL AUTO_INCREMENT,
     `user_id` INTEGER NOT NULL,
 
-    INDEX `booking_id`(`booking_id`),
-    INDEX `uer_id`(`user_id`),
+    INDEX `payment_ibfk_1`(`user_id`),
+    INDEX `payment_ibfk_2`(`booking_id`),
     PRIMARY KEY (`payment_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -400,7 +428,7 @@ CREATE TABLE `place_image` (
     `image_id` INTEGER NOT NULL AUTO_INCREMENT,
     `place_id` INTEGER NULL,
 
-    INDEX `Place_id`(`place_id`),
+    INDEX `place_image_ibfk_2`(`place_id`),
     PRIMARY KEY (`image_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -428,8 +456,8 @@ CREATE TABLE `review_hospital` (
     `comment` TEXT NULL,
     `created_at` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
 
-    INDEX `hospital_id`(`hospital_id`),
-    INDEX `user_id`(`user_id`),
+    INDEX `review_hospital_ibfk_1`(`user_id`),
+    INDEX `review_hospital_ibfk_2`(`hospital_id`),
     PRIMARY KEY (`review_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -443,8 +471,8 @@ CREATE TABLE `review_hotel` (
     `comment` TEXT NULL,
     `created_at` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
 
-    INDEX `hotel_id`(`hotel_id`),
-    INDEX `user_id`(`user_id`),
+    INDEX `review_hotel_ibfk_1`(`user_id`),
+    INDEX `review_hotel_ibfk_2`(`hotel_id`),
     PRIMARY KEY (`review_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -458,8 +486,8 @@ CREATE TABLE `review_inter` (
     `comment` TEXT NULL,
     `created_at` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
 
-    INDEX `interpreter_id`(`interpreter_id`),
-    INDEX `user_id`(`user_id`),
+    INDEX `review_inter_ibfk_1`(`user_id`),
+    INDEX `review_inter_ibfk_2`(`interpreter_id`),
     PRIMARY KEY (`review_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -470,8 +498,8 @@ CREATE TABLE `room_aggregate` (
     `booking_id` INTEGER NULL,
     `room_id` INTEGER NULL,
 
-    INDEX `booking_id`(`booking_id`),
-    INDEX `room_id`(`room_id`),
+    INDEX `room_aggregate_ibfk_1`(`room_id`),
+    INDEX `room_aggregate_ibfk_2`(`booking_id`),
     PRIMARY KEY (`aggregate_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -481,7 +509,7 @@ CREATE TABLE `room_image` (
     `image` VARCHAR(255) NULL,
     `room_id` INTEGER NULL,
 
-    INDEX `room_id`(`room_id`),
+    INDEX `room_image_ibfk_1`(`room_id`),
     PRIMARY KEY (`image_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -489,11 +517,11 @@ CREATE TABLE `room_image` (
 CREATE TABLE `tourism_bookings` (
     `tourism_id` INTEGER NOT NULL AUTO_INCREMENT,
     `tour_id` INTEGER NULL,
-    `car_id` INTEGER NULL,
-    `status` ENUM('Pending', 'Approved', 'Rejected') NULL,
+    `status` ENUM('In_Progress', 'Pending', 'Approved', 'Rejected') NULL DEFAULT 'In_Progress',
+    `created_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `updated_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
-    INDEX `car_id`(`car_id`),
-    INDEX `tour_id`(`tour_id`),
+    INDEX `tourism_bookings_ibfk_1`(`tour_id`),
     PRIMARY KEY (`tourism_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -503,7 +531,7 @@ CREATE TABLE `hospital_images` (
     `hospital_id` INTEGER NULL,
     `image` VARCHAR(255) NULL,
 
-    INDEX `hospital_id`(`hospital_id`),
+    INDEX `hospital_images_ibfk_1`(`hospital_id`),
     PRIMARY KEY (`image_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -539,7 +567,7 @@ CREATE TABLE `trips` (
     `description` TEXT NULL,
     `total_price` FLOAT NULL,
 
-    INDEX `package_id`(`package_id`),
+    INDEX `trips_ibfk_1`(`package_id`),
     PRIMARY KEY (`tour_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -563,16 +591,17 @@ CREATE TABLE `contact_us` (
 CREATE TABLE `user` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NULL,
-    `email` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
     `nationality` VARCHAR(255) NULL,
     `password` VARCHAR(191) NULL,
-    `image` VARCHAR(191) NULL,
+    `image` VARCHAR(2048) NULL,
     `role` ENUM('customer', 'staff', 'admin') NOT NULL DEFAULT 'customer',
-    `emailVerified` DATETIME(3) NULL,
+    `otp` VARCHAR(10) NULL,
+    `otp_expiry` DATETIME(3) NULL,
+    `is_email_verified` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `User_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -610,6 +639,21 @@ CREATE TABLE `account` (
 
 -- AddForeignKey
 ALTER TABLE `action_history` ADD CONSTRAINT `action_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+-- AddForeignKey
+ALTER TABLE `files` ADD CONSTRAINT `files_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `appointment_files` ADD CONSTRAINT `appointment_files_appointmentId_fkey` FOREIGN KEY (`appointmentId`) REFERENCES `appointments`(`appointment_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `appointment_files` ADD CONSTRAINT `appointment_files_fileId_fkey` FOREIGN KEY (`fileId`) REFERENCES `files`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `chat_files` ADD CONSTRAINT `chat_files_chatId_fkey` FOREIGN KEY (`chatId`) REFERENCES `chat`(`chat_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `chat_files` ADD CONSTRAINT `chat_files_fileId_fkey` FOREIGN KEY (`fileId`) REFERENCES `files`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `appointments` ADD CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_details`(`patient_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -757,9 +801,6 @@ ALTER TABLE `room_image` ADD CONSTRAINT `room_image_ibfk_1` FOREIGN KEY (`room_i
 
 -- AddForeignKey
 ALTER TABLE `tourism_bookings` ADD CONSTRAINT `tourism_bookings_ibfk_1` FOREIGN KEY (`tour_id`) REFERENCES `trips`(`tour_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- AddForeignKey
-ALTER TABLE `tourism_bookings` ADD CONSTRAINT `tourism_bookings_ibfk_2` FOREIGN KEY (`car_id`) REFERENCES `cars`(`car_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE `hospital_images` ADD CONSTRAINT `hospital_images_ibfk_1` FOREIGN KEY (`hospital_id`) REFERENCES `hospitals`(`hospital_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;

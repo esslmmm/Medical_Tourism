@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
+import DoctorCardSkeleton from "../skeleton-screen/HomePage/DoctorCardSkeleton";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["500", "700"] });
 
@@ -44,9 +45,7 @@ const DoctorList: React.FC = () => {
     fetchDoctors();
   }, []);
 
-  if (loading) return <p className="text-center">Loading doctors...</p>;
-  if (error) return <p className="text-red-500 text-center">{error}</p>;
-
+  
   const checkScrollPosition = () => {
     if (scrollRef.current) {
       setCanScrollLeft(scrollRef.current.scrollLeft > 0);
@@ -55,14 +54,14 @@ const DoctorList: React.FC = () => {
       );
     }
   };
-
+  
   const scrollLeft = () => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({ left: -400, behavior: "smooth" });
       setTimeout(checkScrollPosition, 300);
     }
   };
-
+  
   const scrollRight = () => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({ left: 400, behavior: "smooth" });
@@ -70,6 +69,11 @@ const DoctorList: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return <DoctorCardSkeleton />
+  }
+  if (error) return <p className="text-red-500 text-center">{error}</p>;
+  
   return (
     <div className="container mx-auto p-8 relative">
       {canScrollLeft && (

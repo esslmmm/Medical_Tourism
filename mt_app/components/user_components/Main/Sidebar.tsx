@@ -3,16 +3,18 @@
 import React from "react";
 import { useRouter, usePathname } from "next/navigation"; // Import usePathname
 import { FaRegStar, FaUser, FaCommentDots, FaCalendarAlt } from "react-icons/fa";
+import { useUserId } from "../../../hooks/useUserId";
+import SidebarSkeleton from "../skeleton-screen/SidebarSkeleton";
 
 const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
   const sidebarItems = [
-    { path: "/user/profile/approval-status/1", icon: <FaCalendarAlt />, label: "My Bookings" },
-    { path: "/user/profile/UserReviews/1", icon: <FaRegStar />, label: "Reviews" },
-    { path: "/profile", icon: <FaUser />, label: "Profile" },
-    { path: "/user/profile/UserChat/1", icon: <FaCommentDots />, label: "Chat" },
+    { path: `/user/profile/approval-status`, icon: <FaCalendarAlt />, label: "My Bookings" },
+    { path: `/user/profile/UserReviews`, icon: <FaRegStar />, label: "Reviews" },
+    { path: `/profile`, icon: <FaUser />, label: "Profile" },
+    { path: `/user/profile/UserChat`, icon: <FaCommentDots />, label: "Chat" },
   ];
 
   return (

@@ -2,9 +2,10 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Menu, X, User, LogOut, Settings, Bell } from "lucide-react";
-import { useSession, signOut } from 'next-auth/react'; // Import NextAuth hooks
+import { useSession, signOut } from 'next-auth/react';
 import LoginModal from "../Homepage/LoginModal";
 import { useSearchParams } from 'next/navigation';
+import { FaCalendarAlt, FaCommentDots, FaRegStar } from "react-icons/fa";
 
 interface NavbarProps {
   initialEmail?: string;
@@ -57,8 +58,6 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
     console.log('Session status:', status);
     console.log('Session data:', session);
   }, [session, status]);
-
-  
   // If user is authenticated, don't show the modal even if query param exists
   const shouldShowModal = isLoginOpen && !session;
 
@@ -193,15 +192,21 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
                       </Link>
                     </li>
                     <li>
-                      <Link href="/settings" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
-                        <Settings className="w-4 h-4 mr-3" />
-                        Settings
+                      <Link href={`/user/profile/UserReviews`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <FaRegStar  className="w-4 h-4 mr-3" />
+                          Reviews
                       </Link>
                     </li>
                     <li>
-                      <Link href="/dashboard" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
-                        <Bell className="w-4 h-4 mr-3" />
-                        Dashboard
+                      <Link href={`/user/profile/approval-status`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <FaCalendarAlt className="w-4 h-4 mr-3" />
+                        My Bookings
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href={`/user/profile/UserChat`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <FaCommentDots className="w-4 h-4 mr-3" />
+                        Chat
                       </Link>
                     </li>
                     <li className="border-t border-gray-200 mt-2 pt-2">
