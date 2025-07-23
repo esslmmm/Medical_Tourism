@@ -3,8 +3,6 @@
 import React from "react";
 import { useRouter, usePathname } from "next/navigation"; // Import usePathname
 import { FaRegStar, FaUser, FaCommentDots, FaCalendarAlt } from "react-icons/fa";
-import { useUserId } from "../../../hooks/useUserId";
-import SidebarSkeleton from "../skeleton-screen/SidebarSkeleton";
 
 const Sidebar = () => {
   const router = useRouter();

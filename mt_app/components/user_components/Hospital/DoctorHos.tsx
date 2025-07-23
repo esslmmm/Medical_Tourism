@@ -6,6 +6,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
 import { useParams } from "next/navigation";
 import { User } from "lucide-react";
+import DoctorCardSkeleton from "../skeleton-screen/HomePage/DoctorCardSkeleton";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["500", "700"] });
 
@@ -84,7 +85,9 @@ const DoctorHos: React.FC = () => {
     }
   };
 
-  if (loading) return <p className="text-center text-gray-500">Loading hospital details...</p>;
+  if (loading) {
+    return <DoctorCardSkeleton />
+  }
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
   if (!hospital) return <p className="text-center text-gray-500">Hospital not found</p>;
 

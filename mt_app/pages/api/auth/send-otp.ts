@@ -65,15 +65,11 @@ export default async function handler(
     const otp = generateOTP();
     const otpExpiry = generateOTPExpiry();
 
-    // Format expiry for MySQL datetime
-    const mysqlExpiry = formatForMySQL(otpExpiry);
-
-    // Save OTP to user record
     const user = await createOrUpdateUser({
-      email: sanitizedEmail,
-      otp,
-      otpExpiry: mysqlExpiry,
-      isEmailVerified: false
+        email: sanitizedEmail,
+        otp,
+        otpExpiry,
+        isEmailVerified: false
     });
 
     console.log(`OTP generated for user: ${sanitizedEmail}`);

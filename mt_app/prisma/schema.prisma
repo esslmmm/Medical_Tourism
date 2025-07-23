@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgres"
   url      = env("DATABASE_URL")
 }
 
@@ -14,13 +14,13 @@ model action_history {
   action      String?                     @db.VarChar(255)
   action_id   Int                         @id @default(autoincrement())
   user_id     Int
-  user        user                        @relation(fields: [user_id], references: [id], onUpdate: Restrict, map: "action_history_ibfk_1")
+  user        user                        @relation(fields: [user_id], references: [id], onUpdate: Restrict)
 
-  @@index([user_id], map: "user_id")
+  @@index([user_id])
 }
 
 model File {
-  id                String                     @id @default(uuid())
+  id                String            @id @default(uuid())
   userId            Int
   originalName      String
   fileName          String
@@ -35,7 +35,7 @@ model File {
   chat_files        ChatFile[]
   user              user              @relation(fields: [userId], references: [id])
 
-  @@index([userId], map: "files_userId_fkey")
+  @@index([userId])
   @@map("files")
 }
 
@@ -47,8 +47,8 @@ model AppointmentFile {
   appointments  appointments @relation(fields: [appointmentId], references: [appointment_id], onDelete: Cascade)
   files         File         @relation(fields: [fileId], references: [id], onDelete: Cascade)
 
-  @@index([appointmentId], map: "appointment_files_appointmentId_fkey")
-  @@index([fileId], map: "appointment_files_fileId_fkey")
+  @@index([appointmentId])
+  @@index([fileId])
   @@map("appointment_files")
 }
 
@@ -60,17 +60,17 @@ model ChatFile {
   chat      chat     @relation(fields: [chatId], references: [chat_id], onDelete: Cascade)
   files     File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
 
-  @@index([chatId], map: "chat_files_chatId_fkey")
-  @@index([fileId], map: "chat_files_fileId_fkey")
+  @@index([chatId])
+  @@index([fileId])
   @@map("chat_files")
 }
 
 model appointments {
-  appointment_id    String                     @id @default(uuid())
+  appointment_id    String              @id @default(uuid())
   date              DateTime?           @db.Date
   timeslot          String?             @db.VarChar(255)
   patient_id        Int?
-  description       String?             @db.Text
+  description       String?
   doctor_id         String?
   status            appointments_status @default(In_Progress)
   appointment_files AppointmentFile[]
@@ -78,8 +78,8 @@ model appointments {
   doctors           doctors?            @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "appointments_ibfk_2")
   package_bookings  package_bookings[]
 
-  @@index([patient_id], map: "patient_id")
-  @@index([doctor_id], map: "doctor_id")
+  @@index([patient_id])
+  @@index([doctor_id])
 }
 
 model description {
@@ -100,7 +100,7 @@ model doc_certificate {
   year           Int?
   doctors        doctors? @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "doc_certificate_ibfk_1")
 
-  @@index([doctor_id], map: "doctor_id")
+  @@index([doctor_id])
 }
 
 model doc_education {
@@ -111,7 +111,7 @@ model doc_education {
   year           Int?
   doctors        doctors? @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "doc_education_ibfk_1")
 
-  @@index([doctor_id], map: "doctor_id")
+  @@index([doctor_id])
 }
 
 model doc_language {
@@ -124,7 +124,7 @@ model doc_language {
 }
 
 model doctors {
-  doctor_id       String                     @id @default(uuid())
+  doctor_id       String            @id @default(uuid())
   name            String?           @db.VarChar(255)
   specialization  String?           @db.VarChar(255)
   hospital_id     String?
@@ -143,17 +143,17 @@ model doctors {
 }
 
 model hospitals {
-  hospital_id      String                     @id @default(uuid())
+  hospital_id      String             @id @default(uuid())
   name             String?            @db.VarChar(100)
   hospital_code    String?            @db.VarChar(20)
   location         String?            @db.VarChar(255)
   city             String?            @db.VarChar(50)
-  description      String?            @db.Text
+  description      String?
   contact_info     String?            @db.VarChar(255)
-  rating           Float?             @db.Float
+  rating           Float?
   image            String?            @db.VarChar(255)
   logo             String             @db.VarChar(255)
-  create_at        DateTime?          @default(now()) @db.Timestamp(3)
+  create_at        DateTime?          @default(now())
   doctors          doctors[]
   hospital_images  hospital_images[]
   medical_services medical_services[]
@@ -168,60 +168,60 @@ model hotel_bookings {
   check_out_date   DateTime?              @db.Date
   guest_children   Int?
   guest_adult      Int?
-  total_price      Float?                 @db.Float
+  total_price      Float?
   status           hotel_bookings_status? @default(In_Progress)
   created_at       DateTime               @default(now()) @db.Timestamp(0)
   updated_at       DateTime               @default(now()) @db.Timestamp(0)
-  hotels           hotels?                @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_bookings_ibfk_1")
+  hotels           hotels?                @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction)
   package_bookings package_bookings[]
   room_aggregate   room_aggregate[]
 
-  @@index([hotel_id], map: "hotel_bookings_ibfk_1")
+  @@index([hotel_id])
 }
 
 model hotel_facilities {
   facility_id   Int     @id @default(autoincrement())
   hotel_id      Int?
   facility_name String? @db.VarChar(100)
-  description   String? @db.Text
-  hotels        hotels? @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_facilities_ibfk_1")
+  description   String?
+  hotels        hotels? @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([hotel_id], map: "hotel_facilities_ibfk_1")
+  @@index([hotel_id])
 }
 
 model hotel_images {
   image_id Int     @id @default(autoincrement())
   hotel_id Int?
   image    String? @db.VarChar(255)
-  hotels   hotels? @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_images_ibfk_1")
+  hotels   hotels? @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([hotel_id], map: "hotel_images_ibfk_1")
+  @@index([hotel_id])
 }
 
 model hotel_room_facilities {
   room_facilitiy_id Int          @id @default(autoincrement())
   room_id           Int?
   facility_name     String?      @db.VarChar(100)
-  description       String?      @db.Text
-  hotel_rooms       hotel_rooms? @relation(fields: [room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_room_facilities_ibfk_1")
+  description       String?
+  hotel_rooms       hotel_rooms? @relation(fields: [room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([room_id], map: "hotel_room_facilities_ibfk_1")
+  @@index([room_id])
 }
 
 model hotel_rooms {
   room_id               Int                     @id @default(autoincrement())
   hotel_id              Int?
   room_type             String?                 @db.VarChar(100)
-  price_per_night       Float?                  @db.Float
+  price_per_night       Float?
   capacity              String?                 @db.VarChar(200)
-  description           String?                 @db.Text
+  description           String?
   image                 String?                 @db.VarChar(255)
   hotel_room_facilities hotel_room_facilities[]
-  hotels                hotels?                 @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "hotel_rooms_ibfk_1")
+  hotels                hotels?                 @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction)
   room_aggregate        room_aggregate[]
   room_image            room_image[]
 
-  @@index([hotel_id], map: "hotel_rooms_ibfk_1")
+  @@index([hotel_id])
 }
 
 model hotels {
@@ -230,9 +230,9 @@ model hotels {
   hotel_code       String?            @db.VarChar(20)
   location         String?            @db.VarChar(255)
   city             String?            @db.VarChar(100)
-  rating           Float?             @db.Float
+  rating           Float?
   email            String?            @db.VarChar(50)
-  description      String?            @db.Text
+  description      String?
   image            String?            @db.VarChar(255)
   check_in_time    String             @default("1 PM") @db.VarChar(10)
   contact_info     String?            @db.VarChar(255)
@@ -253,10 +253,10 @@ model inter_bookings {
   status           inter_bookings_status? @default(In_Progress)
   created_at       DateTime               @default(now()) @db.Timestamp(0)
   updated_at       DateTime               @default(now()) @db.Timestamp(0)
-  interpreters     interpreters?          @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "inter_bookings_ibfk_1")
+  interpreters     interpreters?          @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction)
   package_bookings package_bookings[]
 
-  @@index([interpreter_id], map: "inter_bookings_ibfk_1")
+  @@index([interpreter_id])
 }
 
 model inter_education {
@@ -265,9 +265,9 @@ model inter_education {
   degree         String?       @db.VarChar(50)
   field_of_study String?       @db.VarChar(255)
   institution    String?       @db.VarChar(100)
-  interpreters   interpreters? @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "inter_education_ibfk_1")
+  interpreters   interpreters? @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([interpreter_id], map: "inter_education_ibfk_1")
+  @@index([interpreter_id])
 }
 
 model interpreters {
@@ -275,13 +275,13 @@ model interpreters {
   name                 String                 @db.VarChar(255)
   email                String                 @db.VarChar(255)
   phone                String                 @db.VarChar(50)
-  rating               Float                  @db.Float
+  rating               Float
   nationality          String                 @db.VarChar(100)
   image                String                 @db.VarChar(255)
   birthofday           DateTime               @db.Date
-  experience           DateTime               @default(dbgenerated("('2025-02-02')")) @db.Date
-  address              String                 @db.Text
-  profile_summary      String                 @db.Text
+  experience           DateTime               @default(dbgenerated("'2025-02-02'::date")) @db.Date
+  address              String
+  profile_summary      String
   language             interpreters_language
   create_at            DateTime               @default(now()) @db.Timestamp(0)
   inter_bookings       inter_bookings[]
@@ -296,9 +296,9 @@ model languages {
   interpreter_id Int?
   language_name  String?                @db.VarChar(100)
   proficiency    languages_proficiency?
-  interpreters   interpreters?          @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "languages_ibfk_1")
+  interpreters   interpreters?          @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([interpreter_id], map: "languages_ibfk_1")
+  @@index([interpreter_id])
 }
 
 model medical_services {
@@ -306,29 +306,29 @@ model medical_services {
   hospital_id  String?
   service_name String?    @db.VarChar(255)
   description  String?    @db.VarChar(255)
-  hospitals    hospitals? @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "medical_services_ibfk_1")
+  hospitals    hospitals? @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([hospital_id], map: "medical_services_ibfk_1")
+  @@index([hospital_id])
 }
 
 model messages {
   message_id                      Int       @id @default(autoincrement())
-  message                         String?   @db.Text
+  message                         String?
   timestamp                       DateTime? @default(now()) @db.Timestamp(0)
   chat_id                         Int
   receiver_id                     Int?
   sender_id                       Int?
-  user_messages_sender_idTouser   user?     @relation("messages_sender_idTouser", fields: [sender_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_1")
-  user_messages_receiver_idTouser user?     @relation("messages_receiver_idTouser", fields: [receiver_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_2")
-  chat                            chat      @relation(fields: [chat_id], references: [chat_id], onUpdate: Restrict, map: "messages_ibfk_3")
+  chat                            chat      @relation(fields: [chat_id], references: [chat_id], onUpdate: Restrict)
+  user_messages_receiver_idTouser user?     @relation("messages_receiver_idTouser", fields: [receiver_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_messages_sender_idTouser   user?     @relation("messages_sender_idTouser", fields: [sender_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([sender_id], map: "messages_ibfk_1")
-  @@index([receiver_id], map: "messages_ibfk_2")
-  @@index([chat_id], map: "messages_ibfk_3")
+  @@index([sender_id])
+  @@index([receiver_id])
+  @@index([chat_id])
 }
 
 model package_bookings {
-  booking_id          String                     @id @default(uuid())
+  booking_id          String                  @id @default(uuid())
   user_id             Int
   package_id          String
   tourism_booking_id  String?
@@ -338,66 +338,66 @@ model package_bookings {
   inter_booking_id    Int?
   create_at           DateTime                @default(now()) @db.Timestamp(0)
   status              package_bookings_status @default(In_Progress)
-  user                user                    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_1")
-  packages            packages                @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_2")
-  tourism_bookings    tourism_bookings?       @relation(fields: [tourism_booking_id], references: [tourism_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_3")
-  appointments        appointments?           @relation(fields: [appointment_id], references: [appointment_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_4")
-  hotel_bookings      hotel_bookings?         @relation(fields: [hotel_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_5")
-  user_contact_detail user_contact_detail?    @relation(fields: [contact_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_6")
-  inter_bookings      inter_bookings?         @relation(fields: [inter_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "package_bookings_ibfk_7")
+  appointments        appointments?           @relation(fields: [appointment_id], references: [appointment_id], onDelete: NoAction, onUpdate: NoAction)
+  user_contact_detail user_contact_detail?    @relation(fields: [contact_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  hotel_bookings      hotel_bookings?         @relation(fields: [hotel_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction)
+  inter_bookings      inter_bookings?         @relation(fields: [inter_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction)
+  packages            packages                @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction)
+  tourism_bookings    tourism_bookings?       @relation(fields: [tourism_booking_id], references: [tourism_id], onDelete: NoAction, onUpdate: NoAction)
+  user                user                    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   payment             payment[]
 
-  @@index([user_id], map: "package_bookings_ibfk_1")
-  @@index([package_id], map: "package_bookings_ibfk_2")
-  @@index([tourism_booking_id], map: "package_bookings_ibfk_3")
-  @@index([appointment_id], map: "package_bookings_ibfk_4")
-  @@index([hotel_booking_id], map: "package_bookings_ibfk_5")
-  @@index([contact_id], map: "package_bookings_ibfk_6")
-  @@index([inter_booking_id], map: "package_bookings_ibfk_7")
+  @@index([user_id])
+  @@index([package_id])
+  @@index([tourism_booking_id])
+  @@index([appointment_id])
+  @@index([hotel_booking_id])
+  @@index([contact_id])
+  @@index([inter_booking_id])
 }
 
 model package_doc {
   doc_id     Int       @id @default(autoincrement())
   package_id String?
   doctor_id  String?
-  packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_doc_ibfk_1")
-  doctors    doctors?  @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction, map: "package_doc_ibfk_2")
+  doctors    doctors?  @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction)
+  packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([package_id], map: "package_doc_ibfk_1")
-  @@index([doctor_id], map: "package_doc_ibfk_2")
+  @@index([package_id])
+  @@index([doctor_id])
 }
 
 model package_hotels {
   packhotel_id Int       @id @default(autoincrement())
   package_id   String?
   hotel_id     Int?
-  packages     packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_hotels_ibfk_1")
-  hotels       hotels?   @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "package_hotels_ibfk_2")
+  hotels       hotels?   @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction)
+  packages     packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([package_id], map: "package_hotels_ibfk_1")
-  @@index([hotel_id], map: "package_hotels_ibfk_2")
+  @@index([package_id])
+  @@index([hotel_id])
 }
 
 model package_image {
   images     String?   @db.VarChar(255)
   image_id   Int       @id @default(autoincrement())
   package_id String?
-  detail     String    @db.Text
-  title      String    @db.Text
-  packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_image_ibfk_1")
+  detail     String
+  title      String
+  packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([package_id], map: "package_image_ibfk_1")
+  @@index([package_id])
 }
 
 model package_interpreters {
   inter_id       Int           @id @default(autoincrement())
   package_id     String?
   interpreter_id Int?
-  packages       packages?     @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "package_interpreters_ibfk_1")
-  interpreters   interpreters? @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "package_interpreters_ibfk_2")
+  interpreters   interpreters? @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction)
+  packages       packages?     @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([package_id], map: "package_interpreters_ibfk_1")
-  @@index([interpreter_id], map: "package_interpreters_ibfk_2")
+  @@index([package_id])
+  @@index([interpreter_id])
 }
 
 model package_places {
@@ -407,15 +407,15 @@ model package_places {
   date         Int
   start        String  @db.VarChar(10)
   end          String  @db.VarChar(10)
-  trips        trips?  @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_1")
-  places       places? @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction, map: "package_places_ibfk_2")
+  places       places? @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction)
+  trips        trips?  @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([tour_id], map: "package_places_ibfk_1")
-  @@index([place_id], map: "package_places_ibfk_2")
+  @@index([tour_id])
+  @@index([place_id])
 }
 
 model packages {
-  package_id           String                     @id @default(uuid())
+  package_id           String                 @id @default(uuid())
   package_name         String                 @db.VarChar(255)
   package_type         packages_package_type
   hospital_id          String
@@ -430,46 +430,46 @@ model packages {
   package_hotels       package_hotels[]
   package_image        package_image[]
   package_interpreters package_interpreters[]
-  hospitals            hospitals              @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "packages_ibfk_1")
+  hospitals            hospitals              @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction)
   trips                trips[]
 
-  @@index([hospital_id], map: "packages_ibfk_1")
+  @@index([hospital_id])
 }
 
 model payment {
-  payment_date     DateTime               @db.DateTime(0)
+  payment_date     DateTime
   payment_method   String                 @db.VarChar(255)
   amount           Decimal                @db.Decimal(10, 0)
   payment_status   payment_payment_status
   transaction_id   String                 @db.VarChar(50)
   booking_id       String
-  payment_id       String                     @id @default(uuid())
+  payment_id       String                 @id @default(uuid())
   user_id          Int
-  user             user                   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_1")
-  package_bookings package_bookings       @relation(fields: [booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_2")
+  package_bookings package_bookings       @relation(fields: [booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction)
+  user             user                   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([user_id], map: "payment_ibfk_1")
-  @@index([booking_id], map: "payment_ibfk_2")
+  @@index([user_id])
+  @@index([booking_id])
 }
 
 model place_image {
   image    String? @db.VarChar(255)
   image_id Int     @id @default(autoincrement())
   place_id String?
-  places   places? @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction, map: "place_image_ibfk_2")
+  places   places? @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([place_id], map: "place_image_ibfk_2")
+  @@index([place_id])
 }
 
 model places {
-  place_id       String                     @id @default(uuid())
+  place_id       String           @id @default(uuid())
   place_name     String?          @db.VarChar(100)
   contact_info   String?          @db.VarChar(255)
   location       String?          @db.VarChar(255)
   city           String?          @db.VarChar(255)
   image          String?          @db.VarChar(255)
-  description    String?          @db.Text
-  fee            Float?           @db.Float
+  description    String?
+  fee            Float?
   package_places package_places[]
   place_image    place_image[]
 }
@@ -478,45 +478,45 @@ model review_hospital {
   review_id    Int       @id @default(autoincrement())
   user_id      Int
   hospital_id  String
-  rating       Float?    @db.Float
-  title_review String?   @db.Text
-  comment      String?   @db.Text
+  rating       Float?
+  title_review String?
+  comment      String?
   created_at   DateTime? @default(now()) @db.Timestamp(0)
-  user         user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_hospital_ibfk_1")
-  hospitals    hospitals @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "review_hospital_ibfk_2")
+  hospitals    hospitals @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction)
+  user         user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([user_id], map: "review_hospital_ibfk_1")
-  @@index([hospital_id], map: "review_hospital_ibfk_2")
+  @@index([user_id])
+  @@index([hospital_id])
 }
 
 model review_hotel {
   review_id    Int       @id @default(autoincrement())
   user_id      Int
   hotel_id     Int
-  rating       Float?    @db.Float
-  title_review String?   @db.Text
-  comment      String?   @db.Text
+  rating       Float?
+  title_review String?
+  comment      String?
   created_at   DateTime? @default(now()) @db.Timestamp(0)
-  user         user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_hotel_ibfk_1")
-  hotels       hotels    @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction, map: "review_hotel_ibfk_2")
+  hotels       hotels    @relation(fields: [hotel_id], references: [hotel_id], onDelete: NoAction, onUpdate: NoAction)
+  user         user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([user_id], map: "review_hotel_ibfk_1")
-  @@index([hotel_id], map: "review_hotel_ibfk_2")
+  @@index([user_id])
+  @@index([hotel_id])
 }
 
 model review_inter {
   review_id      Int          @id @default(autoincrement())
   user_id        Int
   interpreter_id Int
-  rating         Float?       @db.Float
-  title_review   String?      @db.Text
-  comment        String?      @db.Text
+  rating         Float?
+  title_review   String?
+  comment        String?
   created_at     DateTime?    @default(now()) @db.Timestamp(0)
-  user           user         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_inter_ibfk_1")
-  interpreters   interpreters @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction, onUpdate: NoAction, map: "review_inter_ibfk_2")
+  interpreters   interpreters @relation(fields: [interpreter_id], references: [interpreter_id], onDelete: NoAction)
+  user           user         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([user_id], map: "review_inter_ibfk_1")
-  @@index([interpreter_id], map: "review_inter_ibfk_2")
+  @@index([user_id])
+  @@index([interpreter_id])
 }
 
 model room_aggregate {
@@ -524,41 +524,41 @@ model room_aggregate {
   aggregate_id   Int             @id @default(autoincrement())
   booking_id     Int?
   room_id        Int?
-  hotel_rooms    hotel_rooms?    @relation(fields: [room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction, map: "room_aggregate_ibfk_1")
-  hotel_bookings hotel_bookings? @relation(fields: [booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction, map: "room_aggregate_ibfk_2")
+  hotel_bookings hotel_bookings? @relation(fields: [booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction)
+  hotel_rooms    hotel_rooms?    @relation(fields: [room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([room_id], map: "room_aggregate_ibfk_1")
-  @@index([booking_id], map: "room_aggregate_ibfk_2")
+  @@index([room_id])
+  @@index([booking_id])
 }
 
 model room_image {
   image_id    Int          @id @default(autoincrement())
   image       String?      @db.VarChar(255)
   room_id     Int?
-  hotel_rooms hotel_rooms? @relation(fields: [room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction, map: "room_image_ibfk_1")
+  hotel_rooms hotel_rooms? @relation(fields: [room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([room_id], map: "room_image_ibfk_1")
+  @@index([room_id])
 }
 
 model tourism_bookings {
-  tourism_id       String                     @id @default(uuid())
+  tourism_id       String                   @id @default(uuid())
   tour_id          Int?
   status           tourism_bookings_status? @default(In_Progress)
   created_at       DateTime                 @default(now()) @db.Timestamp(0)
   updated_at       DateTime                 @default(now()) @db.Timestamp(0)
   package_bookings package_bookings[]
-  trips            trips?                   @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction, map: "tourism_bookings_ibfk_1")
+  trips            trips?                   @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([tour_id], map: "tourism_bookings_ibfk_1")
+  @@index([tour_id])
 }
 
 model hospital_images {
   image_id    Int        @id @default(autoincrement())
   hospital_id String?
   image       String?    @db.VarChar(255)
-  hospitals   hospitals? @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "hospital_images_ibfk_1")
+  hospitals   hospitals? @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([hospital_id], map: "hospital_images_ibfk_1")
+  @@index([hospital_id])
 }
 
 model chat {
@@ -566,13 +566,13 @@ model chat {
   chat_id                  Int        @id @default(autoincrement())
   user1_id                 Int
   user2_id                 Int?
-  user_chat_user1_idTouser user       @relation("chat_user1_idTouser", fields: [user1_id], references: [id], onUpdate: Restrict, map: "chat_ibfk_1")
-  user_chat_user2_idTouser user?      @relation("chat_user2_idTouser", fields: [user2_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "chat_ibfk_2")
+  user_chat_user1_idTouser user       @relation("chat_user1_idTouser", fields: [user1_id], references: [id], onUpdate: Restrict)
+  user_chat_user2_idTouser user?      @relation("chat_user2_idTouser", fields: [user2_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
   chat_files               ChatFile[]
   messages                 messages[]
 
-  @@index([user2_id], map: "user2_id")
-  @@index([user1_id], map: "user_id")
+  @@index([user2_id])
+  @@index([user1_id])
 }
 
 model patient_details {
@@ -589,13 +589,13 @@ model patient_details {
 model trips {
   tour_id          Int                @id @default(autoincrement())
   package_id       String
-  description      String?            @db.Text
-  total_price      Float?             @db.Float
+  description      String?
+  total_price      Float?
   package_places   package_places[]
   tourism_bookings tourism_bookings[]
-  packages         packages           @relation(fields: [package_id], references: [package_id], onUpdate: Restrict, map: "trips_ibfk_1")
+  packages         packages           @relation(fields: [package_id], references: [package_id], onUpdate: Restrict)
 
-  @@index([package_id], map: "trips_ibfk_1")
+  @@index([package_id])
 }
 
 model contact_us {
@@ -628,8 +628,8 @@ model user {
   chat_chat_user1_idTouser            chat[]             @relation("chat_user1_idTouser")
   chat_chat_user2_idTouser            chat[]             @relation("chat_user2_idTouser")
   files                               File[]
-  messages_messages_sender_idTouser   messages[]         @relation("messages_sender_idTouser")
   messages_messages_receiver_idTouser messages[]         @relation("messages_receiver_idTouser")
+  messages_messages_sender_idTouser   messages[]         @relation("messages_sender_idTouser")
   package_bookings                    package_bookings[]
   payment                             payment[]
   review_hospital                     review_hospital[]
@@ -638,7 +638,7 @@ model user {
 }
 
 model user_contact_detail {
-  id               String                     @id @default(uuid())
+  id               String             @id @default(uuid())
   firstname        String?            @db.VarChar(255)
   lastname         String?            @db.VarChar(255)
   email            String?            @db.VarChar(255)
@@ -653,16 +653,16 @@ model account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-  user              user    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Account_userId_fkey")
+  user              user    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_key")
+  @@unique([provider, providerAccountId])
   @@index([userId], map: "Account_userId_fkey")
 }
 

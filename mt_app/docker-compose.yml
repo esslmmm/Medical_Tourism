@@ -1,0 +1,49 @@
+version: '3.9'
+services:
+  web:
+    build: .
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env.docker
+    depends_on:
+      db:
+        condition: service_healthy  # Wait for DB to be ready
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next  # Cache Next.js build files
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: user123
+      POSTGRES_DB: mt_app_database
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  studio:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "5555:5555"
+    command: sh -c "npm install && npx prisma studio"
+    environment:
+      - DATABASE_URL=postgresql://postgres:user123@db:5432/mt_app_database
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

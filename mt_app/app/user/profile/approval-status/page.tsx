@@ -4,7 +4,6 @@ import SearchBar from "../../../../components/user_components/approval-status/Se
 import BookingTabs from "../../../../components/user_components/approval-status/BookingTabs";
 
 
-
 const UserProfileStatus: React.FC = () => {
   return (
       <div className="flex-1 p-8 flex flex-col items-center">

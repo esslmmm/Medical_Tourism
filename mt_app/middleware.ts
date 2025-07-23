@@ -11,7 +11,8 @@ export default auth((req) => {
     '/user/profile',
     '/user/accommodation_booking',
     '/user/Interpreter',
-    '/user/Test'
+    '/user/Test',
+    "/user/BookingDetail",
   ]
   
   const isProtectedRoute = protectedRoutes.some(route => 
@@ -74,6 +75,7 @@ export const config = {
     '/user/accommodation_booking/:path*',
     '/user/Interpreter/:path*',
     '/user/Test/:path*', 
-    '/verify-otp/:path*'
+    '/verify-otp/:path*',
+    '/user/BookingDetail/:path*',
   ]
 }

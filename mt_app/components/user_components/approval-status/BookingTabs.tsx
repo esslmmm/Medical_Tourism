@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useUserId } from "../../../hooks/useUserId";
+import BookingSkeleton from "../skeleton-screen/profile/BookingSkeleton";
+
 
 interface Booking {
   booking_id: number;
@@ -63,7 +63,9 @@ const BookingTabs: React.FC = () => {
 
 
 
-  if (loading) return <p className="text-center text-gray-500">Loading user details...</p>;
+  if (loading) {
+    return <BookingSkeleton />
+  }
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (

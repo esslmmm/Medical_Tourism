@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { FaMapMarkerAlt, FaStar, FaTimes, FaChevronLeft, FaChevronRight, FaStarHalfAlt } from "react-icons/fa";
 import { Inter } from "next/font/google";
 import { useParams } from "next/navigation";
+import HospitalSkeleton from "../skeleton-screen/HospitalProfile/HospitalSkeleton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +18,7 @@ interface MedicalService {
 }
 
 interface Package {
-  package_id: number;
+  package_id: string;
   package_name: string;
   image: string;
   detail: string;
@@ -34,7 +35,7 @@ interface Review {
 }
 
 interface Hospital {
-  hospital_id: number;
+  hospital_id: string;
   name: string;
   rating: number;
   location: string;
@@ -73,7 +74,9 @@ const HospitalProfile: React.FC = () => {
     if (id) fetchHospital();
   }, [id]);
 
-  if (loading) return <p className="text-center text-gray-500">Loading hospital details...</p>;
+  if (loading) {
+    return <HospitalSkeleton />
+  }
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
   if (!hospital) return <p className="text-center text-gray-500">Hospital not found</p>;
 

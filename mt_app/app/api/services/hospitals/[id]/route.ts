@@ -4,44 +4,43 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 
-
-
 /**
  * GET: Fetch a hospital by ID
  */
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const resolvedParams = await params;
-    const hospital_id = parseInt(resolvedParams.id, 10); // Convert ID to integer
-
-    if (isNaN(hospital_id)) {
-      return NextResponse.json({ error: "Invalid hospital ID" }, { status: 400 });
+    const hospital_id = resolvedParams.id;
+    
+    // Basic validation - check if ID exists and is not empty
+    if (!hospital_id || hospital_id.trim() === '') {
+      return NextResponse.json({ error: "Hospital ID is required" }, { status: 400 });
     }
-
+    
     // Fetch hospital along with associated doctors
     const hospital = await prisma.hospitals.findUnique({
       where: { hospital_id },
       include: {
         doctors: true,
-        hospital_images : true,
-        medical_services : true,
-        packages : true,
+        hospital_images: true,
+        medical_services: true,
+        packages: true,
         review_hospital: {
-            include: {
-                user: {
-                    select: {
-                        name: true
-                    }
-                }
+          include: {
+            user: {
+              select: {
+                name: true
+              }
             }
+          }
         }
       },
     });
-
+    
     if (!hospital) {
       return NextResponse.json({ error: "Hospital not found" }, { status: 404 });
     }
-
+    
     return NextResponse.json(hospital, { status: 200 });
   } catch (error) {
     console.error("Error fetching hospital:", error);
@@ -54,9 +53,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
  */
   export async function PUT(request: Request, { params }: { params: { id: string } }) {
     try {
-        const hospital_id = parseInt(params.id, 10);
+        const hospital_id = params.id;
 
-        if (isNaN(hospital_id)) {
+        if (isNaN(Number(hospital_id))) {
             return NextResponse.json({ error: "Invalid hospital ID" }, { status: 400 });
         }
 
@@ -149,9 +148,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
    */
   export async function DELETE(request: Request, { params }: { params: { id: string } }) {
     try {
-        const hospital_id = parseInt(params.id, 10);
+        const hospital_id = params.id;
 
-        if (isNaN(hospital_id)) {
+        if (isNaN(Number(hospital_id))) {
             return NextResponse.json({ error: "Invalid hospital ID" }, { status: 400 });
         }
 

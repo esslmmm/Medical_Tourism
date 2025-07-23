@@ -7,7 +7,7 @@ const prisma = new PrismaClient()
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
     const resolvedParams = await params;
-    const appointmentId = Number(resolvedParams.id)
+    const appointmentId = resolvedParams.id;
     const appointment = await prisma.appointments.findUnique({
       where: { appointment_id: appointmentId },
       include: {
@@ -45,7 +45,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     } = await req.json();
 
     const resolvedParams = await params;
-    const appointmentId = Number(resolvedParams.id);
+    const appointmentId = resolvedParams.id;
 
     const updateData: any = {
       date,
@@ -91,7 +91,8 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
     try {
-      const appointmentId = Number(params.id);
+      const resolvedParams = await params;
+      const appointmentId = resolvedParams.id;
   
       // Fetch the patient_id related to the appointment
       const appointment = await prisma.appointments.findUnique({

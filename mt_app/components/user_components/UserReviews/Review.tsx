@@ -6,7 +6,7 @@ import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { Poppins } from "next/font/google";
 import { Inter } from "next/font/google";
 import "../../../app/globals.css";
-import { useUserId } from "../../../hooks/useUserId";
+import ReviewsSkeletonVaried from "../skeleton-screen/profile/ReviewSkeleton";
 
 const inter = Inter({ subsets: ["latin"], weight: ["100","200","300","400","500","600", "700","800","900"] });
 const poppins = Poppins({ subsets: ["latin"], weight: ["100","200","300","400","500","600", "700","800","900"] });
@@ -45,7 +45,6 @@ interface Review {
 
 const Review = () => {
   const [user, setUser] = useState<User | null>(null);
-  const { userId, isLoading, isAuthenticated } = useUserId();
   const [allReviews, setAllReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -106,7 +105,9 @@ const Review = () => {
     })}`;
   };
 
-  if (loading || isLoading) return <p className="text-center text-gray-500">Loading details...</p>;
+  if (loading) {
+    return <ReviewsSkeletonVaried />
+  }
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (

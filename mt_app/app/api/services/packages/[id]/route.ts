@@ -6,9 +6,9 @@ const prisma = new PrismaClient();
 export async function GET(request: Request, { params }: { params: { id: string } }) {
     try {
         const resolvedParams = await params;
-        const package_id = parseInt(resolvedParams.id, 10); // Convert ID to integer
+        const package_id = resolvedParams.id; // Convert ID to integer
   
-      if (isNaN(package_id)) {
+      if (isNaN(Number(package_id))) {
         return NextResponse.json({ error: "Invalid package ID" }, { status: 400 });
       }
   
@@ -55,8 +55,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
-      const package_id = parseInt(params.id, 10);
-      if (isNaN(package_id)) {
+      const package_id = params.id;
+      if (isNaN(Number(package_id))) {
           return NextResponse.json({ error: "Invalid package ID" }, { status: 400 });
       }
 
@@ -187,9 +187,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
    */
   export async function DELETE(request: Request, { params }: { params: { id: string } }) {
       try {
-          const package_id = parseInt(params.id, 10); // Convert ID to integer
+          const package_id = params.id; // Convert ID to integer
   
-          if (isNaN(package_id)) {
+          if (isNaN(Number(package_id))) {
               return NextResponse.json({ error: "Invalid package ID" }, { status: 400 });
           }
   

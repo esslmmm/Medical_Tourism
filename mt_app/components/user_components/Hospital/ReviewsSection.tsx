@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import ReviewCard from "./ReviewCard";
 import { useParams } from "next/navigation";
+import ReviewHospital from "../skeleton-screen/HospitalProfile/ReviewHospital";
 
 
 interface User{
@@ -49,9 +50,11 @@ const ReviewsSection: React.FC = () => {
     if (id) fetchHospital();
   }, [id]);
 
-  if (loading) return <p className="text-center text-gray-500">Loading hospital details...</p>;
+  if (loading)
+      {
+        return <ReviewHospital />
+      }
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!hospital) return <p className="text-center text-gray-500">Hospital not found</p>;
   if (hospital?.review_hospital?.length === 0) return <p className="text-center text-gray-500">No reviews available.</p>;
 
   const displayedReviews = showAll ? hospital?.review_hospital ?? [] : hospital?.review_hospital?.slice(0, 3) ?? [];

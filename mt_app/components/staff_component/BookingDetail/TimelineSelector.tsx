@@ -17,7 +17,7 @@ interface PackageBooking {
   status: string;
   create_at: string;
   appointment_id: number;
-  package_id: number;
+  package_id: string;
   hotel_bookings: hotel_bookings;
 }
 
@@ -32,7 +32,7 @@ interface hotel_bookings {
 }
 
 interface Packages {
-  package_id: number;
+  package_id: string;
   package_type: string;
   duration: number;
 }

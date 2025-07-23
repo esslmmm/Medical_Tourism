@@ -96,7 +96,7 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
         // User is authenticated, proceed with booking creation
         const payload = {
           user_id: Number(userId), // You might want to get this from authenticated user context
-          package_id: Number(id),
+          package_id: id,
           tourism_booking_id: null,
           appointment_id: null,
           hotel_booking_id: null,

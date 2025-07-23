@@ -137,8 +137,14 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
 
         {/* Show loading state while checking authentication */}
         {status === 'loading' ? (
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+          <div className="flex items-center cursor-pointer p-2 rounded-md">
+            {/* Profile image/avatar skeleton */}
+            <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
+            
+            {/* User name/email skeleton */}
+            <div className="ml-2 hidden md:block">
+              <div className="h-8 bg-gray-200 rounded w-48 animate-pulse"></div>
+            </div>
           </div>
         ) : !isLoggedIn ? (
           // Show when NOT logged in
@@ -153,14 +159,6 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
         ) : (
           // Show when logged in
           <>
-            {/* Notifications (optional) */}
-            {/* <div className="relative">
-              <Bell className="w-6 h-6 text-gray-600 cursor-pointer hover:text-green-600 transition" />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                3
-              </span>
-            </div> */}
-
             {/* Profile Dropdown */}
             <div className="relative profile-dropdown">
               <div 

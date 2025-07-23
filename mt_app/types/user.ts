@@ -18,7 +18,7 @@ export interface CreateUserData {
   name?: string | null;
   image?: string | null;
   otp?: string | null;
-  otpExpiry?: string | null;
+  otpExpiry?: Date | null;
   isEmailVerified?: boolean;
   role?: 'admin' | 'staff' | 'customer';
 }

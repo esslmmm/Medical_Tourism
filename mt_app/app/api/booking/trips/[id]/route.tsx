@@ -10,7 +10,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     
       const resolvedParams = await params;
       const tourismBooking = await prisma.tourism_bookings.findUnique({
-        where: { tourism_id: Number(resolvedParams.id) },
+        where: { tourism_id: resolvedParams.id },
         include: {
           trips: {
             include: {
@@ -44,7 +44,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
         car_id, 
         status
     } = await req.json()
-    const tourismBookingId = Number(params.id)
+    const tourismBookingId = params.id;
     const updatedTourismBooking = await prisma.tourism_bookings.update({
       where: { tourism_id: tourismBookingId },
       data:{
@@ -63,7 +63,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 // DELETE request - Delete a tourism booking by ID
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   try {
-    const tourismBookingId = Number(params.id)
+    const tourismBookingId = params.id;
     await prisma.tourism_bookings.delete({
       where: { tourism_id: tourismBookingId },
     })

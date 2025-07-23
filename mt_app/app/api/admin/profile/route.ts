@@ -1,4 +1,4 @@
-import { packages_package_type, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
