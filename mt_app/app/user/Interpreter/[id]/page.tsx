@@ -1,10 +1,9 @@
 "use client";
 import React, { useState } from 'react';
-import { useRouter } from "next/navigation";
-import Footer from '../../../../components/user_components/Main/Footer';
-import Navbar from '../../../../components/user_components/Main/Navbar';
-import InterpreterDetails from '../../../../components/user_components/Interpreter/InterpreterDetails';
-import InterpreterList from '../../../../components/user_components/Interpreter/InterpreterList';
+import Footer from '@/components/user_components/Main/Footer';
+import Navbar from '@/components/user_components/Main/Navbar';
+import InterpreterDetails from '@/components/user_components/Interpreter/InterpreterDetails';
+import InterpreterList from '@/components/user_components/Interpreter/InterpreterList';
 import { useStepNavigator } from '../../package_landing_page/goToNextStep';
 import { submitInterBooking } from '../../../api/booking/interpreters/submitInterBooking';
 import { updatePackageBooking } from '../../../api/booking/packages/updatePackageBooking';

@@ -11,7 +11,6 @@ import MultiStepReviewModal from "./user/ReviewPopUp/[id]/page";
 import { useSearchParams } from 'next/navigation';
 import "./globals.css";
 import { useEffect, useState } from 'react';
-import DoctorCardSkeleton from "../components/user_components/skeleton-screen/HomePage/DoctorCardSkeleton";
 
 interface HomePageProps {
   children: React.ReactNode;

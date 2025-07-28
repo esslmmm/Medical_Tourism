@@ -5,7 +5,6 @@ import { Poppins } from "next/font/google";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import DoctorCardSkeleton from "../skeleton-screen/DoctorProfile/DoctorCardSkeleton";
-// import DoctorCardSkeleton from "../skeleton-screen/DoctorCardSkeleton"
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500", "700"] });
 

@@ -1,7 +1,7 @@
 'use client'
 
-import Review from "../../../../components/user_components/UserReviews/Review";
-import SearchBar from "../../../../components/user_components/approval-status/SearchBar";
+import Review from "@/components/user_components/UserReviews/Review";
+import SearchBar from "@/components/user_components/approval-status/SearchBar";
 
 
 

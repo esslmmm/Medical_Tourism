@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { formatForMySQL, generateOTP, generateOTPExpiry } from '../../../utils/otpGenerator';
 import { sendOTPEmail } from '../../../utils/emailService';
-import { createOrUpdateUser, initDatabase } from '../../../utils/database';
+import { createOrUpdateUser } from '../../../utils/database';
 import { ApiResponse } from '../../../types/user';
 
 // Email validation regex
@@ -22,7 +22,7 @@ export default async function handler(
 
   try {
     // Initialize database if needed
-    await initDatabase();
+
     
     const { email }: { email: string } = req.body;
 
@@ -69,7 +69,8 @@ export default async function handler(
         email: sanitizedEmail,
         otp,
         otpExpiry,
-        isEmailVerified: false
+        isEmailVerified: false,
+        updatedAt: new Date()
     });
 
     console.log(`OTP generated for user: ${sanitizedEmail}`);

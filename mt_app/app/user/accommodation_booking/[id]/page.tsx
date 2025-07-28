@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import AccommodationDetails from "../../../../components/user_components/accommodation_booking/AccommodationDetail";
-import ReviewSection from "../../../../components/user_components/accommodation_booking/ReviewAccommodation";
-import RoomGallery from "../../../../components/user_components/accommodation_booking/RoomGallery";
-import RoomOptionCard from "../../../../components/user_components/accommodation_booking/RoomOptionCard";
-import SelectAccommodation from "../../../../components/user_components/accommodation_booking/SelectAccommodation";
-import SelectRoom from "../../../../components/user_components/accommodation_booking/SelectRoom";
+import AccommodationDetails from "@/components/user_components/accommodation_booking/AccommodationDetail";
+import ReviewSection from "@/components/user_components/accommodation_booking/ReviewAccommodation";
+import RoomGallery from "@/components/user_components/accommodation_booking/RoomGallery";
+import RoomOptionCard from "@/components/user_components/accommodation_booking/RoomOptionCard";
+import SelectAccommodation from "@/components/user_components/accommodation_booking/SelectAccommodation";
+import SelectRoom from "@/components/user_components/accommodation_booking/SelectRoom";
 import { addDays, differenceInCalendarDays } from "date-fns";
 import { Range } from 'react-date-range';
 

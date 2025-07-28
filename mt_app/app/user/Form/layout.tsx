@@ -1,10 +1,10 @@
 import React from "react";
-import Footer from "../../../components/user_components/Main/Footer";
-import Navbarprogress from "../../../components/user_components/medical_appointment/Navbarprogress";
-import MedicalService from "../../../components/user_components/BookingDetails/MedicalService";
-import Interpreter from "../../../components/user_components/BookingDetails/Interpreter";
-import Accommodation from "../../../components/user_components/BookingDetails/Accommodation";
-import PlaceToVisit from "../../../components/user_components/BookingDetails/PlaceToVisit";
+import Footer from "@/components/user_components/Main/Footer";
+import Navbarprogress from "@/components/user_components/medical_appointment/Navbarprogress";
+import MedicalService from "@/components/user_components/BookingDetails/MedicalService";
+import Interpreter from "@/components/user_components/BookingDetails/Interpreter";
+import Accommodation from "@/components/user_components/BookingDetails/Accommodation";
+import PlaceToVisit from "@/components/user_components/BookingDetails/PlaceToVisit";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (

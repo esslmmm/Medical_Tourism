@@ -1,4 +1,4 @@
-import BookAnAppointment from "../../../../../components/user_components/medical_appointment/BookAnAppointment"
+import BookAnAppointment from "@/components/user_components/medical_appointment/BookAnAppointment"
 
 
 const MedicalAppointment = () => {

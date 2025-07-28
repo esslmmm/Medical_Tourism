@@ -64,18 +64,7 @@ async function main() {
         updatedAt: new Date('2025-02-01'),
       }
     }),
-    prisma.user.create({
-      data: {
-        id: 10,
-        name: 'SONDETH BOUNPHANITH',
-        email: '6531501229@lamduan.mfu.ac.th',
-        image: 'https://lh3.googleusercontent.com/a-/ALV-UjWQTD6KBU9bes0RrGnIoYHnpkVUVndxPDIWphfe8vkM1ahrPqmaf0aTUvULmcZ4vpkPqL0u5Y6pXnq2QyaoZqjRz_B3xKF5T3F6QAoLMvYjDZZKb-UOI8t1hIXr9_3XNy8vI6h_VReoCH5cU3ZKv-sg2t2DiUOwXGPBpS6kMGeI6YDfKPEMAXWNJfE50obFu7FYo0jprWwxsGdyDpzqPQpcGGgtQWiq2D4taNndr6KmpI05Dav9TrkaACMCV7CVNzx9omWUBjp1h52FWyFxbC5DFNX7BHT7_zqPJJffhtkZNZ6V-YzKBx7Fhsvt4g1Iq8h6euSl_4TZgvFXPf9PIpVqFnHTLRu025hGZonAqS8js5ByV0Ehm1pHK0yEexLhnpN8ARuVEMSfjkdi4O9eI6SuisBGmY1pOsrNDgR5_BVcaMxT6wNSswl4Bk3wZKB9q6XLTIUT5JLgqu0ZclFNORMuANh6qoHn4v_jcpUNw-EOp2Qr36Ujg3moO_6OnZQIwZCVlkso87DHhiDo7xUr_tYqaz07J2aQ7s6yfKzzj_b6Y4uXq8G2bQ4np8yWuBTaK2ZM4NbtU-U4201REQZ8a96e-tFi6OMz48d-ZEi69k5vJ0rq-CIp6w1iLMcNehEJVEtiQs5yRElkdXUbHCU6MQmA9CGHfyKJOKIB5tj8cqyI4MpyAdQnzEc5Ab35Dd6G4KYeyIW07buyqFnSMA05rtXvKLVgSc_gYwtNBYFsj4q-Yxh6c8sYTD0Ti3Ahgx4KcmjysgGISije0PSMknB6iErsqLhkazXnXpWnGryQmn2SL_I1P8JuLCgOrwixyIJQJOTDbbmyQ6wTjkPE1V5GAzd-_cyl36JlJJWhSyUUYdfxEHe6i2fNSvn2c0wMdI0Z2HNKz3qc2r9ZaCyRxWWcjs57ssiUO7Uz5ttI5dpmeTo-CYeHEX1ItS8GiLIHrsguac3tA8AWzKM7VRZMPoZHv8eGWSy28Q=s96-c',
-        role: 'customer',
-        is_email_verified: true,
-        createdAt: new Date('2025-07-10'),
-        updatedAt: new Date('2025-07-17'),
-      }
-    }),
+
     prisma.user.create({
       data: {
         id: 12,

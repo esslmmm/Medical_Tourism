@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
-import Sidebar from "../../../components/user_components/Main/Sidebar";
-import AuthenticatedNavbar from "../../../components/user_components/Main/AuthenticatedNavbar";
-import Footer from "../../../components/user_components/Main/Footer";
+import Sidebar from "@/components/user_components/Main/Sidebar";
+import AuthenticatedNavbar from "@/components/user_components/Main/AuthenticatedNavbar";
 
 
 const Layout = ({ children }: { children: React.ReactNode }) => {

@@ -20,6 +20,7 @@ export interface CreateUserData {
   otp?: string | null;
   otpExpiry?: Date | null;
   isEmailVerified?: boolean;
+  updatedAt: string | Date;
   role?: 'admin' | 'staff' | 'customer';
 }
 

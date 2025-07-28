@@ -1,12 +1,12 @@
 "use client";
 
-import Navbarpro from "../../../../components/user_components/Main/Navbarpro";
-import HospitalProfile from "../../../../components/user_components/Hospital/HospitalProfile";
-import DoctorHos from "../../../../components/user_components/Hospital/DoctorHos";
-import MedicalPackage from "../../../../components/user_components/Hospital/MedicalPackage";
-import ReviewsSection from "../../../../components/user_components/Hospital/ReviewsSection";
-import Footer from "../../../../components/user_components/Main/Footer";
-import "../../../../app/globals.css";
+import Navbarpro from "@/components/user_components/Main/Navbarpro";
+import HospitalProfile from "@/components/user_components/Hospital/HospitalProfile";
+import DoctorHos from "@/components/user_components/Hospital/DoctorHos";
+import MedicalPackage from "@/components/user_components/Hospital/MedicalPackage";
+import ReviewsSection from "@/components/user_components/Hospital/ReviewsSection";
+import Footer from "@/components/user_components/Main/Footer";
+import "@/app/globals.css";
 
 const HomePage: React.FC = () => {
 

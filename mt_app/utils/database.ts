@@ -1,43 +1,51 @@
 import postgres from 'postgres';
 import { User, CreateUserData } from '../types/user';
 
-const sql = postgres(process.env.DATABASE_URL!);
+// Optimize connection with proper pooling and configuration
+const sql = postgres(process.env.DATABASE_URL!, {
+  // Connection pooling settings
+  max: 10,          // Maximum number of connections
+  idle_timeout: 20, // Close idle connections after 20 seconds
+  connect_timeout: 10, // Connection timeout in seconds
+  
+  // Performance optimizations
+  prepare: false,   // Disable prepared statements for better performance in some cases
+  transform: {
+    undefined: null // Transform undefined to null automatically
+  },
+  
+  // Error handling
+  onnotice: () => {}, // Suppress notices for cleaner logs
+});
 
+// Connection management - reuse the same instance
 export async function getConnection() {
   return sql;
 }
 
-// Initialize database tables
-export async function initDatabase(): Promise<void> {
-
+// Add connection health check
+export async function checkConnection(): Promise<boolean> {
   try {
-    // Create users table if it doesn't exist
-    await sql`
-  CREATE TABLE IF NOT EXISTS "user" (
-    id SERIAL PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    is_email_verified BOOLEAN DEFAULT FALSE,
-    otp VARCHAR(10),
-    otp_expiry TIMESTAMP,
-    name VARCHAR(255),
-    image TEXT,
-    role VARCHAR(50) DEFAULT 'customer',
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  )
-`;
-    console.log('Database tables initialized');
+    await sql`SELECT 1`;
+    return true;
   } catch (error) {
-    console.error('Error initializing database:', error);
-    throw error; // Re-throw to handle in calling function
+    console.error('Database connection failed:', error);
+    return false;
   }
 }
 
-// Find user by email
+
+// Optimized user lookup with better error handling
 export async function findUserByEmail(email: string): Promise<User | null> {
+  if (!email?.trim()) {
+    throw new Error('Email is required');
+  }
+
   try {
     const rows = await sql<User[]>`
-      SELECT * FROM "user" WHERE LOWER(email) = LOWER(${email})
+      SELECT * FROM "user" 
+      WHERE LOWER(email) = LOWER(${email.trim()})
+      LIMIT 1
     `;
     return rows[0] || null;
   } catch (error) {
@@ -46,32 +54,44 @@ export async function findUserByEmail(email: string): Promise<User | null> {
   }
 }
 
-// Create or Update user
+// Optimized create or update - fallback to separate operations if UPSERT fails
 export async function createOrUpdateUser(userData: CreateUserData): Promise<User | null> {
+  if (!userData.email?.trim()) {
+    throw new Error('Email is required');
+  }
+
   try {
     const { email, name, image, otp, otpExpiry, isEmailVerified } = userData;
-    const existingUser = await findUserByEmail(email);
+    const trimmedEmail = email.trim();
+
+    // First, try to find existing user
+    const existingUser = await findUserByEmail(trimmedEmail);
 
     if (existingUser) {
-      await sql`
+      // Update existing user
+      const rows = await sql<User[]>`
         UPDATE "user" SET 
-          name = COALESCE(${name ?? null}, name),
-          image = COALESCE(${image ?? null}, image),
-          otp = ${otp ?? null},
-          otp_expiry = ${otpExpiry ?? null},
+          name = COALESCE(${name || null}, name),
+          image = COALESCE(${image || null}, image),
+          otp = ${otp || null},
+          otp_expiry = ${otpExpiry || null},
           is_email_verified = COALESCE(${isEmailVerified ?? null}, is_email_verified),
           "updatedAt" = CURRENT_TIMESTAMP
-        WHERE email = ${email}
+        WHERE LOWER(email) = LOWER(${trimmedEmail})
+        RETURNING *
       `;
-      return await findUserByEmail(email);
+      return rows[0] || null;
     } else {
-      await sql`
+      // Create new user
+      const rows = await sql<User[]>`
         INSERT INTO "user" 
-          (email, name, image, otp, otp_expiry, is_email_verified)
+          (email, name, image, otp, otp_expiry, is_email_verified, "updatedAt")
         VALUES 
-          (${email}, ${name ?? null}, ${image ?? null}, ${otp ?? null}, ${otpExpiry ?? null}, ${isEmailVerified ?? false})
+          (${trimmedEmail}, ${name || null}, ${image || null}, ${otp || null}, 
+           ${otpExpiry || null}, ${isEmailVerified || false}, CURRENT_TIMESTAMP)
+        RETURNING *
       `;
-      return await findUserByEmail(email);
+      return rows[0] || null;
     }
   } catch (error) {
     console.error("Error creating or updating user:", error);
@@ -79,26 +99,31 @@ export async function createOrUpdateUser(userData: CreateUserData): Promise<User
   }
 }
 
-
-// Update user verification
+// Optimized verification update
 export async function updateUserVerification(email: string, isVerified: boolean = true): Promise<User | null> {
+  if (!email?.trim()) {
+    throw new Error('Email is required');
+  }
+
   try {
-    await sql`
+    const rows = await sql<User[]>`
       UPDATE "user" SET 
         is_email_verified = ${isVerified},
         otp = NULL,
         otp_expiry = NULL,
         "updatedAt" = CURRENT_TIMESTAMP
-      WHERE email = ${email}
+      WHERE LOWER(email) = LOWER(${email.trim()})
+      RETURNING *
     `;
-    return await findUserByEmail(email);
+    
+    return rows[0] || null;
   } catch (error) {
     console.error('Error updating user verification:', error);
     throw error;
   }
 }
 
-// Update user profile
+// Optimized profile update with return value
 export async function updateUserProfile({
   email,
   name,
@@ -107,16 +132,51 @@ export async function updateUserProfile({
   email: string;
   name?: string;
   image?: string;
-}): Promise<void> {
+}): Promise<User | null> {
+  if (!email?.trim()) {
+    throw new Error('Email is required');
+  }
+
   try {
-    await sql`
+    const rows = await sql<User[]>`
       UPDATE "user" SET 
-        name = COALESCE(${name ?? null}, name),
-        image = COALESCE(${image ?? null}, image),
+        name = COALESCE(${name || null}, name),
+        image = COALESCE(${image || null}, image),
         "updatedAt" = CURRENT_TIMESTAMP
-      WHERE email = ${email ?? null}
+      WHERE LOWER(email) = LOWER(${email.trim()})
+      RETURNING *
     `;
-  } catch (err) {
-    console.error("Failed to update user profile:", err);
+    
+    return rows[0] || null;
+  } catch (error) {
+    console.error("Failed to update user profile:", error);
+    throw error;
+  }
+}
+
+// Add cleanup function for expired OTPs (call this periodically)
+export async function cleanupExpiredOTPs(): Promise<number> {
+  try {
+    const result = await sql`
+      UPDATE "user" 
+      SET otp = NULL, otp_expiry = NULL, "updatedAt" = CURRENT_TIMESTAMP
+      WHERE otp_expiry < CURRENT_TIMESTAMP 
+        AND otp IS NOT NULL
+    `;
+    
+    return result.count;
+  } catch (error) {
+    console.error('Error cleaning up expired OTPs:', error);
+    throw error;
+  }
+}
+
+// Graceful shutdown
+export async function closeConnection(): Promise<void> {
+  try {
+    await sql.end();
+    console.log('Database connection closed');
+  } catch (error) {
+    console.error('Error closing database connection:', error);
   }
 }

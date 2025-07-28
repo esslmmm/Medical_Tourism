@@ -1,14 +1,13 @@
 'use client';
-import { useState } from 'react';
-import ContactDetails from '../../../components/user_components/BookingEdit/ContactDetails';
-import PatientDetails from '../../../components/user_components/BookingEdit/PatientDetails';
-import MedicalService from '../../../components/user_components/BookingEdit/MedicalService';
-import PlaceToVisit from '../../../components/user_components/BookingEdit/PlaceToVisit';
-import Accommodation from '../../../components/user_components/BookingEdit/Accommodation';
-import Interpreter from '../../../components/user_components/BookingEdit/Interpreter';
-import CarService from '../../../components/user_components/BookingEdit/CarService';
-// import NavbarBookingEdit from "../../../components/user_components/BookingEdit/NavbarBookingEdit";
-// import Footer from "../../../components/user_components/BookingEdit/Footer";
+
+import ContactDetails from '@/components/user_components/BookingEdit/ContactDetails';
+import PatientDetails from '@/components/user_components/BookingEdit/PatientDetails';
+import MedicalService from '@/components/user_components/BookingEdit/MedicalService';
+import PlaceToVisit from '@/components/user_components/BookingEdit/PlaceToVisit';
+import Accommodation from '@/components/user_components/BookingEdit/Accommodation';
+import Interpreter from '@/components/user_components/BookingEdit/Interpreter';
+import CarService from '@/components/user_components/BookingEdit/CarService';
+
 
 export default function AppointmentForm() {
 

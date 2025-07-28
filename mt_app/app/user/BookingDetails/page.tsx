@@ -3,11 +3,11 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-import MedicalService from '../../../components/user_components/BookingDetails/MedicalService';
-import PlaceToVisit from '../../../components/user_components/BookingDetails/PlaceToVisit';
-import Accommodation from '../../../components/user_components/BookingDetails/Accommodation';
-import Interpreter from '../../../components/user_components/BookingDetails/Interpreter';
-import CarService from '../../../components/user_components/BookingDetails/CarService';
+import MedicalService from '@/components/user_components/BookingDetails/MedicalService';
+import PlaceToVisit from '@/components/user_components/BookingDetails/PlaceToVisit';
+import Accommodation from '@/components/user_components/BookingDetails/Accommodation';
+import Interpreter from '@/components/user_components/BookingDetails/Interpreter';
+import CarService from '@/components/user_components/BookingDetails/CarService';
 
 export default function UserForm() {
     const [firstName, setFirstName] = useState('');
