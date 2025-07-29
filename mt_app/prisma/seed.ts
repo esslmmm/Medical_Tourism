@@ -612,35 +612,35 @@ async function main() {
   })
 
   // 24. Create User Contact Details
-  console.log('📞 Creating user contact details...')
-  await prisma.user_contact_detail.createMany({
-    data: [
-      {
-        id: '29',
-        firstname: 'John',
-        lastname: 'Smith',
-        email: 'john.smith@example.com',
-        country: 'USA',
-        phone: 1234567890,
-      },
-      {
-        id: '30',
-        firstname: 'Maria',
-        lastname: 'Garcia',
-        email: 'maria.garcia@example.com',
-        country: 'Spain',
-        phone: 34123456789,
-      },
-      {
-        id: '31',
-        firstname: 'Sondeth',
-        lastname: 'Bounphanith',
-        email: '6531501229@lamduan.mfu.ac.th',
-        country: 'Thailand',
-        phone: 838947830,
-      }
-    ]
-  })
+  // console.log('📞 Creating user contact details...')
+  // await prisma.user_contact_detail.createMany({
+  //   data: [
+  //     {
+  //       id: '29',
+  //       firstname: 'John',
+  //       lastname: 'Smith',
+  //       email: 'john.smith@example.com',
+  //       country: 'USA',
+  //       phone: 1234567890,
+  //     },
+  //     {
+  //       id: '30',
+  //       firstname: 'Maria',
+  //       lastname: 'Garcia',
+  //       email: 'maria.garcia@example.com',
+  //       country: 'Spain',
+  //       phone: 34123456789,
+  //     },
+  //     {
+  //       id: '31',
+  //       firstname: 'Sondeth',
+  //       lastname: 'Bounphanith',
+  //       email: '6531501229@lamduan.mfu.ac.th',
+  //       country: 'Thailand',
+  //       phone: 838947830,
+  //     }
+  //   ]
+  // })
 
   console.log('📋 Creating appointments...');
   const appointments = await prisma.appointments.createMany({
@@ -675,65 +675,65 @@ async function main() {
     ]
   });
 
-  console.log('📄 Creating files...');
-  const files = await prisma.file.createMany({
-    data: [
-      {
-        id: '1',
-        userId: 10,
-        originalName: 'certificate',
-        fileName: 'certificate',
-        fileType: 'pdf',
-        fileSize: 1186778,
-        cloudinaryId: 'Medical_report/documents/certificate_dnlgcu',
-        url: 'https://res.cloudinary.com/dpunifgmo/image/upload/v1752701302/Medical_report/documents/certificate_dnlgcu.pdf',
-        category: 'MEDICAL_REPORT',
-        description: null
-      },
-      {
-        id: '2',
-        userId: 10,
-        originalName: 'Student Profile',
-        fileName: 'Student Profile',
-        fileType: 'pdf',
-        fileSize: 49199,
-        cloudinaryId: 'Medical_report/documents/Student_Profile_ziwfdz',
-        url: 'https://res.cloudinary.com/dpunifgmo/image/upload/v1752702187/Medical_report/documents/Student_Profile_ziwfdz.pdf',
-        category: 'MEDICAL_REPORT',
-        description: null
-      },
-      {
-        id: '3',
-        userId: 10,
-        originalName: 'Student Grade Report-6531501229',
-        fileName: 'Student Grade Report-6531501229',
-        fileType: 'pdf',
-        fileSize: 73698,
-        cloudinaryId: 'Medical_report/documents/Student_Grade_Report-6531501229_uwrnjo',
-        url: 'https://res.cloudinary.com/dpunifgmo/image/upload/v1752717021/Medical_report/documents/Student_Grade_Report-6531501229_uwrnjo.pdf',
-        category: 'MEDICAL_REPORT',
-        description: null
-      }
-    ]
-  });
+  // console.log('📄 Creating files...');
+  // const files = await prisma.file.createMany({
+  //   data: [
+  //     {
+  //       id: '1',
+  //       userId: 10,
+  //       originalName: 'certificate',
+  //       fileName: 'certificate',
+  //       fileType: 'pdf',
+  //       fileSize: 1186778,
+  //       cloudinaryId: 'Medical_report/documents/certificate_dnlgcu',
+  //       url: 'https://res.cloudinary.com/dpunifgmo/image/upload/v1752701302/Medical_report/documents/certificate_dnlgcu.pdf',
+  //       category: 'MEDICAL_REPORT',
+  //       description: null
+  //     },
+  //     {
+  //       id: '2',
+  //       userId: 10,
+  //       originalName: 'Student Profile',
+  //       fileName: 'Student Profile',
+  //       fileType: 'pdf',
+  //       fileSize: 49199,
+  //       cloudinaryId: 'Medical_report/documents/Student_Profile_ziwfdz',
+  //       url: 'https://res.cloudinary.com/dpunifgmo/image/upload/v1752702187/Medical_report/documents/Student_Profile_ziwfdz.pdf',
+  //       category: 'MEDICAL_REPORT',
+  //       description: null
+  //     },
+  //     {
+  //       id: '3',
+  //       userId: 10,
+  //       originalName: 'Student Grade Report-6531501229',
+  //       fileName: 'Student Grade Report-6531501229',
+  //       fileType: 'pdf',
+  //       fileSize: 73698,
+  //       cloudinaryId: 'Medical_report/documents/Student_Grade_Report-6531501229_uwrnjo',
+  //       url: 'https://res.cloudinary.com/dpunifgmo/image/upload/v1752717021/Medical_report/documents/Student_Grade_Report-6531501229_uwrnjo.pdf',
+  //       category: 'MEDICAL_REPORT',
+  //       description: null
+  //     }
+  //   ]
+  // });
 
-  console.log('📎 Creating appointment files...');
-  const appointmentFiles = await prisma.appointmentFile.createMany({
-    data: [
-      {
-        appointmentId: '8',
-        fileId: '1'
-      },
-      {
-        appointmentId: '9',
-        fileId: '2'
-      },
-      {
-        appointmentId: '10',
-        fileId: '3'
-      }
-    ]
-  });
+  // console.log('📎 Creating appointment files...');
+  // const appointmentFiles = await prisma.appointmentFile.createMany({
+  //   data: [
+  //     {
+  //       appointmentId: '8',
+  //       fileId: '1'
+  //     },
+  //     {
+  //       appointmentId: '9',
+  //       fileId: '2'
+  //     },
+  //     {
+  //       appointmentId: '10',
+  //       fileId: '3'
+  //     }
+  //   ]
+  // });
 
   console.log('🏨 Creating hotel bookings...');
   const hotelBookings = await prisma.hotel_bookings.createMany({
@@ -867,44 +867,44 @@ async function main() {
     ]
   });
 
-  console.log('📦 Creating package bookings...');
-  const packageBookings = await prisma.package_bookings.createMany({
-    data: [
-      {
-        booking_id: '2',
-        user_id: 10,
-        package_id: '11',
-        tourism_booking_id: '2',
-        appointment_id: '8',
-        hotel_booking_id: 18,
-        contact_id: '29',
-        inter_booking_id: null,
-        status: 'Pending'
-      },
-      {
-        booking_id: '3',
-        user_id: 12,
-        package_id: '11',
-        tourism_booking_id: '3',
-        appointment_id: '9',
-        hotel_booking_id: 19,
-        contact_id: '30',
-        inter_booking_id: null,
-        status: 'Pending'
-      },
-      {
-        booking_id: 'cd3fa2d2-c597-4d5f-a5a0-7e4bad9834cf',
-        user_id: 10,
-        package_id: '11',
-        tourism_booking_id: '6',
-        appointment_id: '10',
-        hotel_booking_id: 21,
-        contact_id: '31',
-        inter_booking_id: 2,
-        status: 'Pending'
-      }
-    ]
-  });
+  // console.log('📦 Creating package bookings...');
+  // const packageBookings = await prisma.package_bookings.createMany({
+  //   data: [
+  //     {
+  //       booking_id: '2',
+  //       user_id: 10,
+  //       package_id: '11',
+  //       tourism_booking_id: '2',
+  //       appointment_id: '8',
+  //       hotel_booking_id: 18,
+  //       contact_id: '29',
+  //       inter_booking_id: null,
+  //       status: 'Pending'
+  //     },
+  //     {
+  //       booking_id: '3',
+  //       user_id: 12,
+  //       package_id: '11',
+  //       tourism_booking_id: '3',
+  //       appointment_id: '9',
+  //       hotel_booking_id: 19,
+  //       contact_id: '30',
+  //       inter_booking_id: null,
+  //       status: 'Pending'
+  //     },
+  //     {
+  //       booking_id: 'cd3fa2d2-c597-4d5f-a5a0-7e4bad9834cf',
+  //       user_id: 10,
+  //       package_id: '11',
+  //       tourism_booking_id: '6',
+  //       appointment_id: '10',
+  //       hotel_booking_id: 21,
+  //       contact_id: '31',
+  //       inter_booking_id: 2,
+  //       status: 'Pending'
+  //     }
+  //   ]
+  // });
 
   console.log('🛏️ Creating room aggregates...');
   const roomAggregates = await prisma.room_aggregate.createMany({
@@ -993,65 +993,65 @@ async function main() {
     ]
   });
 
-  console.log('🗣️ Creating interpreter reviews...');
-  const interpreterReviews = await prisma.review_inter.createMany({
-    data: [
-      {
-        review_id: 2,
-        user_id: 1,
-        interpreter_id: 1,
-        rating: 4.2,
-        title_review: 'Great Service!',
-        comment: 'The staff was very professional and the service was excellent.',
-        created_at: new Date('2025-03-15T16:59:07.000Z')
-      },
-      {
-        review_id: 4,
-        user_id: 10,
-        interpreter_id: 1,
-        rating: 4,
-        title_review: 'Excellent',
-        comment: 'Nice service',
-        created_at: new Date('2025-03-19T16:13:15.000Z')
-      },
-      {
-        review_id: 5,
-        user_id: 3,
-        interpreter_id: 1,
-        rating: 4.5,
-        title_review: 'Great service',
-        comment: 'The staff was very professional and the service was excellent.',
-        created_at: new Date('2025-03-19T16:22:16.000Z')
-      },
-      {
-        review_id: 6,
-        user_id: 3,
-        interpreter_id: 1,
-        rating: 4.5,
-        title_review: 'Great service',
-        comment: 'The staff was very professional and the service was excellent.',
-        created_at: new Date('2025-03-19T16:22:23.000Z')
-      },
-      {
-        review_id: 7,
-        user_id: 3,
-        interpreter_id: 1,
-        rating: 4.5,
-        title_review: 'Great service',
-        comment: 'The staff was very professional and the service was excellent.',
-        created_at: new Date('2025-03-19T16:22:27.000Z')
-      },
-      {
-        review_id: 8,
-        user_id: 10,
-        interpreter_id: 1,
-        rating: 4.5,
-        title_review: 'Great service',
-        comment: 'The staff was very professional and the service was excellent.',
-        created_at: new Date('2025-03-19T16:22:30.000Z')
-      }
-    ]
-  });
+  // console.log('🗣️ Creating interpreter reviews...');
+  // const interpreterReviews = await prisma.review_inter.createMany({
+  //   data: [
+  //     {
+  //       review_id: 2,
+  //       user_id: 1,
+  //       interpreter_id: 1,
+  //       rating: 4.2,
+  //       title_review: 'Great Service!',
+  //       comment: 'The staff was very professional and the service was excellent.',
+  //       created_at: new Date('2025-03-15T16:59:07.000Z')
+  //     },
+  //     {
+  //       review_id: 4,
+  //       user_id: 10,
+  //       interpreter_id: 1,
+  //       rating: 4,
+  //       title_review: 'Excellent',
+  //       comment: 'Nice service',
+  //       created_at: new Date('2025-03-19T16:13:15.000Z')
+  //     },
+  //     {
+  //       review_id: 5,
+  //       user_id: 3,
+  //       interpreter_id: 1,
+  //       rating: 4.5,
+  //       title_review: 'Great service',
+  //       comment: 'The staff was very professional and the service was excellent.',
+  //       created_at: new Date('2025-03-19T16:22:16.000Z')
+  //     },
+  //     {
+  //       review_id: 6,
+  //       user_id: 3,
+  //       interpreter_id: 1,
+  //       rating: 4.5,
+  //       title_review: 'Great service',
+  //       comment: 'The staff was very professional and the service was excellent.',
+  //       created_at: new Date('2025-03-19T16:22:23.000Z')
+  //     },
+  //     {
+  //       review_id: 7,
+  //       user_id: 3,
+  //       interpreter_id: 1,
+  //       rating: 4.5,
+  //       title_review: 'Great service',
+  //       comment: 'The staff was very professional and the service was excellent.',
+  //       created_at: new Date('2025-03-19T16:22:27.000Z')
+  //     },
+  //     {
+  //       review_id: 8,
+  //       user_id: 10,
+  //       interpreter_id: 1,
+  //       rating: 4.5,
+  //       title_review: 'Great service',
+  //       comment: 'The staff was very professional and the service was excellent.',
+  //       created_at: new Date('2025-03-19T16:22:30.000Z')
+  //     }
+  //   ]
+  // });
 
   console.log('✅ Additional seeding completed!');
 
@@ -1059,6 +1059,15 @@ async function main() {
 
 
 
+main()
+  .then(async () => {
+    await prisma.$disconnect()
+  })
+  .catch(async (e) => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })
 
 
         
