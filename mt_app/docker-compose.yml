@@ -12,7 +12,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-      - /app/.next  # Cache Next.js build files
+      # - /app/.next  # Cache Next.js build files #Ek commented because I can run web server if exit this one
 
   db:
     image: postgres:15
