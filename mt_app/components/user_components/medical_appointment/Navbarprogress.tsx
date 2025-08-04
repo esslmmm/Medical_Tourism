@@ -1,21 +1,38 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { useSession, signOut } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
+import { LogOut, Menu, User, X } from "lucide-react";
 import LoginModal from "../Homepage/LoginModal";
 import React from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
+import { FaCalendarAlt, FaCommentDots, FaRegStar } from "react-icons/fa";
 
 
 
 const Navbarpro: React.FC = () => {
   const { id } = useParams();
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState<boolean>(false);
+  const searchParams = useSearchParams();
+  
+  // Use NextAuth session instead of manual state
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === 'authenticated';
+  const user = session?.user;
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [currency, setCurrency] = useState<string>("USD");
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const pathname = usePathname();
   const router = useRouter();
+
+  useEffect(() => {
+    if (searchParams?.get('isLoginOpen') === 'true' && !session) {
+      setIsLoginOpen(true);
+    }
+  }, [searchParams, session]);
 
   const sidebarItems = [
   { label: "Customer Info", path: `/user/Form/medical_appointment/${id}` },
@@ -102,13 +119,48 @@ const Navbarpro: React.FC = () => {
           )}
         </div>
 
-        <button onClick={() => setIsLoginOpen(true)} className="px-4 py-2 text-green-600 hover:bg-gray-200 rounded-lg transition">
-          Login
-        </button>
-
-        <Link href="/signup" className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-          Sign Up
-        </Link>
+        {/* Show loading state while checking authentication */}
+        {status === 'loading' ? (
+          <div className="flex items-center cursor-pointer p-2 rounded-md">
+            {/* Profile image/avatar skeleton */}
+            <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
+            
+            {/* User name/email skeleton */}
+            <div className="ml-2 hidden md:block">
+              <div className="h-8 bg-gray-200 rounded w-48 animate-pulse"></div>
+            </div>
+          </div>
+        ) : !isLoggedIn ? (
+          // Show when NOT logged in
+          <>
+            <button onClick={() => setIsLoginOpen(true)} className="px-4 py-2 text-green-600 hover:bg-gray-200 rounded-lg transition">
+              Login
+            </button>
+            <Link href="/signup" className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+              Sign Up
+            </Link>
+          </>
+        ) : (
+          // Show when logged in
+          <>
+            {/* Profile Dropdown */}
+            <div className="relative profile-dropdown">
+              <div 
+                className="flex items-center cursor-pointer p-2 rounded-md hover:bg-gray-200 transition"
+                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+              >
+                {user?.image ? (
+                  <img src={user.image} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
+                ) : (
+                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
+                )}
+                <span className="ml-2 text-gray-700 font-medium hidden md:block">{user?.name || user?.email}</span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />

@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
-import { useParams } from "next/navigation";
-import PackagesSkeleton from "../skeleton-screen/DoctorProfile/PackageSkeleton";
+import { useRouter } from "next/navigation";
+
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });
 
@@ -18,44 +18,26 @@ interface Package {
 }
 
 interface PackageDoc {
-  package_id: number;
+  package_id: string;
   packages: Package;
 }
 
 interface Doctor {
   doctor_id: number;
   name: string;
-  package_doc: PackageDoc[]; // ✅ Updated to match API structure
+  package_doc: PackageDoc[];
 }
 
-const DoctorPackage: React.FC = () => {
+interface DoctorProfileProps {
+  doctor: Doctor | null;
+}
+
+const DoctorPackage: React.FC<DoctorProfileProps> = ({doctor}) => {
+  if (!doctor) return null;
+  const router = useRouter();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
   const [canScrollRight, setCanScrollRight] = useState<boolean>(true);
-
-  const { id } = useParams();
-  const [doctor, setDoctor] = useState<Doctor | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchDoctor() {
-      try {
-        const response = await fetch(`/api/services/doctors/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch doctor details");
-
-        const data = await response.json();
-        console.log("Doctor Data:", data); // ✅ Debugging log
-        setDoctor(data);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (id) fetchDoctor();
-  }, [id]);
 
   useEffect(() => {
     checkScrollPosition();
@@ -84,10 +66,9 @@ const DoctorPackage: React.FC = () => {
     }
   };
 
-  if (loading || !doctor) {
-    return <PackagesSkeleton />;
-  }
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
+    const navigateToPackage = (hospitalId: string) => {
+      router.push(`/user/package_landing_page/${hospitalId}`);
+    };
 
   return (
     <div className="container mx-auto p-8 relative">
@@ -114,6 +95,7 @@ const DoctorPackage: React.FC = () => {
               className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200"
               whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
               whileTap={{ scale: 0.98 }}
+              onClick={() => navigateToPackage(pkg.package_id)}
             >
               <div className="relative w-full h-52">
                 {/* ✅ Access image from `pkg.packages.image` */}

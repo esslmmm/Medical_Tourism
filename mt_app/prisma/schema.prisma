@@ -313,11 +313,17 @@ model medical_services {
 
 model messages {
   message_id                      Int       @id @default(autoincrement())
-  message                         String?
+  message                         String
+  message_type                    MessageType @default(TEXT)
+  file_url                        String?
+  file_name                       String?
+  file_size                       Int?
+  file_type                       String?
   timestamp                       DateTime? @default(now()) @db.Timestamp(0)
   chat_id                         Int
   receiver_id                     Int?
   sender_id                       Int?
+
   chat                            chat      @relation(fields: [chat_id], references: [chat_id], onUpdate: Restrict)
   user_messages_receiver_idTouser user?     @relation("messages_receiver_idTouser", fields: [receiver_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   user_messages_sender_idTouser   user?     @relation("messages_sender_idTouser", fields: [sender_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -325,6 +331,8 @@ model messages {
   @@index([sender_id])
   @@index([receiver_id])
   @@index([chat_id])
+  
+  @@map("messages")
 }
 
 model package_bookings {
@@ -564,6 +572,7 @@ model hospital_images {
 model chat {
   timestamp                DateTime   @default(now()) @db.Timestamp(0)
   chat_id                  Int        @id @default(autoincrement())
+  topic                    String
   user1_id                 Int
   user2_id                 Int?
   user_chat_user1_idTouser user       @relation("chat_user1_idTouser", fields: [user1_id], references: [id], onUpdate: Restrict)
@@ -670,6 +679,14 @@ enum action_history_type_action {
   Add
   Remove
   Update
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+  
+  @@map("message_type")
 }
 
 enum languages_proficiency {

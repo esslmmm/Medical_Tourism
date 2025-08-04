@@ -1,26 +1,7 @@
 'use client';
-import { useParams } from "next/navigation";
 import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import CarouselSkeleton from "../skeleton-screen/package_landing_page/CarouselSkeleton";
 
-// const slides = [
-//   {
-//     image: '/img/package_detail/landing04.jpg',
-//     title: 'Medical Check-Up at MFU Hospital',
-//     expiry: 'Protect your health, protect your future',
-//   },
-//   {
-//     image: '/img/hotels/wanasom01.jpg',
-//     title: 'Wanasom Resort',
-//     expiry: 'Conveniently situated in the Tha Sut part of Chiang Rai',
-//   },
-//   {
-//     image: '/img/package_detail/landing02.jpeg',
-//     title: 'Mae Fah Luang University Medical Center Hospital',
-//     expiry: 'We care for everyone equally with world-class medical standards',
-//   },
-// ];
 
 interface Packages {
   package_id: number;
@@ -35,37 +16,15 @@ interface package_image {
   detail: string
 }
 
-export default function ImageCarousel() {
-  const { id } = useParams();
-  const [data, setData] = useState<Packages | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+interface PackageDetailProps {
+  data: Packages | null;
+}
+
+
+const ImageCarousel: React.FC<PackageDetailProps> = ({data}) => {
   const [index, setIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
-
-  //Getting the Package data
-  useEffect(() => {
-    const fetchPackage = async () => {
-      try {
-        const res = await fetch(`/api/services/packages/${id}`);
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.error || 'Unknown error');
-        }
-
-        const json = await res.json();
-        setData(json);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPackage();
-  }, [id]);
-
 
   useEffect(() => {
     const handleResize = () => {
@@ -120,11 +79,6 @@ const nextSlide = () =>
       : 0
   );
 
-
-  if (loading) {
-    return <CarouselSkeleton />
-  }
-  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <div className="relative w-full h-[500px] overflow-hidden">
@@ -188,3 +142,5 @@ const nextSlide = () =>
     </div>
   );
 }
+
+export default ImageCarousel;

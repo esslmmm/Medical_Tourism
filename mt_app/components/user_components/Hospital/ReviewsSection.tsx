@@ -1,8 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ReviewCard from "./ReviewCard";
-import { useParams } from "next/navigation";
-import ReviewHospital from "../skeleton-screen/HospitalProfile/ReviewHospital";
 
 
 interface User{
@@ -11,9 +9,11 @@ interface User{
 }
 
 interface Review {
+  review_id: number;
   user_id: number;
-  title_review: string;
+  reviewer_name: string;
   rating: number;
+  title_review: string;
   comment: string;
   user: User;
 }
@@ -24,38 +24,12 @@ interface Hospital {
   review_hospital: Review[];
 }
 
-const ReviewsSection: React.FC = () => {
+interface HospitalDetailProps {
+  hospital : Hospital | null;
+}
+
+const ReviewsSection: React.FC<HospitalDetailProps> = ({ hospital }) => {
   const [showAll, setShowAll] = useState<boolean>(false);
-  const { id } = useParams();
-  const [hospital, setHospital] = useState<Hospital | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchHospital() {
-      try {
-        const response = await fetch(`/api/services/hospitals/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch hospital details");
-
-        const data = await response.json();
-        console.log("Hospital Data:", data);
-        setHospital(data);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (id) fetchHospital();
-  }, [id]);
-
-  if (loading)
-      {
-        return <ReviewHospital />
-      }
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (hospital?.review_hospital?.length === 0) return <p className="text-center text-gray-500">No reviews available.</p>;
 
   const displayedReviews = showAll ? hospital?.review_hospital ?? [] : hospital?.review_hospital?.slice(0, 3) ?? [];
 

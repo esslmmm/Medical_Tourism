@@ -1,10 +1,6 @@
-"use client";
-
 import Image from "next/image";
 import { Poppins } from "next/font/google";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import CertificateSkeleton from "../skeleton-screen/DoctorProfile/CertificateSkeleton";
+
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "600", "700"] });
 
@@ -21,34 +17,12 @@ interface Doctor {
   doc_certificate: Certificate[];
 }
 
-const CertificateSection = () => {
-  const { id } = useParams();
-  const [doctor, setDoctor] = useState<Doctor | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface DoctorProfileProps {
+  doctor: Doctor | null;
+}
 
-  useEffect(() => {
-    async function fetchDoctor() {
-      try {
-        const response = await fetch(`/api/services/doctors/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch doctor details");
-
-        const data = await response.json();
-        setDoctor(data);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (id) fetchDoctor();
-  }, [id]);
-
-  if (loading || !doctor) {
-    return <CertificateSkeleton />;
-  }
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
+const CertificateSection: React.FC<DoctorProfileProps> = ({doctor}) => {
+  if (!doctor) return null;
 
   return (
     <div className="relative max-w-270 mx-auto my-10">

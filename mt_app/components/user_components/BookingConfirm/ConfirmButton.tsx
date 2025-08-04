@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { AppointmentFormData } from '../../../app/user/Form/form';
-import { useRouter, usePathname, useParams } from 'next/navigation'
-import { createAppointment } from '../../../app/api/booking/appointments/createAppointment';
-import { createContactDetails } from '../../../app/api/booking/user_contact_details/createContact';
-import { updatePackageBooking } from '../../../app/api/booking/packages/updatePackageBooking';
-import { createAppointmentFile } from '../../../app/api/files/createAppointmentFile';
+import { AppointmentFormData } from '@/app/user/Form/form';
+import { useRouter, useParams } from 'next/navigation'
+import { createAppointment } from '@/app/api/booking/appointments/createAppointment';
+import { createContactDetails } from '@/app/api/booking/user_contact_details/createContact';
+import { updatePackageBooking } from '@/app/api/booking/packages/updatePackageBooking';
+import { createAppointmentFile } from '@/app/api/files/createAppointmentFile';
+import { useUserId } from '@/hooks/useUserId';
 
 const ConfirmButton = () => {
 	const { id } = useParams();
 	const [form, setForm] = useState<AppointmentFormData | null>(null);
 	const [fileData, setFileData] = useState<any | null>(null);
 	const [uploading, setUploading] = useState(false);
+	const { userId } = useUserId();
 	const router = useRouter();
 
     useEffect(() => {
@@ -39,7 +41,7 @@ const ConfirmButton = () => {
       };
 
 
-      const uploadToCloudinary = async (file: File, userId: string): Promise<any> => {
+      const uploadToCloudinary = async (file: File): Promise<any> => {
 		const isPDF = file.type === 'application/pdf';
 		const endpoint = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`;
 
@@ -47,8 +49,6 @@ const ConfirmButton = () => {
 		formData.append('file', file);
 		formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!);
 		formData.append('folder', 'Medical_report/documents');
-		formData.append('tags', `Medical_report,user-${userId}`);
-		formData.append('context', `user_id=${userId}`);
 
 		const response = await fetch(endpoint, {
 			method: 'POST',
@@ -78,7 +78,7 @@ const ConfirmButton = () => {
 			
 			// Upload file to Cloudinary
 			console.log('Uploading to Cloudinary...');
-			const cloudinaryResult = await uploadToCloudinary(file, '10');
+			const cloudinaryResult = await uploadToCloudinary(file);
 			console.log('Cloudinary upload successful:', cloudinaryResult.secure_url);
 			
 			const appointmentData = {
@@ -111,7 +111,7 @@ const ConfirmButton = () => {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				userId: '10',
+				userId: userId,
 				fileName: cloudinaryResult.original_filename || cloudinaryResult.public_id,
 				originalName: cloudinaryResult.original_filename || fileData.name,
 				fileType: cloudinaryResult.format,

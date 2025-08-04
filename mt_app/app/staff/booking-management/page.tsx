@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import DashboardCards from "../../../components/staff_component/booking-management/DashboardCards";
-import BookingTabs from "../../../components/staff_component/booking-management/BookingTabs";
+import DashboardCards from "@/components/staff_component/booking-management/DashboardCards";
+import BookingTabs from "@/components/staff_component/booking-management/BookingTabs";
 
 
 const Dashboard: React.FC = () => {

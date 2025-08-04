@@ -1,10 +1,9 @@
 "use client";
 import { useRouter, useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { updatePackageBooking } from "../../../app/api/booking/packages/updatePackageBooking";
-import { createtrip } from "../../../app/api/booking/trips/createtrip";
+import { useState } from "react";
+import { updatePackageBooking } from "@/app/api/booking/packages/updatePackageBooking";
+import { createtrip } from "@/app/api/booking/trips/createtrip";
 import LoginModal from "../Homepage/LoginModal";
-import OfferServiceSkeleton from "../skeleton-screen/package_landing_page/OfferServiceSkeleton";
 import { useUserId } from "../../../hooks/useUserId";
 
 interface Packages {
@@ -29,39 +28,15 @@ type ServiceType = "accommodation_booking" | "Interpreter";
 
 interface ServicesProps {
   selectedServices: Record<ServiceType, boolean>;
+  data: Packages | null;
 }
 
-const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
+const OfferService: React.FC<ServicesProps> = ({selectedServices, data}) => {
   const { id } = useParams();
   const { userId, isLoading, isAuthenticated } = useUserId();
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
-  const [data, setData] = useState<Packages | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const [startloading, setstartLoading] = useState(false); // Optional loading state
   const router = useRouter();
-
-  //Getting the Package data
-    useEffect(() => {
-      const fetchPackage = async () => {
-        try {
-          const res = await fetch(`/api/services/packages/${id}`);
-          if (!res.ok) {
-            const errorData = await res.json();
-            throw new Error(errorData.error || 'Unknown error');
-          }
-          const json = await res.json();
-          setData(json);
-        } catch (err: any) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchPackage();
-    }, [id]);
-
 
     const handleStart = async () => {
       if (startloading) return; // Prevent double submission
@@ -176,17 +151,12 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices}) => {
       }
     };
 
-  if (loading || isLoading) { 
-    return <OfferServiceSkeleton />
-  }
-  if (error) return <p className="text-red-500">Error: {error}</p>;
-
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
       {/* Book Button Styled as a Div */}
         <div
           onClick={handleStart}
-          className={`cursor-pointer w-2/3 sm:w-1/2 md:w-2/3 bg-green-400 text-white text-lg px-8 py-4 font-semibold rounded-2xl hover:bg-green-700 transition duration-300 flex justify-center items-center mx-auto ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+          className={`cursor-pointer w-2/3 sm:w-1/2 md:w-2/3 bg-green-400 text-white text-lg px-8 py-4 font-semibold rounded-2xl hover:bg-green-700 transition duration-300 flex justify-center items-center mx-auto ${startloading ? 'opacity-70 cursor-not-allowed' : ''}`}
         >
           {startloading ? (
             <svg

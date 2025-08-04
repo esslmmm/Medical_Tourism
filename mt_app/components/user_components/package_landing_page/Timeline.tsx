@@ -1,31 +1,7 @@
 "use client";
-import { useParams } from "next/navigation";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import TimelineSkeleton from "../skeleton-screen/package_landing_page/TimelineSkeleton";
+import { useState } from "react";
 
-// const events = [
-//   {
-//     title: "Medical Check-Up at MFU",
-//     time: "11:00 - 12:00 | Day 1",
-//     image: "/img/package_detail/landing02.jpeg",
-//   },
-//   {
-//     title: "Khon Kron Waterfall",
-//     time: "13:00 - 15:00 | Day 1",
-//     image: "/img/Places/khunkorn.png",
-//   },
-//   {
-//     title: "Wat Rong Khun",
-//     time: "15:00 - 17:00 | Day 1",
-//     image: "/img/Places/Wat_Rong_Khun.jpg",
-//   },
-//   {
-//     title: "Singha Park",
-//     time: "15:00 - 17:00 | Day 2",
-//     image: "/img/Places/singha-park.jpg",
-//   },
-// ];
 
 interface Packages {
   package_id: number;
@@ -55,43 +31,16 @@ interface places {
   description: string;
 }
 
-export default function Timeline() {
-  const { id } = useParams();
-  const [data, setData] = useState<Packages | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isTimelineVisible, setIsTimelineVisible] = useState(true);
+interface PackageDetailProps {
+  data: Packages | null;
+}
 
-   //Getting the Package data
-      useEffect(() => {
-        const fetchPackage = async () => {
-          try {
-            const res = await fetch(`/api/services/packages/${id}`);
-            if (!res.ok) {
-              const errorData = await res.json();
-              throw new Error(errorData.error || 'Unknown error');
-            }
-    
-            const json = await res.json();
-            setData(json);
-          } catch (err: any) {
-            setError(err.message);
-          } finally {
-            setLoading(false);
-          }
-        };
-    
-        fetchPackage();
-      }, [id]);
+const Timeline: React.FC<PackageDetailProps> = ({ data }) => {
+  const [isTimelineVisible, setIsTimelineVisible] = useState(true);
 
   const toggleTimelineVisibility = () => {
     setIsTimelineVisible((prev) => !prev);
   };
-
-  if (loading){
-    return <TimelineSkeleton />
-  }
-  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <div className="flex flex-col items-center p-8">
@@ -147,3 +96,5 @@ export default function Timeline() {
     </div>
   );
 }
+
+export default Timeline;

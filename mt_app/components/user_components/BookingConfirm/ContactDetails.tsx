@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { AppointmentFormData } from '../../../app/user/Form/form';
+import { AppointmentFormData } from '@/app/user/Form/form';
 import { useParams, useRouter } from 'next/navigation';
 
 

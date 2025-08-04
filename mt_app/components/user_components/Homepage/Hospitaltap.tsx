@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Lato } from "next/font/google";
-import "../../../app/globals.css";
+import "@/app/globals.css";
 
 const lato = Lato({ subsets: ["latin"], weight: ["400", "900"] });
 

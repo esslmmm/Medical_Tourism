@@ -2,7 +2,6 @@ import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
-import { signIn } from 'next-auth/react' // Use client-side signIn
 import { useRouter } from "next/navigation";
 import { handleGoogleSignIn } from "../../Reuseable-Function/GoogleSignin";
 

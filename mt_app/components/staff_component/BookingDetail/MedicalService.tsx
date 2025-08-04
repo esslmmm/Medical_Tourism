@@ -62,7 +62,7 @@ const MedicalServiceCard: React.FC<MedicalServiceCardProps> = ({ selectedDay }) 
   useEffect(() => {
     const fetchPackageBooking = async () => {
       try {
-        const response = await fetch(`/api/booking/packages/${id}`);
+        const response = await fetch(`/api/admin/booking/packages/${id}`);
         if (!response.ok) throw new Error("Failed to fetch data");
         const result = await response.json();
         setData(result);

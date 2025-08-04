@@ -1,21 +1,18 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
-import { useParams } from "next/navigation";
-import { User } from "lucide-react";
-import DoctorCardSkeleton from "../skeleton-screen/HomePage/DoctorCardSkeleton";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["500", "700"] });
 
 interface Doctor {
-  id: number;
+  doctor_id: string;
   name: string;
   specialization: string;
   image: string;
-
 }
 
 interface Hospital {
@@ -29,35 +26,17 @@ interface Hospital {
   doctors: Doctor[];
 }
 
-const DoctorHos: React.FC = () => {
+interface HospitalDetailProps {
+  hospital : Hospital | null;
+}
+
+const DoctorHos: React.FC<HospitalDetailProps> = ({ hospital }) => {
+  if (!hospital) return null;
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
   const [canScrollRight, setCanScrollRight] = useState<boolean>(true);
-  const { id } = useParams();
-  const [hospital, setHospital] = useState<Hospital | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // ✅ Always call hooks before any return statements
-  useEffect(() => {
-    async function fetchHospital() {
-      try {
-        const response = await fetch(`/api/services/hospitals/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch hospital details");
-
-        const data = await response.json();
-        console.log("Hospital Data:", data); // ✅ Debugging log
-        setHospital(data);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (id) fetchHospital();
-  }, [id]);
-
+  const router = useRouter();
+  
   useEffect(() => {
     checkScrollPosition();
   }, []);
@@ -85,11 +64,9 @@ const DoctorHos: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return <DoctorCardSkeleton />
-  }
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!hospital) return <p className="text-center text-gray-500">Hospital not found</p>;
+  const navigateTodoctor = (DoctorId: string) => {
+    router.push(`/user/Doctorprofile/${DoctorId}`);
+  };
 
   return (
     <div className="container mx-auto p-8 relative">
@@ -107,12 +84,13 @@ const DoctorHos: React.FC = () => {
         className="overflow-hidden flex scrollbar-hide px-6 space-x-6 scroll-smooth py-5"
         onScroll={checkScrollPosition}
       >
-        {hospital?.doctors?.map((doctor, index) => (
+        {hospital?.doctors?.map((doctor) => (
         <motion.div
-          key={doctor.id || `doctor-${index}`} // Ensure a unique key even if `id` is missing or duplicated
+          key={doctor.doctor_id } // Ensure a unique key even if `id` is missing or duplicated
           className="flex-shrink-0 w-[350px] border border-gray-200 bg-white shadow-lg rounded-lg p-8 text-center"
           whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
           whileTap={{ scale: 0.98 }}
+          onClick={() => navigateTodoctor(doctor.doctor_id )}
         >
           <div className="relative w-32 h-32 mx-auto">
             <Image

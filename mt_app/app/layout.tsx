@@ -22,15 +22,12 @@ export const metadata: Metadata = {
 
 //SessionProvider
 import SessionProvider from './components/SessionProvider'
-import { auth } from "./api/auth/auth" // Import your auth configuration
-import SessionWarning from "./components/SessionWarning";
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth() // Use auth() instead of getServerSession()
   
   return (
     <html lang="en">

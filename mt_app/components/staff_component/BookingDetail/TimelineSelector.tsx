@@ -47,7 +47,7 @@ const TimelineSelector: React.FC<TimelineSelectorProps> = ({ selectedDay, setSel
   useEffect(() => {
     const fetchPackageBooking = async () => {
       try {
-        const bookingResponse = await fetch(`/api/booking/packages/${id}`);
+        const bookingResponse = await fetch(`/api/admin/booking/packages/${id}`);
         if (!bookingResponse.ok) throw new Error("Failed to fetch booking data");
         const bookingResult: PackageBooking = await bookingResponse.json();
         setBookingData(bookingResult);

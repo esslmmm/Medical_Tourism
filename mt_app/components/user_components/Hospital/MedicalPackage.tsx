@@ -2,23 +2,22 @@
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
-import { useParams } from "next/navigation";
-import PackagesSkeleton from "../skeleton-screen/DoctorProfile/PackageSkeleton";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });
 
 interface Package {
-  package_id: number;
-  image: string;
+  package_id: string;
   package_name: string;
+  image: string;
   detail: string;
   expired_date: string;
 }
 
 interface Hospital {
-  hospital_id: number;
+hospital_id: number;
   name: string;
   rating: number;
   location: string;
@@ -28,33 +27,16 @@ interface Hospital {
   packages: Package[];
 }
 
-const MedicalPackage: React.FC = () => {
+interface HospitalDetailProps {
+  hospital : Hospital | null;
+}
+
+const MedicalPackage: React.FC<HospitalDetailProps> = ({ hospital }) => {
+  if (!hospital) return null;
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
   const [canScrollRight, setCanScrollRight] = useState<boolean>(true);
-  const { id } = useParams();
-  const [hospital, setHospital] = useState<Hospital | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchHospital() {
-      try {
-        const response = await fetch(`/api/services/hospitals/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch hospital details");
-
-        const data = await response.json();
-        console.log("Hospital Data:", data);
-        setHospital(data);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (id) fetchHospital();
-  }, [id]);
+  const router = useRouter();
 
   useEffect(() => {
     checkScrollPosition();
@@ -83,18 +65,16 @@ const MedicalPackage: React.FC = () => {
     }
   };
 
+  const navigateToPackage = (hospitalId: string) => {
+    router.push(`/user/package_landing_page/${hospitalId}`);
+  };
+
   const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
     return !isNaN(date.getTime()) 
         ? new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }).format(date) 
         : "Invalid Date";
   };
-
-  if (loading) {
-    return <PackagesSkeleton />
-  }
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!hospital) return <p className="text-center text-gray-500">Hospital not found</p>;
 
   return (
     <div className="container mx-auto p-12 relative">
@@ -120,6 +100,7 @@ const MedicalPackage: React.FC = () => {
             className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200"
             whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
             whileTap={{ scale: 0.98 }}
+            onClick={() => navigateToPackage(pkg.package_id)}
           >
             <div className="relative w-full h-52">
               <Image

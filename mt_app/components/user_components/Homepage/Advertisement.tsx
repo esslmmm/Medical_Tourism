@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import "../../../app/globals.css";
+import "@/app/globals.css";
 
 const images = [
   "/img/Homepage/Test.jpg",

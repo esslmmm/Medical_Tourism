@@ -1,8 +1,7 @@
 "use client";
-import { useParams,  useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import PlaceToVisitSkeleton from "../skeleton-screen/package_landing_page/PlaceToVisitSkeleton";
+
 
 interface Packages {
   package_id: number;
@@ -32,40 +31,13 @@ interface places {
   description: string;
 }
 
-export default function Trips() {
-  const { id } = useParams();
-  const [data, setData] = useState<Packages | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+interface PackageDetailProps {
+  data: Packages | null;
+}
+
+const Trips: React.FC<PackageDetailProps> = ({ data }) => {
   const router = useRouter();
 
-
-  //Getting the Package data
-    useEffect(() => {
-      const fetchPackage = async () => {
-        try {
-          const res = await fetch(`/api/services/packages/${id}`);
-          if (!res.ok) {
-            const errorData = await res.json();
-            throw new Error(errorData.error || 'Unknown error');
-          }
-  
-          const json = await res.json();
-          setData(json);
-        } catch (err: any) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchPackage();
-    }, [id]);
-
-  if (loading) {
-    return <PlaceToVisitSkeleton />;
-  }
-  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <section className="bg-[#D8EAE4] py-12 px-20 text-center">
@@ -109,4 +81,6 @@ export default function Trips() {
     </section>
   );
 }
+
+export default Trips;
 

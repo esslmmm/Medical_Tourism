@@ -1,9 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaMapMarkerAlt, FaStar, FaTimes, FaChevronLeft, FaChevronRight, FaStarHalfAlt } from "react-icons/fa";
 import { Inter } from "next/font/google";
-import { useParams } from "next/navigation";
-import HospitalSkeleton from "../skeleton-screen/HospitalProfile/HospitalSkeleton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,7 +33,7 @@ interface Review {
 }
 
 interface Hospital {
-  hospital_id: string;
+  hospital_id: number;
   name: string;
   rating: number;
   location: string;
@@ -48,37 +46,14 @@ interface Hospital {
   review_hospital: Review[];
 }
 
-const HospitalProfile: React.FC = () => {
+interface HospitalDetailProps {
+  hospital : Hospital | null;
+}
+
+const HospitalProfile: React.FC<HospitalDetailProps> = ({hospital}) => {
+  if (!hospital) return null;
+  
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const { id } = useParams();
-  const [hospital, setHospital] = useState<Hospital | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchHospital() {
-      try {
-        const response = await fetch(`/api/services/hospitals/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch hospital details");
-
-        const data = await response.json();
-        console.log("Hospital Data:", data);
-        setHospital(data);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (id) fetchHospital();
-  }, [id]);
-
-  if (loading) {
-    return <HospitalSkeleton />
-  }
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!hospital) return <p className="text-center text-gray-500">Hospital not found</p>;
 
   const handleCloseModal = (e: React.MouseEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).id === "modal-overlay") {

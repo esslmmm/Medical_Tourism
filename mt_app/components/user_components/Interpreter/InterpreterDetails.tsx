@@ -3,7 +3,7 @@ import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
 import Image from 'next/image';
 import { Poppins } from "next/font/google";
 import { Inter } from "next/font/google";
-import "../../../app/globals.css"
+import "@/app/globals.css"
 
 const inter = Inter({ subsets: ["latin"], weight: ["100","200","300","400","500","600", "700","800","900"] });
 const poppins = Poppins({ subsets: ["latin"], weight: ["100","200","300","400","500","600", "700","800","900"] });

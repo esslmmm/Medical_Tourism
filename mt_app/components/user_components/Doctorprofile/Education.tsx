@@ -1,10 +1,6 @@
-"use client";
-
 import Image from "next/image";
 import { Poppins } from "next/font/google";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import EducationSkeleton from "../skeleton-screen/DoctorProfile/EducationSkeleton";
+
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "600", "700"] });
 
@@ -18,43 +14,19 @@ interface Education {
 interface Doctor {
   doctor_id: number;
   name: string;
-  specialty: string;
-  email: string;
-  phone: string;
+  specialization: string;
+  hospital_id: number;
+  description: string;
   image: string;
   doc_education: Education[];
 }
 
-const EducationSection = () => {
-  const { id } = useParams();
-  const [doctor, setDoctor] = useState<Doctor | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface DoctorProfileProps {
+  doctor: Doctor | null;
+}
 
-  useEffect(() => {
-    async function fetchDoctor() {
-      try {
-        const response = await fetch(`/api/services/doctors/${id}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch doctor details");
-        }
-        const data = await response.json();
-        setDoctor(data);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (id) fetchDoctor();
-  }, [id]);
-
-  if (loading) {
-    return <EducationSkeleton />;
-  }
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!doctor) return <p className="text-center text-gray-500">Doctor not found</p>;
+const EducationSection: React.FC<DoctorProfileProps> = ({doctor}) => {
+  if (!doctor) return null;
 
   return (
     <div className="relative max-w-270 mx-auto my-10">

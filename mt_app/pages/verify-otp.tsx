@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import OTPVerification from './OTPVerification';
 
 
-export default function VerifyOTPPage() {
+const VerifyOTPPage = () => {
   const router = useRouter();
   const [email, setEmail] = useState<string>('');
 
@@ -22,3 +22,5 @@ export default function VerifyOTPPage() {
 
   return <OTPVerification email={email} />;
 }
+
+export default VerifyOTPPage;

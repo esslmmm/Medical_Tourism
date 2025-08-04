@@ -44,7 +44,7 @@ const Interpreter: React.FC<InterpreterProps> = ({ selectedDay }) => {
   useEffect(() => {
     const fetchPackageBooking = async () => {
       try {
-        const response = await fetch(`/api/booking/packages/${id}`);
+        const response = await fetch(`/api/admin/booking/packages/${id}`);
         if (!response.ok) throw new Error("Failed to fetch package booking data");
         const packageData = await response.json();
         setPackageBooking(packageData);

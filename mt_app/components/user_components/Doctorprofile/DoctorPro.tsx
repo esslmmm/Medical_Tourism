@@ -1,10 +1,5 @@
-"use client";
-
 import Image from "next/image";
 import { Poppins } from "next/font/google";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import DoctorCardSkeleton from "../skeleton-screen/DoctorProfile/DoctorCardSkeleton";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500", "700"] });
 
@@ -28,46 +23,13 @@ interface Doctor {
   hospital: Hospital[];
 }
 
-const DoctorProfile = () => {
-  const { id } = useParams();
-  const [doctor, setDoctor] = useState<Doctor | null>(null);
-  const [hospital, setHospital] = useState<Hospital | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface DoctorProfileProps {
+  doctor: Doctor | null;
+  hospital: Hospital | null;
+}
 
-  useEffect(() => {
-    async function fetchDoctor() {
-      try {
-        const response = await fetch(`/api/services/doctors/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch doctor details");
-
-        const doctorData = await response.json();
-        setDoctor(doctorData);
-
-        // Fetch hospital details using doctor.hospital_id
-        if (doctorData.hospital_id) {
-          const hospitalResponse = await fetch(`/api/services/hospitals/${doctorData.hospital_id}`);
-          if (!hospitalResponse.ok) throw new Error("Failed to fetch hospital details");
-
-          const hospitalData = await hospitalResponse.json();
-          setHospital(hospitalData);
-        }
-      } catch (error) {
-        setError("Error fetching details.");
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (id) fetchDoctor();
-  }, [id]);
-
-  if (loading || !doctor) {
-    return <DoctorCardSkeleton />;
-  }
-  if (error) return <p className="text-center text-red-500">{error}</p>;
-
+const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctor, hospital }) => {
+  if (!doctor) return null;
   
   return (
     <div>

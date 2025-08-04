@@ -10,9 +10,6 @@ const nextConfig: NextConfig = {
     ],
   },
   
-  // Enable SWC minification for faster builds
-  swcMinify: true,
-  
   // Experimental optimizations
   experimental: {
     // Optimize package imports to reduce bundle size
@@ -76,16 +73,7 @@ const nextConfig: NextConfig = {
         },
       };
     }
-    
-    // Improve module resolution
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': require('path').resolve(__dirname, './src'),
-      '@/components': require('path').resolve(__dirname, './src/components'),
-      '@/lib': require('path').resolve(__dirname, './src/lib'),
-      '@/utils': require('path').resolve(__dirname, './src/utils'),
-    };
-    
+
     return config;
   },
   

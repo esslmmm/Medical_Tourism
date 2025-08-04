@@ -1,10 +1,10 @@
 "use client";
 import { differenceInCalendarDays, startOfDay, format } from 'date-fns';
-import { useStepNavigator } from "../../../app/user/package_landing_page/goToNextStep";
-import { submitHotelBooking } from "../../../app/api/booking/hotels/submitHotelBooking";
+import { useStepNavigator } from "@/app/user/package_landing_page/goToNextStep";
+import { submitHotelBooking } from "@/app/api/booking/hotels/submitHotelBooking";
 import { Range } from 'react-date-range';
 import { useState } from "react";
-import { updatePackageBooking } from '../../../app/api/booking/packages/updatePackageBooking';
+import { updatePackageBooking } from '@/app/api/booking/packages/updatePackageBooking';
 
 interface Accommodation {
   hotel_id: number;

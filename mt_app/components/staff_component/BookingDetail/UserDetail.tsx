@@ -50,13 +50,13 @@ const UserDetail: React.FC = () => {
   useEffect(() => {
     const fetchPackageBooking = async () => {
       try {
-        const response = await fetch(`/api/booking/packages/${id}`);
+        const response = await fetch(`/api/admin/booking/packages/${id}`);
         if (!response.ok) throw new Error("Failed to fetch data");
         const result = await response.json();
         setData(result);
 
         if (result.user_id) {
-          const userResponse = await fetch(`/api/profile/${result.user_id}`);
+          const userResponse = await fetch(`/api/admin/profile/${result.user_id}`);
           if (!userResponse.ok) throw new Error("Failed to fetch user data");
           const userData: User = await userResponse.json();
           setUser(userData);

@@ -66,7 +66,7 @@ const AccommodationCard: React.FC<AccommodationCardProps> = ({ selectedDay }) =>
     const fetchPackageBooking = async () => {
       try {
         // Step 1: Fetch package booking details
-        const response = await fetch(`/api/booking/packages/${id}`);
+        const response = await fetch(`/api/admin/booking/packages/${id}`);
         if (!response.ok) throw new Error("Failed to fetch package booking data");
         const packageData = await response.json();
         setPackageBooking(packageData);

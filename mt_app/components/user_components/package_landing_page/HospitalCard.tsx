@@ -1,15 +1,7 @@
 "use client";
 import Image from "next/image";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import HospitalDetailsSkeleton from "../skeleton-screen/package_landing_page/HospitalDetailsSkeleton";
-
-interface Packages {
-  package_id: number;
-  package_name: string;
-  hospital_id: number;
-}
+import { useRouter } from "next/navigation";
 
 interface Hospital {
   hospital_id: number;
@@ -21,57 +13,19 @@ interface Hospital {
   description: string;
 }
 
-// const hospital = {
-//   name: "Mae Fah Luang Medical Center Hospital",
-//   address: "365 Nang Lae, Mueang Chiang Rai District, Chiang Rai 57100",
-//   image: "/img/package_detail/landing02.jpeg",
-// };
 
-const HospitalCard = () => {
-const { id } = useParams();
-const [data, setData] = useState<Packages | null>(null);
-const [hospital, setHospital] = useState<Hospital | null>(null);
-const [error, setError] = useState<string | null>(null);
-const [loading, setLoading] = useState(true);
+interface PackageDetailProps {
+  hospital: Hospital | null;
+}
+
+const HospitalCard: React.FC<PackageDetailProps> = ({ hospital }) => {
 const router = useRouter();
 
-// Fetch Package and then Hospital
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      // Fetch package
-      const packageRes = await fetch(`/api/services/packages/${id}`);
-      if (!packageRes.ok) {
-        const errorData = await packageRes.json();
-        throw new Error(errorData.error || "Failed to fetch package data");
-      }
-      const packageData = await packageRes.json();
-      setData(packageData);
 
-      // Fetch hospital using hospital_id from package
-      const hospitalRes = await fetch(`/api/services/hospitals/${packageData.hospital_id}`);
-      if (!hospitalRes.ok) throw new Error("Failed to fetch hospital details");
-
-      const hospitalData = await hospitalRes.json();
-      setHospital(hospitalData);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (id) fetchData();
-}, [id]);
 
   const navigateToHospitalPage = () => {
     router.push(`/user/Hospital/${hospital?.hospital_id}`);
   };
-
-  if (loading) {
-    return <HospitalDetailsSkeleton />;
-  }
-  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <div className="px-4 pb-4">
