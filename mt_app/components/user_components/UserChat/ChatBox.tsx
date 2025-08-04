@@ -57,6 +57,7 @@ const ChatApp: React.FC = () => {
   const { userId, isLoading, isAuthenticated } = useUserId();
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
+  const [newChatId, setNewChatId] = useState(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -138,7 +139,7 @@ const ChatApp: React.FC = () => {
       if (!userId) return;
       
       try {
-        const res = await fetch(`/api/chats/${userId}`);
+        const res = await fetch(`/api/chats`);
         if (!res.ok) throw new Error("Failed to fetch chats");
         const data = await res.json();
         setChats(data.chats || []);
@@ -197,6 +198,8 @@ const ChatApp: React.FC = () => {
       });
 
       const data = await res.json();
+      // const NewChat = data.chat_id;
+      // setNewChatId(NewChat);
       if (!res.ok) throw new Error(data.error || "Failed to send message");
 
       const confirmedMessage: Message = {
@@ -419,6 +422,8 @@ const ChatApp: React.FC = () => {
 
   // Handler functions for the modal
   const handleStartNewChat = () => {
+    // setSelectedChat(newChatId);
+
     setShowTopicInput(true);
     setMessage('');
   };
@@ -542,7 +547,9 @@ const ChatApp: React.FC = () => {
                               {String(lastMessage.sender_id) === String(userId) && (
                                 <CheckIcon className="inline w-3 h-3 mr-1 text-blue-500" />
                               )}
-                              {lastMessage.message}
+                              {lastMessage.message_type === 'IMAGE' ? '📷 Image' : 
+                                lastMessage.message_type === 'FILE' ? '📎 File' : 
+                                lastMessage.message}
                             </>
                           ) : (
                             "No messages yet"

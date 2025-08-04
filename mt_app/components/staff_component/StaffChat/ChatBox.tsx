@@ -5,7 +5,6 @@ import {
   PaperClipIcon, 
   PaperAirplaneIcon, 
   MagnifyingGlassIcon,
-  EllipsisVerticalIcon,
   PhoneIcon,
   VideoCameraIcon,
   FaceSmileIcon,
@@ -13,29 +12,43 @@ import {
 import { 
   CheckIcon, 
   CheckCircleIcon,
-  UserCircleIcon 
+  UserCircleIcon, 
+  XMarkIcon,
+  ClockIcon,
+  ChatBubbleLeftRightIcon,
+  ExclamationCircleIcon
 } from "@heroicons/react/24/solid";
 import io, { Socket } from "socket.io-client";
-import { useUserId } from "@/hooks/useUserId";
+import { useUserId } from "../../../hooks/useUserId";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { formatFileSize } from "@/utils/fileUtils";
 
 interface Chat {
-  chat_id: number;
+  chat_id: number | undefined;
+  topic: string;
   user1_id: number;
   user2_id: number;
   timestamp: string;
   messages: Message[];
+  user_chat_user2_idTouser: user;
+  user_chat_user1_idTouser: user;
+}
+
+interface user {
+  name: string;
+  email: string;
+  image: string;
 }
 
 interface Message {
   message_id: number;
-  chat_id: number;
+  chat_id: number | undefined;
+  topic: string;
   sender_id: string | number;
-  receiver_id: number;
+  receiver_id: number | undefined;
   message: string;
   timestamp: string;
-  message_type?: 'TEXT' | 'IMAGE' | 'FILE' | 'VIDEO' | 'AUDIO';
+  message_type?: 'TEXT' | 'IMAGE' | 'FILE' ;
   file_url?: string;
   file_name?: string;
   file_size?: number;
@@ -64,6 +77,27 @@ const ChatApp: React.FC = () => {
   const socket = useRef<Socket | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { uploadFile, isUploading, uploadProgress, error } = useFileUpload();
+  const [activeTab, setActiveTab] = useState('active');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    typeofproblem: '',
+  });
+
+  // FIXED: Added the fetchWaitingChats function
+  const fetchWaitingChats = useCallback(async () => {
+    if (!userId) return;
+
+    try {
+      const res = await fetch(`/api/admin/chats`);
+      if (!res.ok) throw new Error("Failed to fetch waiting chats");
+      const data = await res.json();
+      console.log('Fetched chats:', data.chats); // Debug log
+      setChats(data.chats || []);
+    } catch (error) {
+      console.error("Error fetching waiting chats:", error);
+    }
+  }, [userId]);
 
   // Socket setup
   useEffect(() => {
@@ -90,6 +124,9 @@ const ChatApp: React.FC = () => {
 
   // Handle incoming messages
   const handleReceiveMessage = useCallback((newMessage: Message) => {
+    console.log('Received message:', newMessage);
+    
+    // Update messages if this is the selected chat
     if (selectedChat && newMessage.chat_id === selectedChat.chat_id) {
       setMessages((prev) => {
         const exists = prev.some(msg => msg.message_id === newMessage.message_id);
@@ -98,6 +135,7 @@ const ChatApp: React.FC = () => {
       });
     }
 
+    // Update chat list with new message
     setChats((prevChats) => 
       prevChats.map(chat => {
         if (chat.chat_id === newMessage.chat_id) {
@@ -111,37 +149,26 @@ const ChatApp: React.FC = () => {
     );
   }, [selectedChat]);
 
+
   useEffect(() => {
     if (!socket.current) return;
+    
     socket.current.on("receiveMessage", handleReceiveMessage);
+    
     return () => {
       socket.current?.off("receiveMessage", handleReceiveMessage);
     };
   }, [handleReceiveMessage]);
 
+  // Auto scroll to bottom when new messages arrive
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Load chats
   useEffect(() => {
-    async function fetchChats() {
-      if (!userId) return;
-      
-      try {
-        const res = await fetch(`/api/chats/${userId}`);
-        if (!res.ok) throw new Error("Failed to fetch chats");
-        const data = await res.json();
-        setChats(data.chats || []);
-      } catch (error) {
-        console.error("Error fetching chats:", error);
-      }
-    }
+    fetchWaitingChats();
+  }, [fetchWaitingChats]);
 
-    fetchChats();
-  }, [userId]);
-
-  // Select chat
   const selectChat = (chat: Chat) => {
     setSelectedChat(chat);
     const sortedMessages = [...chat.messages].sort((a, b) =>
@@ -150,20 +177,22 @@ const ChatApp: React.FC = () => {
     setMessages(sortedMessages);
   };
 
-  // Send message
+  // Send message function
   const sendMessage = async () => {
-    if (!message.trim() || !selectedChat || !userId || isSending) return;
+    if (!message.trim() || !userId || isSending) return;
 
-    const receiverId = selectedChat.user1_id === Number(userId) 
-      ? selectedChat.user2_id 
-      : selectedChat.user1_id;
+    const receiverId = selectedChat?.user1_id === Number(userId) 
+      ? selectedChat?.user2_id 
+      : selectedChat?.user1_id;
 
     const tempMessage: Message = {
       message_id: Date.now(),
-      chat_id: selectedChat.chat_id,
-      sender_id: userId,
+      topic: formData.typeofproblem || selectedChat?.topic || 'general',
+      chat_id: selectedChat?.chat_id,
+      sender_id: Number(userId),
       receiver_id: receiverId,
       message: message.trim(),
+      message_type: "TEXT",
       timestamp: new Date().toISOString(),
     };
 
@@ -179,7 +208,9 @@ const ChatApp: React.FC = () => {
         body: JSON.stringify({ 
           sender_id: Number(userId), 
           receiver_id: Number(receiverId), 
-          message: messageToSend 
+          message_type: "TEXT",
+          message: messageToSend,
+          topic: formData.typeofproblem || selectedChat?.topic || 'general'
         }),
       });
 
@@ -188,9 +219,11 @@ const ChatApp: React.FC = () => {
 
       const confirmedMessage: Message = {
         message_id: data.message_id,
-        chat_id: selectedChat.chat_id,
+        chat_id: selectedChat?.chat_id,
+        topic: formData.typeofproblem || selectedChat?.topic || 'general',
         sender_id: Number(userId),
         receiver_id: Number(receiverId),
+        message_type: "TEXT",
         message: messageToSend,
         timestamp: data.timestamp || new Date().toISOString(),
       };
@@ -238,10 +271,8 @@ const ChatApp: React.FC = () => {
       const uploadResult = await uploadFile(file);
 
       // Determine message type based on file type
-      let messageType: 'IMAGE' | 'FILE' | 'VIDEO' | 'AUDIO' = 'FILE';
+      let messageType: 'IMAGE' | 'FILE' = 'FILE';
       if (file.type.startsWith('image/')) messageType = 'IMAGE';
-      else if (file.type.startsWith('video/')) messageType = 'VIDEO';
-      else if (file.type.startsWith('audio/')) messageType = 'AUDIO';
 
       const receiverId = selectedChat.user1_id === Number(userId) 
         ? selectedChat.user2_id 
@@ -256,10 +287,11 @@ const ChatApp: React.FC = () => {
           receiver_id: Number(receiverId), 
           message: file.name,
           message_type: messageType,
-          file_url: uploadResult.secure_url,
+          file_url: uploadResult.url,
           file_name: file.name,
           file_size: file.size,
-          file_type: file.type
+          file_type: file.type,
+          topic: formData.typeofproblem || selectedChat?.topic || 'general'
         }),
       });
 
@@ -269,11 +301,12 @@ const ChatApp: React.FC = () => {
       const fileMessage: Message = {
         message_id: data.message_id,
         chat_id: selectedChat.chat_id,
+        topic: formData.typeofproblem || selectedChat?.topic || 'general',
         sender_id: Number(userId),
         receiver_id: Number(receiverId),
         message: file.name,
         message_type: messageType,
-        file_url: uploadResult.secure_url,
+        file_url: uploadResult.url,
         file_name: file.name,
         file_size: file.size,
         file_type: file.type,
@@ -297,7 +330,6 @@ const ChatApp: React.FC = () => {
     }
   };
 
-
   // Render file message
   const renderFileMessage = (msg: Message) => {
     const isOwn = String(msg.sender_id) === String(userId);
@@ -318,40 +350,6 @@ const ChatApp: React.FC = () => {
               <p className="break-words">{msg.message}</p>
             </div>
           )}
-          <div className={`px-3 pb-2 flex items-center justify-between ${
-            isOwn ? 'text-blue-100' : 'text-gray-400'
-          }`}>
-            <span className="text-xs">
-              {new Date(msg.timestamp).toLocaleTimeString([], { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-              })}
-            </span>
-            {isOwn && <CheckCircleIcon className="w-3 h-3" />}
-          </div>
-        </div>
-      );
-    }
-
-    if (msg.message_type === 'VIDEO') {
-      return (
-        <div className={`max-w-xs lg:max-w-md rounded-2xl overflow-hidden shadow-sm ${
-          isOwn ? 'bg-blue-500' : 'bg-white border border-gray-200'
-        }`}>
-          <video 
-            src={msg.file_url} 
-            controls
-            className="w-full h-auto max-h-64"
-            preload="metadata"
-          />
-          <div className={`p-3 ${isOwn ? 'text-white' : 'text-gray-900'}`}>
-            <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium">{msg.file_name}</span>
-            </div>
-            {msg.file_size && (
-              <span className="text-xs opacity-75">{formatFileSize(msg.file_size)}</span>
-            )}
-          </div>
           <div className={`px-3 pb-2 flex items-center justify-between ${
             isOwn ? 'text-blue-100' : 'text-gray-400'
           }`}>
@@ -413,15 +411,26 @@ const ChatApp: React.FC = () => {
   };
 
   const getOtherUserName = (chat: Chat): string => {
-    const otherUserId = chat.user1_id === Number(userId) ? chat.user2_id : chat.user1_id;
-    const lastMessage = chat.messages[0];
-    return lastMessage?.users_messages_receiver_idTousers?.name || `User ${otherUserId}`;
+    const isCurrentUserUser1 = chat.user1_id === Number(userId);
+    const otherUserId = isCurrentUserUser1 ? chat.user2_id : chat.user1_id;
+
+    // Try to get the name of the other user from the chat object
+    const otherUserName = isCurrentUserUser1
+      ? chat.user_chat_user2_idTouser?.name
+      : chat.user_chat_user1_idTouser?.name;
+
+    return otherUserName || `User ${otherUserId ?? "unknown"}`;
   };
 
-  const filteredChats = chats.filter(chat => 
-    getOtherUserName(chat).toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (chat.messages[0]?.message || "").toLowerCase().includes(searchQuery.toLowerCase())
+  // Separate chats into active and pending
+  const filtered = chats.filter(chat => 
+    !searchQuery || 
+    chat.topic?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    chat.user_chat_user2_idTouser.name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const activeChats = filtered.filter(chat => chat.user2_id !== null);
+  const pendingChats = filtered.filter(chat => chat.user2_id === null);
 
   const formatTime = (timestamp: string) => {
     const date = new Date(timestamp);
@@ -435,6 +444,12 @@ const ChatApp: React.FC = () => {
     } else {
       return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
     }
+  };
+
+  const handleCloseChat = () => {
+    setSelectedChat(null);
+    setMessages([]);
+    setMessage('');
   };
 
   if (isLoading) {
@@ -460,10 +475,94 @@ const ChatApp: React.FC = () => {
     );
   }
 
+  //Chat list tap
+  const renderChatItem = (chats: any) => {
+    const lastMessage = chats.messages?.[0];
+    const otherUserName = getOtherUserName(chats);
+    const isSelected = selectedChat?.chat_id === chats.chat_id;
+    const hasUnread = false; // Implement unread logic
+    const isPending = chats.user2_id === null;
+
+    return (
+      <div
+        key={chats.chat_id}
+        onClick={() => selectChat(chats)}
+        className={`flex items-center p-4 mx-2 rounded-xl cursor-pointer transition-all hover:bg-gray-50 ${
+          isSelected ? 'bg-blue-50 border-r-4 border-blue-500' : ''
+        }`}
+      >
+        <div className="relative flex-shrink-0">
+          <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+            isPending 
+              ? 'bg-gradient-to-br from-orange-400 to-red-500' 
+              : 'bg-gradient-to-br from-blue-400 to-purple-500'
+          }`}>
+            {isPending ? (
+              <ClockIcon className="w-6 h-6 text-white" />
+            ) : (
+              <span className="text-white font-semibold text-lg">
+                {otherUserName.charAt(0).toUpperCase()}
+              </span>
+            )}
+          </div>
+          {!isPending && (
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+          )}
+          {isPending && (
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-orange-500 border-2 border-white rounded-full"></div>
+          )}
+        </div>
+        
+        <div className="ml-3 flex-1 min-w-0">
+          <div className="flex items-center justify-between">
+            <h3 className={`font-semibold truncate ${isSelected ? 'text-blue-900' : 'text-gray-900'}`}>
+              {chats.topic || otherUserName}
+            </h3>
+            {lastMessage && (
+              <span className="text-xs text-gray-500 ml-2">
+                {formatTime(lastMessage.timestamp)}
+              </span>
+            )}
+          </div>
+          
+          <div className="flex items-center justify-between mt-1">
+            <p className={`text-sm truncate pr-2 ${
+              hasUnread ? 'text-gray-900 font-medium' : 'text-gray-500'
+            }`}>
+              {lastMessage ? (
+                <>
+                  {String(lastMessage.sender_id) === String(userId) && (
+                    <CheckIcon className="inline w-3 h-3 mr-1 text-blue-500" />
+                  )}
+                  {isPending && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-orange-100 text-orange-800 mr-2">
+                      Waiting
+                    </span>
+                  )}
+                  {lastMessage.message_type === 'IMAGE' ? '📷 Image' : 
+                   lastMessage.message_type === 'FILE' ? '📎 File' : 
+                   lastMessage.message}
+                </>
+              ) : (
+                "No messages yet"
+              )}
+            </p>
+            {hasUnread && (
+              <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+
+  const currentChats = activeTab === 'active' ? activeChats : pendingChats;
+
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* Sidebar */}
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+      <div className="flex h-screen bg-gray-50 overflow-hidden">
+        {/* Sidebar */}
+        <div className="w-80 bg-white border-r border-gray-200 flex flex-col h-full">
         {/* Header */}
         <div className="p-6 border-b border-gray-100">
           <div className="flex items-center justify-between mb-4">
@@ -477,7 +576,7 @@ const ChatApp: React.FC = () => {
           </div>
           
           {/* Search */}
-          <div className="relative">
+          <div className="relative mb-4">
             <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <input
               type="text"
@@ -487,81 +586,85 @@ const ChatApp: React.FC = () => {
               className="w-full pl-10 pr-4 py-3 bg-gray-50 border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
             />
           </div>
+
+          {/* Tabs */}
+          <div className="flex bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => setActiveTab('active')}
+              className={`flex-1 flex items-center justify-center py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                activeTab === 'active'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <ChatBubbleLeftRightIcon className="w-4 h-4 mr-2" />
+              Active ({activeChats.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('pending')}
+              className={`flex-1 flex items-center justify-center py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                activeTab === 'pending'
+                  ? 'bg-white text-orange-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <ClockIcon className="w-4 h-4 mr-2" />
+              Pending ({pendingChats.length})
+            </button>
+          </div>
         </div>
 
         {/* Chat List */}
         <div className="flex-1 overflow-y-auto">
-          {filteredChats.length === 0 ? (
+          {currentChats.length === 0 ? (
             <div className="p-6 text-center">
+              <div className="mb-4">
+                {activeTab === 'active' ? (
+                  <ChatBubbleLeftRightIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                ) : (
+                  <ClockIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                )}
+              </div>
               <div className="text-gray-400 mb-2">
-                {searchQuery ? "No matching conversations" : "No conversations yet"}
+                {searchQuery 
+                  ? "No matching conversations" 
+                  : activeTab === 'active' 
+                    ? "No active conversations" 
+                    : "No pending conversations"
+                }
               </div>
               <p className="text-sm text-gray-500">
-                {searchQuery ? "Try a different search term" : "Start a new conversation to begin chatting"}
+                {searchQuery 
+                  ? "Try a different search term" 
+                  : activeTab === 'active'
+                    ? "Start chatting with someone to see active conversations here"
+                    : "Create a new conversation to find someone to chat with"
+                }
               </p>
             </div>
           ) : (
             <div className="py-2">
-              {filteredChats.map((chat) => {
-                const lastMessage = chat.messages[0];
-                const otherUserName = getOtherUserName(chat);
-                const isSelected = selectedChat?.chat_id === chat.chat_id;
-                const hasUnread = false; // You can implement unread logic here
-                
-                return (
-                  <div
-                    key={chat.chat_id}
-                    onClick={() => selectChat(chat)}
-                    className={`flex items-center p-4 mx-2 rounded-xl cursor-pointer transition-all hover:bg-gray-50 ${
-                      isSelected ? 'bg-blue-50 border-r-4 border-blue-500' : ''
-                    }`}
-                  >
-                    <div className="relative flex-shrink-0">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-semibold text-lg">
-                          {otherUserName.charAt(0).toUpperCase()}
-                        </span>
-                      </div>
-                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
-                    </div>
-                    
-                    <div className="ml-3 flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <h3 className={`font-semibold truncate ${isSelected ? 'text-blue-900' : 'text-gray-900'}`}>
-                          {otherUserName}
-                        </h3>
-                        {lastMessage && (
-                          <span className="text-xs text-gray-500 ml-2">
-                            {formatTime(lastMessage.timestamp)}
-                          </span>
-                        )}
-                      </div>
-                      
-                      <div className="flex items-center justify-between mt-1">
-                        <p className={`text-sm truncate pr-2 ${
-                          hasUnread ? 'text-gray-900 font-medium' : 'text-gray-500'
-                        }`}>
-                          {lastMessage ? (
-                            <>
-                              {String(lastMessage.sender_id) === String(userId) && (
-                                <CheckIcon className="inline w-3 h-3 mr-1 text-blue-500" />
-                              )}
-                              {lastMessage.message}
-                            </>
-                          ) : (
-                            "No messages yet"
-                          )}
-                        </p>
-                        {hasUnread && (
-                          <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                        )}
-                      </div>
-                    </div>
+              {activeTab === 'pending' && currentChats.length > 0 && (
+                <div className="px-4 py-2 mx-2 mb-2 bg-orange-50 border border-orange-200 rounded-lg">
+                  <div className="flex items-center text-orange-800">
+                    <ExclamationCircleIcon className="w-4 h-4 mr-2" />
+                    <span className="text-sm font-medium">
+                      These conversations are waiting for someone to join
+                    </span>
                   </div>
-                );
-              })}
+                </div>
+              )}
+              {currentChats.map(renderChatItem)}
             </div>
           )}
+        </div>
+
+        {/* Footer Stats */}
+        <div className="border-t border-gray-100 p-4">
+          <div className="flex justify-between text-xs text-gray-500">
+            <span>{activeChats.length} active chats</span>
+            <span>{pendingChats.length} pending chats</span>
+          </div>
         </div>
       </div>
 
@@ -584,7 +687,7 @@ const ChatApp: React.FC = () => {
                   
                   <div className="ml-3">
                     <h2 className="font-semibold text-gray-900">
-                      {getOtherUserName(selectedChat)}
+                      {selectedChat.topic || getOtherUserName(selectedChat)}
                     </h2>
                     <p className="text-sm text-green-500">Online</p>
                   </div>
@@ -597,8 +700,12 @@ const ChatApp: React.FC = () => {
                   <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
                     <VideoCameraIcon className="h-5 w-5" />
                   </button>
-                  <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
-                    <EllipsisVerticalIcon className="h-5 w-5" />
+                  <button 
+                    onClick={handleCloseChat}
+                    className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                    title="Close chat"
+                  >
+                    <XMarkIcon className="h-5 w-5 cursor-pointer" />
                   </button>
                 </div>
               </div>
@@ -657,34 +764,32 @@ const ChatApp: React.FC = () => {
                         
                         {!isOwn && !showAvatar && <div className="w-8" />}
                         
-                        <div
-                          className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl shadow-sm ${
-                            isOwn
-                              ? 'bg-blue-500 text-white rounded-br-md'
-                              : 'bg-white text-gray-900 border border-gray-200 rounded-bl-md'
-                          }`}
-                        >
-                          {msg.message_type && msg.message_type !== 'TEXT' ? (
-                            renderFileMessage(msg)
-                          ) : (
-                            <>
-                              <p className="break-words">{msg.message}</p>
-                              <div className={`flex items-center justify-end mt-1 space-x-1 ${
-                                isOwn ? 'text-blue-100' : 'text-gray-400'
-                              }`}>
-                                <span className="text-xs">
-                                  {new Date(msg.timestamp).toLocaleTimeString([], { 
-                                    hour: '2-digit', 
-                                    minute: '2-digit' 
-                                  })}
-                                </span>
-                                {isOwn && (
-                                  <CheckCircleIcon className="w-3 h-3" />
-                                )}
-                              </div>
-                            </>
-                          )}
-                        </div>
+                        {msg.message_type && msg.message_type !== 'TEXT' ? (
+                          renderFileMessage(msg)
+                        ) : (
+                          <div
+                            className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl shadow-sm ${
+                              isOwn
+                                ? 'bg-blue-500 text-white rounded-br-md'
+                                : 'bg-white text-gray-900 border border-gray-200 rounded-bl-md'
+                            }`}
+                          >
+                            <p className="break-words">{msg.message}</p>
+                            <div className={`flex items-center justify-end mt-1 space-x-1 ${
+                              isOwn ? 'text-blue-100' : 'text-gray-400'
+                            }`}>
+                              <span className="text-xs">
+                                {new Date(msg.timestamp).toLocaleTimeString([], { 
+                                  hour: '2-digit', 
+                                  minute: '2-digit' 
+                                })}
+                              </span>
+                              {isOwn && (
+                                <CheckCircleIcon className="w-3 h-3" />
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -782,9 +887,6 @@ const ChatApp: React.FC = () => {
               <p className="text-gray-600 mb-6">
                 Select a conversation from the sidebar to start messaging, or create a new chat to connect with someone.
               </p>
-              <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-medium transition-colors">
-                Start New Chat
-              </button>
             </div>
           </div>
         )}
