@@ -32,7 +32,6 @@ model File {
   category          FileCategory
   description       String?
   appointment_files AppointmentFile[]
-  chat_files        ChatFile[]
   user              user              @relation(fields: [userId], references: [id])
 
   @@index([userId])
@@ -50,19 +49,6 @@ model AppointmentFile {
   @@index([appointmentId])
   @@index([fileId])
   @@map("appointment_files")
-}
-
-model ChatFile {
-  id        Int      @id @default(autoincrement())
-  chatId    Int
-  fileId    String
-  createdAt DateTime @default(now())
-  chat      chat     @relation(fields: [chatId], references: [chat_id], onDelete: Cascade)
-  files     File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
-
-  @@index([chatId])
-  @@index([fileId])
-  @@map("chat_files")
 }
 
 model appointments {
@@ -321,16 +307,14 @@ model messages {
   file_type                       String?
   timestamp                       DateTime? @default(now()) @db.Timestamp(0)
   chat_id                         Int
-  receiver_id                     Int?
-  sender_id                       Int?
+  sender_id                       Int
 
   chat                            chat      @relation(fields: [chat_id], references: [chat_id], onUpdate: Restrict)
-  user_messages_receiver_idTouser user?     @relation("messages_receiver_idTouser", fields: [receiver_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   user_messages_sender_idTouser   user?     @relation("messages_sender_idTouser", fields: [sender_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([sender_id])
-  @@index([receiver_id])
   @@index([chat_id])
+  @@index([chat_id, timestamp])              // Most important for loading messages
   
   @@map("messages")
 }
@@ -573,15 +557,14 @@ model chat {
   timestamp                DateTime   @default(now()) @db.Timestamp(0)
   chat_id                  Int        @id @default(autoincrement())
   topic                    String
-  user1_id                 Int
-  user2_id                 Int?
-  user_chat_user1_idTouser user       @relation("chat_user1_idTouser", fields: [user1_id], references: [id], onUpdate: Restrict)
-  user_chat_user2_idTouser user?      @relation("chat_user2_idTouser", fields: [user2_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  chat_files               ChatFile[]
+  customerId               Int
+  staffId                  Int?
+  user_chat_user1_idTouser user       @relation("chat_user1_idTouser", fields: [customerId], references: [id], onUpdate: Restrict)
+  user_chat_user2_idTouser user?      @relation("chat_user2_idTouser", fields: [staffId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   messages                 messages[]
 
-  @@index([user2_id])
-  @@index([user1_id])
+  @@index([customerId])
+  @@index([staffId])
 }
 
 model patient_details {
@@ -637,7 +620,6 @@ model user {
   chat_chat_user1_idTouser            chat[]             @relation("chat_user1_idTouser")
   chat_chat_user2_idTouser            chat[]             @relation("chat_user2_idTouser")
   files                               File[]
-  messages_messages_receiver_idTouser messages[]         @relation("messages_receiver_idTouser")
   messages_messages_sender_idTouser   messages[]         @relation("messages_sender_idTouser")
   package_bookings                    package_bookings[]
   payment                             payment[]
@@ -685,6 +667,7 @@ enum MessageType {
   TEXT
   IMAGE
   FILE
+  SYSTEM
   
   @@map("message_type")
 }

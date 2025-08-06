@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { formatForMySQL, generateOTP, generateOTPExpiry } from '../../../utils/otpGenerator';
-import { sendOTPEmail } from '../../../utils/emailService';
+import { formatForMySQL, generateOTP, generateOTPExpiry } from '@/utils/otpGenerator';
+import { sendOTPEmail } from '@/utils/emailService';
 import { createOrUpdateUser } from '../../../utils/database';
 import { ApiResponse } from '../../../types/user';
 

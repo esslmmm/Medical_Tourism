@@ -1,6 +1,6 @@
 // API Route - Just validate, don't clear OTP yet
 import { NextApiRequest, NextApiResponse } from 'next';
-import { findUserByEmail } from '../../../utils/database';
+import { findUserByEmail } from '@/utils/database';
 import { ApiResponse } from '../../../types/user';
 
 export default async function handler(

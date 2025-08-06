@@ -24,21 +24,27 @@ import TopicInputModal from "./TopicInputModal"; // Import the separated compone
 interface Chat {
   chat_id: number | undefined;
   topic: string;
-  user1_id: number;
-  user2_id: number;
+  customerId: number;
+  staffId: number;
   timestamp: string;
   messages: Message[];
+  user_chat_user2_idTouser: user;
+  user_chat_user1_idTouser: user;
+}
+
+interface user {
+  name: string;
+  email: string;
+  image: string;
 }
 
 interface Message {
   message_id: number;
   chat_id: number | undefined;
-  topic: string;
   sender_id: string | number;
-  receiver_id: number | undefined;
   message: string;
   timestamp: string;
-  message_type?: 'TEXT' | 'IMAGE' | 'FILE' ;
+  message_type?: 'TEXT' | 'IMAGE' | 'FILE';
   file_url?: string;
   file_name?: string;
   file_size?: number;
@@ -53,11 +59,15 @@ interface Receiver {
   role: string;
 }
 
+
 const ChatApp: React.FC = () => {
   const { userId, isLoading, isAuthenticated } = useUserId();
   const [chats, setChats] = useState<Chat[]>([]);
+  const [chatRoom, setChatRoom] = useState<Chat | null>(null);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
-  const [newChatId, setNewChatId] = useState(null);
+  const isConnecting = useRef(false);
+  const reconnectAttempts = useRef(0);
+  const maxReconnectAttempts = 5;
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -68,66 +78,167 @@ const ChatApp: React.FC = () => {
   const [showTopicInput, setShowTopicInput] = useState(false);
   const socket = useRef<Socket | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const { uploadFile, isUploading, uploadProgress, error } = useFileUpload();
+  const { uploadFile, isUploading, uploadProgress } = useFileUpload();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     typeofproblem: '',
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  // Socket setup
-  useEffect(() => {
-    if (!userId) return;
+  // Use selectedChat.chat_id consistently instead of separate chatId state
+  const currentChatId = selectedChat?.chat_id;
 
+  // Initialize socket connection
+  const initializeSocket = useCallback(() => {
+    if (!userId || isConnecting.current) return null;
+    
+    console.log('🔄 Initializing socket connection for user:', userId);
+    isConnecting.current = true;
+
+    // Clean up existing socket
+    if (socket.current) {
+      socket.current.removeAllListeners();
+      socket.current.disconnect();
+      socket.current = null;
+    }
+
+    // Create new socket connection
     socket.current = io("http://localhost:3001", {
-      transports: ['websocket'],
+      transports: ['websocket', 'polling'],
       upgrade: true,
+      autoConnect: true,
+      reconnection: true,
+      reconnectionAttempts: maxReconnectAttempts,
+      reconnectionDelay: 1000,
+      timeout: 20000,
+      query: {
+        userId: userId.toString()
+      }
     });
 
+    // Connection event handlers
     socket.current.on("connect", () => {
+      console.log('✅ Socket connected:', socket.current?.id);
       setIsConnected(true);
+      isConnecting.current = false;
+      reconnectAttempts.current = 0;
+      
+      // Join user room
       socket.current?.emit("joinRoom", userId);
+      
+      // Rejoin current chat room if exists
+      if (currentChatId) {
+        console.log('🔄 Rejoining current chat room:', currentChatId);
+        socket.current?.emit("joinChat", currentChatId);
+      }
     });
 
-    socket.current.on("disconnect", () => {
+    socket.current.on("disconnect", (reason) => {
+      console.log('❌ Socket disconnected:', reason);
       setIsConnected(false);
+      isConnecting.current = false;
+      
+      // Don't auto-reconnect if it was a manual disconnect
+      if (reason === 'io client disconnect') {
+        return;
+      }
     });
 
-    return () => {
-      socket.current?.disconnect();
-    };
-  }, [userId]);
+    socket.current.on("connect_error", (error) => {
+      console.error('🚨 Socket connection error:', error);
+      setIsConnected(false);
+      isConnecting.current = false;
+      reconnectAttempts.current++;
+      
+      if (reconnectAttempts.current >= maxReconnectAttempts) {
+        console.error('Max reconnection attempts reached');
+      }
+    });
 
-  // Handle incoming messages
+    socket.current.on("connectionStatus", (status) => {
+      console.log('📊 Connection status:', status);
+    });
+
+    return socket.current;
+  }, [userId, currentChatId]);
+
+  // FIXED: Message handler with better state management
   const handleReceiveMessage = useCallback((newMessage: Message) => {
-    if (selectedChat && newMessage.chat_id === selectedChat.chat_id) {
+    console.log('📨 Received message:', newMessage);
+    
+    if (!newMessage.message_id || !newMessage.chat_id) {
+      console.warn('Invalid message received:', newMessage);
+      return;
+    }
+
+    // Update messages if this is the selected chat
+    if (currentChatId && Number(newMessage.chat_id) === Number(currentChatId)) {
       setMessages((prev) => {
         const exists = prev.some(msg => msg.message_id === newMessage.message_id);
-        if (exists) return prev;
+        if (exists) {
+          console.log('Message already exists, skipping...');
+          return prev;
+        }
+        console.log('Adding message to current chat');
         return [...prev, newMessage];
       });
     }
 
-    setChats((prevChats) => 
-      prevChats.map(chat => {
-        if (chat.chat_id === newMessage.chat_id) {
+    // Update chat list
+    setChats((prevChats) => {
+      return prevChats.map(chat => {
+        if (Number(chat.chat_id) === Number(newMessage.chat_id)) {
+          const filteredMessages = chat.messages.filter(msg => msg.message_id !== newMessage.message_id);
           return {
             ...chat,
-            messages: [newMessage, ...chat.messages.filter(msg => msg.message_id !== newMessage.message_id)]
+            messages: [newMessage, ...filteredMessages],
+            timestamp: newMessage.timestamp
           };
         }
         return chat;
-      })
-    );
-  }, [selectedChat]);
+      });
+    });
+  }, [currentChatId]);
 
+  // Socket setup and cleanup - FIXED: Removed duplicate listeners
   useEffect(() => {
-    if (!socket.current) return;
-    socket.current.on("receiveMessage", handleReceiveMessage);
+    if (!userId || !isAuthenticated) return;
+
+    const socketInstance = initializeSocket();
+    if (!socketInstance) return;
+
+    // Set up ALL event listeners here in one place
+    socketInstance.on("receiveMessage", handleReceiveMessage);
+
+    socketInstance.on("userStatusChange", (data) => {
+      console.log('👤 User status changed:', data);
+    });
+
+    socketInstance.on("messageDelivered", (data) => {
+      console.log('✅ Message delivered:', data);
+    });
+
+    socketInstance.on("messageError", (error) => {
+      console.error('❌ Message error:', error);
+      alert(`Message error: ${error.error}`);
+    });
+
+    // Cleanup function
     return () => {
-      socket.current?.off("receiveMessage", handleReceiveMessage);
+      console.log('🧹 Cleaning up socket connection');
+      if (socketInstance) {
+        socketInstance.removeAllListeners();
+        socketInstance.disconnect();
+      }
+      socket.current = null;
+      setIsConnected(false);
+      isConnecting.current = false;
     };
-  }, [handleReceiveMessage]);
+  }, [userId, isAuthenticated, initializeSocket, handleReceiveMessage]);
+
+  // REMOVED: Duplicate useEffect for receiveMessage listener
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -151,30 +262,88 @@ const ChatApp: React.FC = () => {
     fetchChats();
   }, [userId]);
 
-  // Select chat
-  const selectChat = (chat: Chat) => {
-    setSelectedChat(chat);
-    const sortedMessages = [...chat.messages].sort((a, b) =>
-      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-    );
-    setMessages(sortedMessages);
+  // FIXED: Updated handleModalSubmit with proper socket room joining
+  const handleModalSubmit = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/chats', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic: formData.typeofproblem }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Failed to create chat');
+        return;
+      }
+
+      const chat_id = data.chat_id;
+      setChatRoom(data);
+      
+      // Create and set the new chat object
+      const newChat: Chat = {
+        chat_id: chat_id,
+        topic: formData.typeofproblem,
+        customerId: data.customerId || 0,
+        staffId: data.staffId || 0,
+        timestamp: new Date().toISOString(),
+        messages: [],
+        user_chat_user1_idTouser: { name: '', email: '', image: '' },
+        user_chat_user2_idTouser: { name: '', email: '', image: '' }
+      };
+      
+      // Set selected chat FIRST
+      setSelectedChat(newChat);
+      setMessages([]); // Clear messages for new chat
+      setChats(prevChats => [newChat, ...prevChats]);
+      
+      // Join chat room via socket AFTER setting selectedChat
+      if (socket.current && chat_id) {
+        console.log('🏠 Joining new chat room:', chat_id);
+        socket.current.emit("joinChat", chat_id);
+      }
+      
+      // Close modal
+      setShowTopicInput(false);
+      
+      // Send first message if exists - use a small delay to ensure socket room is joined
+      if (message.trim()) {
+        setTimeout(() => {
+          sendFirstMessage(chat_id);
+        }, 100);
+      }
+
+    } catch (err) {
+      console.error('Chat creation failed:', err);
+      setError('Something went wrong');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Send message function - Updated to use formData.typeofproblem
-  const sendMessage = async () => {
-    if (!message.trim() || !userId || isSending) return;
+  // FIXED: Updated sendFirstMessage to use consistent chat_id
+  const sendFirstMessage = async (newChatId: number) => {
+    if (!message.trim() || !userId || isSending || !newChatId) {
+      console.log('Cannot send message:', { 
+        hasMessage: !!message.trim(), 
+        hasUserId: !!userId, 
+        isSending, 
+        hasChatId: !!newChatId
+      });
+      return;
+    }
 
-    const receiverId = selectedChat?.user1_id === Number(userId) 
-      ? selectedChat?.user2_id 
-      : selectedChat?.user1_id;
+    const messageText = message.trim();
+    const tempId = Date.now();
 
     const tempMessage: Message = {
-      message_id: Date.now(),
-      topic: formData.typeofproblem || 'general', // Fixed: Use formData.typeofproblem with fallback
-      chat_id: selectedChat?.chat_id,
+      message_id: tempId,
+      chat_id: newChatId,
       sender_id: Number(userId),
-      receiver_id: receiverId,
-      message: message.trim(),
+      message: messageText,
       message_type: "TEXT",
       timestamp: new Date().toISOString(),
     };
@@ -185,52 +354,157 @@ const ChatApp: React.FC = () => {
     setIsSending(true);
 
     try {
-      const res = await fetch("/api/chats", {
+      const res = await fetch("/api/chats/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           sender_id: Number(userId), 
-          receiver_id: Number(receiverId), 
+          chat_id: newChatId,
           message_type: "TEXT",
           message: messageToSend,
-          topic: formData.typeofproblem || 'general' // Include topic in API call
+          topic: formData.typeofproblem || 'general'
         }),
       });
 
       const data = await res.json();
-      // const NewChat = data.chat_id;
-      // setNewChatId(NewChat);
       if (!res.ok) throw new Error(data.error || "Failed to send message");
 
       const confirmedMessage: Message = {
         message_id: data.message_id,
-        chat_id: selectedChat?.chat_id,
-        topic: formData.typeofproblem || 'general',
+        chat_id: newChatId,
         sender_id: Number(userId),
-        receiver_id: Number(receiverId),
         message_type: "TEXT",
         message: messageToSend,
         timestamp: data.timestamp || new Date().toISOString(),
       };
 
+      // Update the temporary message with confirmed data
       setMessages((prev) =>
         prev.map((msg) =>
-          msg.message_id === tempMessage.message_id ? confirmedMessage : msg
+          msg.message_id === tempId ? confirmedMessage : msg
         )
       );
 
+      // Send via socket with receiver_id
       if (socket.current && isConnected) {
-        socket.current.emit("sendMessage", confirmedMessage);
+        console.log('📤 Sending message via socket');
+        socket.current.emit("sendMessage", {
+          ...confirmedMessage,
+          receiver_id: selectedChat?.staffId || chatRoom?.staffId
+        });
       }
 
     } catch (error) {
       console.error("Error sending message:", error);
-      setMessages((prev) => prev.filter(msg => msg.message_id !== tempMessage.message_id));
+      setMessages((prev) => prev.filter(msg => msg.message_id !== tempId));
+      setMessage(messageToSend);
+      alert("Failed to send message. Please try again.");
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  // FIXED: Updated sendMessage function using currentChatId consistently
+  const sendMessage = async () => {
+    if (!message.trim() || !userId || isSending || !currentChatId) {
+        console.log('Cannot send message:', { 
+          hasMessage: !!message.trim(), 
+          hasUserId: !!userId, 
+          isSending, 
+          hasChat: !!currentChatId 
+        });
+        return;
+      }
+
+    const messageText = message.trim();
+    const tempId = Date.now();
+
+    const tempMessage: Message = {
+      message_id: tempId,
+      chat_id: currentChatId,
+      sender_id: Number(userId),
+      message: messageText,
+      message_type: "TEXT",
+      timestamp: new Date().toISOString(),
+    };
+
+    setMessages((prev) => [...prev, tempMessage]);
+    const messageToSend = message.trim();
+    setMessage("");
+    setIsSending(true);
+
+    try {
+      const res = await fetch("/api/chats/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          sender_id: Number(userId), 
+          chat_id: currentChatId,
+          message_type: "TEXT",
+          message: messageToSend,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to send message");
+
+      const confirmedMessage: Message = {
+        message_id: data.message_id,
+        chat_id: currentChatId,
+        sender_id: Number(userId),
+        message_type: "TEXT",
+        message: messageToSend,
+        timestamp: data.timestamp || new Date().toISOString(),
+      };
+
+      // Update the temporary message with confirmed data
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.message_id === tempId ? confirmedMessage : msg
+          )
+        );
+
+      // Send via socket
+        if (socket.current && isConnected) {
+          console.log('📤 Sending message via socket');
+          socket.current.emit("sendMessage", {
+            ...confirmedMessage,
+            receiver_id: selectedChat?.staffId || chatRoom?.staffId
+          });
+        }
+
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setMessages((prev) => prev.filter(msg => msg.message_id !== tempId));
       setMessage(messageToSend);
     } finally {
       setIsSending(false);
     }
   };
+
+  // FIXED: Select chat function with proper room management
+  const selectChat = useCallback((chat: Chat) => {
+    console.log('Selecting chat:', chat.chat_id);
+    
+    // Leave current chat room if exists
+    if (socket.current && currentChatId && currentChatId !== chat.chat_id) {
+      console.log('🚪 Leaving current chat room:', currentChatId);
+      socket.current.emit("leaveChat", currentChatId);
+    }
+    
+    setSelectedChat(chat);
+    
+    const sortedMessages = [...chat.messages].sort((a, b) =>
+      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+    setMessages(sortedMessages);
+
+    // Join new chat room via socket
+    if (socket.current && chat.chat_id) {
+      console.log('🏠 Joining chat room:', chat.chat_id);
+      socket.current.emit("joinChat", chat.chat_id);
+    }
+  }, [currentChatId]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -242,7 +516,16 @@ const ChatApp: React.FC = () => {
   // Handle file upload
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !selectedChat || !userId) return;
+    
+    if (!file || !currentChatId || !userId || !selectedChat) {
+      console.log('Missing requirements:', { 
+        file: !!file, 
+        currentChatId, 
+        userId,
+        selectedChat: !!selectedChat 
+      });
+      return;
+    }
 
     // File size limit (10MB)
     const maxSize = 10 * 1024 * 1024;
@@ -252,62 +535,85 @@ const ChatApp: React.FC = () => {
     }
 
     try {
-      // Upload to Cloudinary
+      // Upload to Cloudinary first
       const uploadResult = await uploadFile(file);
+      console.log('File uploaded to Cloudinary:', uploadResult);
 
       // Determine message type based on file type
       let messageType: 'IMAGE' | 'FILE' = 'FILE';
       if (file.type.startsWith('image/')) messageType = 'IMAGE';
 
-      const receiverId = selectedChat.user1_id === Number(userId) 
-        ? selectedChat.user2_id 
-        : selectedChat.user1_id;
-
-      // Send file message
-      const res = await fetch("/api/chats", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          sender_id: Number(userId), 
-          receiver_id: Number(receiverId), 
-          message: file.name,
-          message_type: messageType,
-          file_url: uploadResult.url,
-          file_name: file.name,
-          file_size: file.size,
-          file_type: file.type,
-          topic: formData.typeofproblem || 'general'
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to send file");
-
-      const fileMessage: Message = {
-        message_id: data.message_id,
-        chat_id: selectedChat.chat_id,
-        topic: formData.typeofproblem || 'general',
+      // Prepare the payload with explicit type conversion
+      const messagePayload = {
         sender_id: Number(userId),
-        receiver_id: Number(receiverId),
+        chat_id: Number(currentChatId),
         message: file.name,
         message_type: messageType,
         file_url: uploadResult.url,
         file_name: file.name,
-        file_size: file.size,
+        file_size: Number(file.size),
+        file_type: file.type,
+      };
+
+      console.log('Sending message payload:', messagePayload);
+
+      // Send file message to database
+      const res = await fetch("/api/chats/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(messagePayload),
+      });
+
+      const data = await res.json();
+      
+      if (!res.ok) {
+        console.error('Database error:', data);
+        throw new Error(data.error || "Failed to send file");
+      }
+
+      console.log('Message saved to database:', data);
+
+
+      const fileMessage: Message = {
+        message_id: data.message_id,
+        chat_id: Number(currentChatId),
+        sender_id: Number(userId),
+        message: file.name,
+        message_type: messageType,
+        file_url: uploadResult.url,
+        file_name: file.name,
+        file_size: Number(file.size),
         file_type: file.type,
         timestamp: data.timestamp || new Date().toISOString(),
       };
 
+      // Update UI
       setMessages((prev) => [...prev, fileMessage]);
 
+      // Send via socket
       if (socket.current && isConnected) {
-        socket.current.emit("sendMessage", fileMessage);
+
+        socket.current.emit("sendMessage", {
+          ...fileMessage,
+          receiver_id: selectedChat.staffId || chatRoom?.staffId
+        });
       }
 
     } catch (error) {
-      console.error("Error uploading file:", error);
-      alert("Failed to upload file. Please try again.");
+      console.error("Error in file upload process:", error);
+      
+      // More specific error handling
+      if (error instanceof Error) {
+        if (error.message.includes('Failed to send file')) {
+          alert("File uploaded but failed to save message. Please try again.");
+        } else {
+          alert(`Upload failed: ${error.message}`);
+        }
+      } else {
+        alert("Failed to upload file. Please try again.");
+      }
     } finally {
+      
       // Reset file input
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
@@ -396,9 +702,9 @@ const ChatApp: React.FC = () => {
   };
 
   const getOtherUserName = (chat: Chat): string => {
-    const otherUserId = chat.user1_id === Number(userId) ? chat.user2_id : chat.user1_id;
+    const otherUserId = chat.customerId === Number(userId) ? chat.staffId : chat.staffId;
     const lastMessage = chat.messages[0];
-    return lastMessage?.users_messages_receiver_idTousers?.name || `User ${otherUserId}`;
+    return lastMessage?.message|| `User ${otherUserId}`;
   };
 
   const filteredChats = chats.filter(chat => 
@@ -427,16 +733,14 @@ const ChatApp: React.FC = () => {
     setShowTopicInput(true);
     setMessage('');
   };
+  
 
   const handleCloseChat = () => {
     setSelectedChat(null);
     setMessage('');
   };
 
-  // Handler for modal submission
-  const handleModalSubmit = () => {
-    sendMessage();
-  };
+
 
   if (isLoading) {
     return (
@@ -803,11 +1107,16 @@ const ChatApp: React.FC = () => {
               <p className="text-gray-600 mb-6">
                 Select a conversation from the sidebar to start messaging, or create a new chat to connect with someone.
               </p>
-              <button 
+              <button
                 onClick={handleStartNewChat}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+                disabled={loading}
+                className={`w-full px-6 py-3 rounded-xl font-medium text-white transition-colors ${
+                  loading
+                    ? 'bg-blue-400 cursor-not-allowed'
+                    : 'bg-blue-500 hover:bg-blue-600'
+                }`}
               >
-                Start New Chat
+                {loading ? 'Creating Chat...' : 'Start New Chat'}
               </button>
             </div>
           </div>
