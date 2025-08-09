@@ -1,13 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { Search, Filter, Eye, Check, X, Clock, Package, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Inter } from "next/font/google";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-});
 
 interface PackageBooking {
   booking_id: number;
@@ -26,6 +20,8 @@ const BookingTable = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedBooking, setSelectedBooking] = useState<PackageBooking | null>(null);
   const [actionType, setActionType] = useState<"Approved" | "Rejected" | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredBookings, setFilteredBookings] = useState<PackageBooking[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -43,8 +39,8 @@ const BookingTable = () => {
 
         // Filter only Pending status
         const pendingBookings = data.filter((booking) => booking.status === "Pending");
-
         setBookings(pendingBookings);
+        setFilteredBookings(pendingBookings);
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
@@ -58,6 +54,15 @@ const BookingTable = () => {
 
     fetchBookings();
   }, []);
+
+  // Search functionality
+  useEffect(() => {
+    const filtered = bookings.filter((booking) =>
+      booking.booking_id.toString().includes(searchTerm.toLowerCase()) ||
+      booking.packages.package_type.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredBookings(filtered);
+  }, [searchTerm, bookings]);
 
   const handleStatusUpdate = async () => {
     if (!selectedBooking || !actionType) return;
@@ -88,70 +93,150 @@ const BookingTable = () => {
     }
   };
 
-  if (loading) {
-    return <p className="text-center text-gray-500">Loading...</p>;
-  }
+  const LoadingState = () => (
+    <div className="flex flex-col items-center justify-center py-16">
+      <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mb-4"></div>
+      <p className="text-gray-600 font-medium">Loading bookings...</p>
+    </div>
+  );
 
-  if (error) {
-    return <p className="text-red-500 text-center">{error}</p>;
-  }
+  const ErrorState = () => (
+    <div className="flex flex-col items-center justify-center py-16">
+      <AlertCircle className="w-16 h-16 text-red-500 mb-4" />
+      <p className="text-red-600 font-semibold text-lg mb-2">Error Loading Data</p>
+      <p className="text-gray-600">{error}</p>
+      <button 
+        onClick={() => window.location.reload()}
+        className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        Retry
+      </button>
+    </div>
+  );
+
+  const EmptyState = () => (
+    <div className="flex flex-col items-center justify-center py-16">
+      <Clock className="w-16 h-16 text-gray-400 mb-4" />
+      <p className="text-gray-600 font-semibold text-lg mb-2">No Pending Bookings</p>
+      <p className="text-gray-500">All bookings have been processed.</p>
+    </div>
+  );
+
+  if (loading) return <LoadingState />;
+  if (error) return <ErrorState />;
 
   return (
-    <div className={`mt-5 bg-white p-6 border-t border-[#C5D1E0] ${inter.className}`}>
-      {/* Top Filter Bar */}
-      <div className="flex items-center gap-4 mb-6">
-        <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-all">
-          Filter
-        </button>
-        <span className="text-gray-600">Showing {bookings.length} items</span>
-        <input
-          type="text"
-          className="border border-[#C5D1E0] px-4 py-2 rounded-[20px] flex-1 focus:ring-2 focus:ring-blue-400 outline-none"
-          placeholder="Search..."
-        />
+    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <Package className="w-6 h-6 text-blue-600" />
+            <h3 className="text-xl font-bold text-gray-800">Pending Approvals</h3>
+            <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
+              {filteredBookings.length} items
+            </div>
+          </div>
+
+        {/* Filter Controls */}
+        <div className="flex items-center gap-4">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+              placeholder="Search by booking ID or package type..."
+            />
+          </div>
+          <button className="flex items-center gap-2 bg-white text-gray-700 px-4 py-3 rounded-xl border border-gray-300 hover:bg-gray-50 transition-colors font-medium">
+            <Filter className="w-5 h-5" />
+            Filter
+          </button>
+        </div>
+        </div>
       </div>
 
-      {/* Table */}
+      {/* Table Content */}
       <div className="overflow-x-auto">
-        {bookings.length === 0 ? (
-          <p className="text-center text-gray-500">No history available.</p>
+        {filteredBookings.length === 0 ? (
+          searchTerm ? (
+            <div className="flex flex-col items-center justify-center py-16">
+              <Search className="w-16 h-16 text-gray-400 mb-4" />
+              <p className="text-gray-600 font-semibold text-lg mb-2">No Results Found</p>
+              <p className="text-gray-500">Try adjusting your search terms.</p>
+            </div>
+          ) : (
+            <EmptyState />
+          )
         ) : (
-          <table className="w-full border-collapse text-center">
-            <thead>
-              <tr className="text-gray-700" style={{ fontSize: "20px" }}>
-                <th className="py-3 px-4 text-center">Book ID</th>
-                <th className="py-3 px-4 text-center">Package Type</th>
-                <th className="py-3 px-4 text-center">Actions</th>
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="text-left py-4 px-6 font-semibold text-gray-700">Booking ID</th>
+                <th className="text-left py-4 px-6 font-semibold text-gray-700">Package Type</th>
+                <th className="text-center py-4 px-6 font-semibold text-gray-700">Actions</th>
               </tr>
             </thead>
-            <tbody>
-              {bookings.map((booking) => (
-                <tr key={booking.booking_id} className="hover:bg-gray-50 transition-all">
-                  <td className="py-3 px-4">{booking.booking_id}</td>
-                  <td className="py-3 px-4">{booking.packages.package_type}</td>
-                  <td className="py-3 px-4 flex justify-center gap-3">
-                    <button
-                      className="bg-[#34C759] text-white px-3 py-1 rounded-lg text-sm hover:bg-green-600 transition-all" style={{fontSize: "17px"}}
-                      onClick={() => {
-                        setSelectedBooking(booking);
-                        setActionType("Approved");
-                      }}
-                    >
-                      Approve
-                    </button>
-                    <button
-                      className="bg-[#FB5626] text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 transition-all" style={{fontSize: "17px"}}
-                      onClick={() => {
-                        setSelectedBooking(booking);
-                        setActionType("Rejected");
-                      }}
-                    >
-                      Disapprove
-                    </button>
-                    <FaSearch
-                      className="text-gray-500 cursor-pointer hover:text-blue-500 transition-all text-lg"
-                      onClick={() => router.push(`/staff/BookingDetail/${booking.booking_id}`)}
-                    />
+            <tbody className="divide-y divide-gray-200">
+              {filteredBookings.map((booking, index) => (
+                <tr 
+                  key={booking.booking_id} 
+                  className={`hover:bg-gray-50 transition-colors ${
+                    index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'
+                  }`}
+                >
+                  <td className="py-4 px-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900">ID: {booking.booking_id}</p>
+                        <p className="text-sm text-gray-500">
+                          {new Date(booking.create_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-4 px-6">
+                    <div className="flex items-center gap-2">
+                      <Package className="w-4 h-4 text-gray-500" />
+                      <span className="font-medium text-gray-900">
+                        {booking.packages.package_type}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-4 px-6">
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => {
+                          setSelectedBooking(booking);
+                          setActionType("Approved");
+                        }}
+                        className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium shadow-sm hover:shadow-md"
+                      >
+                        <Check className="w-4 h-4" />
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedBooking(booking);
+                          setActionType("Rejected");
+                        }}
+                        className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium shadow-sm hover:shadow-md"
+                      >
+                        <X className="w-4 h-4" />
+                        Reject
+                      </button>
+                      <button
+                        onClick={() => router.push(`/staff/BookingDetail/${booking.booking_id}`)}
+                        className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm hover:shadow-md"
+                      >
+                        <Eye className="w-4 h-4" />
+                        View
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -162,29 +247,50 @@ const BookingTable = () => {
 
       {/* Confirmation Modal */}
       {selectedBooking && actionType && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <h2 className="text-xl font-semibold mb-4">
-              Are you sure you want to {actionType.toLowerCase()} this booking?
-            </h2>
-            <p className="text-gray-600 mb-6">Booking ID: {selectedBooking.booking_id}</p>
-            <div className="flex justify-center gap-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all">
+            <div className="text-center mb-6">
+              <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 ${
+                actionType === "Approved" 
+                  ? "bg-green-100 text-green-600" 
+                  : "bg-red-100 text-red-600"
+              }`}>
+                {actionType === "Approved" ? (
+                  <Check className="w-8 h-8" />
+                ) : (
+                  <X className="w-8 h-8" />
+                )}
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                {actionType === "Approved" ? "Approve Booking" : "Reject Booking"}
+              </h2>
+              <p className="text-gray-600">
+                Are you sure you want to {actionType.toLowerCase()} booking #{selectedBooking.booking_id}?
+              </p>
+              <div className="bg-gray-50 rounded-lg p-3 mt-4">
+                <p className="text-sm text-gray-600">Package: {selectedBooking.packages.package_type}</p>
+              </div>
+            </div>
+            
+            <div className="flex gap-3">
               <button
-                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-all"
                 onClick={() => {
                   setSelectedBooking(null);
                   setActionType(null);
                 }}
+                className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl hover:bg-gray-200 transition-colors font-medium"
               >
                 Cancel
               </button>
               <button
-                className={`px-4 py-2 rounded-lg text-white transition-all ${
-                  actionType === "Approved" ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"
-                }`}
                 onClick={handleStatusUpdate}
+                className={`flex-1 text-white py-3 px-4 rounded-xl transition-colors font-medium ${
+                  actionType === "Approved" 
+                    ? "bg-green-600 hover:bg-green-700" 
+                    : "bg-red-600 hover:bg-red-700"
+                }`}
               >
-                Confirm
+                {actionType === "Approved" ? "Approve" : "Reject"}
               </button>
             </div>
           </div>

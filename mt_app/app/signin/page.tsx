@@ -30,8 +30,8 @@ export default function SignIn() {
         return false
       }
 
-      //Login Success
-      router.push('/profile')
+      //Login Success - redirect will be handled by callback
+      router.push('/auth/callback')
     }catch(error){
 
     }
@@ -92,8 +92,8 @@ export default function SignIn() {
           Sign In
         </button>
         <button
-          type="submit"
-          onClick={() => signIn('google', { callbackUrl: '/profile' })}
+          type="button"
+          onClick={() => signIn('google', { callbackUrl: '/auth/callback' })}
           className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 py-2 rounded"
         >
           <svg

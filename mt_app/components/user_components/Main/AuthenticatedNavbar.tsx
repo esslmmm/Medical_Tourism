@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X, User, LogOut, Settings, Bell } from "lucide-react";
+import { Menu, X, User, LogOut } from "lucide-react";
 import { useSession, signOut } from 'next-auth/react';
 import LoginModal from "../Homepage/LoginModal";
 import { useSearchParams } from 'next/navigation';

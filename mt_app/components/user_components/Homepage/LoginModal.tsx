@@ -27,6 +27,20 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, initialEmail }
   const [otpSent, setOtpSent] = useState<boolean>(false);
   const router = useRouter()
 
+  // Store current URL when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      const currentPath = window.location.pathname;
+      const currentSearch = window.location.search;
+      const fullCurrentUrl = `${currentPath}${currentSearch}`;
+      
+      // Only store if it's not the home page or signin page
+      if (fullCurrentUrl !== '/' && fullCurrentUrl !== '/signin') {
+        localStorage.setItem('loginReturnUrl', fullCurrentUrl);
+      }
+    }
+  }, [isOpen]);
+
       // Update email when initialEmail changes
       useEffect(() => {
         if (initialEmail) {

@@ -4,20 +4,37 @@ import { NextResponse } from "next/server"
 export default auth((req) => {
   const token = req.auth
   const isAuth = !!token
-  const isAuthPage = req.nextUrl.pathname.startsWith('/verify-otp')
+  const userRole = (token as any)?.user.role as string || 'customer'
+  const pathname = req.nextUrl.pathname
   
-  const protectedRoutes = [
+  // Auth pages that should redirect if already authenticated
+  const isAuthPage = pathname.startsWith('/verify-otp') || pathname.startsWith('/signin') || pathname.startsWith('/auth/callback')
+  
+  // Define role-based route patterns
+  const adminRoutes = ['/admin']
+  const staffRoutes = ['/staff']
+  const userRoutes = [
     '/user/Form',
     '/user/profile',
     '/user/accommodation_booking',
     '/user/Interpreter',
     '/user/Test',
-    "/user/BookingDetail",
+    '/user/BookingDetail',
+    '/user/ContactUs',
+    '/user/DoctorList',
+    '/user/Doctorprofile',
+    '/user/Hospital',
+    '/user/package_landing_page',
+    '/user/payment',
+    '/user/ReviewPopUp',
+    '/user/BookingEdit'
   ]
   
-  const isProtectedRoute = protectedRoutes.some(route => 
-    req.nextUrl.pathname.startsWith(route)
-  )
+  // Check if current path matches any route pattern
+  const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route))
+  const isStaffRoute = staffRoutes.some(route => pathname.startsWith(route))
+  const isUserRoute = userRoutes.some(route => pathname.startsWith(route))
+  const isProtectedRoute = isAdminRoute || isStaffRoute || isUserRoute
 
   // Check session expiry if user is authenticated
   if (isAuth && token) {
@@ -45,10 +62,26 @@ export default auth((req) => {
     }
   }
 
-  // Redirect authenticated users away from auth pages
-  if (isAuthPage) {
+  // Handle auth callback page and OTP verification page
+  if (pathname === '/auth/callback' || pathname.startsWith('/verify-otp')) {
+    return NextResponse.next()
+  }
+
+  // Redirect authenticated users away from auth pages (except callback and OTP verification)
+  if (isAuthPage && pathname !== '/auth/callback' && !pathname.startsWith('/verify-otp')) {
     if (isAuth) {
-      return NextResponse.redirect(new URL('/', req.url))
+      // Debug logging
+      console.log('Middleware - redirecting authenticated user:', { 
+        userRole, 
+        pathname,
+        isAuthPage 
+      });
+      
+      // Redirect to role-appropriate dashboard
+      const redirectUrl = userRole === 'admin' ? '/admin/booking-management' 
+                         : userRole === 'staff' ? '/staff/booking-management'
+                         : '/'
+      return NextResponse.redirect(new URL(redirectUrl, req.url))
     }
     return NextResponse.next()
   }
@@ -65,6 +98,30 @@ export default auth((req) => {
     );
   }
 
+  // Role-based access control for authenticated users
+  if (isAuth && isProtectedRoute) {
+    // Admin can access everything
+    if (userRole === 'admin') {
+      return NextResponse.next()
+    }
+    
+    // Staff can access staff and user routes (but not admin routes)
+    if (userRole === 'staff') {
+      if (isAdminRoute) {
+        return NextResponse.redirect(new URL('/staff/booking-management', req.url))
+      }
+      return NextResponse.next()
+    }
+    
+    // Customer can only access user routes
+    if (userRole === 'customer') {
+      if (isAdminRoute || isStaffRoute) {
+        return NextResponse.redirect(new URL('/', req.url))
+      }
+      return NextResponse.next()
+    }
+  }
+
   return NextResponse.next()
 })
 
@@ -74,8 +131,14 @@ export const config = {
     '/user/profile/:path*',
     '/user/accommodation_booking/:path*',
     '/user/Interpreter/:path*',
-    '/user/Test/:path*', 
+    '/user/Test/:path*',
+    // Staff routes
+    '/staff/:path*',
+    // Admin routes
+    '/admin/:path*',
+    // Auth routes
     '/verify-otp/:path*',
-    '/user/BookingDetail/:path*',
+    '/signin/:path*',
+    '/auth/callback/:path*',
   ]
 }

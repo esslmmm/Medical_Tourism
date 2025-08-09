@@ -85,11 +85,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           });
           console.log("Returning user:", user)
 
+          console.log('🔐 OTP login - user:', { 
+            id: user.id, 
+            email: user.email, 
+            role: user.role,
+            timestamp: new Date().toISOString()
+          });
           return {
             id: String(user.id),
             email: user.email,
             name: user.name || email.split("@")[0],
             image: user.image || null,
+            role: user.role || 'customer',
           };
         } catch (error) {
           console.error("Error in authorize() for OTP:", error);
@@ -125,6 +132,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
           if (existingUser) {
             token.id = String(existingUser.id);
+            token.role = existingUser.role || 'customer';
+            console.log('🔐 Google login - existing user:', { 
+              id: existingUser.id, 
+              email: existingUser.email, 
+              role: existingUser.role,
+              timestamp: new Date().toISOString()
+            });
             if (!existingUser.name || !existingUser.image) {
               await updateUserProfile({
                 email: googleUser.email,
@@ -144,6 +158,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               updatedAt: new Date(),
             });
             token.id = String(newUser?.id);
+            token.role = newUser?.role || 'customer';
+            console.log('🔐 Google login - new user:', { 
+              id: newUser?.id, 
+              email: newUser?.email, 
+              role: newUser?.role,
+              timestamp: new Date().toISOString()
+            });
           }
 
           // Set session expiry for Google login (1 hour)
@@ -164,6 +185,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.name = user.name;
         token.picture = user.image;
         token.provider = "otp";
+        token.role = (user as any).role || 'customer';
         
         // Set session expiry for OTP login (1 hour)
         const currentTimeSeconds = Math.floor(Date.now() / 1000);
@@ -214,6 +236,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.name = token.name as string;
         session.user.image = token.picture as string;
         session.user.provider = token.provider as string;
+        session.user.role = token.role as string;
         
         const currentTimeSeconds = Math.floor(Date.now() / 1000);
         const expiry = token.exp || (currentTimeSeconds + (60 * 60));
@@ -221,17 +244,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         (session as any).authMethod = token.authMethod || 'unknown';
         (session as any).expiresAt = expiry * 1000; // Convert to milliseconds
         (session as any).timeLeft = expiry - currentTimeSeconds;
-        
-        // console.log('📊 Session callback triggered');
-        // console.log('📊 Session data set:', {
-        //   authMethod: token.authMethod,
-        //   expiresAt: expiry * 1000,
-        //   expiresAtDate: new Date(expiry * 1000),
-        //   timeLeft: expiry - currentTimeSeconds,
-        //   currentTime: new Date(),
-        //   currentTimeSeconds: currentTimeSeconds,
-        //   isExpired: (expiry - currentTimeSeconds) <= 0
-        // });
       }
       
       return session;

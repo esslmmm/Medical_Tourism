@@ -24,6 +24,7 @@ declare module "next-auth" {
     picture: string;
     provider: string;
     authMethod: string;
+    role: string;
     exp: number;
   }
 }
@@ -34,6 +35,7 @@ declare module "next-auth/jwt" {
     name?: string | null;
     email?: string | null;
     provider?: string;
+    role?: string;
   }
 }
 

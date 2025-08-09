@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { signIn } from "next-auth/react";
-import { useRouter } from 'next/navigation';
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from 'next/router';
 import Image from "next/image";
 import { handleGoogleSignIn } from '../components/Reuseable-Function/GoogleSignin';
+import { getRoleBasedRedirectUrl } from '../utils/roleRedirect';
 
 interface OTPVerificationProps {
   email: string;
@@ -25,6 +26,18 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({ email }) => {
   const [success, setSuccess] = useState<string>('');
   const [resendLoading, setResendLoading] = useState<boolean>(false);
   const router = useRouter();
+  const { data: session, status } = useSession();
+
+  // Debug logging
+  useEffect(() => {
+    console.log('🔍 OTP Verification Debug:', {
+      status,
+      session: session?.user,
+      role: session?.user?.role,
+      email: session?.user?.email,
+      id: session?.user?.id
+    });
+  }, [status, session]);
 
   // Handle OTP input
   const handleOTPInput = (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
@@ -81,7 +94,8 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({ email }) => {
 
       if (result?.ok) {
         setSuccess('Email verified successfully!');
-        setTimeout(() => router.push('/'), 1000);
+        // Wait for session to be updated, then let the useEffect handle the redirect
+        console.log('✅ OTP verification successful, session will update shortly...');
       } else {
         setError('Authentication failed. Please try again.');
       }
@@ -129,6 +143,39 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({ email }) => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // Handle role-based redirect after successful login
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user?.role) {
+      console.log('🔄 OTP Verification - User authenticated:', {
+        userRole: session.user.role,
+        email: session.user.email,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Let the middleware handle the redirect instead of doing it here
+      // This prevents conflicts between multiple redirect mechanisms
+      const returnUrl = localStorage.getItem('loginReturnUrl');
+      if (returnUrl) {
+        localStorage.removeItem('loginReturnUrl'); // Clean up
+      }
+      
+      // Force a page reload to let middleware handle the redirect
+      window.location.href = '/auth/callback';
+    }
+  }, [status, session]);
+
+  // Show loading state while session is loading
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-2">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
