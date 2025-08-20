@@ -396,9 +396,6 @@ model package_places {
   packplace_id Int     @id @default(autoincrement())
   tour_id      Int?
   place_id     String?
-  date         Int
-  start        String  @db.VarChar(10)
-  end          String  @db.VarChar(10)
   places       places? @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction)
   trips        trips?  @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction)
 
@@ -409,7 +406,6 @@ model package_places {
 model packages {
   package_id           String                 @id @default(uuid())
   package_name         String                 @db.VarChar(255)
-  package_type         packages_package_type
   hospital_id          String
   image                String                 @db.VarChar(255)
   detail               String                 @db.VarChar(100)
@@ -546,8 +542,8 @@ model tourism_bookings {
 
 model hospital_images {
   image_id    Int        @id @default(autoincrement())
-  hospital_id String?
-  image       String?    @db.VarChar(255)
+  hospital_id String
+  image       String    @db.VarChar(255)
   hospitals   hospitals? @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([hospital_id])

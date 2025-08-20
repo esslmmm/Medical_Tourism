@@ -1,12 +1,12 @@
 "use client";
 import React, { useState } from 'react';
 import Footer from '@/components/user_components/Main/Footer';
-import Navbar from '@/components/user_components/Main/Navbar';
 import InterpreterDetails from '@/components/user_components/Interpreter/InterpreterDetails';
 import InterpreterList from '@/components/user_components/Interpreter/InterpreterList';
 import { useStepNavigator } from '../../package_landing_page/goToNextStep';
 import { submitInterBooking } from '../../../api/booking/interpreters/submitInterBooking';
 import { updatePackageBooking } from '../../../api/booking/packages/updatePackageBooking';
+import Navbarpro from '@/components/user_components/Main/Navbarpro';
 
 
 // Define Type for an Interpreter
@@ -107,7 +107,7 @@ export default function InterpreterPage() {
 
     return (
       <div>
-        <Navbar />
+        <Navbarpro />
         <div className="container mx-auto p-6">
           <h1 className="text-3xl font-bold ml-12">Interpreter</h1>
   

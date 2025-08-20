@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useSession, signOut } from 'next-auth/react';
-import { LogOut, User } from "lucide-react";
+import React from "react";
+import { useSession } from 'next-auth/react';
+import { User } from "lucide-react";
 import Link from "next/link";
 
 const ProfileHeader = () => {

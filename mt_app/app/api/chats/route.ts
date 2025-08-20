@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '@/lib/prisma';
 import { auth } from '../../api/auth/auth';
 
-const prisma = new PrismaClient();
 
 /*
     GET: Retrieve all the chats (for admin and staff)

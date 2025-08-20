@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server'
 
-const prisma = new PrismaClient()
 
 // GET request - Fetch all package bookings
 export async function GET() {
@@ -51,11 +50,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Failed to create package booking' }, { status: 500 })
   }
 }
-
-
-// import { PrismaClient } from '@prisma/client'
-
-// const prisma = new PrismaClient()
 
 // export async function GET() {
 //   try {

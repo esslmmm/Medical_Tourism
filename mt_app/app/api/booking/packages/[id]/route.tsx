@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server'
 import { auth } from '../../../auth/auth';
 
-const prisma = new PrismaClient()
 
 
 // GET request - Fetch a single package booking by ID
