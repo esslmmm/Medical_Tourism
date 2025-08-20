@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { auth } from '../auth/auth';
 
-const prisma = new PrismaClient();
 
 
 /**
@@ -61,7 +60,7 @@ export async function GET(request: Request) {
         chat_chat_user1_idTouser: true,
         chat_chat_user2_idTouser: true,
         messages_messages_sender_idTouser: true,
-        payment: true
+        payment: true,
       },
     });
 

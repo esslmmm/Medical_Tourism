@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server'
 
-const prisma = new PrismaClient()
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
@@ -51,7 +50,6 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         chat_chat_user1_idTouser: true,
         chat_chat_user2_idTouser: true,
         messages_messages_sender_idTouser: true,
-        messages_messages_receiver_idTouser: true,
         payment: true,
       },
     });

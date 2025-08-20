@@ -32,7 +32,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const { email, otp } = credentials || {};
 
           if (!email || !otp) return null;
-
+          
           let user = await findUserByEmail(email);
 
           if (!user) {

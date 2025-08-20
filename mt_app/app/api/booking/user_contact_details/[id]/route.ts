@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server'
 
-const prisma = new PrismaClient()
 
 // GET request - Fetch a single User_Contact_Detail by ID
 export async function GET(req: Request, { params }: { params: { id: string } }) {

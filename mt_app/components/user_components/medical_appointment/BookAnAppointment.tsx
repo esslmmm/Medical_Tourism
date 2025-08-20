@@ -247,7 +247,6 @@ export default function MedicalAppointment() {
       
       // Navigate to confirmation page
       router.push(`/user/Form/BookingConfirm/${id}`);
-      alert('Form saved! Navigate to confirmation page.');
     } catch (error) {
       console.error('Error saving form:', error);
       alert('Error saving form. Please try again.');

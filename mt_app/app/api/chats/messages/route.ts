@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 
-const prisma = new PrismaClient();
 
 // Add this helper function at the top of your API file
 async function assignStaffToChatIfNeeded(chatId: number, senderId: number) {

@@ -8,7 +8,7 @@ export function getRoleBasedRedirectUrl(role: string, returnUrl?: string): strin
   }
   if (role === 'admin') {
     console.log('👑 Admin detected, redirecting to /admin/booking-management');
-    return '/admin/booking-management';
+    return '/admin';
   }
 
   // For customers, if there's a valid return URL, use it
