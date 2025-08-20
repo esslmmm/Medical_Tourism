@@ -1,170 +1,105 @@
 "use client"
 
-import React, { useState } from 'react';
-import { Search, Filter, ChevronLeft, ChevronRight, User, MapPin} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Search, Filter, ChevronLeft, ChevronRight, User, MapPin } from 'lucide-react';
 
 const DoctorListPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSpecialization, setSelectedSpecialization] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
-
-  const specializations = [
-    { id: 'all', name: 'ทุกสาขา', nameEn: 'All Specializations' },
-    { id: 'cardiology', name: 'อายุรศาสตร์', nameEn: 'Internal Medicine' },
-    { id: 'surgery', name: 'ศัลยกรรม', nameEn: 'Surgery' },
-    { id: 'orthopedics', name: 'กระดูกและข้อ', nameEn: 'Orthopedics' },
-    { id: 'neurology', name: 'ระบบประสาท', nameEn: 'Neurology' },
-    { id: 'dermatology', name: 'ผิวหนัง', nameEn: 'Dermatology' },
-    { id: 'gynecology', name: 'สูตินรีเวช', nameEn: 'Gynecology' },
-    { id: 'pediatrics', name: 'กุมารเวช', nameEn: 'Pediatrics' },
-    { id: 'ophthalmology', name: 'จักษุ', nameEn: 'Ophthalmology' }
-  ];
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   interface Doctor {
-  id: number;
-  name: string;
-  nameEn: string;
-  specialization: string;
-  specializationEn: string;
-  image: string;
-  hospital: string;
-  category: string;
-}
+    id: number;
+    name: string;
+    specialization: string;
+    image: string;
+    hospital: string;
+    experience: number;
+    description: string;
+    category: string; // lowercase specialization for filtering
+  }
 
+  interface Hospital {
+    hospital_id: string;
+    name: string;
+  }
 
-  const doctors: Doctor[] = [
-    {
-      id: 1,
-      name: 'นพ. มาโนช เตชะโชควิวัฒน์',
-      nameEn: 'Dr. Manoch Techachokvivat',
-      specialization: 'อายุรศาสตร์',
-      specializationEn: 'Internal Medicine',
-      image: '/api/placeholder/150/150',
-      hospital: 'โรงพยาบาลศิริราช',
-      category: 'cardiology'
-    },
-    {
-      id: 2,
-      name: 'พญ. วลัยลักษณ์ เกรียงไกรนาค',
-      nameEn: 'Dr. Walailak Kriangkrainark',
-      specialization: 'สูตินรีเวช',
-      specializationEn: 'Gynecology',
-      image: '/api/placeholder/150/150',
-      hospital: 'โรงพยาบาลบำรุงราษฎร์',
-      category: 'gynecology'
-    },
-    {
-      id: 3,
-      name: 'นพ. วิรุฬห์ นิติเก้ือกูล',
-      nameEn: 'Dr. Wiroon Nitikuekul',
-      specialization: 'ศัลยศาสตร์กระดูกและข้อ',
-      specializationEn: 'Orthopedic Surgery',
-      image: '/api/placeholder/150/150',
-      hospital: 'โรงพยาบาลเซนต์หลุยส์',
-      category: 'orthopedics'
-    },
-    {
-      id: 4,
-      name: 'ศ.พบ. สมบูรณ์ คณาจักร',
-      nameEn: 'Prof. Somboon Kanajak',
-      specialization: 'เวชศาสตร์ครอบครัว',
-      specializationEn: 'Family Medicine',
-      image: '/api/placeholder/150/150',
-      hospital: 'โรงพยาบาลจุฬาลงกรณ์',
-      category: 'cardiology'
-    },
-    {
-      id: 5,
-      name: 'พญ. กาญจนา เสรีสวรรค์',
-      nameEn: 'Dr. Kanjana Sereesawan',
-      specialization: 'ตจวิทยา',
-      specializationEn: 'Dermatology',
-      image: '/api/placeholder/150/150',
-      hospital: 'โรงพยาบาลรามาธิบดี',
-      category: 'dermatology'
-    },
-    {
-      id: 6,
-      name: 'นพ. ชาติกบิน ยอดดวงปี',
-      nameEn: 'Dr. Chatikabin Yotduangpee',
-      specialization: 'อายุรศาสตร์โรคหัวใจ',
-      specializationEn: 'Cardiology',
-      image: '/api/placeholder/150/150',
-      hospital: 'โรงพยาบาลกรุงเทพ',
-      category: 'cardiology'
-    },
-    {
-      id: 7,
-      name: 'ศ.พบ. สมบูรณ์ คณาจักร',
-      nameEn: 'Prof. Somboon Kanajak',
-      specialization: 'เวชศาสตร์ครอบครัว',
-      specializationEn: 'Family Medicine',
-      image: '/api/placeholder/150/150',
-      hospital: 'โรงพยาบาลจุฬาลงกรณ์',
-      category: 'cardiology'
-    },
-    {
-      id: 8,
-      name: 'พญ. กาญจนา เสรีสวรรค์',
-      nameEn: 'Dr. Kanjana Sereesawan',
-      specialization: 'ตจวิทยา',
-      specializationEn: 'Dermatology',
-      image: '/api/placeholder/150/150',
-      hospital: 'โรงพยาบาลรามาธิบดี',
-      category: 'dermatology'
-    },
-    {
-      id: 9,
-      name: 'นพ. ชาติกบิน ยอดดวงปี',
-      nameEn: 'Dr. Chatikabin Yotduangpee',
-      specialization: 'อายุรศาสตร์โรคหัวใจ',
-      specializationEn: 'Cardiology',
-      image: '/api/placeholder/150/150',
-      hospital: 'โรงพยาบาลกรุงเทพ',
-      category: 'cardiology'
-    },
-    {
-      id: 10,
-      name: 'นพ. มาโนช เตชะโชควิวัฒน์',
-      nameEn: 'Dr. Manoch Techachokvivat',
-      specialization: 'อายุรศาสตร์',
-      specializationEn: 'Internal Medicine',
-      image: '/api/placeholder/150/150',
-      hospital: 'โรงพยาบาลศิริราช',
-      category: 'cardiology'
-    },
-    {
-      id: 11,
-      name: 'พญ. วลัยลักษณ์ เกรียงไกรนาค',
-      nameEn: 'Dr. Walailak Kriangkrainark',
-      specialization: 'สูตินรีเวช',
-      specializationEn: 'Gynecology',
-      image: '/api/placeholder/150/150',
-      hospital: 'โรงพยาบาลบำรุงราษฎร์',
-      category: 'gynecology'
-    },
-    {
-      id: 12,
-      name: 'นพ. วิรุฬห์ นิติเก้ือกูล',
-      nameEn: 'Dr. Wiroon Nitikuekul',
-      specialization: 'ศัลยศาสตร์กระดูกและข้อ',
-      specializationEn: 'Orthopedic Surgery',
-      image: '/api/placeholder/150/150',
-      hospital: 'โรงพยาบาลเซนต์หลุยส์',
-      category: 'orthopedics'
-    },
+  // Specialization categories for filters
+  const specializations = [
+    { id: 'all', name: 'All', nameEn: 'All Specializations' },
+    { id: 'cardiology', name: 'Cardiology', nameEn: 'Cardiology' },
+    { id: 'dermatology', name: 'Dermatology', nameEn: 'Dermatology' },
+    { id: 'thoracic-surgery', name: 'Thoracic Surgery', nameEn: 'Thoracic Surgery' },
   ];
 
+  useEffect(() => {
+    const fetchDoctorsAndHospitals = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch hospitals + doctors in parallel
+        const [hospitalRes, doctorRes] = await Promise.all([
+          fetch("http://localhost:3000/api/services/hospitals"),
+          fetch("http://localhost:3000/api/services/doctors"),
+        ]);
+
+        if (!hospitalRes.ok || !doctorRes.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const hospitalData: Hospital[] = await hospitalRes.json();
+        const doctorData = await doctorRes.json();
+
+        // Build hospital map
+        const hospitalMap: Record<string, string> = {};
+        hospitalData.forEach((h) => {
+          hospitalMap[h.hospital_id] = h.name;
+        });
+
+        // Transform doctors
+        const transformed: Doctor[] = doctorData.map((doc: any) => ({
+          id: Number(doc.doctor_id),
+          name: doc.name,
+          specialization: doc.specialization,
+          image: doc.image,
+          hospital: hospitalMap[doc.hospital_id] || "Unknown Hospital",
+          experience: doc.experience,
+          description: doc.description,
+          category: doc.specialization.toLowerCase().replace(/\s+/g, '-'), // normalize
+        }));
+
+        setDoctors(transformed);
+      } catch (error) {
+        console.error(error);
+        setError("Error fetching data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctorsAndHospitals();
+  }, []);
+
+
+    const navigateToDoctorPage = (doctorId: number) => {
+    router.push(`/user/Doctorprofile/${doctorId}`);
+  };
 
   const itemsPerPage = 9;
   const totalPages = Math.ceil(doctors.length / itemsPerPage);
 
-  const filteredDoctors = doctors.filter(doctor => {
-    const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doctor.nameEn.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doctor.specialization.includes(searchTerm);
-    const matchesSpecialization = selectedSpecialization === 'all' || doctor.category === selectedSpecialization;
+  const filteredDoctors = doctors.filter((doctor) => {
+    const matchesSearch =
+      doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doctor.specialization.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSpecialization =
+      selectedSpecialization === 'all' || doctor.category === selectedSpecialization;
     return matchesSearch && matchesSpecialization;
   });
 
@@ -179,16 +114,20 @@ const DoctorListPage = () => {
         <div className="flex items-center space-x-4 mb-4">
           <div className="relative">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center overflow-hidden">
-              <User className="w-12 h-12 text-blue-600" />
+              {doctor.image ? (
+                <img src={doctor.image} alt={doctor.name} className="w-full h-full object-cover" />
+              ) : (
+                <User className="w-12 h-12 text-blue-600" />
+              )}
             </div>
           </div>
-          
+
           <div className="flex-1">
             <h3 className="text-lg font-bold text-gray-900 mb-1">{doctor.name}</h3>
-            <p className="text-sm text-gray-600 mb-1">{doctor.nameEn}</p>
+            <p className="text-sm text-gray-600 mb-1">{doctor.specialization}</p>
             <div className="flex items-center space-x-2">
               <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
-                {doctor.specialization}
+                {doctor.experience} ปี ประสบการณ์
               </span>
             </div>
           </div>
@@ -199,13 +138,11 @@ const DoctorListPage = () => {
             <MapPin className="w-4 h-4 text-blue-500" />
             <span>{doctor.hospital}</span>
           </div>
-
-          
-
+          <p className="text-sm text-gray-600">{doctor.description}</p>
         </div>
 
         <div className="flex space-x-3">
-          <button className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium text-sm">
+          <button className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium text-sm" onClick={() => navigateToDoctorPage(doctor.id)}>
             ดูรายละเอียด
           </button>
         </div>
@@ -224,10 +161,10 @@ const DoctorListPage = () => {
       </div>
 
       <div className="container mx-auto px-4 -mt-4">
-        {/* Search and Filter Section */}
+        {/* Search + Filter */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <div className="flex flex-col lg:flex-row gap-4">
-            {/* Search Input */}
+            {/* Search */}
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
@@ -239,7 +176,7 @@ const DoctorListPage = () => {
               />
             </div>
 
-            {/* Filter Toggle */}
+            {/* Filter toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
               className="flex items-center space-x-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
@@ -277,15 +214,27 @@ const DoctorListPage = () => {
           </div>
         </div>
 
-        {/* Doctor Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {paginatedDoctors.map((doctor) => (
-            <DoctorCard key={doctor.id} doctor={doctor} />
-          ))}
-        </div>
+        {/* Loading */}
+        {loading && (
+          <div className="text-center py-12 text-gray-600">กำลังโหลดข้อมูล...</div>
+        )}
 
-        {/* Empty State */}
-        {filteredDoctors.length === 0 && (
+        {/* Error */}
+        {error && (
+          <div className="text-center py-12 text-red-500">{error}</div>
+        )}
+
+        {/* Doctor Grid */}
+        {!loading && !error && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {paginatedDoctors.map((doctor) => (
+              <DoctorCard key={doctor.id} doctor={doctor} />
+            ))}
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && filteredDoctors.length === 0 && (
           <div className="text-center py-12">
             <User className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-600 mb-2">ไม่พบแพทย์ที่ตรงกับการค้นหา</h3>
@@ -297,7 +246,7 @@ const DoctorListPage = () => {
         {filteredDoctors.length > 0 && totalPages > 1 && (
           <div className="flex justify-center items-center space-x-2 pb-8">
             <button
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
               className="flex items-center space-x-1 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -325,7 +274,7 @@ const DoctorListPage = () => {
             </div>
 
             <button
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
               className="flex items-center space-x-1 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
