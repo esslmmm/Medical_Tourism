@@ -245,7 +245,7 @@ const DoctorListPage = () => {
               className="flex items-center space-x-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
             >
               <Filter className="w-5 h-5" />
-              <span>ตัวกรอง</span>
+              <span>Filter</span>
             </button>
           </div>
 
