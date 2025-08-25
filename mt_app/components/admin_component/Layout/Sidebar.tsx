@@ -23,6 +23,7 @@ const Sidebar: React.FC = () => {
     { name: 'Dashboard', href: '/admin', icon: BarChart3 },
     { name: 'User Management', href: '/admin/users', icon: Users },
     { name: 'Hospital Management', href: '/admin/hospitals', icon: Building },
+    { name: 'Doctor Management', href: '/admin/doctors', icon: Users },
     { name: 'Hotel Management', href: '/admin/hotels', icon: Hotel },
     { name: 'Package Management', href: '/admin/packages', icon: Package },
     { name: 'Booking Management', href: '/admin/bookings', icon: Calendar },
