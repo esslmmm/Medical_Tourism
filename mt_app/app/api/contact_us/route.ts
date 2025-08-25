@@ -2,15 +2,21 @@ import { NextResponse } from "next/server";
 import { prisma } from '@/lib/prisma';
 
 
-// GET: Fetch all payments
+
 export async function GET() {
-  try {
-    const contactForm = await prisma.contact_us.findMany();
-    return NextResponse.json(contactForm, { status: 200 });
-  } catch (error) {
-    console.error("Error fetching payments:", error);
-    return NextResponse.json({ error: "Failed to fetch payments" }, { status: 500 });
-  }
+    try {
+
+        const contact = await prisma.contact_us.findMany();
+
+        if (!contact) {
+            return NextResponse.json({ error: "Contact not found" }, { status: 404 });
+        }
+
+        return NextResponse.json(contact, { status: 200 });
+    } catch (error) {
+        console.error("Error fetching contact:", error);
+        return NextResponse.json({ error: "Failed to fetch contact" }, { status: 500 });
+    }
 }
 
 // POST: Create a new Contact Form Submission
@@ -33,7 +39,7 @@ export async function POST(request: Request) {
           phoneNumber,
           country,
           type,
-          message,
+          message
         },
       });
   

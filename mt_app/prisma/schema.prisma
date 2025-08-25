@@ -600,6 +600,7 @@ model contact_us {
   country     String
   type        String
   message     String
+  contact_us_status contact_us_status @default(Pending)
   createdAt   DateTime @default(now())
 }
 
@@ -680,10 +681,17 @@ enum languages_proficiency {
   Native
 }
 
+enum contact_us_status {
+  Resolved
+  In_Progress
+  Rejected
+  Pending
+}
+
 enum payment_payment_status {
-  successful
+  Successful
   Failed
-  Peding
+  Pending
   Refund
 }
 

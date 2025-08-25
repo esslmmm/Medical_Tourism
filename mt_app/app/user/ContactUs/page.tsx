@@ -114,9 +114,9 @@ const Contact_Us = () => {
                             onChange={(e) => setType(e.target.value)}
                         >
                             <option value="">Select a type</option>
-                            <option value="medical">Medical</option>
                             <option value="booking">Booking</option>
                             <option value="support">Support</option>
+                            <option value="medical">Other</option>
                         </select>
                     </div>
                 </div>

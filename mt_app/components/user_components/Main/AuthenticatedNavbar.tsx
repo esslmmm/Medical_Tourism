@@ -77,14 +77,14 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
           ${isMobileMenuOpen ? "flex flex-col absolute top-14 left-0 w-full bg-[#F5F7FA] p-4 shadow-md z-10" : "hidden"}
         `}
       >
-        {["Doctor", "Hospital", "Medical", "Medical & Tourism"].map((item, index) => (
-          <Link key={index} href={`/${item.toLowerCase().replace(/\s+/g, "-")}`} className="text-gray-700 hover:text-green-600 text-base">
+        {["Doctor", "Hospital", "Package"].map((item, index) => (
+          <Link key={index} href={`/user/${item.replace(/\s+/g, "-")}`} className="text-gray-700 hover:text-green-600 text-base">
             {item}
           </Link>
         ))}
 
         <div className="relative dropdown-container group">
-          <Link href="/contact" className="text-gray-700 hover:text-green-600 text-base">
+          <Link href="/user/ContactUs" className="text-gray-700 hover:text-green-600 text-base">
             Contact Us
           </Link>
           <div className="absolute left-0 hidden group-hover:flex flex-col bg-white shadow-md border border-gray-200 mt-2 w-56 rounded-md z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
