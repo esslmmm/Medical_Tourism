@@ -48,7 +48,7 @@ const NavigationIcons: React.FC<NavigationIconsProps> = ({ sections }) => {
           { id: "medical", img: "/img/BookingDetail/Medical service.png", text: "Medical Service" },
           { id: "accommodation", img: "/img/BookingDetail/Accommodation.png", text: "Accommodation" },
           { id: "place", img: "/img/BookingDetail/Place to visit.png", text: "Place to Visit" },
-          { id: "interpreter", img: "/img/BookingDetail/Interpreter.png", text: "Interpreter" },
+          { id: "guide", img: "/img/BookingDetail/Interpreter.png", text: "Guide" },
         ].map(({ id, img, text }, index) => (
           <div key={index} className="flex flex-col items-center">
             <motion.div

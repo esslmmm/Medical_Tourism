@@ -27,11 +27,7 @@ interface Interpreters {
   image: string;
 }
 
-interface InterpreterProps {
-  selectedDay: number | "all"; 
-}
-
-const Interpreter: React.FC<InterpreterProps> = ({ selectedDay }) => {
+const Guide = () => {
   const { id } = useParams();
   const [packageBooking, setPackageBooking] = useState<PackageBooking | null>(null);
   const [interBooking, setInterBooking] = useState<InterBooking | null>(null);
@@ -89,24 +85,6 @@ const Interpreter: React.FC<InterpreterProps> = ({ selectedDay }) => {
   
     return date.getDate();
   };
-
-  // ✅ Function to Check if Interpreter is Available on the Selected Day
-  const isInterpreterAvailable = () => {
-    if (selectedDay === "all") return true; // Show all dates
-
-    if (!interBooking) return false;
-
-    const selectedDate = new Date(interBooking.start);
-    selectedDate.setDate(selectedDate.getDate() + (selectedDay - 1));
-
-    const startDate = new Date(interBooking.start);
-    const endDate = new Date(interBooking.end);
-
-    return selectedDate >= startDate && selectedDate <= endDate;
-  };
-
-  // ✅ Hide the component if the interpreter is not available on the selected day
-  if (!isInterpreterAvailable()) return null;
 
   const startDate = interBooking?.start ? getDayOnly(interBooking.start) : null;
   const endDate = interBooking?.end ? getDayOnly(interBooking.end) : null;
@@ -182,4 +160,4 @@ const Interpreter: React.FC<InterpreterProps> = ({ selectedDay }) => {
   );
 };
 
-export default Interpreter;
+export default Guide;

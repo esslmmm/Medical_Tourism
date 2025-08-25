@@ -11,7 +11,6 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       include: {
         patient_details: true,
         doctors: true,
-
       },
     })
 

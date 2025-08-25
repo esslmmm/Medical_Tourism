@@ -2,16 +2,15 @@
 import { Inter } from "next/font/google";
 import React, { useEffect, useState } from 'react'
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import { AppointmentFormData } from "../../../app/user/Form/form";
+import { AppointmentFormData } from "@/app/user/Form/form";
 const inter = Inter({ subsets: ["latin"], weight: ["100","200","300","400","500","600","700","800","900"] });
 
-const MedicalService = () => {
-  const router = useRouter();
-  const { id } = useParams();
-  const [form, setForm] = useState<AppointmentFormData | null>(null);
-  const rawDate = form?.selectedDate;
-const date = rawDate ? new Date(rawDate) : null;
+interface BookingDetailsProps {
+  date: Date | null;
+  form: AppointmentFormData | null;
+}
+
+const MedicalService: React.FC<BookingDetailsProps> = ({ date, form }) => {
 
 const formattedDate =
   date instanceof Date && !isNaN(date.getTime())
@@ -23,14 +22,7 @@ const formattedDate =
       }).format(date)
     : '';
 
-  useEffect(() => {
-          const savedForm = localStorage.getItem('appointmentFormData');
-          if (savedForm) {
-            setForm(JSON.parse(savedForm));
-          } else {
-            router.push(`/user/Form/medical_appointment/${id}`); // fallback if user lands directly
-          }
-        }, []);
+
       
   return (
     <div className="bg-white p-6 pt-20 pb-10 border-b border-[#E0E0E0]">

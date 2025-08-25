@@ -1,7 +1,6 @@
-import { packages_package_type, PrismaClient } from '@prisma/client';
-import { NextResponse } from 'next/server';
 
-const prisma = new PrismaClient();
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 
 
 export async function GET() {

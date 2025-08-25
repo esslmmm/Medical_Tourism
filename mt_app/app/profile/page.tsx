@@ -5,8 +5,10 @@ import { Heart, MapPin, Calendar, Users, Star, Wifi, Car, Utensils, Camera, Phon
 export default function MedicalTourismPackage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedAccommodation, setSelectedAccommodation] = useState(null);
-  const [selectedTourismOptions, setSelectedTourismOptions] = useState([]);
+  const [wantsTourism, setWantsTourism] = useState(null);
+  const [selectedTourismRoute, setSelectedTourismRoute] = useState(null);
   const [showFullItinerary, setShowFullItinerary] = useState(false);
+  const [showRouteModal, setShowRouteModal] = useState(null);
 
   const packageData = {
     name: "Complete Dental Care & Thailand Discovery Package",
@@ -75,47 +77,122 @@ export default function MedicalTourismPackage() {
     }
   ];
 
-  const tourismOptions = [
+  const tourismRoutes = [
     {
       id: 1,
-      name: "Cultural Heritage Tour",
-      price: 180,
-      duration: "Full Day",
-      highlights: ["Grand Palace", "Wat Pho Temple", "Wat Arun", "Local Markets"],
-      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop"
+      name: "Cultural Heritage Explorer",
+      duration: "3 Days",
+      price: 450,
+      description: "Immerse yourself in Thailand's rich cultural heritage",
+      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=250&fit=crop",
+      places: [
+        {
+          name: "Grand Palace",
+          description: "Former royal residence with stunning architecture",
+          duration: "2 hours",
+          image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop",
+          highlights: ["Royal Throne Hall", "Emerald Buddha", "Temple Complex"]
+        },
+        {
+          name: "Wat Pho Temple",
+          description: "Home to the famous Reclining Buddha statue",
+          duration: "1.5 hours",
+          image: "https://images.unsplash.com/photo-1563492065-4333fc26f2a8?w=300&h=200&fit=crop",
+          highlights: ["Reclining Buddha", "Traditional Massage School", "Chedis"]
+        },
+        {
+          name: "Wat Arun",
+          description: "Temple of Dawn with panoramic city views",
+          duration: "1 hour",
+          image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=300&h=200&fit=crop",
+          highlights: ["Dawn Views", "Khmer-style Tower", "Chao Phraya River"]
+        },
+        {
+          name: "Chatuchak Weekend Market",
+          description: "One of the world's largest weekend markets",
+          duration: "2 hours",
+          image: "https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=300&h=200&fit=crop",
+          highlights: ["Local Crafts", "Street Food", "Vintage Finds"]
+        },
+        {
+          name: "Jim Thompson House",
+          description: "Traditional Thai house museum",
+          duration: "1 hour",
+          image: "https://images.unsplash.com/photo-1544161513-0179dc49f8ea?w=300&h=200&fit=crop",
+          highlights: ["Silk Museum", "Traditional Architecture", "Art Collection"]
+        },
+        {
+          name: "Khao San Road",
+          description: "Famous backpacker street with vibrant nightlife",
+          duration: "Evening",
+          image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop",
+          highlights: ["Street Food", "Night Markets", "Local Bars"]
+        }
+      ]
     },
     {
       id: 2,
-      name: "Floating Markets Experience",
-      price: 120,
-      duration: "Half Day",
-      highlights: ["Damnoen Saduak", "Long-tail boat ride", "Local vendors", "Traditional food"],
-      image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=300&h=200&fit=crop"
-    },
-    {
-      id: 3,
-      name: "Thai Cooking Class",
-      price: 85,
-      duration: "3 Hours",
-      highlights: ["Market tour", "Hands-on cooking", "Recipe book", "Certificate"],
-      image: "https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=300&h=200&fit=crop"
-    },
-    {
-      id: 4,
-      name: "Spa & Wellness Day",
-      price: 200,
-      duration: "Full Day",
-      highlights: ["Traditional Thai massage", "Herbal treatments", "Meditation session", "Healthy lunch"],
-      image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=300&h=200&fit=crop"
+      name: "Nature & Wellness Retreat",
+      duration: "3 Days",
+      price: 520,
+      description: "Rejuvenate with nature and traditional wellness practices",
+      image: "https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=400&h=250&fit=crop",
+      places: [
+        {
+          name: "Erawan National Park",
+          description: "Seven-tiered waterfall in pristine forest",
+          duration: "Full Day",
+          image: "https://images.unsplash.com/photo-1544161513-0179dc49f8ea?w=300&h=200&fit=crop",
+          highlights: ["Erawan Falls", "Natural Pools", "Hiking Trails"]
+        },
+        {
+          name: "Floating Markets",
+          description: "Traditional floating market experience",
+          duration: "4 hours",
+          image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=300&h=200&fit=crop",
+          highlights: ["Long-tail Boats", "Fresh Produce", "Local Vendors"]
+        },
+        {
+          name: "Traditional Thai Spa",
+          description: "Authentic Thai massage and treatments",
+          duration: "3 hours",
+          image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=300&h=200&fit=crop",
+          highlights: ["Thai Massage", "Herbal Steam", "Aromatherapy"]
+        },
+        {
+          name: "Cooking Class Experience",
+          description: "Learn authentic Thai cuisine",
+          duration: "4 hours",
+          image: "https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=300&h=200&fit=crop",
+          highlights: ["Market Tour", "Hands-on Cooking", "Recipe Book"]
+        },
+        {
+          name: "Meditation Temple",
+          description: "Peaceful meditation and mindfulness session",
+          duration: "2 hours",
+          image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop",
+          highlights: ["Guided Meditation", "Buddhist Teaching", "Temple Grounds"]
+        },
+        {
+          name: "River Cruise Dinner",
+          description: "Scenic dinner cruise along Chao Phraya River",
+          duration: "3 hours",
+          image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop",
+          highlights: ["City Views", "Traditional Dance", "Thai Cuisine"]
+        }
+      ]
     }
   ];
 
-  const toggleTourismOption = (optionId: any) => {
-    setSelectedTourismOptions(prev =>
-      prev.includes(optionId)
-        ? prev.filter(id => id !== optionId)
-        : [...prev, optionId]
-    );
+  const toggleTourismOption = (wants) => {
+    setWantsTourism(wants);
+    if (!wants) {
+      setSelectedTourismRoute(null);
+    }
+  };
+
+  const selectTourismRoute = (route) => {
+    setSelectedTourismRoute(route);
   };
 
   const calculateTotalPrice = () => {
@@ -123,10 +200,9 @@ export default function MedicalTourismPackage() {
     if (selectedAccommodation) {
       total += selectedAccommodation.price * 7;
     }
-    selectedTourismOptions.forEach(optionId => {
-      const option = tourismOptions.find(opt => opt.id === optionId);
-      if (option) total += option.price;
-    });
+    if (selectedTourismRoute) {
+      total += selectedTourismRoute.price;
+    }
     return total;
   };
 
@@ -314,48 +390,223 @@ export default function MedicalTourismPackage() {
 
             {/* Tourism Options */}
             <div className="bg-white rounded-2xl p-6 shadow-sm">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Enhance Your Experience</h2>
-              <p className="text-gray-600 mb-6">Select optional tourism activities to make your medical journey memorable</p>
-              <div className="grid md:grid-cols-2 gap-4">
-                {tourismOptions.map((option) => (
-                  <div
-                    key={option.id}
-                    className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${
-                      selectedTourismOptions.includes(option.id)
-                        ? 'border-teal-500 bg-teal-50'
-                        : 'border-gray-200 hover:border-gray-300'
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Tourism Experience</h2>
+              
+              {/* Step 1: Tourism Interest */}
+              <div className="mb-8">
+                <p className="text-gray-600 mb-4">Would you like to add a tourism experience to your medical journey?</p>
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => toggleTourismOption(true)}
+                    className={`flex-1 py-3 px-6 rounded-xl border-2 transition-all font-medium ${
+                      wantsTourism === true
+                        ? 'border-teal-500 bg-teal-50 text-teal-700'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
                     }`}
-                    onClick={() => toggleTourismOption(option.id)}
                   >
-                    <img
-                      src={option.image}
-                      alt={option.name}
-                      className="w-full h-32 rounded-lg object-cover mb-3"
-                    />
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold text-gray-900">{option.name}</h3>
-                      {selectedTourismOptions.includes(option.id) && (
-                        <Check className="w-5 h-5 text-teal-600" />
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm text-gray-600">{option.duration}</span>
-                      <span className="text-lg font-bold text-teal-600">${option.price}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1">
-                      {option.highlights.map((highlight, index) => (
-                        <span
-                          key={index}
-                          className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                    Yes, I'm interested!
+                  </button>
+                  <button
+                    onClick={() => toggleTourismOption(false)}
+                    className={`flex-1 py-3 px-6 rounded-xl border-2 transition-all font-medium ${
+                      wantsTourism === false
+                        ? 'border-gray-400 bg-gray-50 text-gray-700'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    }`}
+                  >
+                    Medical only, thanks
+                  </button>
+                </div>
+              </div>
+
+              {/* Step 2: Route Selection */}
+              {wantsTourism === true && (
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-4">Choose Your Adventure</h3>
+                    <p className="text-gray-600 mb-6">Select a carefully curated route that matches your interests</p>
+                  </div>
+
+                  <div className="grid gap-6">
+                    {tourismRoutes.map((route) => (
+                      <div key={route.id} className="relative">
+                        <div
+                          className={`border-2 rounded-xl p-6 cursor-pointer transition-all ${
+                            selectedTourismRoute?.id === route.id
+                              ? 'border-teal-500 bg-teal-50'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                          onClick={() => selectTourismRoute(route)}
                         >
-                          {highlight}
-                        </span>
-                      ))}
+                          <div className="flex space-x-6">
+                            <img
+                              src={route.image}
+                              alt={route.name}
+                              className="w-32 h-24 rounded-lg object-cover flex-shrink-0"
+                            />
+                            <div className="flex-1">
+                              <div className="flex items-start justify-between mb-2">
+                                <div>
+                                  <h4 className="text-xl font-semibold text-gray-900 mb-1">{route.name}</h4>
+                                  <p className="text-gray-600 mb-3">{route.description}</p>
+                                </div>
+                                <div className="text-right">
+                                  <span className="text-2xl font-bold text-teal-600">${route.price}</span>
+                                  <p className="text-sm text-gray-600">{route.duration}</p>
+                                </div>
+                              </div>
+                              
+                              <div className="flex items-center justify-between">
+                                <div className="flex space-x-4 text-sm text-gray-600">
+                                  <span>{route.places.length} destinations</span>
+                                  <span>•</span>
+                                  <span>{route.duration}</span>
+                                </div>
+                                <div className="flex space-x-2">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setShowRouteModal(route);
+                                    }}
+                                    className="text-teal-600 hover:text-teal-700 font-medium text-sm"
+                                  >
+                                    View Details
+                                  </button>
+                                  {selectedTourismRoute?.id === route.id && (
+                                    <Check className="w-5 h-5 text-teal-600" />
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Quick Preview of Places */}
+                        {selectedTourismRoute?.id === route.id && (
+                          <div className="mt-4 bg-teal-50 rounded-xl p-4 border border-teal-200">
+                            <h5 className="font-semibold text-teal-900 mb-3">Places you'll visit:</h5>
+                            <div className="grid md:grid-cols-2 gap-3">
+                              {route.places.slice(0, 4).map((place, index) => (
+                                <div key={index} className="flex items-center space-x-3">
+                                  <img
+                                    src={place.image}
+                                    alt={place.name}
+                                    className="w-12 h-8 rounded object-cover"
+                                  />
+                                  <div>
+                                    <p className="font-medium text-teal-900 text-sm">{place.name}</p>
+                                    <p className="text-xs text-teal-700">{place.duration}</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                            {route.places.length > 4 && (
+                              <button
+                                onClick={() => setShowRouteModal(route)}
+                                className="mt-3 text-sm text-teal-600 hover:text-teal-700 font-medium"
+                              >
+                                + {route.places.length - 4} more places
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {wantsTourism === false && (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Heart className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p className="text-gray-600">Focus on your medical care - we've got you covered!</p>
+                </div>
+              )}
+            </div>
+
+            {/* Route Details Modal */}
+            {showRouteModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                  <div className="p-6 border-b">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h2 className="text-2xl font-bold text-gray-900">{showRouteModal.name}</h2>
+                        <p className="text-gray-600">{showRouteModal.description}</p>
+                      </div>
+                      <button
+                        onClick={() => setShowRouteModal(null)}
+                        className="p-2 hover:bg-gray-100 rounded-lg"
+                      >
+                        ×
+                      </button>
                     </div>
                   </div>
-                ))}
+                  
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center space-x-4 text-gray-600">
+                        <span>{showRouteModal.places.length} destinations</span>
+                        <span>•</span>
+                        <span>{showRouteModal.duration}</span>
+                        <span>•</span>
+                        <span className="text-2xl font-bold text-teal-600">${showRouteModal.price}</span>
+                      </div>
+                    </div>
+
+                    <h3 className="text-xl font-semibold text-gray-900 mb-4">Complete Itinerary</h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {showRouteModal.places.map((place, index) => (
+                        <div key={index} className="bg-gray-50 rounded-xl p-4">
+                          <img
+                            src={place.image}
+                            alt={place.name}
+                            className="w-full h-32 rounded-lg object-cover mb-3"
+                          />
+                          <h4 className="font-semibold text-gray-900 mb-1">{place.name}</h4>
+                          <p className="text-sm text-gray-600 mb-2">{place.description}</p>
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-xs bg-teal-100 text-teal-700 px-2 py-1 rounded-full">
+                              {place.duration}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-1">
+                            {place.highlights.map((highlight, idx) => (
+                              <span
+                                key={idx}
+                                className="text-xs bg-white text-gray-600 px-2 py-1 rounded-full border"
+                              >
+                                {highlight}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex justify-end space-x-4 mt-6 pt-6 border-t">
+                      <button
+                        onClick={() => setShowRouteModal(null)}
+                        className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                      >
+                        Close
+                      </button>
+                      <button
+                        onClick={() => {
+                          selectTourismRoute(showRouteModal);
+                          setShowRouteModal(null);
+                        }}
+                        className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
+                      >
+                        Select This Route
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Right Column - Booking Card */}
@@ -372,12 +623,9 @@ export default function MedicalTourismPackage() {
                     Accommodation: ${selectedAccommodation.price} × 7 nights
                   </p>
                 )}
-                {selectedTourismOptions.length > 0 && (
+                {selectedTourismRoute && (
                   <p className="text-sm text-gray-600">
-                    Tourism activities: ${selectedTourismOptions.reduce((total, optionId) => {
-                      const option = tourismOptions.find(opt => opt.id === optionId);
-                      return total + (option ? option.price : 0);
-                    }, 0)}
+                    Tourism route: ${selectedTourismRoute.price}
                   </p>
                 )}
               </div>

@@ -6,7 +6,6 @@ const MedicalAppointment = () => {
       <div className="w-2/3">
         <BookAnAppointment/>
       </div>
-
   )
 }
 export default MedicalAppointment

@@ -50,11 +50,7 @@ interface HotelRooms {
   room_type: string;
 }
 
-interface AccommodationCardProps {
-  selectedDay: number | "all"; // ✅ Accepts selectedDay as a prop
-}
-
-const AccommodationCard: React.FC<AccommodationCardProps> = ({ selectedDay }) => {
+const AccommodationCard = () => {
   const { id } = useParams();
   const [packageBooking, setPackageBooking] = useState<PackageBooking | null>(null);
   const [hotelBooking, setHotelBooking] = useState<HotelBooking | null>(null);
@@ -115,25 +111,6 @@ const AccommodationCard: React.FC<AccommodationCardProps> = ({ selectedDay }) =>
   if (!packageBooking) return <p className="text-center text-gray-500">No package booking found.</p>;
   if (!packageBooking.hotel_booking_id) return <p className="text-center text-gray-500">No hotel booking associated with this package.</p>;
   if (!hotelBooking) return <p className="text-center text-gray-500">Loading hotel details...</p>;
-
-  // ✅ Correctly Calculate the Selected Date
-  let showAccommodation = false;
-  let selectedDate: Date | null = null;
-
-  if (selectedDay !== "all" && hotelBooking) {
-    selectedDate = getDateForSelectedDay(hotelBooking.check_in_date, selectedDay);
-    const checkInDate = new Date(hotelBooking.check_in_date);
-    const checkOutDate = new Date(hotelBooking.check_out_date);
-
-    // ✅ Ensure selectedDate is within range
-    if (selectedDate instanceof Date && !isNaN(selectedDate.getTime())) {
-      showAccommodation = selectedDate >= checkInDate && selectedDate <= checkOutDate;
-    }
-  } else {
-    showAccommodation = true; // Show everything if "all" is selected
-  }
-
-  if (!showAccommodation) return null; // ✅ Hide accommodation if it's not for the selected day
 
   return (
     <div className={`${inter.className}`}>

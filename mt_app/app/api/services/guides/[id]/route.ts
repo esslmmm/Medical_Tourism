@@ -10,60 +10,60 @@ import { prisma } from '@/lib/prisma';
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const resolvedParams = await params;
-    const interpreter_id = parseInt(resolvedParams.id, 10);
+    const guide_id = parseInt(resolvedParams.id, 10);
 
-    if (isNaN(interpreter_id)) {
-      return NextResponse.json({ error: "Invalid interpreter ID" }, { status: 400 });
+    if (isNaN(guide_id)) {
+      return NextResponse.json({ error: "Invalid guide ID" }, { status: 400 });
     }
 
-    const interpreter = await prisma.interpreters.findUnique({
-      where: { interpreter_id },
+    const guide = await prisma.guides.findUnique({
+      where: { guide_id },
       include: {
-        inter_education: true,
+        guide_education: true,
         languages: true,
-        review_inter: true,
-        inter_bookings: true,
+        review_guide: true,
+        guide_bookings: true,
       },
     });
 
-    if (!interpreter) {
-      return NextResponse.json({ error: "Interpreter not found" }, { status: 404 });
+    if (!guide) {
+      return NextResponse.json({ error: "Guide not found" }, { status: 404 });
     }
 
-    return NextResponse.json(interpreter, { status: 200 });
+    return NextResponse.json(guide, { status: 200 });
   } catch (error) {
-    console.error("Error fetching interpreter:", error);
-    return NextResponse.json({ error: "Failed to fetch interpreter" }, { status: 500 });
+    console.error("Error fetching guide:", error);
+    return NextResponse.json({ error: "Failed to fetch guide" }, { status: 500 });
   }
 }
 
 
 /**
- * PUT: Update a Interpreter by ID
+ * PUT: Update a guide by ID
  */
 type LanguagesProficiency = "Basic" | "Conversational" | "Fluent" | "Native";
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
-      const interpreter_id = parseInt(params.id, 10);
+      const guide_id = parseInt(params.id, 10);
 
-      if (isNaN(interpreter_id)) {
-          return NextResponse.json({ error: "Invalid interpreter ID" }, { status: 400 });
+      if (isNaN(guide_id)) {
+          return NextResponse.json({ error: "Invalid guide ID" }, { status: 400 });
       }
 
       const body = await request.json();
 
-      // Check if the interpreter exists
-      const existingInterpreter = await prisma.interpreters.findUnique({
-          where: { interpreter_id },
+      // Check if the guide exists
+      const existingGuide = await prisma.guides.findUnique({
+          where: { guide_id },
       });
 
-      if (!existingInterpreter) {
-          return NextResponse.json({ error: "Interpreter not found" }, { status: 404 });
+      if (!existingGuide) {
+          return NextResponse.json({ error: "Guide not found" }, { status: 404 });
       }
 
-      // Update interpreter details
-      const updatedInterpreter = await prisma.interpreters.update({
-          where: { interpreter_id },
+      // Update guide details
+      const updatedGuide = await prisma.guides.update({
+          where: { guide_id },
           data: {
               name: body.name,
               email: body.email,
@@ -71,18 +71,18 @@ export async function PUT(request: Request, { params }: { params: { id: string }
               rating: body.rating,
               nationality: body.nationality,
               image: body.image,
-              birthofday: body.birthofday ? new Date(body.birthofday) : existingInterpreter.birthofday,
+              birthofday: body.birthofday ? new Date(body.birthofday) : existingGuide.birthofday,
               address: body.address,
               profile_summary: body.profile_summary,
               language: body.language
           },
       });
 
-      // Update or Add Interpreter's Educations
+      // Update or Add guide's Educations
       if (Array.isArray(body.educations)) {
           for (const edu of body.educations) {
               if (edu.id) {
-                  await prisma.inter_education.update({
+                  await prisma.guide_education.update({
                       where: { education_id: edu.id },
                       data: {
                           degree: edu.degree,
@@ -91,9 +91,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
                       },
                   });
               } else {
-                  await prisma.inter_education.create({
+                  await prisma.guide_education.create({
                       data: {
-                          interpreter_id,
+                          guide_id,
                           degree: edu.degree,
                           field_of_study: edu.field_of_study,
                           institution: edu.institution,
@@ -103,7 +103,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
           }
       }
 
-      // Update or Add Interpreter's Languages
+      // Update or Add guide's Languages
       if (Array.isArray(body.languages)) {
           for (const lang of body.languages) {
               if (lang.id) {
@@ -117,7 +117,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
               } else {
                   await prisma.languages.create({
                       data: {
-                          interpreter_id,
+                          guide_id,
                           language_name: lang.language_name,
                           proficiency: lang.proficiency as LanguagesProficiency,
                       },
@@ -127,64 +127,64 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       }
 
       return NextResponse.json(
-          { message: "Interpreter, education, and languages updated successfully", updatedInterpreter },
+          { message: "Guide, education, and languages updated successfully", updatedGuide },
           { status: 200 }
       );
   } catch (error) {
-      console.error("Error updating interpreter:", error);
-      return NextResponse.json({ error: "Failed to update interpreter" }, { status: 500 });
+      console.error("Error updating guide:", error);
+      return NextResponse.json({ error: "Failed to update guide" }, { status: 500 });
   }
 }
 
 
 /**
-   * DELETE: Remove a Interpreter by ID
+   * DELETE: Remove a guide by ID
    */
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
-      const interpreter_id = parseInt(params.id, 10);
+      const guide_id = parseInt(params.id, 10);
 
-      if (isNaN(interpreter_id)) {
-          return NextResponse.json({ error: "Invalid interpreter ID" }, { status: 400 });
+      if (isNaN(guide_id)) {
+          return NextResponse.json({ error: "Invalid guide ID" }, { status: 400 });
       }
 
-      // Check if the interpreter exists
-      const existingInterpreter = await prisma.interpreters.findUnique({
-          where: { interpreter_id },
+      // Check if the guide exists
+      const existingGuide = await prisma.guides.findUnique({
+          where: { guide_id },
           include: {
-              inter_education: true,
+              guide_education: true,
               languages: true
           }
       });
 
-      if (!existingInterpreter) {
-          return NextResponse.json({ error: "Interpreter not found" }, { status: 404 });
+      if (!existingGuide) {
+          return NextResponse.json({ error: "Guide not found" }, { status: 404 });
       }
 
       // Delete associated education records
-      await prisma.inter_education.deleteMany({
-          where: { interpreter_id }
+      await prisma.guide_education.deleteMany({
+          where: { guide_id }
       });
 
       // Delete associated review records
-      await prisma.review_inter.deleteMany({
-          where: { interpreter_id }
+      await prisma.review_guide.deleteMany({
+          where: { guide_id }
       });
 
       // Delete associated language records
       await prisma.languages.deleteMany({
-          where: { interpreter_id }
+          where: { guide_id }
       });
 
-      // Delete the interpreter
-      await prisma.interpreters.delete({
-          where: { interpreter_id }
+      // Delete the guide
+      await prisma.guides.delete({
+          where: { guide_id }
       });
 
-      return NextResponse.json({ message: "Interpreter and related data deleted successfully" }, { status: 200 });
+      return NextResponse.json({ message: "Guide and related data deleted successfully" }, { status: 200 });
   } catch (error) {
-      console.error("Error deleting interpreter:", error);
-      return NextResponse.json({ error: "Failed to delete interpreter" }, { status: 500 });
+      console.error("Error deleting guide:", error);
+      return NextResponse.json({ error: "Failed to delete guide" }, { status: 500 });
   }
 }
 
@@ -202,7 +202,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 //   "image": "https://example.com/updated-profile.jpg",
 //   "birthofday": "1985-06-15",
 //   "address": "456 Maple St, Toronto",
-//   "profile_summary": "Highly experienced medical interpreter.",
+//   "profile_summary": "Highly experienced medical guide.",
 //   "language": "Arabic",
 //   "educations": [
 //       { "id": 5, "degree": "Master's", "field_of_study": "Translation Studies", "institution": "Oxford University" }

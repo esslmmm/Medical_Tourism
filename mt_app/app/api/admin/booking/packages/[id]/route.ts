@@ -34,9 +34,9 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
           }
         },
         user_contact_detail: true,
-        inter_bookings: {
+        guide_bookings: {
           include: {
-            interpreters: true
+            guides: true
           }
         },
         payment: true,

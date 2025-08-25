@@ -15,7 +15,7 @@ interface User {
   user_id: number;
   name: string;
   email: string;
-  review_inter: Review[];
+  review_guide: Review[];
   review_hospital: Review[];
   review_hotel: Review[];
 }
@@ -26,7 +26,7 @@ interface Review {
   title_review: string;
   comment: string;
   created_at: string;
-  type: "Interpreter" | "Hospital" | "Hotel";
+  type: "Guide" | "Hospital" | "Hotel";
   reviewed_name: string;
 }
 
@@ -36,11 +36,11 @@ interface Review {
   title_review: string;
   comment: string;
   created_at: string;
-  type: "Interpreter" | "Hospital" | "Hotel";
+  type: "Guide" | "Hospital" | "Hotel";
   reviewed_name: string;
   hospitals?: { name: string };
   hotels?: { name: string };
-  interpreters?: { name: string };
+  guides?: { name: string };
 }
 
 const Review = () => {
@@ -61,10 +61,10 @@ const Review = () => {
             setUser(data);
 
             const combinedReviews = [
-                ...data.review_inter.map((r) => ({
+                ...data.review_guide.map((r) => ({
                     ...r,
-                    type: "Interpreter",
-                    reviewed_name: r.interpreters?.name ?? "Unknown Interpreter",
+                    type: "Guide",
+                    reviewed_name: r.guides?.name ?? "Unknown Guide",
                 })),
                 ...data.review_hospital.map((r) => ({
                     ...r,

@@ -1,11 +1,8 @@
-import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
-
-const prisma = new PrismaClient();
-
+import { prisma } from '@/lib/prisma';
 
 /**
- * GET: Fetch a interpreter review by ID
+ * GET: Fetch a guide review by ID
  */
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
@@ -16,10 +13,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
       return NextResponse.json({ error: "Invalid review ID" }, { status: 400 });
     }
 
-    const review = await prisma.review_inter.findUnique({
+    const review = await prisma.review_guide.findUnique({
       where: { review_id },
       include: {
-        interpreters: true,
+        guides: true,
       },
     });
 
@@ -37,7 +34,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
 
 /**
- * PUT: Update a interpreter review by ID
+ * PUT: Update a guide review by ID
  */
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
     try {
@@ -49,7 +46,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
         const body = await request.json();
 
-        const existingReview = await prisma.review_inter.findUnique({
+        const existingReview = await prisma.review_guide.findUnique({
             where: { review_id },
         });
 
@@ -57,11 +54,11 @@ export async function PUT(request: Request, { params }: { params: { id: string }
             return NextResponse.json({ error: "Review not found" }, { status: 404 });
         }
 
-        const updatedReview = await prisma.review_inter.update({
+        const updatedReview = await prisma.review_guide.update({
             where: { review_id },
             data: {
                 user_id: body.user_id,
-                interpreter_id: body.interpreter_id,
+                guide_id: body.guide_id,
                 rating: body.rating,
                 title_review: body.title_review,
                 comment: body.comment,
@@ -69,20 +66,20 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         });
 
         return NextResponse.json(
-            { message: "Interpreter review updated successfully", updatedReview },
+            { message: "guide review updated successfully", updatedReview },
             { status: 200 }
         );
 
     } catch (error) {
-        console.error("Error updating interpreter review:", error);
-        return NextResponse.json({ error: "Failed to update interpreter review" }, { status: 500 });
+        console.error("Error updating guide review:", error);
+        return NextResponse.json({ error: "Failed to update guide review" }, { status: 500 });
     }
 }
 
 
 
 /**
- * DELETE: Remove a interpreter review by ID
+ * DELETE: Remove a guide review by ID
  */
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
     try {
@@ -92,7 +89,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
             return NextResponse.json({ error: "Invalid review ID" }, { status: 400 });
         }
 
-        const existingReview = await prisma.review_inter.findUnique({
+        const existingReview = await prisma.review_guide.findUnique({
             where: { review_id },
         });
 
@@ -100,14 +97,14 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
             return NextResponse.json({ error: "Review not found" }, { status: 404 });
         }
 
-        await prisma.review_inter.delete({
+        await prisma.review_guide.delete({
             where: { review_id }
         });
 
-        return NextResponse.json({ message: "Interpreter review deleted successfully" }, { status: 200 });
+        return NextResponse.json({ message: "guide review deleted successfully" }, { status: 200 });
 
     } catch (error) {
-        console.error("Error deleting interpreter review:", error);
-        return NextResponse.json({ error: "Failed to delete interpreter review" }, { status: 500 });
+        console.error("Error deleting guide review:", error);
+        return NextResponse.json({ error: "Failed to delete guide review" }, { status: 500 });
     }
 }

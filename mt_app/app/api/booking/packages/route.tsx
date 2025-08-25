@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       appointment_id,
       hotel_booking_id,
       contact_id,
-      inter_booking_id,
+      guide_booking_id,
       status,
     } = await req.json()
 
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
         appointment_id,
         hotel_booking_id,
         contact_id,
-        inter_booking_id,
+        guide_booking_id,
         status,
       },
     })

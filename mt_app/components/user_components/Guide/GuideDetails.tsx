@@ -16,8 +16,8 @@ interface Review {
   created_at: string;
 }
 
-interface Interpreter {
-  interpreter_id: number;
+interface Guide {
+  guide_id: number;
   name: string;
   email: string;
   phone: string;
@@ -28,15 +28,15 @@ interface Interpreter {
   reviews: number;
   language: string;
   experience: Date;
-  review_inter: Review[];
-  inter_education: Education[];
+  review_guide: Review[];
+  guide_education: Education[];
   languages: Languages[];
-  inter_bookings: Bookings[]
+  guide_bookings: Bookings[]
 }
 
 interface Bookings {
   booking_id: number;
-  interpreter_id: number;
+  guide_id: number;
   status: string;
 }
 
@@ -54,8 +54,8 @@ interface Education {
   institution: string;
 }
 
-interface InterpreterProfileProps {
-  interpreter: Interpreter | null;
+interface GuideProfileProps {
+  guide: Guide | null;
 }
 
 
@@ -78,8 +78,8 @@ const calculate = (birthDate: string | Date) => {
   return age;
 };
 
-const InterpreterProfile: React.FC<InterpreterProfileProps> = ({ interpreter }) => {
-  const approvedCount = interpreter?.inter_bookings.filter(booking => booking.status === "Approved").length;
+const GuideProfile: React.FC<GuideProfileProps> = ({ guide }) => {
+  const approvedCount = guide?.guide_bookings.filter(booking => booking.status === "Approved").length;
   const calculateAverageRating = (reviews: Review[]) => {
     if (!reviews || reviews.length === 0) return 0;
   
@@ -88,7 +88,7 @@ const InterpreterProfile: React.FC<InterpreterProfileProps> = ({ interpreter }) 
     return totalRating / reviews.length;
   };
 
-  const averageRating = interpreter?.review_inter ? calculateAverageRating(interpreter.review_inter) : 0;
+  const averageRating = guide?.review_guide? calculateAverageRating(guide.review_guide) : 0;
 
   const formatDate = (timestamp: string | number | Date) => {
     if (!timestamp) return "Invalid Date";
@@ -104,10 +104,10 @@ const InterpreterProfile: React.FC<InterpreterProfileProps> = ({ interpreter }) 
   
   
 
-  if (!interpreter) {
+  if (!guide) {
     return (
       <div className="text-center text-gray-500 p-10">
-        Select an interpreter to view details
+        Select an guide to view details
       </div>
     );
   }
@@ -119,21 +119,21 @@ const InterpreterProfile: React.FC<InterpreterProfileProps> = ({ interpreter }) 
         <div className="bg-[#EDEDED] p-6 py-15 rounded-sm shadow-md w-full lg:w-1/4 ml-15 text-[#2B2B2B]">
           <div className="flex flex-col items-center text-center">
             <Image
-              src={interpreter.image || '/default-avatar.png'}
-              alt={interpreter.name || 'Unknown'}
+              src={guide.image || '/default-avatar.png'}
+              alt={guide.name || 'Unknown'}
               width={180}
               height={180}
               className="rounded-full border-2 border-gray-300"
             />
-            <h2 className="text-xl font-bold mt-4">{interpreter.name ?? 'Unknown'}</h2>
-            <p className="text-gray-600">{interpreter.language ?? 'No role available'} Interpreter</p>
+            <h2 className="text-xl font-bold mt-4">{guide.name ?? 'Unknown'}</h2>
+            <p className="text-gray-600">{guide.language ?? 'No role available'} Guide</p>
             <div className="text-yellow-400 flex items-center gap-1 mt-2">
               {Array.from({ length: Math.floor(averageRating) }).map((_, i) => (
                 <FaStar key={i} />
               ))}
               {averageRating % 1 !== 0 && <FaStarHalfAlt />}
               <span className="text-gray-700 ml-2">
-                {averageRating.toFixed(1)} ({interpreter.review_inter.length} reviews)
+                {averageRating.toFixed(1)} ({guide.review_guide.length} reviews)
               </span>
             </div>
           </div>
@@ -141,19 +141,19 @@ const InterpreterProfile: React.FC<InterpreterProfileProps> = ({ interpreter }) 
           {/* Additional Details */}
           <div className={`mt-6 mx-5 space-y-2 ${poppins.className}`}>
             <p className="flex justify-between">
-            <strong>Age:</strong> <span>{calculate(interpreter.birthofday)}</span>
+            <strong>Age:</strong> <span>{calculate(guide.birthofday)}</span>
             </p>
             <p className="flex justify-between">
               <strong>Amount of Deals:</strong> <span>{approvedCount}</span>
             </p>
             <p className="flex justify-between">
-              <strong>Experience:</strong> <span>{calculate(interpreter.experience)} Years</span>
+              <strong>Experience:</strong> <span>{calculate(guide.experience)} Years</span>
             </p>
             <p className="flex justify-between">
-              <strong>Country:</strong> <span>{interpreter.nationality ?? 'Unknown'}</span>
+              <strong>Country:</strong> <span>{guide.nationality ?? 'Unknown'}</span>
             </p>
             <p className="flex justify-between">
-              <strong>Email:</strong> <span>{interpreter.email ?? 'Not provided'}</span>
+              <strong>Email:</strong> <span>{guide.email ?? 'Not provided'}</span>
             </p>
           </div>
 
@@ -161,8 +161,8 @@ const InterpreterProfile: React.FC<InterpreterProfileProps> = ({ interpreter }) 
           <div className='mt-10 space-y-2'>
             <h2 className={`text-xl font-bold ${poppins.className}`}>Languages</h2>
             <div className='mt-1 mx-5'>
-              {interpreter.languages.length > 0 ? (
-                interpreter.languages.map((lang) => (
+              {guide.languages.length > 0 ? (
+                guide.languages.map((lang: any) => (
                   <p key={lang.lang_id} className="text-black flex justify-between">
                     <strong>{lang.language_name}</strong> <span>{lang.proficiency}</span>
                   </p>
@@ -177,8 +177,8 @@ const InterpreterProfile: React.FC<InterpreterProfileProps> = ({ interpreter }) 
           <div className={`mt-10 space-y-2 ${poppins.className}`}>
             <h2 className={`text-xl font-bold`}>Education</h2>
             <div className='mx-2 mt-1'>
-              {interpreter.inter_education.length > 0 ? (
-                interpreter.inter_education.map((edu) => (
+              {guide.guide_education.length > 0 ? (
+                guide.guide_education.map((edu: any) => (
                   <div key={edu.education_id} className="mb-2">
                     <p className="text-black flex gap-x-2 font-semibold">• {edu.institution}</p>
                     <p className="text-black ml-5 font-light">{edu.degree} in {edu.field_of_study}</p>
@@ -194,9 +194,9 @@ const InterpreterProfile: React.FC<InterpreterProfileProps> = ({ interpreter }) 
         <div className='lg:w-3/5'>
           {/* Right Content - About and Reviews */}
           <div className={`flex-1 bg-[#EDEDED] p-15 rounded-sm shadow-md ${inter.className}`}>
-            <h1 className="text-3xl font-bold" style={{fontSize:"38px"}}>I’m {interpreter.name ?? 'Unknown'}</h1>
-            <h1 className="text-3xl font-bold" style={{fontSize:"38px"}}>{interpreter.language ?? 'Unknown'} Interpreter</h1>
-            <p className="text-[#767676] mt-2 font-light" style={{fontSize:"16px"}}>{interpreter.profile_summary ?? 'No bio available'}</p>
+            <h1 className="text-3xl font-bold" style={{fontSize:"38px"}}>I’m {guide.name ?? 'Unknown'}</h1>
+            <h1 className="text-3xl font-bold" style={{fontSize:"38px"}}>{guide.language ?? 'Unknown'} Guide</h1>
+            <p className="text-[#767676] mt-2 font-light" style={{fontSize:"16px"}}>{guide.profile_summary ?? 'No bio available'}</p>
           </div>
 
             {/* Reviews */}
@@ -205,8 +205,8 @@ const InterpreterProfile: React.FC<InterpreterProfileProps> = ({ interpreter }) 
 
             {/* Scrollable Review Container */}
             <div className="max-h-[570px] overflow-y-auto space-y-4 p-2 scrollbar-hide">
-              {interpreter.review_inter.length > 0 ? (
-                interpreter.review_inter.map((review: Review) => (
+              {guide.review_guide.length > 0 ? (
+                guide.review_guide.map((review: Review) => (
                   <div key={review.review_id} className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
                     <div className='space-y-2'>
                       <div className="text-yellow-400 flex items-center gap-1">
@@ -234,4 +234,4 @@ const InterpreterProfile: React.FC<InterpreterProfileProps> = ({ interpreter }) 
   );
 };
 
-export default InterpreterProfile;
+export default GuideProfile;

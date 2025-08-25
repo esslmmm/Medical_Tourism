@@ -1,15 +1,15 @@
 "use client";
 import React, { useState } from 'react';
 import Footer from '@/components/user_components/Main/Footer';
-import InterpreterDetails from '@/components/user_components/Interpreter/InterpreterDetails';
-import InterpreterList from '@/components/user_components/Interpreter/InterpreterList';
+import GuideList from '@/components/user_components/Guide/GuideList';
 import { useStepNavigator } from '../../package_landing_page/goToNextStep';
-import { submitInterBooking } from '../../../api/booking/interpreters/submitInterBooking';
 import { updatePackageBooking } from '../../../api/booking/packages/updatePackageBooking';
 import Navbarpro from '@/components/user_components/Main/Navbarpro';
+import GuideDetails from '@/components/user_components/Guide/GuideDetails';
+import { submitGuideBooking } from '@/app/api/booking/guides/submitGuideBooking';
 
 
-// Define Type for an Interpreter
+// Define Type for an Guide
 interface Review {
   review_id: number;
   title_review: string;
@@ -18,8 +18,8 @@ interface Review {
   created_at: string;
 }
 
-interface Interpreter {
-  interpreter_id: number;
+interface Guide {
+  guide_id: number;
   name: string;
   email: string;
   phone: string;
@@ -31,15 +31,15 @@ interface Interpreter {
   reviews: number;
   language: string;
   experience: Date;
-  review_inter: Review[];
-  inter_education: Education[];
+  review_guide: Review[];
+  guide_education: Education[];
   languages: Languages[];
-  inter_bookings: Bookings[]
+  guide_bookings: Bookings[]
 }
 
 interface Bookings {
   booking_id: number;
-  interpreter_id: number;
+  guide_id: number;
   status: string;
 }
 
@@ -56,8 +56,8 @@ interface Education {
   institution: string;
 }
 
-export default function InterpreterPage() {
-    const [selectedInterpreter, setSelectedInterpreter] = useState<Interpreter | null>(null);
+export default function GuidePage() {
+    const [selectedGuide, setSelectedGuide] = useState<Guide | null>(null);
     const goToNextStep = useStepNavigator();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -66,34 +66,34 @@ export default function InterpreterPage() {
     setLoading(true);
     setError(null);
 
-    if (!selectedInterpreter || Number(selectedInterpreter) <= 0) {
+    if (!selectedGuide || Number(selectedGuide) <= 0) {
       setError('Some booking details are missing or invalid. Please check again.');
       setLoading(false);
       return;
     }
 
     const bookingData = {
-      interpreter_id: Number(selectedInterpreter.interpreter_id),
+      guide_id: Number(selectedGuide.guide_id),
       start: null,
       end: null,
       status: 'In_Progress',
     };
 
     try {
-      const response = await submitInterBooking(bookingData);
+      const response = await submitGuideBooking(bookingData);
 
       if (!response || response.error) {
         throw new Error(response?.error || 'Server error');
       }
 
-      const inter_booking_id = response.booking_id;
+      const guide_booking_id = response.booking_id;
       const package_booking_id = localStorage.getItem('package_booking_id');
 
-      if (!package_booking_id || !inter_booking_id) {
+      if (!package_booking_id || !guide_booking_id) {
           throw Error('Missing booking ID(s).');
         }
 
-      await updatePackageBooking(package_booking_id, { inter_booking_id });
+      await updatePackageBooking(package_booking_id, { guide_booking_id });
 
       goToNextStep();
     } catch (err) {
@@ -109,23 +109,23 @@ export default function InterpreterPage() {
       <div>
         <Navbarpro />
         <div className="container mx-auto p-6">
-          <h1 className="text-3xl font-bold ml-12">Interpreter</h1>
+          <h1 className="text-3xl font-bold ml-12">Guide</h1>
   
-          {/* Scrollable Interpreter List */}
-          <InterpreterList
-            setSelectedInterpreter={setSelectedInterpreter}
-            selectedInterpreter={selectedInterpreter}
+          {/* Scrollable Guide List */}
+          <GuideList
+            setSelectedGuide={setSelectedGuide}
+            selectedGuide={selectedGuide}
           />
           <div className="flex justify-center">
             <hr className="w-8/9 border border-[#C5D1E0] my-10" />
           </div>
 
-          {/* Interpreter Details */}
-          <InterpreterDetails interpreter={selectedInterpreter} />
+          {/* Guide Details */}
+          <GuideDetails guide={selectedGuide} />
 
   
           {/* Continue Button */}
-          {selectedInterpreter && (
+          {selectedGuide && (
         <div className="flex justify-end mt-6 mr-25">
           <button
             onClick={handleNext}

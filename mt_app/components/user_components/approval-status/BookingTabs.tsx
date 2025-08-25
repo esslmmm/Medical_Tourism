@@ -61,8 +61,6 @@ const BookingTabs: React.FC = () => {
 };
 
 
-
-
   if (loading) {
     return <BookingSkeleton />
   }

@@ -8,7 +8,9 @@ import Footer from "@/components/user_components/Main/Footer";
 import MedicalServiceCard from "@/components/user_components/BookingDetail/MedicalService";
 import AccommodationCard from "@/components/user_components/BookingDetail/AccommodationCard";
 import PlacesToVisit from "@/components/user_components/BookingDetail/PlacesToVisit";
-import Interpreter from "@/components/user_components/BookingDetail/Interpreter";
+import Guide from "@/components/user_components/BookingDetail/Guide";
+import BookingDetailPage from "@/components/user_components/BookingDetail/NewDesign";
+
 
 
 const UserTimeline = () => {
@@ -20,7 +22,7 @@ const UserTimeline = () => {
     medical: useRef<HTMLDivElement>(null),
     accommodation: useRef<HTMLDivElement>(null),
     place: useRef<HTMLDivElement>(null),
-    interpreter: useRef<HTMLDivElement>(null),
+    guide: useRef<HTMLDivElement>(null),
     car: useRef<HTMLDivElement>(null),
   };
   
@@ -29,34 +31,25 @@ const UserTimeline = () => {
     <div>
       <Navbarpro />
       <div className="p-6 max-w-4xl mx-auto font-sans">
-        {/* Navigation Bar */}
+        <BookingDetailPage />
+        {/* Navigation Bar
         <NavigationIcons sections={sections} />
 
-        {/* Sections with Proper Refs */}
-        <div ref={sections?.package}>
-          <PackageType />
-        </div>
-
-
-        <div ref={sections?.timeline}>
-          <TimelineSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
-        </div>
-
         <div ref={sections?.medical}>
-          <MedicalServiceCard selectedDay={selectedDay}/>
+          <MedicalServiceCard />
         </div>
 
         <div ref={sections?.accommodation}>
-          <AccommodationCard selectedDay={selectedDay}/>
+          <AccommodationCard />
         </div>
 
         <div ref={sections?.place}>
-          <PlacesToVisit selectedDay={selectedDay}/>
+          <PlacesToVisit />
         </div>
 
-        <div ref={sections?.interpreter}>
-          <Interpreter selectedDay={selectedDay}/>
-        </div>
+        <div ref={sections?.guide}>
+          <Guide />
+        </div> */}
       </div>
       <Footer />
     </div>

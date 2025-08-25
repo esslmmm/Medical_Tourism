@@ -10,11 +10,11 @@ interface ReviewCardProps {
   onSubmitted: () => void;
 }
 
-interface inter_bookings {
+interface guide_bookings {
   booking_id: number;
-  interpreter_id: number;
-  interpreters: {
-    interpreter_id: number;
+  guide_id: number;
+  guides: {
+    guide_id: number;
     name: string;
     image: string;
   }
@@ -30,7 +30,7 @@ interface Booking {
   booking_id: number;
   create_at: string;
   status: string;
-  inter_booking_id: number;
+  guide_booking_id: number;
   packages: Packages;
 }
 
@@ -45,9 +45,9 @@ interface UserWithLatestBooking extends User {
   latestCompletedBooking?: Booking | null;
 }
 
-const InterpreterReview: React.FC<ReviewCardProps> = ({ id, onSubmitted }) => {
+const GuideReview: React.FC<ReviewCardProps> = ({ id, onSubmitted }) => {
   const [user, setUser] = useState<UserWithLatestBooking | null>(null);
-  const [inter, setBookingInter] = useState<inter_bookings | null>(null);
+  const [guide, setBookingGuide] = useState<guide_bookings | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingButton, setLoadingButton] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -71,12 +71,12 @@ const InterpreterReview: React.FC<ReviewCardProps> = ({ id, onSubmitted }) => {
 
         setUser({ ...data, latestCompletedBooking });
 
-        const interBookingId = latestCompletedBooking?.inter_booking_id;
-        if (interBookingId) {
-          const interResponse = await fetch(`/api/booking/interpreters/${interBookingId}`);
-          if (!interResponse.ok) throw new Error("Failed to fetch interpreter data");
-          const interData: inter_bookings = await interResponse.json();
-          setBookingInter(interData);
+        const guideBookingId = latestCompletedBooking?.guide_booking_id;
+        if (guideBookingId) {
+          const guideResponse = await fetch(`/api/booking/guides/${guideBookingId}`);
+          if (!guideResponse.ok) throw new Error("Failed to fetch guide data");
+          const guideData: guide_bookings = await guideResponse.json();
+          setBookingGuide(guideData);
         }
       } catch (error: any) {
         setError(`Error fetching data: ${error.message}`);
@@ -93,19 +93,19 @@ const InterpreterReview: React.FC<ReviewCardProps> = ({ id, onSubmitted }) => {
     setLoadingButton(true);
     setErrorButton(null);
 
-    if (!inter?.interpreter_id) {
-      setErrorButton("No interpreter information found.");
+    if (!guide?.guide_id) {
+      setErrorButton("No guide information found.");
       setLoadingButton(false);
       return;
     }
 
     try {
-      const response = await fetch('/api/reviews/interpreters', {
+      const response = await fetch('/api/reviews/guides', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           user_id: id,
-          interpreter_id: inter.interpreter_id,
+          guide_id: guide.guide_id,
           rating,
           title_review: title.trim(),
           comment: comment.trim(),
@@ -121,7 +121,7 @@ const InterpreterReview: React.FC<ReviewCardProps> = ({ id, onSubmitted }) => {
     } finally {
       setLoadingButton(false);
     }
-  }, [id, inter, rating, title, comment, onSubmitted]);
+  }, [id, guide, rating, title, comment, onSubmitted]);
 
   return (
     <div className="w-full max-w-2xl mx-auto bg-white rounded-xl p-8 shadow">
@@ -131,15 +131,15 @@ const InterpreterReview: React.FC<ReviewCardProps> = ({ id, onSubmitted }) => {
         <p className="text-center text-red-500">{error}</p>
       ) : (
         <div className="${inter.className}">
-          {/* Interprter Card */}
+          {/* Guide Card */}
           <div className="flex items-center space-x-4 bg-gray-100 p-4 rounded-lg shadow-md">
             <img
-              src={inter?.interpreters?.image || "/img/Homepage/Mfu.jpg"}
-              alt="Interpreter Image"
+              src={guide?.guides?.image || "/img/Homepage/Mfu.jpg"}
+              alt="Guide Image"
               className="w-30 h-20 rounded-[10px] object-cover"
             />
             <div>
-              <h3 className="text-lg font-semibold">{inter?.interpreters?.name}</h3>
+              <h3 className="text-lg font-semibold">{guide?.guides?.name}</h3>
               <p className="text-sm text-gray-600">
                 {user?.latestCompletedBooking?.packages?.package_name || "No Package Found"}
               </p>
@@ -201,4 +201,4 @@ const InterpreterReview: React.FC<ReviewCardProps> = ({ id, onSubmitted }) => {
   );
 };
 
-export default InterpreterReview;
+export default GuideReview;

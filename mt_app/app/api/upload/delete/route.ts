@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cloudinary } from '../cloudinary';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export async function DELETE(request: NextRequest) {
   try {

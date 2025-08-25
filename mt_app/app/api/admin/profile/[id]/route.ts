@@ -38,9 +38,9 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
             },
           },
         },
-        review_inter: {
+        review_guide: {
           include: {
-            interpreters: {
+            guides: {
               select: {
                 name: true,
               },

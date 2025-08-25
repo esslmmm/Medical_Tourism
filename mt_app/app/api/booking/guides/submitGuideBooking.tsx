@@ -1,12 +1,12 @@
 
-export async function submitInterBooking(data: {
-    interpreter_id: number;
+export async function submitGuideBooking(data: {
+    guide_id: number;
     start: null;
     end: null;
     status: string;
 }) {
   try {
-    const res = await fetch('/api/booking/interpreters', {
+    const res = await fetch('/api/booking/guides', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

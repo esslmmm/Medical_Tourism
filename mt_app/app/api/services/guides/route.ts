@@ -1,17 +1,17 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 
 
 export async function GET() {
     try {
-      const interpreters = await prisma.interpreters.findMany();
-      return NextResponse.json(interpreters);
+      const guides = await prisma.guides.findMany();
+      return NextResponse.json(guides);
     } catch (error) {
-      console.error("Error fetching interpreters:", error);
-      return NextResponse.json({ error: "Failed to fetch interpreters" }, { status: 500 });
+      console.error("Error fetching guides:", error);
+      return NextResponse.json({ error: "Failed to fetch guides" }, { status: 500 });
     }
   }
 
@@ -21,7 +21,7 @@ export async function GET() {
   type LanguagesProficiency = "Basic" | "Conversational" | "Fluent" | "Native";
 
 /**
- * POST: Add a new Interpreter
+ * POST: Add a new guides
  */
 export async function POST(request: Request) {
   try {
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
           languages
       } = await request.json();
 
-      const newInterpreter = await prisma.interpreters.create({
+      const newGuide = await prisma.guides.create({
           data: {
               name,
               email,
@@ -54,13 +54,13 @@ export async function POST(request: Request) {
               language,
               create_at: new Date(),
           },
-          select: { interpreter_id: true }
+          select: { guide_id: true }
       });
 
       if (Array.isArray(educations) && educations.length > 0) {
-          await prisma.inter_education.createMany({
+          await prisma.guide_education.createMany({
               data: educations.map((edu: { degree: string; field_of_study: string; institution: string }) => ({
-                  interpreter_id: newInterpreter.interpreter_id,
+                  guide_id: newGuide.guide_id,
                   degree: edu.degree,
                   field_of_study: edu.field_of_study,
                   institution: edu.institution
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
       if (Array.isArray(languages) && languages.length > 0) {
           await prisma.languages.createMany({
               data: languages.map((lan: { language_name: string; proficiency: string }) => ({
-                  interpreter_id: newInterpreter.interpreter_id,
+                  guides_id: newGuide.guide_id,
                   language_name: lan.language_name,
                   proficiency: lan.proficiency as LanguagesProficiency
               })),
@@ -79,13 +79,13 @@ export async function POST(request: Request) {
       }
 
       return NextResponse.json({ 
-          message: "Interpreter and related data created successfully", 
-          interpreter_id: newInterpreter.interpreter_id 
+          message: "Guide and related data created successfully", 
+          guide_id: newGuide.guide_id 
       }, { status: 201 });
 
   } catch (error) {
-      console.error("Error creating interpreter:", error);
-      return NextResponse.json({ error: "Failed to create interpreter" }, { status: 500 });
+      console.error("Error creating guide:", error);
+      return NextResponse.json({ error: "Failed to create guide" }, { status: 500 });
   }
 }
 
@@ -98,7 +98,7 @@ export async function POST(request: Request) {
 //     "image": "https://example.com/profile.jpg",
 //     "birthofday": "1990-01-01",
 //     "address": "123 Main St, New York",
-//     "profile_summary": "Experienced interpreter in medical tourism.",
+//     "profile_summary": "Experienced guide in medical tourism.",
 //     "language": "English",
 //     "educations": [
 //         { "degree": "Bachelor's", "field_of_study": "Linguistics", "institution": "Harvard University" },

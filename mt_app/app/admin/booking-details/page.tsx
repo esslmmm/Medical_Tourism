@@ -4,7 +4,7 @@ import Sidebar from "../../../components/admin_component/booking-details/Sidebar
 import ProfileHeader from "../../../components/admin_component/booking-details/ProfileHeader";
 import TimelineSelector from "../../../components/admin_component/booking-details/TimelineSelector";
 import EventsList from "../../../components/admin_component/booking-details/EventsList";
-import InterpreterCarService from "../../../components/admin_component/booking-details/InterpreterCarService";
+import GuideCarService from "../../../components/admin_component/booking-details/GuideCarService";
 import UserDetail from "../../../components/admin_component/booking-details/UserDetail";
 import "../../../app/globals.css";
 
@@ -65,7 +65,7 @@ const AdminBookingDetails: React.FC = () => {
           <>
             <TimelineSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
             <EventsList events={eventsToShow} />
-            <InterpreterCarService />
+            <GuideCarService />
           </>
         )}
       </div>

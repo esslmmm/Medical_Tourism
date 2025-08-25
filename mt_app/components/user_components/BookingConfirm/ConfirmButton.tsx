@@ -42,7 +42,6 @@ const ConfirmButton = () => {
 
 
       const uploadToCloudinary = async (file: File): Promise<any> => {
-		const isPDF = file.type === 'application/pdf';
 		const endpoint = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`;
 
 		const formData = new FormData();
@@ -63,159 +62,168 @@ const ConfirmButton = () => {
 
 
 
-      const handleConfirm = async () => {
-		if (!form || !fileData) {
-			alert('No form data found');
-			return;
+	const handleConfirm = async () => {
+		if (!form) {
+		  alert("No form data found");
+		  return;
 		}
-
+	  
 		setUploading(true);
-
+	  
 		try {
+		  let file_id: string | null = null;
+	  
+		  // ✅ Only handle file upload if user provided one
+		  if (fileData) {
 			// Convert base64 back to File object
 			const file = base64ToFile(fileData.base64, fileData.name, fileData.type);
-			console.log('File converted successfully:', file.name);
-			
+			console.log("File converted successfully:", file.name);
+	  
 			// Upload file to Cloudinary
-			console.log('Uploading to Cloudinary...');
 			const cloudinaryResult = await uploadToCloudinary(file);
-			console.log('Cloudinary upload successful:', cloudinaryResult.secure_url);
-			
-			const appointmentData = {
-			date: form.selectedDate,
-			timeslot: form.selectedTime,
-			description: form.details,
-			status: 'In_Progress',
-			patient: {
-				firstname: form.patient.firstname,
-				lastname: form.patient.lastname,
-				gender: form.patient.gender,
-				dateofbirth: new Date(form.patient.dob),
-				nationality: form.contact.country,
-				passport_number: form.patient.passportId,
-			},
-			};
-			
-			const contactData = {
-			firstname: form.contact.firstname,
-			lastname: form.contact.lastname,
-			email: form.contact.email,
-			country: form.contact.country,
-			phone: Number(form.contact.phoneNumber),
-			};
-
-		
-			const metadataResponse = await fetch('/api/upload/save-metadata', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
+	  
+			// Save metadata
+			const metadataResponse = await fetch("/api/upload/save-metadata", {
+			  method: "POST",
+			  headers: {
+				"Content-Type": "application/json",
+			  },
+			  body: JSON.stringify({
 				userId: userId,
 				fileName: cloudinaryResult.original_filename || cloudinaryResult.public_id,
 				originalName: cloudinaryResult.original_filename || fileData.name,
 				fileType: cloudinaryResult.format,
 				fileSize: cloudinaryResult.bytes,
-				category: 'MEDICAL_REPORT',
+				category: "MEDICAL_REPORT",
 				cloudinaryId: cloudinaryResult.public_id,
-				url: cloudinaryResult.secure_url
-			})
+				url: cloudinaryResult.secure_url,
+			  }),
 			});
-
+	  
 			if (!metadataResponse.ok) {
-			const errorText = await metadataResponse.text();
-			console.error('Metadata save failed:', errorText);
-			throw new Error(`Failed to save file metadata: ${metadataResponse.status} - ${errorText}`);
+			  const errorText = await metadataResponse.text();
+			  console.error("Metadata save failed:", errorText);
+			  throw new Error(
+				`Failed to save file metadata: ${metadataResponse.status} - ${errorText}`
+			  );
 			}
-
+	  
 			const metadataData = await metadataResponse.json();
-			const file_id = metadataData.fileId;
-
-			// Create appointment
-			const appointmentResponse = await createAppointment(appointmentData);
-
-			if (!appointmentResponse || appointmentResponse.error) {
-			throw new Error(appointmentResponse?.error || 'Failed to create appointment');
-			}
-
-			// Create contact details
-			const contactResponse = await createContactDetails(contactData);
-
-			if (!contactResponse || contactResponse.error) {
-			throw new Error(contactResponse?.error || 'Failed to create contact details');
-			}
-
-			// Extract IDs
-			const appointment_id = appointmentResponse.appointment_id;
-			const patient_id = appointmentResponse.patient_id;
-			const contact_id = contactResponse.id;
-			const status = "Pending";
-			const package_booking_id = localStorage.getItem('package_booking_id');
-
-			// Validate all required IDs
-			if (!package_booking_id) {
-			throw new Error('Missing package_booking_id in localStorage');
-			}
-			if (!appointment_id) {
-			throw new Error('Missing appointment_id from appointment response');
-			}
-			if (!contact_id) {
-			throw new Error('Missing contact_id from contact response');
-			}
-			if (!patient_id) {
-			throw new Error('Missing patient_id from appointment response');
-			}
-			if (!file_id) {
-			throw new Error('Missing file_id from metadata response');
-			}
-
-			// Create appointment file association
-			const appointmentFileResponse = await createAppointmentFile(appointment_id, file_id);
-
-			// Check if createAppointmentFile returned an error
+			file_id = metadataData.fileId;
+		  }
+	  
+		  // Create appointment
+		  const appointmentData = {
+			date: form.selectedDate,
+			timeslot: form.selectedTime,
+			description: form.details,
+			status: "In_Progress",
+			patient: {
+			  firstname: form.patient.firstname,
+			  lastname: form.patient.lastname,
+			  gender: form.patient.gender,
+			  dateofbirth: new Date(form.patient.dob),
+			  nationality: form.contact.country,
+			  passport_number: form.patient.passportId,
+			},
+		  };
+	  
+		  const appointmentResponse = await createAppointment(appointmentData);
+	  
+		  if (!appointmentResponse || appointmentResponse.error) {
+			throw new Error(
+			  appointmentResponse?.error || "Failed to create appointment"
+			);
+		  }
+	  
+		  // Create contact details
+		  const contactData = {
+			firstname: form.contact.firstname,
+			lastname: form.contact.lastname,
+			email: form.contact.email,
+			country: form.contact.country,
+			phone: Number(form.contact.phoneNumber),
+		  };
+	  
+		  const contactResponse = await createContactDetails(contactData);
+	  
+		  if (!contactResponse || contactResponse.error) {
+			throw new Error(
+			  contactResponse?.error || "Failed to create contact details"
+			);
+		  }
+	  
+		  // Extract IDs
+		  const appointment_id = appointmentResponse.appointment_id;
+		  const patient_id = appointmentResponse.patient_id;
+		  const contact_id = contactResponse.id;
+		  const status = "Pending";
+		  const package_booking_id = localStorage.getItem("package_booking_id");
+	  
+		  // Validate essential IDs
+		  if (!package_booking_id) {
+			throw new Error("Missing package_booking_id in localStorage");
+		  }
+		  if (!appointment_id) {
+			throw new Error("Missing appointment_id from appointment response");
+		  }
+		  if (!contact_id) {
+			throw new Error("Missing contact_id from contact response");
+		  }
+		  if (!patient_id) {
+			throw new Error("Missing patient_id from appointment response");
+		  }
+	  
+		  // ✅ If file uploaded, link it with appointment
+		  if (file_id) {
+			const appointmentFileResponse = await createAppointmentFile(
+			  appointment_id,
+			  file_id
+			);
+	  
 			if (appointmentFileResponse && appointmentFileResponse.error) {
-			throw new Error(`Failed to create appointment file association: ${appointmentFileResponse.error}`);
+			  throw new Error(
+				`Failed to create appointment file association: ${appointmentFileResponse.error}`
+			  );
 			}
-
-			// Update package booking
-			const updateResponse = await updatePackageBooking(package_booking_id, {
+		  }
+	  
+		  // Update package booking
+		  const updateResponse = await updatePackageBooking(package_booking_id, {
 			appointment_id,
 			contact_id,
-			status
-			});
-
-			// Check if updatePackageBooking returned an error
-			if (updateResponse && updateResponse.error) {
+			status,
+		  });
+	  
+		  if (updateResponse && updateResponse.error) {
 			throw new Error(`Failed to update package booking: ${updateResponse.error}`);
-			}
-
-			// Clean up localStorage
-			localStorage.removeItem('appointmentFormData');
-			localStorage.removeItem('selectedFile');
-
-			
-			// Navigate to success page
-			router.push(`/user/profile/approval-status`);
-
+		  }
+	  
+		  // Clean up localStorage
+		  localStorage.removeItem("appointmentFormData");
+		  localStorage.removeItem("selectedFile");
+	  
+		  // Navigate to success page
+		  router.push(`/user/profile/approval-status`);
 		} catch (err) {
-			console.error('Failed to confirm booking:', err);
-			
-			// More detailed error logging
-			if (err instanceof Error) {
-			console.error('Error message:', err.message);
-			console.error('Error stack:', err.stack);
+		  console.error("Failed to confirm booking:", err);
+	  
+		  if (err instanceof Error) {
+			console.error("Error message:", err.message);
+			console.error("Error stack:", err.stack);
 			alert(`Error: ${err.message}`);
-			} else {
-			console.error('Unknown error:', err);
-			alert('An unknown error occurred. Please try again.');
-			}
+		  } else {
+			console.error("Unknown error:", err);
+			alert("An unknown error occurred. Please try again.");
+		  }
 		} finally {
-			setUploading(false);
+		  setUploading(false);
 		}
-		};
+	  };
+	  
 
 
-  if (!form || !fileData) {
+  if (!form ) {
     return (
       <div className="max-w-2xl mx-auto p-6">
         <div className="text-center">

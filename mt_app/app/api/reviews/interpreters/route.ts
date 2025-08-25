@@ -1,12 +1,11 @@
-import { packages_package_type, PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
-const prisma = new PrismaClient();
 
 
 export async function GET() {
     try {
-      const reviews = await prisma.review_inter.findMany();
+      const reviews = await prisma.review_guide.findMany();
       return NextResponse.json(reviews);
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -16,22 +15,22 @@ export async function GET() {
 
 
 /**
-   * POST: Add a new Interpreter
+   * POST: Add a new Guide
 */
 export async function POST(request: Request) {
     try {
         const {
             user_id,
-            interpreter_id,
+            guide_id,
             rating,
             title_review,
             comment
         } = await request.json();
 
-        const newReview = await prisma.review_inter.create({
+        const newReview = await prisma.review_guide.create({
             data: {
                 user_id,
-                interpreter_id,
+                guide_id,
                 rating,
                 title_review,
                 comment,
@@ -41,19 +40,19 @@ export async function POST(request: Request) {
         });
 
         return NextResponse.json({ 
-            message: "Interpreter review created successfully", 
+            message: "Guide review created successfully", 
             review_id: newReview.review_id 
         }, { status: 201 });
 
     } catch (error) {
-        console.error("Error creating interpreter review:", error);
-        return NextResponse.json({ error: "Failed to create interpreter review" }, { status: 500 });
+        console.error("Error creating guide review:", error);
+        return NextResponse.json({ error: "Failed to create guide review" }, { status: 500 });
     }
 }
 
 // {
 //     "user_id": 1,
-//     "interpreter_id": 1,
+//     "guide_id": 1,
 //     "rating": 4.2,
 //     "title_review": "Great Service!",
 //     "comment": "The staff was very professional and the service was excellent."

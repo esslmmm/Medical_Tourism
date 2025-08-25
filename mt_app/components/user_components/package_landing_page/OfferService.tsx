@@ -24,7 +24,7 @@ interface description {
   title: string;
   details: string;
 }
-type ServiceType = "accommodation_booking" | "Interpreter";
+type ServiceType = "accommodation_booking" | "Guide";
 
 interface ServicesProps {
   selectedServices: Record<ServiceType, boolean>;
@@ -76,7 +76,7 @@ const OfferService: React.FC<ServicesProps> = ({selectedServices, data}) => {
           appointment_id: null,
           hotel_booking_id: null,
           contact_id: null,
-          inter_booking_id: null,
+          guide_booking_id: null,
           status: 'In_Progress',
         };
 

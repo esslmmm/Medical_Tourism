@@ -5,7 +5,7 @@ import TimelineSelector from "../../../../components/staff_component/BookingDeta
 import MedicalServiceCard from "../../../../components/staff_component/BookingDetail/MedicalService";
 import AccommodationCard from "../../../../components/staff_component/BookingDetail/AccommodationCard";
 import PlacesToVisit from "../../../../components/staff_component/BookingDetail/PlacesToVisit";
-import Interpreter from "../../../../components/staff_component/BookingDetail/Interpreter";
+import Guide from "../../../../components/staff_component/BookingDetail/Guide";
 import UserDetail from "../../../../components/staff_component/BookingDetail/UserDetail";
 
 
@@ -18,7 +18,7 @@ const StaffTimeline = () => {
     medical: useRef<HTMLDivElement>(null),
     accommodation: useRef<HTMLDivElement>(null),
     place: useRef<HTMLDivElement>(null),
-    interpreter: useRef<HTMLDivElement>(null),
+    guide: useRef<HTMLDivElement>(null),
     car: useRef<HTMLDivElement>(null),
   };
   
@@ -49,8 +49,8 @@ const StaffTimeline = () => {
           <PlacesToVisit selectedDay={selectedDay}/>
         </div>
 
-        <div ref={sections.interpreter}>
-          <Interpreter selectedDay={selectedDay}/>
+        <div ref={sections.guide}>
+          <Guide selectedDay={selectedDay}/>
         </div>
       </div>
     </div>

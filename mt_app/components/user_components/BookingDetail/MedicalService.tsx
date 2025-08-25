@@ -60,11 +60,8 @@ interface Packages {
   package_name: string;
 }
 
-interface MedicalServiceCardProps {
-  selectedDay: number | "all";
-}
 
-const MedicalServiceCard: React.FC<MedicalServiceCardProps> = ({ selectedDay }) => {
+const MedicalServiceCard = () => {
   const { id } = useParams();
   const [data, setData] = useState<PackageBooking | null>(null);
   const [files, setFiles] = useState<File[]>([]);
@@ -144,26 +141,10 @@ const MedicalServiceCard: React.FC<MedicalServiceCardProps> = ({ selectedDay }) 
     });
   };
 
-  if (loading) {
-    return <ServiceSkeleton />
-  }
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!data || !data.packages || !data.appointments || !data.hotel_bookings)
+  if (!data || !data.packages || !data.appointments)
     return <p className="text-center text-gray-500">No package booking found.</p>;
-
-  const checkInDate = new Date(data.hotel_bookings.check_in_date);
   const appointmentDate = new Date(data.appointments.date);
-  if (isNaN(checkInDate.getTime()) || isNaN(appointmentDate.getTime())) return null;
-
-  let showMedicalService = false;
-  if (selectedDay === "all") {
-    showMedicalService = true;
-  } else {
-    const expectedDate = new Date(checkInDate);
-    expectedDate.setDate(checkInDate.getDate() + (selectedDay - 1));
-    showMedicalService = appointmentDate.toDateString() === expectedDate.toDateString();
-  }
-  if (!showMedicalService) return null;
 
   return (
     <div className={`${inter.className}`}>

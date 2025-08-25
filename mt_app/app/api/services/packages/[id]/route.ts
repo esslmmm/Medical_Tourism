@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+
 import { NextResponse } from 'next/server';
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
@@ -16,16 +16,20 @@ export async function GET(request: Request, { params }: { params: { id: string }
       const packageData = await prisma.packages.findUnique({
         where: { package_id },
         include: {
-          package_interpreters: true,
+          package_guides: true,
           package_doc: true,
           package_hotels: true,
-          trips: {
+          routes:{
             include: {
-              package_places: {
-                include: {
-                    places: true
-                }
-              }
+                trips: {
+                    include: {
+                      package_places: {
+                        include: {
+                            places: true
+                        }
+                      }
+                    }
+                  },
             }
           },
           package_image: true,
@@ -76,7 +80,6 @@ export async function PUT(request: Request, { params }: { params: { id: string }
           where: { package_id },
           data: {
               package_name: body.package_name,
-              package_type: body.package_type,
               hospital_id: body.hospital_id,
               image: body.image,
               detail: body.detail,
@@ -160,9 +163,6 @@ export async function PUT(request: Request, { params }: { params: { id: string }
                     data: {
                         tour_id: trip_id,
                         place_id: place.place_id,
-                        date: place.date,
-                        start: place.start || null, // Store as string
-                        end: place.end || null,
                     },
                 });
             }
@@ -213,7 +213,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
           // ✅ Run all deletions inside a transaction to ensure data integrity
           await prisma.$transaction(async (tx) => {
               // Delete related records first (if CASCADE is not set in schema)
-              await tx.package_interpreters.deleteMany({ where: { package_id } });
+              await tx.package_guides.deleteMany({ where: { package_id } });
               await tx.package_doc.deleteMany({ where: { package_id } });
   
               // Delete package_places using retrieved trip IDs

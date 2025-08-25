@@ -5,8 +5,8 @@ import PatientDetails from '@/components/user_components/BookingEdit/PatientDeta
 import MedicalService from '@/components/user_components/BookingEdit/MedicalService';
 import PlaceToVisit from '@/components/user_components/BookingEdit/PlaceToVisit';
 import Accommodation from '@/components/user_components/BookingEdit/Accommodation';
-import Interpreter from '@/components/user_components/BookingEdit/Interpreter';
 import CarService from '@/components/user_components/BookingEdit/CarService';
+import Guide from '@/components/user_components/BookingEdit/Guide';
 
 
 export default function AppointmentForm() {
@@ -24,7 +24,7 @@ export default function AppointmentForm() {
                     <MedicalService />
                     <PlaceToVisit />
                     <Accommodation />
-                    <Interpreter />
+                    <Guide />
                     <CarService />
                     <div className="mt-4 text-right">
                         <a href="#" className="text-blue-500 text-sm font-semibold">Show all detail</a>

@@ -1,8 +1,5 @@
+import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
 
 export async function GET() {
     try {
@@ -21,14 +18,13 @@ export async function GET() {
     try {
         const {
             package_name,
-            package_type,
             hospital_id,
             image,
             detail,
             duration,
             expired_date,
             create_at,
-            interpreter_ids,
+            guide_ids,
             doctor_ids,
             hotel_ids,
             descriptions,
@@ -38,7 +34,7 @@ export async function GET() {
         } = await request.json();
 
         // Validate required fields
-        if (!package_name || !package_type) {
+        if (!package_name) {
             return NextResponse.json({ error: "Package name and type are required" }, { status: 400 });
         }
 
@@ -46,7 +42,6 @@ export async function GET() {
         const newPackage = await prisma.packages.create({
             data: {
                 package_name,
-                package_type,
                 hospital_id,
                 image,
                 detail,
@@ -98,11 +93,11 @@ export async function GET() {
             
         }
 
-        if (Array.isArray(interpreter_ids) && interpreter_ids.length > 0) {
-            await prisma.package_interpreters.createMany({
-                data: interpreter_ids.map((interpreter_id: number) => ({
+        if (Array.isArray(guide_ids) && guide_ids.length > 0) {
+            await prisma.package_guides.createMany({
+                data: guide_ids.map((guide_id: number) => ({
                     package_id: newPackage.package_id,
-                    interpreter_id,
+                    guide_id,
                 })),
             });
         }
@@ -164,13 +159,13 @@ export async function GET() {
 //     "detail": "A premium medical package with top-tier services.",
 //     "duration": 7,
 //     "expired_date": "2025-12-31",
-//     "interpreter_ids": [1],
+//     "guide_ids": [1],
 //     "doctor_ids": [3],
 //     "hotel_ids": [1],
 //     "descriptions": [
 //       "Includes 24/7 medical consultation.",
 //       "Luxury accommodation in a 5-star hotel.",
-//       "Personal interpreter and medical concierge."
+//       "Personal guide and medical concierge."
 //     ],
 //     "images": [
 //       "https://example.com/image1.jpg",

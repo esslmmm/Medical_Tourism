@@ -9,7 +9,6 @@ import { auth } from '../auth/auth';
  */
 export async function GET(request: Request) {
   try {
-    
     const session = await auth()
   
     if (!session) {
@@ -48,9 +47,9 @@ export async function GET(request: Request) {
             }
           }
         },
-        review_inter: {
+        review_guide: {
           include: {
-            interpreters: {
+            guides: {
               select: {
                 name: true,
               }

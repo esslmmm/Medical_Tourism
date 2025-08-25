@@ -22,7 +22,23 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         include: {
           user: true,
           packages: true,
-          tourism_bookings: true,
+          tourism_bookings:{
+            include: {
+              routes:{
+                include: {
+                  trips:{
+                    include:{
+                      package_places:{
+                        include:{
+                          places: true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           appointments: {
             include: {
               appointment_files: {
@@ -34,6 +50,12 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
           },
           hotel_bookings: {
             include: {
+              hotels:{
+                select: {
+                  name: true,
+                  image: true,
+                }
+              },
               room_aggregate: {
                 include: {
                   hotel_rooms: true
@@ -42,9 +64,9 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
             }
           },
           user_contact_detail: true,
-          inter_bookings: {
+          guide_bookings: {
             include: {
-              interpreters: true
+              guides: true
             }
           },
           payment: true,
@@ -76,7 +98,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
         appointment_id,
         hotel_booking_id,
         contact_id,
-        inter_booking_id,
+        guide_booking_id,
         status,
       } = await req.json();
       
@@ -91,7 +113,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
             appointment_id,
             hotel_booking_id,
             contact_id,
-            inter_booking_id,
+            guide_booking_id,
             status,
           },
       })

@@ -17,7 +17,7 @@ export default auth((req) => {
     '/user/Form',
     '/user/profile',
     '/user/accommodation_booking',
-    '/user/Interpreter',
+    '/user/Guide',
     '/user/Test',
     '/user/BookingDetail',
     '/user/ContactUs',
@@ -130,7 +130,7 @@ export const config = {
     '/user/Form/:path*',
     '/user/profile/:path*',
     '/user/accommodation_booking/:path*',
-    '/user/Interpreter/:path*',
+    '/user/Guide/:path*',
     '/user/Test/:path*',
     // Staff routes
     '/staff/:path*',

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 import HospitalReview from '@/components/user_components/ReviewPopUp/hospitalReview';
 import HotelReview from '@/components/user_components/ReviewPopUp/hotelReview';
-import InterpreterReview from '@/components/user_components/ReviewPopUp/interReview';
+import GuideReview from '@/components/user_components/ReviewPopUp/guideReview';
 
 interface MultiStepReviewModalProps {
   isOpen: boolean;
@@ -13,11 +13,11 @@ interface MultiStepReviewModalProps {
   id: number;
 }
 
-const steps = ['interpreter','hotel','hospital'] as const;
+const steps = ['guide','hotel','hospital'] as const;
 type StepType = typeof steps[number];
 
 const MultiStepReviewModal: React.FC<MultiStepReviewModalProps> = ({ isOpen, onClose, id }) => {
-  const [currentStep, setCurrentStep] = useState<StepType>('interpreter');
+  const [currentStep, setCurrentStep] = useState<StepType>('guide');
   const [isReviewFinished, setIsReviewFinished] = useState(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
 
@@ -33,7 +33,7 @@ const MultiStepReviewModal: React.FC<MultiStepReviewModalProps> = ({ isOpen, onC
 
   useEffect(() => {
     if (!isOpen) {
-      setCurrentStep('interpreter'); // Reset when closed
+      setCurrentStep('guide'); // Reset when closed
       setIsReviewFinished(false);
     }
   }, [isOpen]);
@@ -55,8 +55,8 @@ const MultiStepReviewModal: React.FC<MultiStepReviewModalProps> = ({ isOpen, onC
         return <HospitalReview id={id} onSubmitted={handleNext} />;
       case 'hotel':
         return <HotelReview id={id} onSubmitted={handleNext} />;
-      case 'interpreter':
-        return <InterpreterReview id={id} onSubmitted={handleNext} />;
+      case 'guide':
+        return <GuideReview id={id} onSubmitted={handleNext} />;
       default:
         return null;
     }
