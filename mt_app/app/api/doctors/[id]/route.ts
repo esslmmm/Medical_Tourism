@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const { id } = params;
-    console.log('GET request for doctor ID:', id);
 
     const doctor = await prisma.doctors.findUnique({
       where: { doctor_id: id },
@@ -23,13 +22,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
       },
     });
 
-    console.log('Doctor found in database:', doctor ? 'Yes' : 'No');
-    if (doctor) {
-      console.log('Doctor data:', { id: doctor.doctor_id, name: doctor.name });
-    }
-
     if (!doctor) {
-      console.log('Doctor not found for ID:', id);
       return NextResponse.json({ error: "Doctor not found" }, { status: 404 });
     }
 
@@ -69,8 +62,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         data: {
           name,
           specialization,
-          hospital_id: hospital_id || null,
-          experience: experience ? parseInt(experience.toString().replace(/\D/g, '') || '0') : null,
+          hospital_id,
+          experience,
           description,
           image,
         },
@@ -94,7 +87,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
             doctor_id: id,
             field_of_study: edu.field_of_study,
             institution: edu.institution,
-            year: edu.year && edu.year.toString().trim() !== '' ? parseInt(edu.year.toString()) : null,
+            year: edu.year,
           })),
         });
       }
@@ -106,7 +99,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
             doctor_id: id,
             field_of_study: cert.field_of_study,
             institution: cert.institution,
-            year: cert.year && cert.year.toString().trim() !== '' ? parseInt(cert.year.toString()) : null,
+            year: cert.year,
           })),
         });
       }

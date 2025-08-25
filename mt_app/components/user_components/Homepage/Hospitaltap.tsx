@@ -93,13 +93,24 @@ const Hospitaltap: React.FC = () => {
             >
               
               <div className="w-1/3">
-                {hospital.image && (
+                {hospital.image && hospital.image.trim() !== '' && (() => {
+                  try {
+                    new URL(hospital.image.startsWith('/') ? `${window.location.origin}${hospital.image}` : hospital.image);
+                    return true;
+                  } catch {
+                    return false;
+                  }
+                })() && (
                   <Image
                     src={hospital.image}
                     width={180}
                     height={120}
                     alt={hospital.name}
                     className="rounded-lg object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
                   />
                 )}
               </div>
