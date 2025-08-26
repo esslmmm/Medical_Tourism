@@ -108,7 +108,7 @@ const PackageList: React.FC = () => {
         className="overflow-hidden scrollbar-hide flex space-x-6 pl-5 pr-10 scroll-smooth snap-x"
         onScroll={checkScrollPosition}
       >
-        {packages.filter(pkg => pkg.package_type === "Medical_Tourism").map((pkg) => (
+        {packages.map((pkg) => (
           <motion.div
             key={pkg.package_id}
             className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200 snap-center cursor-pointer"

@@ -45,7 +45,6 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
         DOCTORS
       </h2>
       <DoctorList />
-      <MedicalList />
       <Hospitaltap />
       {/* Show Modal if `showModal` is true */}
         {/* <div className="p-4">
