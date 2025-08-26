@@ -25,7 +25,6 @@ interface Hospital {
   city: string;
   description: string;
   contact_info: string;
-  rating: number;
   image: string;
   logo: string;
   create_at: string;
@@ -35,26 +34,10 @@ interface Hospital {
 
 // Thailand cities for dropdown
 const THAILAND_CITIES = [
-  'Bangkok',
-  'Chiang Mai',
-  'Phuket',
-  'Pattaya',
-  'Krabi',
-  'Koh Samui',
-  'Hua Hin',
-  'Ayutthaya',
-  'Sukhumvit',
-  'Silom',
-  'Chatuchak',
-  'Sathorn',
-  'Thonglor',
-  'Ekkamai',
-  'On Nut',
-  'Bang Na',
-  'Lat Krabang',
-  'Don Mueang',
-  'Suvarnabhumi',
-  'Other'
+  'Bangkok', 'Chiang Mai', 'Phuket', 'Pattaya', 'Krabi',
+  'Koh Samui', 'Hua Hin', 'Ayutthaya', 'Sukhumvit', 'Silom',
+  'Chatuchak', 'Sathorn', 'Thonglor', 'Ekkamai', 'On Nut',
+  'Bang Na', 'Lat Krabang', 'Don Mueang', 'Suvarnabhumi', 'Other'
 ];
 
 const HospitalEditPage: React.FC = () => {
@@ -68,42 +51,51 @@ const HospitalEditPage: React.FC = () => {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string>('');
 
-  // Mock data - replace with actual API call
+  // ✅ Fetch hospital from API
   useEffect(() => {
     const fetchHospital = async () => {
-      // Simulate API call
-      const mockHospital: Hospital = {
-        hospital_id: hospitalId,
-        name: 'Bangkok Heart Hospital',
-        hospital_code: 'BHH001',
-        location: '2 Soi Soonvijai 7, New Petchburi Road',
-        city: 'Bangkok',
-        description: 'Leading cardiac care center in Southeast Asia',
-        contact_info: '+66-2-310-3000, info@bangkokheart.com',
-        rating: 4.8,
-        image: '/hospital1.jpg',
-        logo: '/logo1.png',
-        create_at: '2023-01-15',
-        hospital_images: [
-          { image: '/hospital1.jpg' },
-          { image: '/hospital2.jpg' },
-          { image: '/hospital3.jpg' }
-        ],
-        medical_services: [
-          { service_name: 'Cardiology', description: 'Heart and cardiovascular care' },
-          { service_name: 'Cardiac Surgery', description: 'Surgical heart procedures' },
-          { service_name: 'Interventional Cardiology', description: 'Minimally invasive heart treatments' }
-        ]
-      };
-      
-      setHospital(mockHospital);
-      setLogoPreview(mockHospital.logo);
-      setLoading(false);
+      try {
+        const res = await fetch(`/api/services/hospitals/${hospitalId}`);
+        if (!res.ok) {
+          throw new Error("Failed to fetch hospital");
+        }
+
+        const data = await res.json();
+
+        // Map API response to Hospital interface
+        const fetchedHospital: Hospital = {
+          hospital_id: hospitalId,
+          name: data.name,
+          hospital_code: data.hospital_code,
+          location: data.location,
+          city: data.city,
+          description: data.description,
+          contact_info: data.contact_info,
+          image: data.image,
+          logo: data.logo,
+          create_at: data.create_at || "",
+          hospital_images: data.hospital_images?.map((img: string | { image: string }) => ({
+            image: typeof img === "string" ? img : img.image,
+          })) || [],
+          medical_services: data.medical_services || [],
+        };
+
+        setHospital(fetchedHospital);
+        setLogoPreview(fetchedHospital.logo);
+      } catch (error) {
+        console.error("Error fetching hospital:", error);
+        setHospital(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchHospital();
+    if (hospitalId) {
+      fetchHospital();
+    }
   }, [hospitalId]);
 
+  // ✅ Handle logo change
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -116,6 +108,7 @@ const HospitalEditPage: React.FC = () => {
     }
   };
 
+  // ✅ Handle image upload (local preview only)
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && hospital) {
@@ -156,33 +149,51 @@ const HospitalEditPage: React.FC = () => {
     setHospital({ ...hospital, medical_services: newServices });
   };
 
+  // ✅ Submit updated hospital to API
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!hospital) return;
 
     setSaving(true);
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Handle logo upload if changed
-      if (logoFile) {
-        console.log('Uploading logo:', logoFile);
-      }
 
-      // Update hospital data
-      console.log('Updating hospital:', hospital);
-      
-      // Redirect back to hospitals list
-      router.push('/admin/hospitals');
+    try {
+      const payload = {
+        name: hospital.name,
+        hospital_code: hospital.hospital_code,
+        location: hospital.location,
+        city: hospital.city,
+        description: hospital.description,
+        contact_info: hospital.contact_info,
+        image: hospital.image,
+        logo: logoFile ? logoPreview : hospital.logo,
+        medical_services: hospital.medical_services.map((s) => ({
+          service_name: s.service_name,
+          description: s.description,
+        })),
+        hospital_images: hospital.hospital_images.map((img) => img.image),
+      };
+
+      const res = await fetch(`/api/services/hospitals/${hospital.hospital_id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error(`Failed to update hospital: ${res.statusText}`);
+
+      const updatedHospital = await res.json();
+      console.log("Updated hospital:", updatedHospital);
+
+      router.push("/admin/hospitals");
     } catch (error) {
-      console.error('Error updating hospital:', error);
+      console.error("Error updating hospital:", error);
+      alert("Failed to update hospital. Please try again.");
     } finally {
       setSaving(false);
     }
   };
 
+  // ✅ Loading & Error States
   if (loading) {
     return (
       <AdminLayout>
@@ -203,6 +214,7 @@ const HospitalEditPage: React.FC = () => {
       </AdminLayout>
     );
   }
+
 
   return (
     <AdminLayout>
@@ -378,21 +390,7 @@ const HospitalEditPage: React.FC = () => {
                 </p>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Rating
-                </label>
-                <input
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  max="5"
-                  value={hospital.rating}
-                  onChange={(e) => setHospital({ ...hospital, rating: parseFloat(e.target.value) || 0 })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="4.5"
-                />
-              </div>
+              
             </div>
           </div>
 

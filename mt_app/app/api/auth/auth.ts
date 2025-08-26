@@ -6,7 +6,6 @@ import {
   createOrUpdateUser,
   updateUserProfile
 } from "../../../utils/database";
-import { redirect } from "next/navigation";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [

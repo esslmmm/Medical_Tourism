@@ -13,7 +13,8 @@ import {
   BarChart3,
   Settings,
   LogOut,
-  Hotel
+  Hotel,
+  User
 } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
@@ -29,6 +30,7 @@ const Sidebar: React.FC = () => {
     { name: 'Customer Feedback', href: '/admin/feedback', icon: MessageSquare },
     { name: 'Support Tickets', href: '/admin/support', icon: HeadphonesIcon },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
+    { name: 'Profile', href: '/admin/profile', icon: User },
   ];
 
   const handleLogout = async () => {
