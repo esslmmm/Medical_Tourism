@@ -22,7 +22,7 @@ const Sidebar: React.FC = () => {
   const router = useRouter();
   const menuItems = [
     { name: 'Dashboard', href: '/admin', icon: BarChart3 },
-    { name: 'User Management', href: '/admin/users', icon: Users },
+    { name: 'User Management', href: '/admin/user', icon: Users },
     { name: 'Hospital Management', href: '/admin/hospitals', icon: Building },
     { name: 'Hotel Management', href: '/admin/hotels', icon: Hotel },
     { name: 'Package Management', href: '/admin/packages', icon: Package },

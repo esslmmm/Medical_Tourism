@@ -31,7 +31,7 @@ const HospitalManagement: React.FC = () => {
   useEffect(() => {
     const fetchHospitals = async () => {
       try {
-        const response = await axios.get<Hospital[]>('http://localhost:3000/api/services/hospitals');
+        const response = await axios.get<Hospital[]>('/api/services/hospitals');
         setHospitals(response.data);
       } catch (error) {
         console.error("Error fetching hospitals:", error);
