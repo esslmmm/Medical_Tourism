@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { Search, Filter, MapPin, Clock, Star, Users, Heart, Eye, Scissors, Baby, Calendar, Building2, FileText, Camera, Route, Bed } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, Filter, MapPin, Clock, Star, Users, Heart, Eye, Scissors, Baby, Calendar, Building2, FileText, Bed } from 'lucide-react';
 
 // Types based on Prisma schema
 interface Package {
@@ -11,9 +11,8 @@ interface Package {
   image: string;
   detail: string;
   duration: number;
-  expired_date: Date;
-  create_at: Date;
-  // Relations
+  expired_date: string; // use string from API
+  create_at: string; // use string from API
   hospitals?: {
     hospital_name: string;
     location: string;
@@ -37,10 +36,7 @@ interface Package {
   routes?: Array<{
     route_name: string;
   }>;
-  // Additional fields for display
   category?: string;
-  price?: number;
-  originalPrice?: number;
   reviewCount?: number;
   popular?: boolean;
   badge?: string;
@@ -48,224 +44,42 @@ interface Package {
 
 interface FilterState {
   category: string;
-  priceRange: string;
   duration: string;
   hospital: string;
 }
 
 const PackagesPage = () => {
+  const [packages, setPackages] = useState<Package[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState<FilterState>({
     category: 'all',
-    priceRange: 'all',
     duration: 'all',
     hospital: 'all'
   });
   const [showFilters, setShowFilters] = useState(false);
 
-  // Sample package data matching Prisma schema
-  const packages: Package[] = [
-    {
-      package_id: '1',
-      package_name: 'Premium Cardiac Surgery Excellence',
-      hospital_id: 'hosp_001',
-      image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=250&fit=crop',
-      detail: 'Comprehensive cardiac care with world-class surgeons and state-of-the-art facilities',
-      duration: 14,
-      expired_date: new Date('2025-12-31'),
-      create_at: new Date('2024-01-15'),
-      hospitals: {
-        hospital_name: 'Bangkok Heart Institute',
-        location: 'Bangkok, Thailand',
-        rating: 4.9
-      },
-      package_image: [
-        { image_url: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=250&fit=crop' },
-        { image_url: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=250&fit=crop' }
-      ],
-      description: [
-        { description_text: 'World-class cardiac surgeons with 20+ years experience' },
-        { description_text: 'State-of-the-art ICU monitoring and recovery suites' },
-        { description_text: '24/7 multilingual nursing care and patient support' }
-      ],
-      package_hotels: [
-        { hotel_name: 'Recovery Suites Bangkok' }
-      ],
-      package_guides: [
-        { guide_name: 'Medical Coordinator Sarah' }
-      ],
-      category: 'Cardiology',
-      price: 12500,
-      originalPrice: 15000,
-      reviewCount: 127,
-      popular: true,
-      badge: 'Most Popular'
-    },
-    {
-      package_id: '2',
-      package_name: 'Advanced Orthopedic Joint Replacement',
-      hospital_id: 'hosp_002',
-      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=250&fit=crop',
-      detail: 'Complete joint replacement with rehabilitation and physiotherapy programs',
-      duration: 10,
-      expired_date: new Date('2025-11-30'),
-      create_at: new Date('2024-02-20'),
-      hospitals: {
-        hospital_name: 'Istanbul Orthopedic Center',
-        location: 'Istanbul, Turkey',
-        rating: 4.8
-      },
-      package_image: [
-        { image_url: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=250&fit=crop' }
-      ],
-      description: [
-        { description_text: 'Advanced robotic-assisted joint replacement surgery' },
-        { description_text: 'Comprehensive physiotherapy and rehabilitation program' },
-        { description_text: 'Modern recovery facilities with patient amenities' }
-      ],
-      package_hotels: [
-        { hotel_name: 'Medical Residences Istanbul' }
-      ],
-      package_guides: [
-        { guide_name: 'Orthopedic Specialist Dr. Mehmet' }
-      ],
-      category: 'Orthopedics',
-      price: 8500,
-      originalPrice: 11000,
-      reviewCount: 89
-    },
-    {
-      package_id: '3',
-      package_name: 'Complete Smile Transformation',
-      hospital_id: 'hosp_003',
-      image: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=400&h=250&fit=crop',
-      detail: 'Full dental makeover with implants, veneers, and cosmetic dentistry',
-      duration: 7,
-      expired_date: new Date('2025-10-31'),
-      create_at: new Date('2024-03-10'),
-      hospitals: {
-        hospital_name: 'Dubai Dental Excellence',
-        location: 'Dubai, UAE',
-        rating: 4.7
-      },
-      package_image: [
-        { image_url: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=400&h=250&fit=crop' }
-      ],
-      description: [
-        { description_text: 'Digital smile design with 3D imaging technology' },
-        { description_text: 'Premium dental implants and porcelain veneers' },
-        { description_text: 'Luxury dental suite with panoramic city views' }
-      ],
-      package_hotels: [
-        { hotel_name: 'Luxury Medical Hotel Dubai' }
-      ],
-      package_guides: [
-        { guide_name: 'Dental Coordinator Fatima' }
-      ],
-      category: 'Dentistry',
-      price: 4500,
-      originalPrice: 6000,
-      reviewCount: 203,
-      badge: 'Best Value'
-    },
-    {
-      package_id: '4',
-      package_name: 'Comprehensive Fertility Program',
-      hospital_id: 'hosp_004',
-      image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=250&fit=crop',
-      detail: 'Complete IVF program with genetic testing and counseling support',
-      duration: 21,
-      expired_date: new Date('2025-09-30'),
-      create_at: new Date('2024-04-05'),
-      hospitals: {
-        hospital_name: 'Prague Fertility Institute',
-        location: 'Prague, Czech Republic',
-        rating: 4.9
-      },
-      package_image: [
-        { image_url: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=250&fit=crop' }
-      ],
-      description: [
-        { description_text: 'Advanced IVF treatment with genetic screening' },
-        { description_text: 'Psychological counseling and support services' },
-        { description_text: 'Follow-up care and monitoring programs' }
-      ],
-      package_hotels: [
-        { hotel_name: 'Family Suites Prague' }
-      ],
-      package_guides: [
-        { guide_name: 'Fertility Counselor Anna' }
-      ],
-      category: 'Fertility',
-      price: 6800,
-      reviewCount: 156
-    },
-    {
-      package_id: '5',
-      package_name: 'Premium Cosmetic Enhancement',
-      hospital_id: 'hosp_005',
-      image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=250&fit=crop',
-      detail: 'Advanced cosmetic surgery with Korean beauty standards and techniques',
-      duration: 14,
-      expired_date: new Date('2025-08-31'),
-      create_at: new Date('2024-05-12'),
-      hospitals: {
-        hospital_name: 'Seoul Beauty Medical Center',
-        location: 'Seoul, South Korea',
-        rating: 4.8
-      },
-      package_image: [
-        { image_url: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=250&fit=crop' }
-      ],
-      description: [
-        { description_text: 'Korean aesthetic surgery techniques and expertise' },
-        { description_text: 'Luxury recovery facilities with spa amenities' },
-        { description_text: 'Personal translator and cultural guide services' }
-      ],
-      package_hotels: [
-        { hotel_name: 'Beauty Recovery Resort Seoul' }
-      ],
-      package_guides: [
-        { guide_name: 'Beauty Consultant Min-ji' }
-      ],
-      category: 'Plastic Surgery',
-      price: 9200,
-      originalPrice: 12000,
-      reviewCount: 94
-    },
-    {
-      package_id: '6',
-      package_name: 'Vision Correction Excellence',
-      hospital_id: 'hosp_006',
-      image: 'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=250&fit=crop',
-      detail: 'Advanced laser eye surgery with cutting-edge technology',
-      duration: 5,
-      expired_date: new Date('2025-07-31'),
-      create_at: new Date('2024-06-18'),
-      hospitals: {
-        hospital_name: 'Singapore Eye Institute',
-        location: 'Singapore',
-        rating: 4.9
-      },
-      package_image: [
-        { image_url: 'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=250&fit=crop' }
-      ],
-      description: [
-        { description_text: 'Latest LASIK and PRK laser surgery technology' },
-        { description_text: 'Comprehensive pre and post-operative care' },
-        { description_text: 'Quick recovery with minimal downtime' }
-      ],
-      package_hotels: [
-        { hotel_name: 'Medical Comfort Suites' }
-      ],
-      package_guides: [
-        { guide_name: 'Vision Care Coordinator Lisa' }
-      ],
-      category: 'Ophthalmology',
-      price: 3200,
-      reviewCount: 167
+  // Fetch from backend API
+  useEffect(() => {
+    async function fetchPackages() {
+      try {
+        const response = await fetch("/api/services/packages");
+        if (!response.ok) {
+          throw new Error("Failed to fetch packages");
+        }
+        const data = await response.json();
+        setPackages(data);
+      } catch (err) {
+        console.error("Error fetching packages:", err);
+        setError("Failed to load packages");
+      } finally {
+        setLoading(false);
+      }
     }
-  ];
+
+    fetchPackages();
+  }, []);
 
   const categories = [
     { value: 'all', label: 'All Categories', icon: Heart, color: 'from-pink-500 to-rose-500' },
@@ -277,42 +91,59 @@ const PackagesPage = () => {
     { value: 'Ophthalmology', label: 'Ophthalmology', icon: Eye, color: 'from-cyan-500 to-blue-500' }
   ];
 
-  // Filter packages based on search and filters
+  // Filter logic
   const filteredPackages = packages.filter(pkg => {
-    const matchesSearch = pkg.package_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         pkg.hospitals?.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         pkg.hospitals?.hospital_name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      pkg.package_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      pkg.hospitals?.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      pkg.hospitals?.hospital_name.toLowerCase().includes(searchTerm.toLowerCase());
+
     const matchesCategory = filters.category === 'all' || pkg.category === filters.category;
-    const matchesPrice = filters.priceRange === 'all' || 
-                        (filters.priceRange === 'low' && pkg.price && pkg.price < 5000) ||
-                        (filters.priceRange === 'medium' && pkg.price && pkg.price >= 5000 && pkg.price < 10000) ||
-                        (filters.priceRange === 'high' && pkg.price && pkg.price >= 10000);
-    const matchesDuration = filters.duration === 'all' ||
-                           (filters.duration === 'short' && pkg.duration <= 7) ||
-                           (filters.duration === 'medium' && pkg.duration > 7 && pkg.duration <= 14) ||
-                           (filters.duration === 'long' && pkg.duration > 14);
-    
-    return matchesSearch && matchesCategory && matchesPrice && matchesDuration;
+
+    const matchesDuration =
+      filters.duration === 'all' ||
+      (filters.duration === 'short' && pkg.duration <= 7) ||
+      (filters.duration === 'medium' && pkg.duration > 7 && pkg.duration <= 14) ||
+      (filters.duration === 'long' && pkg.duration > 14);
+
+    return matchesSearch && matchesCategory && matchesDuration;
   });
 
   const getCategoryData = (category: string) => {
     return categories.find(cat => cat.value === category) || categories[0];
   };
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
-    }).format(date);
+  const formatDate = (date: string) => {
+    return new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    }).format(new Date(date));
   };
 
-  const isExpiringSoon = (expiredDate: Date) => {
+  const isExpiringSoon = (expiredDate: string) => {
     const thirtyDaysFromNow = new Date();
     thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
-    return expiredDate <= thirtyDaysFromNow;
+    return new Date(expiredDate) <= thirtyDaysFromNow;
   };
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-lg text-gray-600">Loading packages...</p>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-lg text-red-600">{error}</p>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 via-pink-50 to-teal-50">
       {/* Header */}
@@ -374,23 +205,6 @@ const PackagesPage = () => {
                       {categories.map(cat => (
                         <option key={cat.value} value={cat.value}>{cat.label}</option>
                       ))}
-                    </select>
-                  </div>
-
-                  {/* Price Filter */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Price Range
-                    </label>
-                    <select
-                      value={filters.priceRange}
-                      onChange={(e) => setFilters({...filters, priceRange: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 bg-white"
-                    >
-                      <option value="all">All Prices</option>
-                      <option value="low">Under $5,000</option>
-                      <option value="medium">$5,000 - $10,000</option>
-                      <option value="high">$10,000+</option>
                     </select>
                   </div>
 
@@ -560,39 +374,11 @@ const PackagesPage = () => {
                     </div>
                   )}
 
-                  {/* Price and CTA */}
+                  {/*CTA */}
                   <div className="flex items-center justify-between">
-                    <div>
-                      {pkg.price && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
-                            ${pkg.price.toLocaleString()}
-                          </span>
-                          {pkg.originalPrice && (
-                            <span className="text-sm text-gray-500 line-through">
-                              ${pkg.originalPrice.toLocaleString()}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                      <div className="text-xs text-gray-600">Starting price</div>
-                    </div>
                     <button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 font-medium shadow-lg">
                       View Details
                     </button>
-                  </div>
-
-                  {/* Additional Info */}
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <div className="flex items-center gap-1">
-                        <FileText className="w-3 h-3" />
-                        <span>ID: {pkg.package_id.slice(0, 8)}...</span>
-                      </div>
-                      <div>
-                        Created: {formatDate(pkg.create_at)}
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -648,3 +434,6 @@ const PackagesPage = () => {
 };
 
 export default PackagesPage;
+
+
+
