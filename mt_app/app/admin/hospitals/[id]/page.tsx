@@ -2,85 +2,68 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
-import { ArrowLeft, Edit, MapPin, Star, Phone, Mail, Clock, Building, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Save, Upload, X, Plus, Trash2, Image as ImageIcon, Building2, Info, Phone } from 'lucide-react';
 import '@/app/admin/styles/globals.css';
 
-// Define interfaces based on your Prisma schema
-interface HospitalImage {
-  image_id?: number;
-  image: string;
-}
+const THAILAND_CITIES = [
+  'Bangkok', 'Chiang Mai', 'Phuket', 'Pattaya', 'Krabi',
+  'Koh Samui', 'Hua Hin', 'Ayutthaya', 'Sukhumvit', 'Silom',
+  'Chatuchak', 'Sathorn', 'Thonglor', 'Ekkamai', 'On Nut',
+  'Bang Na', 'Lat Krabang', 'Don Mueang', 'Suvarnabhumi', 'Other'
+];
 
-interface MedicalService {
-  service_id?: number;
-  service_name: string;
-  description: string;
-}
-
-interface Hospital {
-  hospital_id: string;
-  name: string;
-  hospital_code: string;
-  location: string;
-  city: string;
-  description: string;
-  contact_info: string;
-  rating: number;
-  image: string;
-  logo: string;
-  create_at: string;
-  hospital_images: HospitalImage[];
-  medical_services: MedicalService[];
-}
-
-const HospitalDetailPage: React.FC = () => {
+const HospitalEditPage: React.FC = () => {
   const router = useRouter();
   const params = useParams();
   const hospitalId = params?.id as string;
 
-  const [hospital, setHospital] = useState<Hospital | null>(null);
+  const [hospital, setHospital] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string>('');
+  const [isEditing, setIsEditing] = useState(false);
 
-  // Mock data - replace with actual API call
+  // Fetch hospital
   useEffect(() => {
     const fetchHospital = async () => {
-      // Simulate API call
-      const mockHospital: Hospital = {
-        hospital_id: hospitalId,
-        name: 'Bangkok Heart Hospital',
-        hospital_code: 'BHH001',
-        location: '2 Soi Soonvijai 7, New Petchburi Road',
-        city: 'Bangkok',
-        description: 'Leading cardiac care center in Southeast Asia',
-        contact_info: '+66-2-310-3000, info@bangkokheart.com',
-        rating: 4.8,
-        image: '/hospital1.jpg',
-        logo: '/logo1.png',
-        create_at: '2023-01-15',
-        hospital_images: [
-          { image: '/hospital1.jpg' },
-          { image: '/hospital2.jpg' },
-          { image: '/hospital3.jpg' }
-        ],
-        medical_services: [
-          { service_name: 'Cardiology', description: 'Heart and cardiovascular care' },
-          { service_name: 'Cardiac Surgery', description: 'Surgical heart procedures' },
-          { service_name: 'Interventional Cardiology', description: 'Minimally invasive heart treatments' }
-        ]
-      };
-      
-      setHospital(mockHospital);
-      setLoading(false);
+      try {
+        const res = await fetch(`/api/services/hospitals/${hospitalId}`);
+        const data = await res.json();
+        setHospital(data);
+        setLogoPreview(data.logo);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     };
-
-    fetchHospital();
+    if (hospitalId) fetchHospital();
   }, [hospitalId]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/services/hospitals/${hospital.hospital_id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(hospital),
+      });
+      if (!res.ok) throw new Error('Failed to update hospital');
+      router.push('/admin/hospitals');
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   if (loading) {
     return (
       <AdminLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="flex items-center justify-center h-80">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
         </div>
       </AdminLayout>
     );
@@ -89,201 +72,135 @@ const HospitalDetailPage: React.FC = () => {
   if (!hospital) {
     return (
       <AdminLayout>
-        <div className="text-center py-12">
-          <h2 className="text-2xl font-semibold text-gray-900">Hospital not found</h2>
-          <p className="text-gray-600 mt-2">The hospital you're looking for doesn't exist.</p>
+        <div className="text-center py-20">
+          <h2 className="text-2xl font-bold text-gray-900">Hospital not found</h2>
+          <p className="text-gray-500 mt-2">The hospital you’re looking for doesn’t exist.</p>
         </div>
       </AdminLayout>
     );
   }
 
-  // Parse contact info to extract phone and email
-  const contactInfo = hospital.contact_info;
-  const phoneMatch = contactInfo.match(/\+?[\d\s\-\(\)]+/);
-  const emailMatch = contactInfo.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-  
-  const phone = phoneMatch ? phoneMatch[0] : 'N/A';
-  const email = emailMatch ? emailMatch[0] : 'N/A';
-
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="max-w-6xl mx-auto space-y-10 text-black">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => router.push('/admin/hospitals')}
-              className="flex items-center text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
-            >
-              <ArrowLeft className="h-5 w-5 mr-2" />
-              Back to Hospitals
-            </button>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">{hospital.name}</h1>
-              <p className="text-gray-600">Hospital Details & Information</p>
-            </div>
-          </div>
+        <div className="flex justify-between items-center">
           <button
-            onClick={() => router.push(`/admin/hospitals/edit/${hospital.hospital_id}`)}
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            onClick={() => router.push('/admin/hospitals')}
+            className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition"
           >
-            <Edit className="h-4 w-4 mr-2" />
-            Edit Hospital
+            <ArrowLeft className="h-5 w-5" /> Back
           </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setIsEditing(!isEditing)}
+              type="button"
+              className="px-4 py-2 rounded-lg bg-gray-100 border border-gray-400 hover:bg-gray-200 text-sm font-medium"
+            >
+              {isEditing ? 'Cancel' : 'Edit'}
+            </button>
+            {isEditing && (
+              <button
+                type="submit"
+                form="hospital-form"
+                disabled={saving}
+                className="px-5 py-2 rounded-lg bg-green-600 text-white shadow hover:bg-blue-700 disabled:opacity-50"
+              >
+                {saving ? 'Saving...' : <span className="flex items-center gap-2"><Save className="w-4 h-4"/> Save</span>}
+              </button>
+            )}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Hospital Logo and Main Image */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <div className="flex items-center space-x-6 mb-4">
-                <img
-                  src={hospital.logo}
-                  alt="Hospital Logo"
-                  className="w-20 h-20 object-contain rounded-lg border border-gray-200 bg-gray-50"
-                />
+        <form id="hospital-form" onSubmit={handleSubmit} className="space-y-8">
+          {/* Logo */}
+          <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+            <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900 mb-4"><Building2 className="w-5 h-5"/> Hospital Logo</h2>
+            <div className="flex items-center gap-6">
+              <img src={logoPreview} alt="Logo" className="w-32 h-32 rounded-lg border border-gray-200 object-contain bg-gray-50" />
+              {isEditing && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Hospital Code: {hospital.hospital_code}</h3>
-                  <p className="text-sm text-gray-600">Created: {hospital.create_at}</p>
+                  <label htmlFor="logo-upload" className="flex items-center gap-2 px-4 py-2  bg-blue-500 text-white rounded-lg cursor-pointer hover:bg-gray-50">
+                    <Upload className="w-4 h-4"/> Change Logo
+                  </label>
+                  <input id="logo-upload" type="file" accept="image/*" className="hidden"/>
                 </div>
-              </div>
-              <img
-                src={hospital.image}
-                alt={hospital.name}
-                className="w-full h-64 object-cover rounded-lg"
-              />
-            </div>
-
-            {/* Description */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <h2 className="text-xl font-semibold mb-4">About</h2>
-              <p className="text-gray-700 leading-relaxed">{hospital.description}</p>
-            </div>
-
-            {/* Medical Services */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <h2 className="text-xl font-semibold mb-4">Medical Services</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {hospital.medical_services.map((service, index) => (
-                  <div key={index} className="border border-gray-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2">{service.service_name}</h4>
-                    <p className="text-sm text-gray-600">{service.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Hospital Images Gallery */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <h2 className="text-xl font-semibold mb-4">Hospital Images</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {hospital.hospital_images.map((img, index) => (
-                  <div key={index} className="relative">
-                    <img
-                      src={img.image}
-                      alt={`Hospital image ${index + 1}`}
-                      className="w-full h-32 object-cover rounded-lg border border-gray-200"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Contact Information */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <Phone className="h-5 w-5 text-gray-400" />
-                  <span className="text-gray-700">{phone}</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Mail className="h-5 w-5 text-gray-400" />
-                  <span className="text-gray-700">{email}</span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
-                  <div>
-                    <span className="text-gray-700 font-medium">{hospital.city}</span>
-                    <p className="text-gray-600 text-sm">{hospital.location}</p>
-                  </div>
-                </div>
-                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                  <p className="text-sm text-gray-600">
-                    <strong>Full Contact Info:</strong> {hospital.contact_info}
-                  </p>
-                </div>
-              </div>
+              )}
             </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Quick Stats */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-lg font-semibold mb-4">Quick Stats</h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Rating</span>
-                  <div className="flex items-center space-x-1">
-                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                    <span className="font-semibold">{hospital.rating}</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">City</span>
-                  <span className="font-medium">{hospital.city}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Hospital Code</span>
-                  <span className="font-medium font-mono text-sm">{hospital.hospital_code}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Created</span>
-                  <span className="font-medium">{hospital.create_at}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Services</span>
-                  <span className="font-medium">{hospital.medical_services.length}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Images</span>
-                  <span className="font-medium">{hospital.hospital_images.length}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-lg font-semibold mb-4">Actions</h3>
-              <div className="space-y-3">
-                <button
-                  onClick={() => router.push(`/admin/hospitals/edit/${hospital.hospital_id}`)}
-                  className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit Hospital
-                </button>
-                <button className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                  <Building className="h-4 w-4 mr-2" />
-                  View Packages
-                </button>
-                <button className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                  <Clock className="h-4 w-4 mr-2" />
-                  View Bookings
-                </button>
-                <button className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                  <ImageIcon className="h-4 w-4 mr-2" />
-                  Manage Images
-                </button>
-              </div>
+          {/* Basic Info */}
+          <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+            <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900 mb-4"><Info className="w-5 h-5"/> Basic Information</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <input disabled={!isEditing} value={hospital.name} onChange={e=>setHospital({...hospital,name:e.target.value})} placeholder="Hospital Name" className="px-3 py-2 border border-gray-200 rounded-lg w-full"/>
+              <input disabled={!isEditing} value={hospital.hospital_code} onChange={e=>setHospital({...hospital,hospital_code:e.target.value})} placeholder="Code" className="px-3 py-2 border border-gray-200 rounded-lg w-full"/>
+              <select disabled={!isEditing} value={hospital.city} onChange={e=>setHospital({...hospital,city:e.target.value})} className="px-3 py-2 border border-gray-200 rounded-lg w-full">
+                <option value="">Select City</option>
+                {THAILAND_CITIES.map(c=><option key={c}>{c}</option>)}
+              </select>
+              <input disabled={!isEditing} value={hospital.location} onChange={e=>setHospital({...hospital,location:e.target.value})} placeholder="Address" className="px-3 py-2 border border-gray-200 rounded-lg w-full"/>
+              <textarea disabled={!isEditing} value={hospital.description} onChange={e=>setHospital({...hospital,description:e.target.value})} placeholder="Description" className="md:col-span-2 px-3 py-2 border border-gray-200 rounded-lg w-full h-28"/>
             </div>
           </div>
-        </div>
+
+          {/* Contact Info */}
+          <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+            <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900 mb-4"><Phone className="w-5 h-5"/> Contact Information</h2>
+            <textarea disabled={!isEditing} value={hospital.contact_info} onChange={e=>setHospital({...hospital,contact_info:e.target.value})} className="w-full px-3 py-2 border border-gray-200 rounded-lg h-24"/>
+          </div>
+
+          {/* Services */}
+          <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Medical Services</h2>
+            <div className="space-y-4">
+              {hospital.medical_services?.map((s:any,i:number)=>(
+                <div key={i} className="p-4 border border-gray-200 rounded-lg flex justify-between items-center">
+                  <div className="flex-1 space-y-2">
+                    <input disabled={!isEditing} value={s.service_name} onChange={e=>{const ms=[...hospital.medical_services];ms[i].service_name=e.target.value;setHospital({...hospital,medical_services:ms})}} placeholder="Service Name" className="w-full px-3 py-2 border border-gray-200 font-bold rounded-lg"/>
+                    <input disabled={!isEditing} value={s.description} onChange={e=>{const ms=[...hospital.medical_services];ms[i].description=e.target.value;setHospital({...hospital,medical_services:ms})}} placeholder="Description" className="w-full px-3 py-2 border border-gray-200 rounded-lg"/>
+                  </div>
+                  {isEditing && (
+                    <button type="button" onClick={()=>setHospital({...hospital,medical_services:hospital.medical_services.filter((_:any,idx:number)=>idx!==i)})} className="ml-3 text-red-600 hover:text-red-800">
+                      <Trash2 className="w-5 h-5"/>
+                    </button>
+                  )}
+                </div>
+              ))}
+              {isEditing && (
+                <button type="button" onClick={()=>setHospital({...hospital,medical_services:[...hospital.medical_services,{service_name:'',description:''}]})} className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50">
+                  <Plus className="w-4 h-4"/> Add Service
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Images */}
+          <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Hospital Images</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {hospital.hospital_images?.map((img:any,i:number)=>(
+                <div key={i} className="relative group">
+                  <img src={img.image} className="w-full h-32 rounded-lg border border-gray-200 object-cover"/>
+                  {isEditing && (
+                    <button type="button" onClick={()=>setHospital({...hospital,hospital_images:hospital.hospital_images.filter((_:any,idx:number)=>idx!==i)})} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition">
+                      <X className="w-4 h-4"/>
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+            {isEditing && (
+              <label htmlFor="images-upload" className="mt-4 inline-flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                <ImageIcon className="w-4 h-4"/> Add Images
+                <input id="images-upload" type="file" multiple className="hidden"/>
+              </label>
+            )}
+          </div>
+        </form>
       </div>
     </AdminLayout>
   );
 };
 
-export default HospitalDetailPage;
+export default HospitalEditPage;
