@@ -51,7 +51,7 @@ const HospitalEditPage: React.FC = () => {
         body: JSON.stringify(hospital),
       });
       if (!res.ok) throw new Error('Failed to update hospital');
-      router.push('/admin/hospitals');
+      router.push('/admin/hospital');
     } catch (err) {
       console.error(err);
     } finally {
@@ -86,7 +86,7 @@ const HospitalEditPage: React.FC = () => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <button
-            onClick={() => router.push('/admin/hospitals')}
+            onClick={() => router.push('/admin/hospital')}
             className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition"
           >
             <ArrowLeft className="h-5 w-5" /> Back

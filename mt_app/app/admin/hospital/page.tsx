@@ -64,7 +64,7 @@ const HospitalManagement: React.FC = () => {
           </div>
           <button
             className="bg-white text-blue-600 px-5 py-2 rounded-xl font-medium hover:bg-gray-100 transition-all flex items-center shadow-md"
-            onClick={() => router.push('/admin/hospitals/add')}
+            onClick={() => router.push('/admin/hospital/add')}
           >
             <Plus className="h-5 w-5 mr-2" />
             Add Hospital
@@ -144,7 +144,7 @@ const HospitalManagement: React.FC = () => {
                     </div>
                     <button
                       className="text-blue-600 hover:text-blue-800 transition-colors"
-                      onClick={() => router.push(`/admin/hospitals/${hospital.hospital_id}`)}
+                      onClick={() => router.push(`/admin/hospital/${hospital.hospital_id}`)}
                       title="View Details"
                     >
                       <Building className="h-5 w-5" />

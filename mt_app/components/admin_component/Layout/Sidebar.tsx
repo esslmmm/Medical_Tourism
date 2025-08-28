@@ -23,10 +23,10 @@ const Sidebar: React.FC = () => {
   const menuItems = [
     { name: 'Dashboard', href: '/admin', icon: BarChart3 },
     { name: 'User Management', href: '/admin/user', icon: Users },
-    { name: 'Hospital Management', href: '/admin/hospitals', icon: Building },
-    { name: 'Hotel Management', href: '/admin/hotels', icon: Hotel },
+    { name: 'Hospital Management', href: '/admin/hospital', icon: Building },
+    { name: 'Hotel Management', href: '/admin/hotel', icon: Hotel },
     { name: 'Package Management', href: '/admin/packages', icon: Package },
-    { name: 'Booking Management', href: '/admin/bookings', icon: Calendar },
+    { name: 'Booking Management', href: '/admin/booking', icon: Calendar },
     { name: 'Customer Feedback', href: '/admin/feedback', icon: MessageSquare },
     { name: 'Support Tickets', href: '/admin/support', icon: HeadphonesIcon },
     { name: 'Settings', href: '/admin/settings', icon: Settings },

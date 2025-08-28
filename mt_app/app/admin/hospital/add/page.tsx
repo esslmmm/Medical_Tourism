@@ -127,7 +127,7 @@ const HospitalAddPage: React.FC = () => {
       const newHospital = await res.json();
       console.log('Added hospital:', newHospital);
 
-      router.push('/admin/hospitals');
+      router.push('/admin/hospital');
     } catch (error) {
       console.error(error);
       alert('Failed to add hospital. Please try again.');
@@ -143,7 +143,7 @@ const HospitalAddPage: React.FC = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => router.push('/admin/hospitals')}
+              onClick={() => router.push('/admin/hospital')}
               className="flex items-center text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
@@ -379,7 +379,7 @@ const HospitalAddPage: React.FC = () => {
           <div className="flex justify-end space-x-4">
             <button
               type="button"
-              onClick={() => router.push('/admin/hospitals')}
+              onClick={() => router.push('/admin/hospital')}
               className="px-6 py-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
             >
               Cancel
