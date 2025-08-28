@@ -184,7 +184,7 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
                   </div>
                   <ul className="py-2">
                     <li>
-                      <Link href="/profile" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                      <Link href="/user/profile/UserProfile" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                         <User className="w-4 h-4 mr-3" />
                         My Profile
                       </Link>
