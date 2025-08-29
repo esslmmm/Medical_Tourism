@@ -28,7 +28,8 @@ interface Interpreters {
 }
 
 const Guide = () => {
-  const { id } = useParams();
+    const params = useParams<{ id: string }>();
+  const id = params?.id;
   const [packageBooking, setPackageBooking] = useState<PackageBooking | null>(null);
   const [interBooking, setInterBooking] = useState<InterBooking | null>(null);
   const [loading, setLoading] = useState(true);

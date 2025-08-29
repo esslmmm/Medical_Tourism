@@ -88,8 +88,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const [data, setData] = useState<Booking | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  // const router = useRouter();
-  // const { pageId } = useParams();
   const [form, setForm] = useState<AppointmentFormData | null>(null);
   const rawDate = form?.selectedDate;
   const date = rawDate ? new Date(rawDate) : null;
@@ -122,7 +120,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         setLoading(false);
       }
     };
-
     fetchPackage();
   }, [id]);
 

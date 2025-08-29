@@ -4,7 +4,8 @@ import { useParams, useRouter } from 'next/navigation';
 
 export function useStepNavigator() {
   const router = useRouter();
-  const { id } = useParams();
+    const params = useParams<{ id: string }>();
+  const id = params?.id;
   
 
   const goToNextStep = () => {

@@ -31,8 +31,8 @@ const UserTimeline = () => {
     <div>
       <Navbarpro />
       <div className="p-6 max-w-4xl mx-auto font-sans">
-        <BookingDetailPage />
-        {/* Navigation Bar
+        {/* <BookingDetailPage /> */}
+        {/* Navigation Bar */}
         <NavigationIcons sections={sections} />
 
         <div ref={sections?.medical}>
@@ -49,7 +49,7 @@ const UserTimeline = () => {
 
         <div ref={sections?.guide}>
           <Guide />
-        </div> */}
+        </div>
       </div>
       <Footer />
     </div>

@@ -32,7 +32,8 @@ interface ServicesProps {
 }
 
 const OfferService: React.FC<ServicesProps> = ({selectedServices, data}) => {
-  const { id } = useParams();
+    const params = useParams<{ id: string }>();
+  const id = params?.id;
   const { userId, isLoading, isAuthenticated } = useUserId();
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const [startloading, setstartLoading] = useState(false); // Optional loading state

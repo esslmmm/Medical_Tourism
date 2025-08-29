@@ -24,15 +24,11 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
           packages: true,
           tourism_bookings:{
             include: {
-              routes:{
-                include: {
-                  trips:{
-                    include:{
-                      package_places:{
-                        include:{
-                          places: true
-                        }
-                      }
+              trips:{
+                include:{
+                  package_places:{
+                    include: {
+                      places: true
                     }
                   }
                 }

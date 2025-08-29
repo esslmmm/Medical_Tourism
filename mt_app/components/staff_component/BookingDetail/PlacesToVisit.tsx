@@ -58,7 +58,8 @@ interface PlacesToVisitProps {
 }
 
 const PlacesToVisit: React.FC<PlacesToVisitProps> = ({ selectedDay }) => {
-  const { id } = useParams();
+    const params = useParams<{ id: string }>();
+  const id = params?.id;
   const [tourismId, setTourismId] = useState<number | null>(null);
   const [hotelBooking, setHotelBooking] = useState<HotelBooking | null>(null);
   const [tripData, setTripData] = useState<TourismTrip | null>(null);

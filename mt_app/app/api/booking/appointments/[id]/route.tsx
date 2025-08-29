@@ -10,7 +10,6 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       where: { appointment_id: appointmentId },
       include: {
         patient_details: true,
-        doctors: true,
       },
     })
 

@@ -61,7 +61,8 @@ interface Education {
 }
 
 const HomePage: React.FC = () => {
-  const { id } = useParams();
+    const params = useParams<{ id: string }>();
+  const id = params?.id;
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [hospital, setHospital] = useState<Hospital | null>(null);
   const [loading, setLoading] = useState(true);

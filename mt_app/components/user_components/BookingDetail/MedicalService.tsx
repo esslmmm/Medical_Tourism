@@ -62,7 +62,8 @@ interface Packages {
 
 
 const MedicalServiceCard = () => {
-  const { id } = useParams();
+    const params = useParams<{ id: string }>();
+  const id = params?.id;
   const [data, setData] = useState<PackageBooking | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [selectedPDF, setSelectedPDF] = useState<File | null>(null);

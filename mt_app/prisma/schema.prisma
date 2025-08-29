@@ -253,7 +253,7 @@ model guide_education {
 }
 
 model guides {
-  guide_id       Int                    @id @default(autoincrement())
+  guide_id             Int                    @id @default(autoincrement())
   name                 String                 @db.VarChar(255)
   email                String                 @db.VarChar(255)
   phone                String                 @db.VarChar(50)
@@ -405,8 +405,9 @@ model packages {
   hospital_id          String
   image                String                 @db.VarChar(255)
   detail               String                 @db.VarChar(100)
-  duration             Int
+  duration             String?
   expired_date         DateTime               @db.Date
+  status               package_status         @default(Active)
   create_at            DateTime               @default(now()) @db.Timestamp(0)
   description          description[]
   package_bookings     package_bookings[]
@@ -531,7 +532,7 @@ model tourism_bookings {
   created_at       DateTime                 @default(now()) @db.Timestamp(0)
   updated_at       DateTime                 @default(now()) @db.Timestamp(0)
   package_bookings package_bookings[]
-  routes           routes                   @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction)
+  trips           trips                   @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([tour_id])
 }
@@ -572,20 +573,21 @@ model patient_details {
 
 model trips {
   tour_id          Int                @id @default(autoincrement())
+  duration         Int?
   description      String?
   total_price      Float?
   created_at       DateTime           @default(now()) @db.Timestamp(0)
   package_places   package_places[]
   routes           routes[]
+  tourism_bookings tourism_bookings[]
 }
 
 model routes {
   route_id      Int @id @default(autoincrement())
   package_id    String
-  tour_id       Int             @unique
+  tour_id       Int             
   trips         trips           @relation(fields: [tour_id], references: [tour_id], onUpdate: Restrict)
   packages      packages?           @relation(fields: [package_id], references: [package_id], onUpdate: Restrict)
-  tourism_bookings tourism_bookings[]
 
   @@index([package_id])
   @@index([tour_id])
@@ -609,7 +611,6 @@ model user {
   name                                String?
   email                               String             @db.VarChar(255)
   nationality                         String?            @db.VarChar(255)
-  password                            String?
   image                               String?            @db.VarChar(2048)
   role                                user_role          @default(customer)
   otp                                 String?            @db.VarChar(10)
@@ -762,4 +763,9 @@ enum FileCategory {
 enum packages_package_type {
   Medical_Tourism
   Medical_Service_Only
+}
+
+enum package_status {
+  Active
+  Inactive
 }

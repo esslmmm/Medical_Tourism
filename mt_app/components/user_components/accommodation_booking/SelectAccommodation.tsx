@@ -110,7 +110,8 @@ export default function AccommodationCard({
   const [accommodationData, setAccommodationData] = useState<accommodations[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { id } = useParams();
+    const params = useParams<{ id: string }>();
+  const id = params?.id;
   
   const calculateAverageRating = (reviews: review_hotel[]) => {
     if (!reviews || reviews.length === 0) return 0;

@@ -15,7 +15,8 @@ interface PackageData {
 }
 
 const PackageType = () => {
-  const { id } = useParams();
+    const params = useParams<{ id: string }>();
+  const id = params?.id;
   const [bookingData, setBookingData] = useState<PackageBooking | null>(null);
   const [packageData, setPackageData] = useState<PackageData | null>(null);
   const [loading, setLoading] = useState(true);

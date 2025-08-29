@@ -8,7 +8,8 @@ import { createAppointmentFile } from '@/app/api/files/createAppointmentFile';
 import { useUserId } from '@/hooks/useUserId';
 
 const ConfirmButton = () => {
-	const { id } = useParams();
+	const params = useParams<{ id: string }>();
+  	const id = params?.id;
 	const [form, setForm] = useState<AppointmentFormData | null>(null);
 	const [fileData, setFileData] = useState<any | null>(null);
 	const [uploading, setUploading] = useState(false);

@@ -5,7 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 
 const ContactDetails = () => {
     const router = useRouter();
-    const { id } = useParams();
+    const params = useParams<{ id: string }>();
+    const id = params?.id;;
     const [form, setForm] = useState<AppointmentFormData | null>(null);
 
   useEffect(() => {

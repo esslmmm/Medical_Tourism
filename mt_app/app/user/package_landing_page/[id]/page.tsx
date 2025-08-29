@@ -77,7 +77,8 @@ interface Hospital {
 type ServiceType = "accommodation_booking" | "Guide";
 
 const PackageLandingPage = () => {
-  const { id } = useParams();
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
   const [data, setData] = useState<Packages | null>(null);
   const [hospital, setHospital] = useState<Hospital | null>(null);
   const [error, setError] = useState<string | null>(null);

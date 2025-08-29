@@ -20,15 +20,13 @@ interface PackageBooking {
 
 interface TourismTrip {
   tourism_id: number;
-  routes: routes
+  trips: trips
   
 }
 
-interface routes {
-  trips: {
-    tour_id: number;
-    package_places: PackagePlaces[];
-  };
+interface trips {
+  tour_id: number;
+  package_places: PackagePlaces[];
 }
 
 interface HotelBooking {
@@ -60,7 +58,8 @@ interface Places {
 
 
 const PlacesToVisit = () => {
-  const { id } = useParams();
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
   const [tourismId, setTourismId] = useState<number | null>(null);
   const [hotelBooking, setHotelBooking] = useState<HotelBooking | null>(null);
   const [tripData, setTripData] = useState<TourismTrip | null>(null);
@@ -153,18 +152,18 @@ if (loading) {
   return <PlacesSkeleton />
 }
 if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-if (!tripData || !tripData.routes.trips?.package_places?.length)
+if (!tripData || !tripData.trips?.package_places?.length)
   return <p className="text-center text-gray-500">No places to visit found.</p>;
 
 return (
   <div className={`${inter.className}`}>
     <h2 className="ml-2 text-lg font-bold mb-2" style={{ fontSize: "25px" }}>Places to Visit</h2>
   <div className="w-[850px] mx-auto bg-white p-4 rounded-xl shadow-md border border-[#C5D1E0]">
-    {tripData?.routes.trips?.package_places.map((place, index) => (
+    {tripData?.trips?.package_places.map((place, index) => (
       <div
         key={place.packplace_id}
         className={`flex items-center gap-6 p-4 ${
-          index !== tripData?.routes.trips?.package_places.length - 1 ? "border-b border-[#C5D1E0]" : ""
+          index !== tripData?.trips?.package_places.length - 1 ? "border-b border-[#C5D1E0]" : ""
         }`}
       >
         <img src={place.places.image} alt={place.places.place_name} className="w-50 h-30 rounded-[15px] object-cover" />

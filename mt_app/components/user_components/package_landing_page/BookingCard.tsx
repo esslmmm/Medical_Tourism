@@ -45,7 +45,8 @@ interface PackageDetailProps {
 type ServiceType = "accommodation_booking" | "Guide";
 
 const BookingCard: React.FC<PackageDetailProps> = ({ selectedTourismRoute, data, includeAccommodation }) => {
-  const { id } = useParams();
+    const params = useParams<{ id: string }>();
+  const id = params?.id;
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const { userId, isLoading, isAuthenticated } = useUserId();
   const [startloading, setstartLoading] = useState(false);

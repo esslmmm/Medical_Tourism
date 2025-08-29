@@ -27,20 +27,19 @@ export interface User {
   }
   
   export interface Package {
-    id: string;
-    title: string;
-    hospitalId: string;
-    hospitalName: string;
+    package_id: string;
+    package_name: string;
+    hospital_id: string;
+    image: string;
+    hospitals: {
+      name: string;
+    }
     category: string;
-    price: number;
-    duration: number;
+    duration: string;
     description: string;
     services: string[];
-    rating: number;
     reviewCount: number;
-    status: 'active' | 'inactive';
-    isPopular: boolean;
-    isTrending: boolean;
+    status: 'Active' | 'Inactive';
     imageUrl: string;
     createdAt: string;
   }
@@ -83,4 +82,47 @@ export interface User {
     assignedTo?: string;
     createdAt: string;
     resolvedAt?: string;
+  }
+
+
+// --------------- Doctor Interface -------------------- 
+export interface DocEducation {
+    education_id: string;
+    doctor_id: string;
+    field_of_study: string;
+    institution: string;
+    year: string;
+  }
+  
+  export interface DocCertificate {
+    certificate_id: string;
+    doctor_id: string;
+    field_of_study: string;
+    institution: string;
+    year: string;
+  }
+  
+  export interface DocLanguage {
+    language_id: string;
+    doctor_id: string;
+    languages: string;
+  }
+  
+  export interface Doctor {
+    doctor_id: string;
+    name: string;
+    specialization: string;
+    hospital_id: string;
+    experience: string;
+    description: string;
+    image: string;
+    create_at: string;
+    // Relations
+    hospital?: {
+      name: string;
+      hospital_code: string;
+    };
+    doc_education: DocEducation[];
+    doc_certificate: DocCertificate[];
+    doc_language: DocLanguage[];
   }

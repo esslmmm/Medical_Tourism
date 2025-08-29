@@ -53,7 +53,8 @@ interface MedicalServiceCardProps {
 }
 
 const MedicalServiceCard: React.FC<MedicalServiceCardProps> = ({ selectedDay }) => {
-  const { id } = useParams();
+    const params = useParams<{ id: string }>();
+  const id = params?.id;
   const [data, setData] = useState<PackageBooking | null>(null);
   const [hospital, setHospital] = useState<Hospital | null>(null);
   const [loading, setLoading] = useState(true);

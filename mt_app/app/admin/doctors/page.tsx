@@ -5,29 +5,14 @@ import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import { User, Plus, Search, MapPin, Star, Edit, Trash2, Eye, Stethoscope, GraduationCap } from 'lucide-react';
 import { useToast, ToastContainer } from '@/components/admin_component/ui/Toast';
 import ConfirmDialog from '@/components/admin_component/ui/ConfirmDialog';
+import { Doctor as DoctorType } from '@/types/admin';
 import '@/app/admin/styles/globals.css';
-
-// Define interfaces based on existing Prisma schema
-interface Doctor {
-  doctor_id: string;
-  name: string;
-  specialization: string;
-  hospital_id: string;
-  experience: string;
-  description: string;
-  image: string;
-  create_at: string;
-  // Optional hospital info for display
-  hospital?: {
-    name: string;
-  };
-}
 
 const DoctorManagement: React.FC = () => {
   const router = useRouter();
   const { toasts, removeToast, showSuccess, showError } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [doctors, setDoctors] = useState<DoctorType []>([]);
   const [loading, setLoading] = useState(true);
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
@@ -122,7 +107,6 @@ const DoctorManagement: React.FC = () => {
         message="Are you sure you want to delete this doctor? This action cannot be undone."
         confirmText="Delete Doctor"
         cancelText="Cancel"
-        type="danger"
         doctorName={confirmDialog.doctorName}
       />
       <AdminLayout>

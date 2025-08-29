@@ -3,56 +3,16 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import { ArrowLeft, Edit, MapPin, Star, Phone, Mail, Clock, User, GraduationCap, Award, Languages } from 'lucide-react';
+import { Doctor as DoctorType } from '@/types/admin';
 import '@/app/admin/styles/globals.css';
 
-// Define interfaces based on existing Prisma schema
-interface DocEducation {
-  education_id: string;
-  doctor_id: string;
-  field_of_study: string;
-  institution: string;
-  year: string;
-}
-
-interface DocCertificate {
-  certificate_id: string;
-  doctor_id: string;
-  field_of_study: string;
-  institution: string;
-  year: string;
-}
-
-interface DocLanguage {
-  language_id: string;
-  doctor_id: string;
-  languages: string;
-}
-
-interface Doctor {
-  doctor_id: string;
-  name: string;
-  specialization: string;
-  hospital_id: string;
-  experience: string;
-  description: string;
-  image: string;
-  create_at: string;
-  // Relations
-  hospital?: {
-    name: string;
-    hospital_code: string;
-  };
-  doc_education: DocEducation[];
-  doc_certificate: DocCertificate[];
-  doc_language: DocLanguage[];
-}
 
 const DoctorDetailPage: React.FC = () => {
   const router = useRouter();
   const params = useParams();
   const doctorId = params?.id as string;
 
-  const [doctor, setDoctor] = useState<Doctor | null>(null);
+  const [doctor, setDoctor] = useState<DoctorType | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -65,14 +25,6 @@ const DoctorDetailPage: React.FC = () => {
         
         if (response.ok) {
           const data = await response.json();
-          console.log('=== DOCTOR DETAIL DATA ===');
-          console.log('Full doctor data:', data);
-          console.log('Education count:', data.doc_education?.length || 0);
-          console.log('Certificate count:', data.doc_certificate?.length || 0);
-          console.log('Language count:', data.doc_language?.length || 0);
-          console.log('Education data:', data.doc_education);
-          console.log('Certificate data:', data.doc_certificate);
-          console.log('Language data:', data.doc_language);
           setDoctor(data);
         } else {
           const errorText = await response.text();

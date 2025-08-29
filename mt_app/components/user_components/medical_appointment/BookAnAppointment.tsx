@@ -89,7 +89,8 @@ const validateFutureDate = (date: Date): boolean => {
 };
 
 export default function MedicalAppointment() {
-  const { id } = useParams();
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
   const [fileDataUrl, setFileDataUrl] = useState<string | null>(null);
   const [errors, setErrors] = useState<ValidationErrors>({
     contact: {},
@@ -219,7 +220,6 @@ export default function MedicalAppointment() {
       // Check patient errors
       Object.values(newErrors.patient).some(error => error)
     );
-
     return !hasErrors;
   };
 

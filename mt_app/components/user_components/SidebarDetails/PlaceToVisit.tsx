@@ -7,10 +7,6 @@ interface Booking {
 }
 
 interface tourism_bookings{
-  routes: routes;
-}
-
-interface routes{
   trips: trips;
 }
 
@@ -45,7 +41,7 @@ const PlaceToVisit: React.FC<BookingDetailsProps> = ({ data }) => {
       <div className="bg-white p-6 border-b border-[#E0E0E0]">
         <h3 className="text-xl font-bold text-black">Place to Visit</h3>
         <div className="space-y-8">
-          {data.tourism_bookings.routes.trips.package_places.map((placeItem) => (
+          {data.tourism_bookings.trips.package_places.map((placeItem) => (
             <div
               key={placeItem.packplace_id}
               className="flex gap-4 items-start bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"

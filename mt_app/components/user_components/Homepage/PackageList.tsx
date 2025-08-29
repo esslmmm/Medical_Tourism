@@ -2,11 +2,11 @@
 
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
 import { useRouter } from "next/navigation";
 import PackagesSkeleton from "../skeleton-screen/DoctorProfile/PackageSkeleton";
+import Image from "next/image";
 import "@/app/globals.css";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });

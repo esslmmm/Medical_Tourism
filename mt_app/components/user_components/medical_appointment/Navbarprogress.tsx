@@ -12,7 +12,8 @@ import { FaCalendarAlt, FaCommentDots, FaRegStar } from "react-icons/fa";
 
 
 const Navbarpro: React.FC = () => {
-  const { id } = useParams();
+    const params = useParams<{ id: string }>();
+  const id = params?.id;
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState<boolean>(false);
   const searchParams = useSearchParams();
   

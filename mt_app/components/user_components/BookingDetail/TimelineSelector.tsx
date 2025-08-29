@@ -39,7 +39,8 @@ interface Packages {
 }
 
 const TimelineSelector: React.FC<TimelineSelectorProps> = ({ selectedDay, setSelectedDay }) => {
-  const { id } = useParams();
+    const params = useParams<{ id: string }>();
+  const id = params?.id;
   const [bookingData, setBookingData] = useState<PackageBooking | null>(null);
   const [packageData, setPackageData] = useState<Packages | null>(null);
   const [loading, setLoading] = useState(true);

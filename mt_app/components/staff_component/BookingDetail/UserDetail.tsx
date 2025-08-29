@@ -41,7 +41,8 @@ interface Packages {
 }
 
 const UserDetail: React.FC = () => {
-  const { id } = useParams();
+    const params = useParams<{ id: string }>();
+  const id = params?.id;
   const [data, setData] = useState<PackageBooking | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);

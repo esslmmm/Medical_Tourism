@@ -69,7 +69,8 @@ interface GuideListProps {
 }
 
 export default function GuideList({ setSelectedGuide, selectedGuide }: GuideListProps) {
-  const { id } = useParams();
+    const params = useParams<{ id: string }>();
+  const id = params?.id;
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);

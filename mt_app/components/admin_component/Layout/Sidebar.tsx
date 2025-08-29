@@ -26,10 +26,9 @@ const Sidebar: React.FC = () => {
     { name: 'Doctor Management', href: '/admin/doctors', icon: Users },
     { name: 'Hotel Management', href: '/admin/hotels', icon: Hotel },
     { name: 'Package Management', href: '/admin/packages', icon: Package },
+    { name: 'Trip Management', href: '/admin/trips', icon: Calendar },
     { name: 'Booking Management', href: '/admin/bookings', icon: Calendar },
     { name: 'Customer Feedback', href: '/admin/feedback', icon: MessageSquare },
-    { name: 'Support Tickets', href: '/admin/support', icon: HeadphonesIcon },
-    { name: 'Settings', href: '/admin/settings', icon: Settings },
   ];
 
   const handleLogout = async () => {
