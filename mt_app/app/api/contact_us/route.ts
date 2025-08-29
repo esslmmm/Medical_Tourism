@@ -24,13 +24,6 @@ export async function POST(request: Request) {
     try {
       const { firstName, lastName, email, phoneNumber, country, type, message } = await request.json();
 
-  
-      // // Validate required fields
-      // if (!firstName || !lastName || !email || !phoneNumber || !country || !type || !message) {
-      //   return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-      // }
-  
-      // Create a new contact form entry
       const newContact = await prisma.contact_us.create({
         data: {
           firstName,
