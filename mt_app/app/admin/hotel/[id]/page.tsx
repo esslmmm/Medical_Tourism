@@ -52,42 +52,26 @@ const HotelDetailPage: React.FC = () => {
   const [hotel, setHotel] = useState<Hotel | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Mock data - replace with actual API call
   useEffect(() => {
     const fetchHotel = async () => {
-      // Simulate API call
-      const mockHotel: Hotel = {
-        hotel_id: parseInt(hotelId),
-        name: 'Bangkok Grand Hotel',
-        hotel_code: 'BGH001',
-        location: '123 Sukhumvit Road, Thonglor',
-        city: 'Bangkok',
-        rating: 4.7,
-        email: 'info@bangkokgrand.com',
-        description: 'Luxury 5-star hotel in the heart of Bangkok with world-class amenities',
-        image: '/hotels/hotel1.jpg',
-        check_in_time: '2 PM',
-        contact_info: '+66-2-123-4567, info@bangkokgrand.com',
-        create_at: '2023-01-15',
-        hotel_images: [
-          { image: '/hotels/hotel1.jpg' },
-          { image: '/hotels/hotel1-2.jpg' }
-        ],
-        hotel_facilities: [
-          { facility_name: 'Swimming Pool', description: 'Outdoor infinity pool' },
-          { facility_name: 'Spa & Wellness', description: 'Full-service spa' }
-        ],
-        hotel_rooms: [
-          { room_type: 'Deluxe Room', price_per_night: 150, capacity: '2 Adults', description: 'Comfortable room with city view', image: '/hotels/room1.jpg' },
-          { room_type: 'Suite', price_per_night: 300, capacity: '4 Adults', description: 'Luxury suite with balcony', image: '/hotels/suite1.jpg' }
-        ]
-      };
-      
-      setHotel(mockHotel);
-      setLoading(false);
+      try {
+        const response = await fetch(`/api/services/hotels/${hotelId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setHotel(data);
+        } else {
+          console.error('Failed to fetch hotel');
+        }
+      } catch (error) {
+        console.error('Error fetching hotel:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchHotel();
+    if (hotelId) {
+      fetchHotel();
+    }
   }, [hotelId]);
 
   if (loading) {
@@ -126,7 +110,7 @@ const HotelDetailPage: React.FC = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => router.push('/admin/hotels')}
+              onClick={() => router.push('/admin/hotel')}
               className="flex items-center text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
@@ -138,7 +122,7 @@ const HotelDetailPage: React.FC = () => {
             </div>
           </div>
           <button
-            onClick={() => router.push(`/admin/hotels/edit/${hotel.hotel_id}`)}
+            onClick={() => router.push(`/admin/hotel/edit/${hotel.hotel_id}`)}
             className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <Edit className="h-4 w-4 mr-2" />
@@ -157,11 +141,17 @@ const HotelDetailPage: React.FC = () => {
                   <p className="text-sm text-gray-600">Created: {hotel.create_at}</p>
                 </div>
               </div>
-              <img
-                src={hotel.image}
-                alt={hotel.name}
-                className="w-full h-64 object-cover rounded-lg"
-              />
+              {hotel.image ? (
+                <img
+                  src={hotel.image}
+                  alt={hotel.name}
+                  className="w-full h-64 object-cover rounded-lg"
+                />
+              ) : (
+                <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
+                  <span className="text-gray-500">No Image Available</span>
+                </div>
+              )}
             </div>
 
             {/* Description */}
@@ -306,7 +296,7 @@ const HotelDetailPage: React.FC = () => {
               <h3 className="text-lg font-semibold mb-4">Actions</h3>
               <div className="space-y-3">
                 <button
-                  onClick={() => router.push(`/admin/hotels/edit/${hotel.hotel_id}`)}
+                  onClick={() => router.push(`/admin/hotel/edit/${hotel.hotel_id}`)}
                   className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   <Edit className="h-4 w-4 mr-2" />
