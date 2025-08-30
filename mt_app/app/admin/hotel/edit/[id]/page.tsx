@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
-import { ArrowLeft, Save, Upload, X, Plus, Trash2, Image as ImageIcon, Bed, Wifi, Pool } from 'lucide-react';
+import { ArrowLeft, Save, Upload, X, Plus, Trash2, Image as ImageIcon, Bed, Wifi } from 'lucide-react';
 import '@/app/admin/styles/globals.css';
 
 // Define interfaces based on your Prisma schema
@@ -591,7 +591,7 @@ const HotelEditPage: React.FC = () => {
                         onChange={(e) => handleRoomChange(index, 'image', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         maxLength={255}
-                        placeholder="https://example.com/room-image.jpg"
+                        placeholder="/room-image.jpg"
                       />
                     </div>
                     <div className="md:col-span-2">

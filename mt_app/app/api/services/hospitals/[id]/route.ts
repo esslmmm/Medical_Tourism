@@ -46,97 +46,101 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 }
 
-  /**
- * PUT: Update a hospital by ID
- */
-  export async function PUT(request: Request, { params }: { params: { id: string } }) {
-    try {
-        const hospital_id = params.id;
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const hospital_id = params.id;
 
-        if (isNaN(Number(hospital_id))) {
-            return NextResponse.json({ error: "Invalid hospital ID" }, { status: 400 });
-        }
-
-        const body = await request.json();
-
-        
-        const existingHospital = await prisma.hospitals.findUnique({
-            where: { hospital_id },
-        });
-
-        if (!existingHospital) {
-            return NextResponse.json({ error: "Hospital not found" }, { status: 404 });
-        }
-
-        
-        const updatedHospital = await prisma.hospitals.update({
-            where: { hospital_id },
-            data: {
-                name: body.name,
-                hospital_code: body.hospital_code,
-                location: body.location,
-                city: body.city,
-                description: body.description,
-                contact_info: body.contact_info,
-                rating: body.rating,
-                image: body.image,
-                logo: body.logo
-            },
-        });
-
-        
-        if (Array.isArray(body.hospital_images)) {
-            for (const img of body.hospital_images) {
-                if (img.id) {
-                    
-                    await prisma.hospital_images.update({
-                        where: { image_id: img.id },
-                        data: { image: img.image_url },
-                    });
-                } else {
-                    
-                    await prisma.hospital_images.create({
-                        data: {
-                            hospital_id,
-                            image: img.image_url,
-                        },
-                    });
-                }
-            }
-        }
-
-        
-        if (Array.isArray(body.medical_services)) {
-            for (const service of body.medical_services) {
-                if (service.id) {
-                    await prisma.medical_services.update({
-                        where: { service_id: service.id },
-                        data: {
-                            service_name: service.service_name,
-                            description: service.description,
-                        },
-                    });
-                } else {
-                    await prisma.medical_services.create({
-                        data: {
-                            hospital_id,
-                            service_name: service.service_name,
-                            description: service.description,
-                        },
-                    });
-                }
-            }
-        }
-
-        return NextResponse.json(
-            { message: "Hospital, images, and medical services updated successfully", updatedHospital },
-            { status: 200 }
-        );
-    } catch (error) {
-        console.error("Error updating hospital:", error);
-        return NextResponse.json({ error: "Failed to update hospital" }, { status: 500 });
+    if (!hospital_id || hospital_id.trim() === "") {
+      return NextResponse.json(
+        { error: "Hospital ID is required" },
+        { status: 400 }
+      );
     }
+
+    const body = await request.json();
+    const {
+      name,
+      hospital_code,
+      location,
+      city,
+      description,
+      contact_info,
+      image,
+      logo,
+      medical_services,
+      hospital_images,
+    } = body;
+
+    // Update main hospital info
+    const updatedHospital = await prisma.hospitals.update({
+      where: { hospital_id },
+      data: {
+        name,
+        hospital_code,
+        location,
+        city,
+        description,
+        contact_info,
+        image,
+        logo,
+      },
+    });
+
+    // Update medical services
+    if (medical_services) {
+      // Remove old services
+      await prisma.medical_services.deleteMany({
+        where: { hospital_id },
+      });
+
+      // Insert new services
+      await prisma.medical_services.createMany({
+        data: medical_services.map((service: any) => ({
+          service_name: service.service_name,
+          description: service.description,
+          hospital_id,
+        })),
+      });
+    }
+
+    // Update hospital images
+    if (hospital_images) {
+      // Remove old images
+      await prisma.hospital_images.deleteMany({
+        where: { hospital_id },
+      });
+
+      // Insert new images
+      await prisma.hospital_images.createMany({
+        data: hospital_images.map((img: string) => ({
+          image: img,
+          hospital_id,
+        })),
+      });
+    }
+
+    // Return full updated hospital with relations
+    const result = await prisma.hospitals.findUnique({
+      where: { hospital_id },
+      include: {
+        medical_services: true,
+        hospital_images: true,
+      },
+    });
+
+    return NextResponse.json(result, { status: 200 });
+  } catch (error: any) {
+    console.error("Error updating hospital:", error);
+    return NextResponse.json(
+      { error: error.message || "Failed to update hospital" },
+      { status: 500 }
+    );
+  }
 }
+
 
 
 

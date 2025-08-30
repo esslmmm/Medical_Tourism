@@ -77,7 +77,7 @@ export async function GET(request: Request) {
 // PUT request - Update an appointment by ID
 export async function PUT(req: Request) {
   try {
-    const { name, email } = await req.json()
+    const { name, nationality } = await req.json()
     const session = await auth()
   
     if (!session) {
@@ -90,7 +90,7 @@ export async function PUT(req: Request) {
       where: { id: userId },
       data: {
         name,
-        email
+        nationality
       }
     })
 

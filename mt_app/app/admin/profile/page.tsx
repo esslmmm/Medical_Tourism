@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import '@/app/admin/styles/globals.css';
 
 const AdminProfile: React.FC = () => {
@@ -20,8 +20,8 @@ const AdminProfile: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('/api/profile');
-        const data = res.data;
+        const res = await fetch('/api/profile');
+        const data = await res.json();
 
         setProfile({
           id: data.id,
@@ -71,31 +71,40 @@ const AdminProfile: React.FC = () => {
   };
 
   const handleSave = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.put("/api/profile", {
+  setLoading(true);
+  try {
+    const res = await fetch("/api/profile", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         name: profile.name,
         nationality: profile.nationality,
-      });
+      }),
+    });
 
-      const updatedProfile = res.data;
+    if (!res.ok) throw new Error("Failed to update profile");
 
-      setProfile(prev => ({
-        ...prev,
-        name: updatedProfile.name,
-        nationality: updatedProfile.nationality,
-        image: null,
-        imagePreview: updatedProfile.image || prev.imagePreview,
-      }));
+    const updatedProfile = await res.json();
 
-      setOriginalProfile(updatedProfile);
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setProfile(prev => ({
+      ...prev,
+      name: updatedProfile.name,
+      nationality: updatedProfile.nationality,
+      image: null,
+      imagePreview: updatedProfile.image || prev.imagePreview,
+    }));
+
+    setOriginalProfile(updatedProfile);
+    setIsEditing(false);
+  } catch (error) {
+    console.error("Error updating profile:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleCancel = () => {
     if (originalProfile) {
@@ -114,8 +123,8 @@ const AdminProfile: React.FC = () => {
     'Turkey', 'Ukraine', 'United Kingdom', 'United States', 'Vietnam'
   ];
 
-
   return (
+    <AdminLayout>
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
@@ -263,6 +272,7 @@ const AdminProfile: React.FC = () => {
           </div>
         </div>
       </div>
+    </AdminLayout>
   );
 };
 
