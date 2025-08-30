@@ -2,7 +2,7 @@
 import React from 'react'
 import Image from "next/image";
 import { formatDate } from "../../Reuseable-Function/FormateDate";
-import { differenceInDays, format } from 'date-fns';
+import { differenceInDays } from 'date-fns';
 
 
 interface Booking {

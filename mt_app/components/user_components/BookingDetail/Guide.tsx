@@ -4,62 +4,29 @@ import { useParams } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"], weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"] });
 
-interface PackageBooking {
+interface guide_bookings {
   booking_id: number;
-  status: string;
-  create_at: string;
-  inter_booking_id: number | null;
-}
-
-interface InterBooking {
-  booking_id: number;
-  interpreter_id: number;
+  guide_id: number;
   start: string;
   end: string;
-  interpreters: Interpreters;
+  guides: Guides;
 }
 
-interface Interpreters {
-  interpreter_id: number;
+interface Guides {
+  guide_id: number;
   name: string;
   language: string;
   phone: string;
   image: string;
 }
 
-const Guide = () => {
-    const params = useParams<{ id: string }>();
-  const id = params?.id;
-  const [packageBooking, setPackageBooking] = useState<PackageBooking | null>(null);
-  const [interBooking, setInterBooking] = useState<InterBooking | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+interface GuideProps {  
+  guideBooking: guide_bookings | null;
+}
+
+const Guide = ({ guideBooking }: GuideProps) => {
   const daysInMonth = 30; 
   const startDayOfWeek = 6; 
-
-  useEffect(() => {
-    const fetchPackageBooking = async () => {
-      try {
-        const response = await fetch(`/api/booking/packages/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch package booking data");
-        const packageData = await response.json();
-        setPackageBooking(packageData);
-
-        if (packageData.inter_booking_id) {
-          const interResponse = await fetch(`/api/booking/interpreters/${packageData.inter_booking_id}`);
-          if (!interResponse.ok) throw new Error("Failed to fetch interpreter booking data");
-          const interData = await interResponse.json();
-          setInterBooking(interData);
-        }
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPackageBooking();
-  }, [id]);
 
   const formatDate = (timestamp: string) => {
     if (!timestamp) return "Invalid Date";
@@ -87,8 +54,8 @@ const Guide = () => {
     return date.getDate();
   };
 
-  const startDate = interBooking?.start ? getDayOnly(interBooking.start) : null;
-  const endDate = interBooking?.end ? getDayOnly(interBooking.end) : null;
+  const startDate = guideBooking?.start ? getDayOnly(guideBooking.start) : null;
+  const endDate = guideBooking?.end ? getDayOnly(guideBooking.end) : null;
   const markedDates =
     typeof startDate === "number" &&
     typeof endDate === "number" &&
@@ -96,67 +63,28 @@ const Guide = () => {
       ? Array.from({ length: endDate - startDate + 1 }, (_, i) => startDate + i)
       : [];
   
-  if (loading) return <p className="text-center text-gray-500">Loading interpreter details...</p>;
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!interBooking) return <p className="text-center text-gray-500"></p>;
 
   return (
     <div className={`bg-white p-6 rounded-xl shadow-md mt-6 border border-[#C5D1E0] ${inter.className}`}>
-      <h2 className="text-xl font-bold mb-4" style={{ fontSize: "25px" }}>Interpreter</h2>
+      <h2 className="text-xl font-bold mb-4" style={{ fontSize: "25px" }}>Guide</h2>
 
       <div className="flex items-start">
-        {/* Interpreter Image */}
+        {/* Guide Image */}
         <img 
-          src={interBooking.interpreters.image} 
-          alt="Interpreter" 
+          src={guideBooking?.guides.image} 
+          alt="Guide" 
           className="w-30 h-30 rounded-full ml-15 mb-5 border border-gray-300 mr-4"
         />
 
-        {/* Interpreter Info */}
+        {/* Guide Info */}
         <div className="ml-10 space-y-1">
-          <p className="text-md font-bold">Name: <span className="font-normal">{interBooking?.interpreters?.name ?? "Unknown"}</span></p>
-          <p className="text-md font-bold">Language: <span className="font-normal">{interBooking?.interpreters?.language ?? "Unknown"}</span></p>
-          <p className="text-md font-bold">Contact Number: <span className="font-normal">{interBooking?.interpreters?.phone ?? "Unknown"}</span></p>
-          <p className="text-md font-bold">In Plan: 
-            <span className="font-normal">
-              {interBooking?.start ? formatDate(interBooking.start) : "Unknown"} - 
-              {interBooking?.end ? formatDate(interBooking.end) : "Unknown"}
-            </span>
-          </p>
+          <p className="text-md font-bold">Name: <span className="font-normal">{guideBooking?.guides?.name ?? "Unknown"}</span></p>
+          <p className="text-md font-bold">Language: <span className="font-normal">{guideBooking?.guides?.language ?? "Unknown"}</span></p>
+          <p className="text-md font-bold">Contact Number: <span className="font-normal">{guideBooking?.guides?.phone ?? "Unknown"}</span></p>
         </div>
-      </div>
+      </div>  
 
-      {/* Calendar */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-300 w-full mx-auto">
-        <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">{getYearMonth(interBooking.start)}</h3>
-
-        <div className="grid grid-cols-7 gap-2 text-center text-gray-600">
-          {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map((day, index) => (
-            <div key={index} className="font-bold text-gray-700">{day}</div>
-          ))}
-
-          {[...Array(startDayOfWeek)].map((_, index) => (
-            <div key={`empty-${index}`} className="p-2"></div>
-          ))}
-
-          {[...Array(daysInMonth)].map((_, index) => {
-            const dayNumber = index + 1;
-            const isInRange = markedDates.includes(dayNumber);
-
-            return (
-              <div 
-                key={index} 
-                className={`p-2 rounded-lg text-gray-800 font-semibold cursor-pointer transition-all
-                  ${isInRange ? "bg-blue-500 text-white" : "bg-gray-100"}
-                  hover:bg-gray-300
-                `}
-              >
-                {dayNumber}
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      
     </div>
   );
 };

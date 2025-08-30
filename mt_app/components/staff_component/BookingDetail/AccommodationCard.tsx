@@ -7,15 +7,8 @@ const inter = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
-// Interface Definitions
-interface PackageBooking {
-  booking_id: number;
-  status: string;
-  create_at: string;
-  hotel_booking_id: number | null;
-}
 
-interface HotelBooking {
+interface hotel_bookings {
   booking_id: number;
   hotel_id: number;
   check_in_date: string;
@@ -52,42 +45,12 @@ interface HotelRooms {
 }
 
 interface AccommodationCardProps {
-  selectedDay: number | "all"; // ✅ Accepts selectedDay as a prop
+  hotelBooking: hotel_bookings | null;
+  setPackageBooking: (arg: any) => void;
 }
 
-const AccommodationCard: React.FC<AccommodationCardProps> = ({ selectedDay }) => {
-    const params = useParams<{ id: string }>();
-  const id = params?.id;
-  const [packageBooking, setPackageBooking] = useState<PackageBooking | null>(null);
-  const [hotelBooking, setHotelBooking] = useState<HotelBooking | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchPackageBooking = async () => {
-      try {
-        // Step 1: Fetch package booking details
-        const response = await fetch(`/api/admin/booking/packages/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch package booking data");
-        const packageData = await response.json();
-        setPackageBooking(packageData);
-
-        // Step 2: Fetch hotel booking details if hotel_booking_id exists
-        if (packageData.hotel_booking_id) {
-          const hotelResponse = await fetch(`/api/booking/hotels/${packageData.hotel_booking_id}`);
-          if (!hotelResponse.ok) throw new Error("Failed to fetch hotel booking data");
-          const hotelData = await hotelResponse.json();
-          setHotelBooking(hotelData);
-        }
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPackageBooking();
-  }, [id]);
+const AccommodationCard = ({ hotelBooking, setPackageBooking }: AccommodationCardProps) => {
+  if(!hotelBooking) return null;
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "Invalid Date";
@@ -130,12 +93,15 @@ const AccommodationCard: React.FC<AccommodationCardProps> = ({ selectedDay }) =>
   
       const updated = await response.json();
   
-      // Update local state
-      setHotelBooking((prev) =>
+      // Update local state - update the nested hotel_bookings status
+      setPackageBooking((prev: any) =>
         prev
           ? {
               ...prev,
-              status: newStatus,
+              hotel_bookings: {
+                ...prev.hotel_bookings,
+                status: newStatus,
+              },
             }
           : prev
       );
@@ -144,31 +110,6 @@ const AccommodationCard: React.FC<AccommodationCardProps> = ({ selectedDay }) =>
       alert("Could not update status");
     }
   };
-
-  if (loading) return <p className="text-center text-gray-500">Loading accommodation details...</p>;
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!packageBooking) return <p className="text-center text-gray-500">No package booking found.</p>;
-  if (!packageBooking.hotel_booking_id) return <p className="text-center text-gray-500">No hotel booking associated with this package.</p>;
-  if (!hotelBooking) return <p className="text-center text-gray-500">Loading hotel details...</p>;
-
-  // ✅ Correctly Calculate the Selected Date
-  let showAccommodation = false;
-  let selectedDate: Date | null = null;
-
-  if (selectedDay !== "all" && hotelBooking) {
-    selectedDate = getDateForSelectedDay(hotelBooking.check_in_date, selectedDay);
-    const checkInDate = new Date(hotelBooking.check_in_date);
-    const checkOutDate = new Date(hotelBooking.check_out_date);
-
-    // ✅ Ensure selectedDate is within range
-    if (selectedDate instanceof Date && !isNaN(selectedDate.getTime())) {
-      showAccommodation = selectedDate >= checkInDate && selectedDate <= checkOutDate;
-    }
-  } else {
-    showAccommodation = true; // Show everything if "all" is selected
-  }
-
-  if (!showAccommodation) return null; // ✅ Hide accommodation if it's not for the selected day
 
   return (
     <div className={`${inter.className} mt-2`}>

@@ -11,17 +11,13 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       const tourismBooking = await prisma.tourism_bookings.findUnique({
         where: { tourism_id: resolvedParams.id },
         include: {
-          routes:{
+          trips: {
             include: {
-              trips: {
+              package_places: {
                 include: {
-                  package_places: {
-                    include: {
-                      places: true
-                    }
-                  }
+                  places: true
                 }
-              },
+              }
             }
           },
           package_bookings: true,

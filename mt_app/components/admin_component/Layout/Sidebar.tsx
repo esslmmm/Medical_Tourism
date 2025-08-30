@@ -13,7 +13,8 @@ import {
   BarChart3,
   Settings,
   LogOut,
-  Hotel
+  Hotel,
+  Stethoscope
 } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
@@ -23,7 +24,7 @@ const Sidebar: React.FC = () => {
     { name: 'Dashboard', href: '/admin', icon: BarChart3 },
     { name: 'User Management', href: '/admin/users', icon: Users },
     { name: 'Hospital Management', href: '/admin/hospitals', icon: Building },
-    { name: 'Doctor Management', href: '/admin/doctors', icon: Users },
+    { name: 'Doctor Management', href: '/admin/doctors', icon: Stethoscope },
     { name: 'Hotel Management', href: '/admin/hotels', icon: Hotel },
     { name: 'Package Management', href: '/admin/packages', icon: Package },
     { name: 'Trip Management', href: '/admin/trips', icon: Calendar },

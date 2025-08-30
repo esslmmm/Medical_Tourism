@@ -13,14 +13,16 @@ interface PackageBooking {
   booking_id: number;
   status: string;
   create_at: string;
-  appointment_id: number;
-  package_id: number;
-  packages: Packages;
-  appointments: Appointments;
-  hotel_bookings: HotelBookings;
+  appointments: appointments;
+  packages: packages;
 }
 
-interface Appointments {
+interface packages{
+  image: string;
+  package_name: string;
+}
+
+interface appointments {
   appointment_id: number;
   date: string;
   timeslot: string;
@@ -50,50 +52,45 @@ interface File {
   description: string | null;
 }
 
-interface HotelBookings {
-  check_in_date: string;
-}
-
-interface Packages {
-  package_id: number;
-  image: string;
-  package_name: string;
+interface MedicalProps {
+  packageBooking: PackageBooking | null;
 }
 
 
-const MedicalServiceCard = () => {
-    const params = useParams<{ id: string }>();
-  const id = params?.id;
-  const [data, setData] = useState<PackageBooking | null>(null);
+const MedicalServiceCard = ({packageBooking}: MedicalProps) => {
+  if(!packageBooking) return null;
   const [files, setFiles] = useState<File[]>([]);
   const [selectedPDF, setSelectedPDF] = useState<File | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [iframeLoading, setIframeLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchPackageBooking = async () => {
       try {
-        const response = await fetch(`/api/booking/packages/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch data");
-        const result = await response.json();
         let validFiles: File[] = [];
-        if (result.appointments?.appointment_files && Array.isArray(result.appointments.appointment_files)) {
-          validFiles = result.appointments.appointment_files
+  
+        if (
+          packageBooking?.appointments?.appointment_files &&
+          Array.isArray(packageBooking.appointments.appointment_files)
+        ) {
+          validFiles = packageBooking.appointments.appointment_files
             .filter((appointmentFile: any) => appointmentFile.files)
-            .map((appointmentFile: any) => appointmentFile.files);
+            .flatMap((appointmentFile: any) => appointmentFile.files); // flatten
         }
+  
         setFiles(validFiles);
-        setData(result);
       } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
+  
     fetchPackageBooking();
-  }, [id]);
+  }, []);
+  
 
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
@@ -142,10 +139,8 @@ const MedicalServiceCard = () => {
     });
   };
 
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!data || !data.packages || !data.appointments)
-    return <p className="text-center text-gray-500">No package booking found.</p>;
-  const appointmentDate = new Date(data.appointments.date);
+
+  const appointmentDate = new Date(packageBooking.appointments.date);
 
   return (
     <div className={`${inter.className}`}>
@@ -153,15 +148,15 @@ const MedicalServiceCard = () => {
         Medical Service
       </h2>
       <div className="border border-[#C5D1E0] p-4 rounded-xl shadow-md bg-white flex gap-4 items-start w-[850px] mx-auto mb-4">
-        <img src={data.packages.image} alt={data.packages.package_name} className="w-55 h-40 rounded-[15px] object-cover" />
+        <img src={packageBooking?.packages.image} alt={packageBooking?.packages.package_name} className="w-55 h-40 rounded-[15px] object-cover" />
         <div className="flex-1 space-y-2">
           <p className="text-md font-bold">
-            Package Name: <span className="font-normal">{data.packages.package_name}</span>
+            Package Name: <span className="font-normal">{packageBooking?.packages.package_name}</span>
           </p>
           <p className="text-md font-bold">
             Appointment Date / Time:{" "}
             <span className="font-normal">
-              {formatDate(data.appointments.date)}, {data.appointments.timeslot}
+              {formatDate(packageBooking.appointments.date)}, {packageBooking?.appointments.timeslot}
             </span>
           </p>
           {files && files.length > 0 && (
@@ -190,7 +185,7 @@ const MedicalServiceCard = () => {
             </div>
           )}
           <p className="text-md font-bold">
-            Description: <span className="font-normal">{data.appointments.description}</span>
+            Description: <span className="font-normal">{packageBooking.appointments.description}</span>
           </p>
         </div>
       </div>

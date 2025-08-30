@@ -50,6 +50,8 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
                 select: {
                   name: true,
                   image: true,
+                  check_in_time: true,
+                  contact_info: true
                 }
               },
               room_aggregate: {
@@ -62,7 +64,14 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
           user_contact_detail: true,
           guide_bookings: {
             include: {
-              guides: true
+              guides: {
+                select: {
+                  name: true,
+                  image: true,
+                  language: true,
+                  phone: true
+                }
+              }
             }
           },
           payment: true,

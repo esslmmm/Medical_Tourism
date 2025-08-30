@@ -7,7 +7,17 @@ export async function GET() {
   try {
     const packageBookings = await prisma.package_bookings.findMany({
       include: {
-        packages: true,
+        appointments: { select:{status: true }},
+        hotel_bookings: { select:{status: true }},
+        tourism_bookings: { select:{status: true }},
+        guide_bookings: { select:{status: true }},
+        packages: {
+          select:{
+            package_id: true,
+            duration: true,
+            package_name: true
+          }
+        },
       }
     })
     return NextResponse.json(packageBookings, { status: 200 })

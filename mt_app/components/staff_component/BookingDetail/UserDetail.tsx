@@ -41,7 +41,7 @@ interface Packages {
 }
 
 const UserDetail: React.FC = () => {
-    const params = useParams<{ id: string }>();
+  const params = useParams<{ id: string }>();
   const id = params?.id;
   const [data, setData] = useState<PackageBooking | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -62,7 +62,6 @@ const UserDetail: React.FC = () => {
           const userData: User = await userResponse.json();
           setUser(userData);
         }
-
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -85,12 +84,6 @@ const UserDetail: React.FC = () => {
     });
   };
 
-  const formatPackageType = (type: string) => {
-    if (type === "Medical_Tourism") return "Medical & Tourism";
-    if (type === "Medical_Service_Only") return "Medical Service Only";
-    return type.replace(/_/g, " ");
-  };
-
   if (loading)
     return <p className="text-center text-gray-500">Loading package booking details...</p>;
   if (error)
@@ -102,7 +95,7 @@ const UserDetail: React.FC = () => {
         Booking Detail
       </h2>
       <div className="border border-[#C5D1E0] w-[850px] p-4 rounded-xl shadow-md bg-white">
-          <div className='pl-2 flex gap-40'>
+          <div className='pl-2 flex gap-20'>
             <div className='space-y-5'>
             <p className="text-md font-bold">
             Customer Name: <span className="font-normal">{user?.name || "N/A"}</span>
@@ -118,12 +111,6 @@ const UserDetail: React.FC = () => {
           </p>
             </div>
           <div className='flex-1 space-y-5'>
-          <p className="text-md font-bold">
-            Package Type:{" "}
-            <span className="font-normal">
-              {data?.packages ? formatPackageType(data.packages.package_type) : "N/A"}
-            </span>
-          </p>
           <p className="text-md font-bold">
             Appointment Time:{" "}
             <span className="font-normal">{data?.appointments?.timeslot || "N/A"}</span>

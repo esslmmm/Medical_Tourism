@@ -13,8 +13,31 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       where: { booking_id: packageBookingId },
       include: {
         user: true,
-        packages: true,
-        tourism_bookings: true,
+        packages: {
+          include:{
+            hospitals:{
+              select:{
+                name: true,
+                contact_info: true,
+                image: true,
+                hospital_code: true,
+              }
+            }
+          }
+        },
+        tourism_bookings: {
+          include: {
+            trips:{
+              include:{
+                package_places:{
+                  include: {
+                    places: true
+                  }
+                }
+              }
+            }
+          }
+        },
         appointments: {
           include: {
             appointment_files: {
@@ -26,6 +49,15 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         },
         hotel_bookings: {
           include: {
+            hotels:{
+              select: {
+                name: true,
+                image: true,
+                check_in_time: true,
+                contact_info: true,
+                hotel_code: true,
+              }
+            },
             room_aggregate: {
               include: {
                 hotel_rooms: true

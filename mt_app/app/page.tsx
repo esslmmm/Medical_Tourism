@@ -1,7 +1,6 @@
 "use client"
 
 import PackageList from "../components/user_components/Homepage/PackageList";
-import MedicalList from "../components/user_components/Homepage/MedicalList";
 import DoctorList from "../components/user_components/Homepage/DoctorList";
 import Hospitaltap from "../components/user_components/Homepage/Hospitaltap";
 import Footer from "../components/user_components/Main/Footer";

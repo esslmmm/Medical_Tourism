@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Inter } from "next/font/google";
 import { useParams } from "next/navigation";
+import { FileText, Loader2, X } from "lucide-react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -10,37 +11,57 @@ const inter = Inter({
 // Interface Definitions
 interface PackageBooking {
   booking_id: number;
+  appointment_id: number;
   status: string;
   create_at: string;
-  appointment_id: number;
-  package_id: number;
-  packages: Packages;
-  appointments: Appointments;
-  hotel_bookings: HotelBookings;
+  appointments: appointments;
+  packages: packages;
+  hotel_bookings: hotel_bookings;
 }
 
-interface Appointments {
-  appointment_id: number;
-  date: string;
-  status: string;
-  timeslot: string;
-  description: string;
-  file_name: string;
-  file_path: string;
-}
-
-interface HotelBookings {
+interface hotel_bookings{
   check_in_date: string;
 }
 
-interface Packages {
-  package_id: number;
-  image: string;
-  hospital_id: number;
-  package_name: string;
+interface appointments {
+  appointment_id: number;
+  date: string;
+  timeslot: string;
+  description: string;
+  status: string;
+  appointment_files?: AppointmentFile[];
 }
 
-interface Hospital {
+interface AppointmentFile {
+  id: number;
+  appointmentId: number;
+  fileId: number;
+  createdAt: string;
+  files: File;
+}
+
+interface File {
+  id: number;
+  userId: number;
+  originalName: string;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+  cloudinaryId: string;
+  url: string;
+  uploadedAt: string;
+  category: string;
+  description: string | null;
+}
+
+
+interface packages {
+  image: string;
+  package_name: string;
+  hospitals: hospitals;
+}
+
+interface hospitals {
   hospital_id: number;
   name: string;
   hospital_code: string;
@@ -49,59 +70,49 @@ interface Hospital {
 }
 
 interface MedicalServiceCardProps {
-  selectedDay: number | "all"; // ✅ Accepts selectedDay as a prop
+  packageBooking: PackageBooking | null;
+  setPackageBooking: (arg: any) => void;
 }
 
-const MedicalServiceCard: React.FC<MedicalServiceCardProps> = ({ selectedDay }) => {
-    const params = useParams<{ id: string }>();
-  const id = params?.id;
-  const [data, setData] = useState<PackageBooking | null>(null);
-  const [hospital, setHospital] = useState<Hospital | null>(null);
+const MedicalServiceCard = ({packageBooking, setPackageBooking}: MedicalServiceCardProps) => {
+  if (!packageBooking) return null;
+  const [files, setFiles] = useState<File[]>([]);
+  const [selectedPDF, setSelectedPDF] = useState<File | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [iframeLoading, setIframeLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchPackageBooking = async () => {
       try {
-        const response = await fetch(`/api/admin/booking/packages/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch data");
-        const result = await response.json();
-        setData(result);
-
-        if (result.packages.hospital_id) {
-          const hospitalResponse = await fetch(`/api/services/hospitals/${result.packages.hospital_id}`);
-          if (!hospitalResponse.ok) throw new Error("Failed to fetch hospital data");
-          const hospitalData: Hospital = await hospitalResponse.json();
-          setHospital(hospitalData);
+        let validFiles: File[] = [];
+  
+        if (
+          packageBooking?.appointments?.appointment_files &&
+          Array.isArray(packageBooking.appointments.appointment_files)
+        ) {
+          validFiles = packageBooking.appointments.appointment_files
+            .filter((appointmentFile: any) => appointmentFile.files)
+            .flatMap((appointmentFile: any) => appointmentFile.files); // flatten
         }
-
+  
+        setFiles(validFiles);
       } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchPackageBooking();
-  }, [id]);
-
-  const formatDate = (dateString: string) => {
-    if (!dateString) return "Invalid Date";
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return "Invalid Date";
-
-    return date.toLocaleDateString("en-GB", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
+  }, []);
 
   const handleStatusChange = async (newStatus: string) => {
-    if (!data) return;
+    if (!packageBooking) return;
   
     try {
-      const response = await fetch(`/api/booking/appointments/${data.appointment_id}`, {
+      const response = await fetch(`/api/booking/appointments/${packageBooking.appointment_id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -117,9 +128,7 @@ const MedicalServiceCard: React.FC<MedicalServiceCardProps> = ({ selectedDay }) 
       }
   
       const updated = await response.json();
-  
-      // Update local state
-      setData((prev) =>
+      setPackageBooking((prev: any) =>
         prev
           ? {
               ...prev,
@@ -137,31 +146,61 @@ const MedicalServiceCard: React.FC<MedicalServiceCardProps> = ({ selectedDay }) 
     }
   };
 
-  if (loading)
-    return <p className="text-center text-gray-500">Loading package booking details...</p>;
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!data || !data.packages || !data.appointments || !data.hotel_bookings)
-    return <p className="text-center text-gray-500">No package booking found.</p>;
+
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showModal) closeModal();
+    };
+    if (showModal) {
+      document.addEventListener('keydown', handleEscKey);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+      document.body.style.overflow = 'unset';
+    };
+  }, [showModal]);
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "Invalid Date";
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "Invalid Date";
+    return date.toLocaleDateString("en-GB", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const handleFileClick = (fileData: File) => {
+    if (!fileData || !fileData.url) return;
+    setIframeLoading(true);
+    setSelectedPDF(fileData);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedPDF(null);
+  };
+
+  const formatUploadDate = (dateString: any) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
 
   // ✅ Convert `check_in_date` and `appointments.date` into Date objects
-  const checkInDate = new Date(data.hotel_bookings.check_in_date);
-  const appointmentDate = new Date(data.appointments.date);
+  const checkInDate = new Date(packageBooking.hotel_bookings.check_in_date);
+  const appointmentDate = new Date(packageBooking.appointments.date);
 
   if (isNaN(checkInDate.getTime()) || isNaN(appointmentDate.getTime())) return null; // Prevents errors
   // ✅ Calculate expected date based on check-in date and selectedDay
-  let showMedicalService = false;
-
-  if (selectedDay === "all") {
-    showMedicalService = true; // Show all if selectedDay is "all"
-  } else {
-    // ✅ Expected date should match the check-in date plus (selectedDay - 1)
-    const expectedDate = new Date(checkInDate);
-    expectedDate.setDate(checkInDate.getDate() + (selectedDay - 1));
-    // ✅ Compare the formatted dates
-    showMedicalService = appointmentDate.toDateString() === expectedDate.toDateString();
-  }
-
-  if (!showMedicalService) return null; // ✅ Hide component if not in selected day
 
   return (
     <div className={`${inter.className}`}>
@@ -173,12 +212,12 @@ const MedicalServiceCard: React.FC<MedicalServiceCardProps> = ({ selectedDay }) 
       <div className="absolute top-4 right-4">
         <select
           id="status"
-          value={data?.appointments.status}
+          value={packageBooking?.appointments.status}
           onChange={(e) => handleStatusChange(e.target.value)}
           className={`border rounded-[18px] px-2 py-1 text-sm focus:outline-none focus:ring-2
-            ${data?.appointments.status === 'Pending' ? 'text-white bg-[#FFCC00] border-[#C5D1E0] focus:ring-yellow-300' : ''}
-            ${data?.appointments.status === 'Approved' ? 'text-white bg-[#28A83D] border-[#C5D1E0] focus:ring-green-300' : ''}
-            ${data?.appointments.status === 'Rejected' ? 'text-white bg-[#FB5626] border-[#C5D1E0] focus:ring-red-300' : ''}
+            ${packageBooking?.appointments.status === 'Pending' ? 'text-white bg-[#FFCC00] border-[#C5D1E0] focus:ring-yellow-300' : ''}
+            ${packageBooking?.appointments.status === 'Approved' ? 'text-white bg-[#28A83D] border-[#C5D1E0] focus:ring-green-300' : ''}
+            ${packageBooking?.appointments.status === 'Rejected' ? 'text-white bg-[#FB5626] border-[#C5D1E0] focus:ring-red-300' : ''}
           `}
         >
           <option value="Pending">Pending</option>
@@ -191,30 +230,49 @@ const MedicalServiceCard: React.FC<MedicalServiceCardProps> = ({ selectedDay }) 
         <div className="flex gap-4 items-start mx-auto mb-4 border-b border-[#C5D1E0] pb-4">
           {/* Left Side: Image */}
           <img
-            src={data?.packages.image}
-            alt={data?.packages.package_name}
+            src={packageBooking?.packages.image}
+            alt={packageBooking?.packages.package_name}
             className="w-55 h-40 rounded-[15px] object-cover"
           />
 
           {/* Right Side: Details */}
           <div className="flex-1 space-y-2">
             <p className="text-md font-bold">
-              Package Name: <span className="font-normal">{data?.packages.package_name}</span>
+              Name: <span className="font-normal">{packageBooking?.packages.package_name}</span>
             </p>
             <p className="text-md font-bold">
               Appointment Date / Time:{" "}
               <span className="font-normal">
-                {formatDate(data?.appointments.date)}, {data?.appointments.timeslot}
+                {formatDate(packageBooking?.appointments.date)}, {packageBooking?.appointments.timeslot}
               </span>
             </p>
-            <p className="text-md font-bold">
+            {files && files.length > 0 && (
+            <div className="text-md font-bold">
               Attached File:{" "}
-              <a href={data?.appointments.file_path} className="text-blue-500 underline">
-                {data?.appointments.file_name}
-              </a>
-            </p>
+              <div className="space-y-3 mt-2">
+                {files.map((file) => (
+                  <div key={file.id} className="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                    onClick={() => handleFileClick(file)}>
+                    <div className="w-12 h-12 bg-red-100 rounded flex items-center justify-center">
+                      <FileText className="text-red-600" size={24} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-blue-600 font-medium hover:underline">
+                        {file.originalName || file.fileName}
+                      </h3>
+                      <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
+                        <span>Uploaded: {formatUploadDate(file.uploadedAt)}</span>
+                        <span>Size: {(file.fileSize / 1024).toFixed(1)} KB</span>
+                        <span>Type: {file.fileType.toUpperCase()}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
             <p className="text-md font-bold">
-              Description: <span className="font-normal">{data?.appointments.description}.</span>
+              Description: <span className="font-normal">{packageBooking?.appointments.description}.</span>
             </p>
           </div>
         </div>
@@ -222,23 +280,58 @@ const MedicalServiceCard: React.FC<MedicalServiceCardProps> = ({ selectedDay }) 
         {/* Hospital Section */}
         <div className="flex gap-4 items-start mx-auto">
           <img
-            src={hospital?.image}
-            alt={hospital?.name}
+            src={packageBooking.packages.hospitals?.image}
+            alt={packageBooking.packages.hospitals?.name}
             className="w-55 h-40 rounded-[15px] object-cover"
           />
           <div className="flex-1 space-y-2">
             <p className="text-md font-bold">
-              Hospital Name: <span className="font-normal">{hospital?.name}</span>
+              Hospital Name: <span className="font-normal">{packageBooking.packages.hospitals?.name}</span>
             </p>
             <p className="text-md font-bold">
-              Contact number: <span className="font-normal">{hospital?.contact_info}</span>
+              Contact number: <span className="font-normal">{packageBooking.packages.hospitals?.contact_info}</span>
             </p>
             <p className="text-md font-bold">
-              Code: <span className="font-normal">{hospital?.hospital_code}</span>
+              Code: <span className="font-normal">{packageBooking.packages.hospitals?.hospital_code}</span>
             </p>
           </div>
         </div>
       </div>
+
+
+      {showModal && selectedPDF && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex flex-col">
+          <div className="flex items-center justify-between bg-gray-900 text-white px-4 py-3">
+            <div className="flex items-center gap-3">
+              <FileText className="text-red-400" size={20} />
+              <span className="text-sm">{selectedPDF.originalName || selectedPDF.fileName}</span>
+            </div>
+            <button onClick={closeModal} className="hover:bg-gray-800 p-2 rounded transition-colors">
+              <X size={20} />
+            </button>
+          </div>
+
+          <div className="flex-1 relative bg-black">
+            {iframeLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
+                <Loader2 className="animate-spin text-white" size={48} />
+              </div>
+            )}
+            <iframe
+              src={selectedPDF.url}
+              title="PDF Preview"
+              className="w-full h-full"
+              onLoad={() => setIframeLoading(false)}
+            ></iframe>
+            <div className="absolute bottom-4 right-4 z-20">
+              <a href={selectedPDF.url} target="_blank" rel="noopener noreferrer"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Open file in New Tab
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

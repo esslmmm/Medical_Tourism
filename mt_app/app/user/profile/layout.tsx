@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import Sidebar from "@/components/user_components/Main/Sidebar";
-import AuthenticatedNavbar from "@/components/user_components/Main/AuthenticatedNavbar";
 import Navbarpro from "@/components/user_components/Main/Navbarpro";
 
 
