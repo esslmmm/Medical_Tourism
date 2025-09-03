@@ -11,7 +11,8 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const userId = params.id;
+    const resolvedParams = await params;
+    const userId = resolvedParams.id;
 
     // Validate ID
     if (isNaN(Number(userId))) {
@@ -31,7 +32,7 @@ export async function GET(
         payment: true,
         review_hospital: true,
         review_hotel: true,
-        review_inter: true,
+        review_guide: true,
         files: true,
         messages_messages_sender_idTouser: true,
         chat_chat_user1_idTouser: true,

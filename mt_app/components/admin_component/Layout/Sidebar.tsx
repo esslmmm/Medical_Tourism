@@ -14,7 +14,8 @@ import {
   Settings,
   LogOut,
   Hotel,
-  User
+  User,
+  Stethoscope
 } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
@@ -24,12 +25,11 @@ const Sidebar: React.FC = () => {
     { name: 'Dashboard', href: '/admin', icon: BarChart3 },
     { name: 'User Management', href: '/admin/user', icon: Users },
     { name: 'Hospital Management', href: '/admin/hospital', icon: Building },
+    { name: 'Doctor Management', href: '/admin/doctors', icon: Stethoscope },
     { name: 'Hotel Management', href: '/admin/hotel', icon: Hotel },
     { name: 'Package Management', href: '/admin/packages', icon: Package },
     { name: 'Booking Management', href: '/admin/booking', icon: Calendar },
     { name: 'Customer Feedback', href: '/admin/feedback', icon: MessageSquare },
-    { name: 'Support Tickets', href: '/admin/support', icon: HeadphonesIcon },
-    { name: 'Settings', href: '/admin/settings', icon: Settings },
     { name: 'Profile', href: '/admin/profile', icon: User },
   ];
 

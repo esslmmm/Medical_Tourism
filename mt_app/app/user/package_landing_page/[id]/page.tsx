@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation";
-import AdditionService from "@/components/user_components/package_landing_page/AdditionService"
 import Navbarpro from "@/components/user_components/Main/Navbarpro";
 import PackageLandingSkeleton from "@/components/user_components/skeleton-screen/package_landing_page/PackageLandingSkeleton";
 import PackageImages from "@/components/user_components/package_landing_page/PackageImages";
@@ -84,10 +83,6 @@ const PackageLandingPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [includeAccommodation, setIncludeAccommodation] = useState(false);
-  const [selectedServices, setSelectedServices] = useState<Record<ServiceType, boolean>>({
-    accommodation_booking: false,
-    Guide: false,
-  });
   const [selectedTourismRoute, setSelectedTourismRoute] = useState<routes | null>(null);
   
    // Fetch Package and then Hospital
