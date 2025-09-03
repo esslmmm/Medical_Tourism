@@ -175,12 +175,11 @@ const RouteSelecting: React.FC<PackageDetailProps> = ({ data, setSelectedTourism
                                     : 'border-gray-100 hover:border-gray-200 hover:shadow-xl'
                             }`}>
                                 {/* Image Header */}
-                                <div className="relative h-48">
-                                    <Image
+                                <div className="relative h-48 overflow-hidden">
+                                    <img
                                         src={routeInfo.image}
                                         alt={routeInfo.name}
-                                        fill
-                                        className="object-cover"
+                                        className="w-full h-full object-cover"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                                     

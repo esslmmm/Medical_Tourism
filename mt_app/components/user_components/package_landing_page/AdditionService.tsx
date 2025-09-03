@@ -141,6 +141,8 @@ const AdditionService: React.FC<ServicesProps> = ({selectedServices, setSelected
                   alt={service.name}
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  quality={85}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 
@@ -251,6 +253,8 @@ const AdditionService: React.FC<ServicesProps> = ({selectedServices, setSelected
                       alt={service.name}
                       fill
                       className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw"
+                      quality={90}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                     <div className="absolute inset-0 p-8 flex items-end">

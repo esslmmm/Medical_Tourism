@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Calendar, Heart, Compass, MapPin, Clock, Shield, Users, ChevronRight, Check, Star, Plane, Hotel, UserCheck } from "lucide-react";
+import { Calendar, Heart, Compass, MapPin, Clock, Shield, Users, ChevronRight, Check, Star, Plane, Hotel, UserCheck, X, Plus, Minus } from "lucide-react";
 import AdditionService from "@/components/user_components/package_landing_page/AdditionService";
 import Navbarpro from "@/components/user_components/Main/Navbarpro";
 import PackageLandingSkeleton from "@/components/user_components/skeleton-screen/package_landing_page/PackageLandingSkeleton";
@@ -11,6 +11,7 @@ import HeaderPackage from "@/components/user_components/package_landing_page/Hea
 import BookingCard from "@/components/user_components/package_landing_page/BookingCard";
 import RouteSelecting from "@/components/user_components/package_landing_page/RouteSelecting";
 import HotelSelecting from "@/components/user_components/package_landing_page/HotelSelecting";
+import Image from "next/image";
 import './animations.css';
 
 interface Packages {
@@ -83,21 +84,19 @@ const PackageLandingPage = () => {
   const [hospital, setHospital] = useState<Hospital | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [includeAccommodation, setIncludeAccommodation] = useState(false);
-  const [selectedServices, setSelectedServices] = useState<Record<ServiceType, boolean>>({
-    accommodation_booking: false,
-    Guide: false,
-  });
-  const [selectedTourismRoute, setSelectedTourismRoute] = useState<routes | null>(null);
   
-  // Simplified realistic flow
-  const [currentView, setCurrentView] = useState<'overview' | 'customize' | 'book'>('overview');
-  const [selectedOptions, setSelectedOptions] = useState({
-    includeActivities: false,
-    includeAccommodation: false,
-    includeGuide: false,
-    tourismRoute: null as routes | null
+  // Step-by-step wizard state
+  const [currentWizardStep, setCurrentWizardStep] = useState(1);
+  const [addedServices, setAddedServices] = useState({
+    activities: false,
+    accommodation: false,
+    guide: false,
+    selectedRoute: null as routes | null,
+    selectedHotel: 0
   });
+  const [skipCustomization, setSkipCustomization] = useState(false);
+
+  const [showCustomizePanel, setShowCustomizePanel] = useState(false);
 
   // Fetch Package and then Hospital
   useEffect(() => {
@@ -150,403 +149,603 @@ const PackageLandingPage = () => {
     );
   }
 
+  const basePrice = 3200;
   const calculateTotal = () => {
-    let total = 3200; // Base medical package
-    if (selectedOptions.includeActivities && selectedOptions.tourismRoute) {
-      total += selectedOptions.tourismRoute.trips.total_price;
+    let total = basePrice;
+    if (addedServices.activities && addedServices.selectedRoute) {
+      total += addedServices.selectedRoute.trips.total_price;
     }
-    if (selectedOptions.includeAccommodation) {
-      total += 200 * (data?.duration || 7); // $200/night
+    if (addedServices.accommodation) {
+      total += 200 * (data?.duration || 7);
     }
-    if (selectedOptions.includeGuide) {
-      total += 150 * (data?.duration || 7); // $150/day
+    if (addedServices.guide) {
+      total += 150 * (data?.duration || 7);
     }
     return total;
+  };
+
+  const toggleService = (service: 'activities' | 'accommodation' | 'guide') => {
+    setAddedServices(prev => ({
+      ...prev,
+      [service]: !prev[service]
+    }));
+  };
+
+  const proceedToNextStep = () => {
+    if (currentWizardStep < 3) {
+      setCurrentWizardStep(currentWizardStep + 1);
+    }
+  };
+
+  const goBackStep = () => {
+    if (currentWizardStep > 1) {
+      if (currentWizardStep === 3 && skipCustomization) {
+        // If user skipped customization, go back to step 1
+        setCurrentWizardStep(1);
+        setSkipCustomization(false);
+      } else {
+        setCurrentWizardStep(currentWizardStep - 1);
+      }
+    }
+  };
+
+  const proceedWithoutCustomization = () => {
+    setSkipCustomization(true);
+    setCurrentWizardStep(3); // Go directly to booking
   };
 
   return (
     <div className="bg-gray-50 min-h-screen">
       <Navbarpro />
       
-      {/* Fixed Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+      {/* Enhanced Header with Progress */}
+      <div className="bg-white shadow-sm sticky top-0 z-40">
+        <div className="max-w-5xl mx-auto px-4 py-4">
+          {/* Step-by-Step Progress */}
+          <div className="flex items-center justify-center mb-4">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Heart className="w-5 h-5 text-white" />
+              <div className="flex items-center">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                  currentWizardStep >= 1 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-500'
+                }`}>
+                  {currentWizardStep > 1 ? '✓' : '1'}
+                </div>
+                <span className={`ml-2 text-sm font-medium ${
+                  currentWizardStep >= 1 ? 'text-green-600' : 'text-gray-500'
+                }`}>Package Details</span>
               </div>
-              <div>
-                <h1 className="text-lg font-bold text-gray-900">{data?.package_name || "Medical Package"}</h1>
-                <p className="text-sm text-gray-600">{hospital?.name || "Premium Hospital"} • {hospital?.city || "Bangkok"}</p>
+              <div className={`w-8 h-px ${
+                currentWizardStep >= 2 ? 'bg-blue-400' : 'bg-gray-300'
+              }`}></div>
+              <div className="flex items-center">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                  currentWizardStep >= 2 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-500'
+                }`}>
+                  {currentWizardStep > 2 ? '✓' : '2'}
+                </div>
+                <span className={`ml-2 text-sm font-medium ${
+                  currentWizardStep >= 2 ? 'text-blue-600' : 'text-gray-500'
+                }`}>Customize (Optional)</span>
+              </div>
+              <div className={`w-8 h-px ${
+                currentWizardStep >= 3 ? 'bg-purple-400' : 'bg-gray-300'
+              }`}></div>
+              <div className="flex items-center">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                  currentWizardStep >= 3 ? 'bg-purple-500 text-white' : 'bg-gray-300 text-gray-500'
+                }`}>
+                  3
+                </div>
+                <span className={`ml-2 text-sm font-medium ${
+                  currentWizardStep >= 3 ? 'text-purple-600' : 'text-gray-500'
+                }`}>Book & Confirm</span>
               </div>
             </div>
-            
-            {/* View Navigation */}
-            <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
-              <button
-                onClick={() => setCurrentView('overview')}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
-                  currentView === 'overview'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Overview
-              </button>
-              <button
-                onClick={() => setCurrentView('customize')}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
-                  currentView === 'customize'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Customize
-              </button>
-              <button
-                onClick={() => setCurrentView('book')}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
-                  currentView === 'book'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Book Now
-              </button>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">{data?.package_name || "Medical Package"}</h1>
+              <p className="text-sm text-gray-700">{hospital?.name || "Premium Hospital"} • {hospital?.city || "Bangkok"}</p>
             </div>
-            
             <div className="text-right">
               <div className="text-2xl font-bold text-gray-900">${calculateTotal().toLocaleString()}</div>
-              <div className="text-sm text-gray-600">Total Estimate</div>
+              <div className="text-sm text-gray-700">Total Price</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         
-        {/* Overview Section */}
-        {currentView === 'overview' && (
-          <div className="space-y-8">
-            {/* Hero Section */}
-            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-              <div className="grid lg:grid-cols-3 gap-0">
-                {/* Package Image */}
-                <div className="lg:col-span-1 relative h-80 lg:h-auto">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600"></div>
-                  <img 
-                    src="/img/bangkok_logo.png" 
-                    alt="Bangkok Medical Tourism"
-                    className="absolute inset-0 w-full h-full object-contain p-8 opacity-80"
-                  />
-                  <div className="absolute inset-0 bg-black/10"></div>
+        {/* Layout: Sidebar + Main Content */}
+        <div className="grid lg:grid-cols-4 gap-6">
+          
+          {/* LEFT SIDEBAR - Always Included (Persistent) */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-24">
+              <div className="bg-green-50 rounded-xl p-4">
+                <h3 className="text-lg font-bold text-green-900 mb-3 text-center">✅ Always Included</h3>
+                <div className="text-center mb-4">
+                  <span className="text-xl font-bold text-green-600">${basePrice.toLocaleString()}</span>
+                  <div className="text-sm text-gray-600">Base Package</div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center text-sm text-green-800">
+                    <Check className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span>Complete health screening</span>
+                  </div>
+                  <div className="flex items-center text-sm text-green-800">
+                    <Check className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span>Specialist consultations</span>
+                  </div>
+                  <div className="flex items-center text-sm text-green-800">
+                    <Check className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span>All diagnostic tests</span>
+                  </div>
+                  <div className="flex items-center text-sm text-green-800">
+                    <Check className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span>Medical reports</span>
+                  </div>
+                  <div className="flex items-center text-sm text-green-800">
+                    <Check className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span>Airport transfers</span>
+                  </div>
+                  <div className="flex items-center text-sm text-green-800">
+                    <Shield className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span>JCI Accredited</span>
+                  </div>
+                </div>
+                
+                {/* Current Total */}
+                <div className="border-t border-green-200 mt-4 pt-4">
+                  <div className="text-center">
+                    <div className="text-sm text-gray-600">Current Total</div>
+                    <div className="text-2xl font-bold text-green-600">${calculateTotal().toLocaleString()}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* MAIN CONTENT AREA */}
+          <div className="lg:col-span-3">
+            
+            {/* STEP 1: Package Details */}
+            {currentWizardStep === 1 && (
+              <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-6">
+                {/* Package Hero */}
+                <div className="relative h-48 bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                  <div className="relative w-40 h-20">
+                    <img 
+                      src="/img/bangkok_logo.png" 
+                      alt="Bangkok Medical Tourism"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="absolute top-4 right-4">
+                    <div className="bg-white/95 backdrop-blur-sm px-3 py-2 rounded-lg">
+                      <div className="text-xs font-medium text-gray-900">JCI Certified</div>
+                    </div>
+                  </div>
                   <div className="absolute bottom-4 left-4">
-                    <div className="flex items-center space-x-2">
-                      <div className="bg-white/90 px-3 py-1 rounded-full">
-                        <span className="text-sm font-medium text-gray-900">Starting ${data?.duration || 7} days</span>
+                    <div className="bg-white/95 backdrop-blur-sm px-3 py-2 rounded-lg">
+                      <div className="text-sm font-medium text-gray-900">
+                        {data?.duration || 7} Day Package
                       </div>
                     </div>
                   </div>
                 </div>
                 
                 {/* Package Info */}
-                <div className="lg:col-span-2 p-8">
-                  <div className="flex items-start justify-between mb-6">
-                    <div>
-                      <h2 className="text-3xl font-bold text-gray-900 mb-2">{data?.package_name || "General Health Checkup"}</h2>
-                      <div className="flex items-center space-x-4 text-sm text-gray-600">
-                        <div className="flex items-center">
-                          <MapPin className="w-4 h-4 mr-1" />
-                          <span>{hospital?.city || "Bangkok, Thailand"}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Clock className="w-4 h-4 mr-1" />
-                          <span>{data?.duration || 7} days</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Star className="w-4 h-4 mr-1 fill-current text-yellow-500" />
-                          <span>4.8 (2,847 reviews)</span>
-                        </div>
-                      </div>
+                <div className="p-6">
+                  <div className="text-center mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">{data?.package_name || "General Health Checkup"}</h2>
+                    <div className="flex items-center justify-center text-gray-700 mb-4">
+                      <MapPin className="w-5 h-5 mr-2" />
+                      <span className="mr-6">{hospital?.city || "Bangkok, Thailand"}</span>
+                      <Clock className="w-5 h-5 mr-2" />
+                      <span className="mr-6">{data?.duration || 7} days</span>
+                      <Star className="w-5 h-5 mr-2 fill-current text-yellow-500" />
+                      <span>4.8 (2,847 reviews)</span>
                     </div>
-                    <div className="text-right">
-                      <div className="text-3xl font-bold text-gray-900">$3,200</div>
-                      <div className="text-sm text-gray-600">Base package</div>
-                    </div>
+                    <p className="text-gray-600 max-w-2xl mx-auto">
+                      Comprehensive medical checkup package at a world-class JCI-certified hospital in Bangkok.
+                      Perfect for health screening and medical tourism.
+                    </p>
                   </div>
-                  
-                  {/* What's Included */}
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <h3 className="font-semibold text-gray-900 mb-3">Medical Services Included:</h3>
-                      <div className="space-y-2">
-                        <div className="flex items-center text-sm">
-                          <Check className="w-4 h-4 text-green-600 mr-2" />
-                          <span>Comprehensive health screening</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <Check className="w-4 h-4 text-green-600 mr-2" />
-                          <span>Specialist consultations</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <Check className="w-4 h-4 text-green-600 mr-2" />
-                          <span>All diagnostic tests</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <Check className="w-4 h-4 text-green-600 mr-2" />
-                          <span>Medical reports & records</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <Check className="w-4 h-4 text-green-600 mr-2" />
-                          <span>Airport transfers</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h3 className="font-semibold text-gray-900 mb-3">Hospital Credentials:</h3>
-                      <div className="space-y-2">
-                        <div className="flex items-center text-sm">
-                          <Shield className="w-4 h-4 text-blue-600 mr-2" />
-                          <span>JCI Accredited Hospital</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <UserCheck className="w-4 h-4 text-blue-600 mr-2" />
-                          <span>Board-certified specialists</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <Users className="w-4 h-4 text-blue-600 mr-2" />
-                          <span>English-speaking staff</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <Heart className="w-4 h-4 text-blue-600 mr-2" />
-                          <span>15+ years medical tourism</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-8 flex space-x-4">
-                    <button
-                      onClick={() => setCurrentView('customize')}
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center"
+
+                  {/* Navigation Buttons */}
+                  <div className="flex gap-4">
+                    <button 
+                      onClick={proceedWithoutCustomization}
+                      className="flex-1 bg-green-600 hover:bg-green-700 text-white py-4 px-6 rounded-xl font-semibold transition-colors"
                     >
-                      <span>Customize Package</span>
-                      <ChevronRight className="w-5 h-5 ml-2" />
+                      Book Base Package - ${basePrice.toLocaleString()}
                     </button>
-                    <button
-                      onClick={() => setCurrentView('book')}
-                      className="flex-1 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold transition-colors"
+                    <button 
+                      onClick={proceedToNextStep}
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-4 px-6 rounded-xl font-semibold transition-colors"
                     >
-                      Book Now - $3,200
+                      Add Hotels & Activities →
                     </button>
                   </div>
+                  <p className="text-center text-sm text-gray-600 mt-3">Add hotels, wellness activities, and personal guide in the next step</p>
                 </div>
               </div>
-            </div>
+            )}
             
-            {/* Package Gallery */}
-            <PackageImages data={data} />
-          </div>
-        )}
-        
-        {/* Customize Section */}
-        {currentView === 'customize' && (
-          <div className="space-y-8">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Customize Your Experience</h2>
-              <p className="text-gray-600">Add optional services to enhance your medical tourism experience</p>
-            </div>
-            
-            <div className="grid gap-6">
-              {/* Tourism Activities */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                      <Plane className="w-6 h-6 text-orange-600" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900">Wellness Tourism Activities</h3>
-                      <p className="text-gray-600">Recovery-friendly cultural experiences and wellness activities</p>
-                      <div className="mt-2 text-sm text-gray-500">Duration: 3-4 days • Recovery-focused activities</div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-gray-900">+$1,850</div>
-                    <div className="text-sm text-gray-600">Per person</div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
+            {/* STEP 2: Customization Options */}
+            {currentWizardStep === 2 && (
+              <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-6">
+                {/* Step Header with Back Button */}
+                <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <button 
+                      onClick={goBackStep}
+                      className="flex items-center text-gray-600 hover:text-gray-800 font-medium transition-colors"
+                    >
+                      ← Back to Package Details
+                    </button>
                     <div className="text-sm text-gray-600">
-                      Includes: Temple visits, Thai massage, cultural workshops, local guide
+                      Step 2 of 3: Optional Add-ons
                     </div>
                   </div>
-                  <label className="flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedOptions.includeActivities}
-                      onChange={(e) => setSelectedOptions(prev => ({ 
-                        ...prev, 
-                        includeActivities: e.target.checked 
-                      }))}
-                      className="w-5 h-5 text-orange-600 rounded"
-                    />
-                    <span className="font-medium text-gray-900">Add to package</span>
-                  </label>
                 </div>
                 
-                {/* Route Selection */}
-                {selectedOptions.includeActivities && (
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <RouteSelecting 
-                      data={data}
-                      selectedTourismRoute={selectedOptions.tourismRoute}
-                      setSelectedTourismRoute={(route) => setSelectedOptions(prev => ({ 
-                        ...prev, 
-                        tourismRoute: route 
-                      }))}
-                    />
+                <div className="p-6">
+                  <div className="text-center mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">🛍️ Enhance Your Experience</h2>
+                    <p className="text-gray-600">Add optional services to make your medical journey even better</p>
                   </div>
-                )}
-              </div>
               
-              {/* Accommodation */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                      <Hotel className="w-6 h-6 text-blue-600" />
+              <div className="space-y-6">
+                {/* Activities Add-On */}
+                <div className={`border-2 rounded-xl p-4 transition-all ${
+                  addedServices.activities ? 'border-orange-400 bg-orange-50' : 'border-gray-200'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3 flex-1">
+                      <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <Plane className="w-6 h-6 text-orange-600" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-gray-900">Wellness Tourism Activities</div>
+                        <div className="text-sm text-gray-700">Temple visits, cultural experiences, Thai massage</div>
+                        <div className="text-lg font-bold text-orange-600 mt-1">+$1,850</div>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900">Hotel Accommodation</h3>
-                      <p className="text-gray-600">Premium hotels near medical facilities with medical support</p>
-                      <div className="mt-2 text-sm text-gray-500">4-5 star hotels • Medical concierge • 24/7 support</div>
+                    <div className="flex flex-col items-end space-y-2">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleService('activities');
+                        }}
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                          addedServices.activities 
+                            ? 'bg-orange-500 text-white hover:bg-orange-600' 
+                            : 'bg-gray-200 text-gray-700 hover:bg-orange-100 hover:text-orange-700'
+                        }`}
+                      >
+                        {addedServices.activities ? '✓ Added' : 'Add Activities'}
+                      </button>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-gray-900">+$200</div>
-                    <div className="text-sm text-gray-600">Per night</div>
-                  </div>
+                  
+                  {/* Route Selection */}
+                  {addedServices.activities && (
+                    <div className="mt-6 p-4 bg-orange-25 rounded-lg border border-orange-200" onClick={(e) => e.stopPropagation()}>
+                      <div className="mb-4">
+                        <h4 className="text-lg font-semibold text-orange-800 mb-3">🎯 Choose Your Activities Route:</h4>
+                        {addedServices.selectedRoute ? (
+                          <div className="bg-orange-100 border border-orange-300 rounded-lg p-3">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <span className="text-orange-800 font-medium">Route Selected ✓</span>
+                                <div className="text-sm text-orange-700">Price: ${addedServices.selectedRoute.trips.total_price}</div>
+                              </div>
+                              <Check className="w-5 h-5 text-orange-600" />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-sm text-orange-700 bg-orange-50 p-3 rounded border border-orange-200">
+                            👇 Please select an activities route below
+                          </div>
+                        )}
+                      </div>
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <RouteSelecting 
+                          data={data}
+                          selectedTourismRoute={addedServices.selectedRoute}
+                          setSelectedTourismRoute={(route) => {
+                            setAddedServices(prev => ({ 
+                              ...prev, 
+                              selectedRoute: route 
+                            }));
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
-                <div className="flex items-center justify-between">
-                  <div className="text-sm text-gray-600">
-                    Total for {data?.duration || 7} nights: ${200 * (data?.duration || 7)}
+                {/* Hotel Add-On */}
+                <div className={`border-2 rounded-xl p-4 transition-all ${
+                  addedServices.accommodation ? 'border-blue-400 bg-blue-50' : 'border-gray-200'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3 flex-1">
+                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Hotel className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-gray-900">Premium Hotel Stay</div>
+                        <div className="text-sm text-gray-700">4-5 star hotels near medical facilities</div>
+                        <div className="text-lg font-bold text-blue-600 mt-1">
+                          +${200 * (data?.duration || 7)} <span className="text-sm font-normal text-blue-500">(${200}/night)</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end space-y-2">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleService('accommodation');
+                        }}
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                          addedServices.accommodation 
+                            ? 'bg-blue-500 text-white hover:bg-blue-600' 
+                            : 'bg-gray-200 text-gray-700 hover:bg-blue-100 hover:text-blue-700'
+                        }`}
+                      >
+                        {addedServices.accommodation ? '✓ Added' : 'Add Hotels'}
+                      </button>
+                    </div>
                   </div>
-                  <label className="flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedOptions.includeAccommodation}
-                      onChange={(e) => setSelectedOptions(prev => ({ 
-                        ...prev, 
-                        includeAccommodation: e.target.checked 
-                      }))}
-                      className="w-5 h-5 text-blue-600 rounded"
-                    />
-                    <span className="font-medium text-gray-900">Add to package</span>
-                  </label>
+                  
+                  {/* Hotel Selection */}
+                  {addedServices.accommodation && (
+                    <div className="mt-6 p-4 bg-blue-25 rounded-lg border border-blue-200" onClick={(e) => e.stopPropagation()}>
+                      <div className="mb-4">
+                        <h4 className="text-lg font-semibold text-blue-800 mb-3">🏨 Choose Your Hotel:</h4>
+                        <div className="bg-blue-100 border border-blue-300 rounded-lg p-3">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <span className="text-blue-800 font-medium">Premium Hotels Available ✓</span>
+                              <div className="text-sm text-blue-700">Select from our partner hotels below</div>
+                            </div>
+                            <Check className="w-5 h-5 text-blue-600" />
+                          </div>
+                        </div>
+                      </div>
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <HotelSelecting 
+                          includeAccommodation={addedServices.accommodation}
+                          setIncludeAccommodation={(value) => setAddedServices(prev => ({ 
+                            ...prev, 
+                            accommodation: value 
+                          }))}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
-                {/* Hotel Selection */}
-                {selectedOptions.includeAccommodation && (
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <HotelSelecting 
-                      includeAccommodation={selectedOptions.includeAccommodation}
-                      setIncludeAccommodation={(value) => setSelectedOptions(prev => ({ 
-                        ...prev, 
-                        includeAccommodation: value 
-                      }))}
-                    />
+                {/* Guide Add-On */}
+                <div className={`border-2 rounded-xl p-4 transition-all ${
+                  addedServices.guide ? 'border-purple-400 bg-purple-50' : 'border-gray-200'
+                }`}>
+                {/* Guide Add-On */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3 flex-1">
+                      <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <UserCheck className="w-6 h-6 text-purple-600" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-gray-900">Personal Guide Service</div>
+                        <div className="text-sm text-gray-700">English-speaking medical tourism specialist</div>
+                        <div className="text-lg font-bold text-purple-600 mt-1">
+                          +${150 * (data?.duration || 7)} <span className="text-sm font-normal text-purple-500">(${150}/day)</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end space-y-2">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleService('guide');
+                        }}
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                          addedServices.guide 
+                            ? 'bg-purple-500 text-white hover:bg-purple-600' 
+                            : 'bg-gray-200 text-gray-700 hover:bg-purple-100 hover:text-purple-700'
+                        }`}
+                      >
+                        {addedServices.guide ? '✓ Added' : 'Add Guide'}
+                      </button>
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
-              
-              {/* Guide Service */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                      <UserCheck className="w-6 h-6 text-purple-600" />
+
+                  {/* Step 2 Navigation */}
+                  <div className="flex justify-between items-center mt-8">
+                    <button 
+                      onClick={goBackStep}
+                      className="flex items-center px-6 py-3 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+                    >
+                      ← Back to Package
+                    </button>
+                    <div className="flex gap-3">
+                      <button 
+                        onClick={proceedWithoutCustomization}
+                        className="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-xl font-semibold transition-colors"
+                      >
+                        Skip - ${basePrice.toLocaleString()}
+                      </button>
+                      <button 
+                        onClick={proceedToNextStep}
+                        className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-semibold transition-colors"
+                      >
+                        Continue - ${calculateTotal().toLocaleString()}
+                      </button>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900">Personal Guide Service</h3>
-                      <p className="text-gray-600">Dedicated English-speaking guide for all activities and assistance</p>
-                      <div className="mt-2 text-sm text-gray-500">Medical tourism specialist • Cultural expert • Emergency support</div>
-                    </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-gray-900">+$150</div>
-                    <div className="text-sm text-gray-600">Per day</div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="text-sm text-gray-600">
-                    Total for {data?.duration || 7} days: ${150 * (data?.duration || 7)}
-                  </div>
-                  <label className="flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedOptions.includeGuide}
-                      onChange={(e) => setSelectedOptions(prev => ({ 
-                        ...prev, 
-                        includeGuide: e.target.checked 
-                      }))}
-                      className="w-5 h-5 text-purple-600 rounded"
-                    />
-                    <span className="font-medium text-gray-900">Add to package</span>
-                  </label>
                 </div>
               </div>
-            </div>
+            )}
             
-            {/* Summary */}
-            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Your Customized Package</h3>
-                  <p className="text-gray-600">Ready to proceed with your selections</p>
+            {/* STEP 3: Booking Confirmation */}
+            {currentWizardStep === 3 && (
+              <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-6">
+                {/* Step Header with Back Button */}
+                <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <button 
+                      onClick={goBackStep}
+                      className="flex items-center text-gray-600 hover:text-gray-800 font-medium transition-colors"
+                    >
+                      ← Back to {skipCustomization ? 'Package Details' : 'Customization'}
+                    </button>
+                    <div className="text-sm text-gray-600">
+                      Step 3 of 3: Ready to Book
+                    </div>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-3xl font-bold text-gray-900">${calculateTotal().toLocaleString()}</div>
-                  <div className="text-sm text-gray-600">Total estimate</div>
+                
+                <div className="p-6">
+                  <div className="text-center mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">🎉 Ready to Book!</h2>
+                    <p className="text-gray-600">Review your package and proceed to booking</p>
+                  </div>
+              
+              {/* Price Summary */}
+              <div className="bg-gray-50 rounded-xl p-6 mb-6">
+                <h3 className="font-bold text-gray-900 mb-4">Your Package Summary</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-900">Base Medical Package</span>
+                    <span className="font-semibold text-gray-900">${basePrice.toLocaleString()}</span>
+                  </div>
+                  
+                  {addedServices.activities && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-orange-800">+ Wellness Activities</span>
+                      <span className="text-orange-800">+${addedServices.selectedRoute?.trips.total_price || 1850}</span>
+                    </div>
+                  )}
+                  
+                  {addedServices.accommodation && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-blue-800">+ Hotel Accommodation ({data?.duration || 7} nights)</span>
+                      <span className="text-blue-800">+${200 * (data?.duration || 7)}</span>
+                    </div>
+                  )}
+                  
+                  {addedServices.guide && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-purple-800">+ Personal Guide ({data?.duration || 7} days)</span>
+                      <span className="text-purple-800">+${150 * (data?.duration || 7)}</span>
+                    </div>
+                  )}
+                  
+                  <div className="border-t border-gray-300 pt-3 mt-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xl font-bold text-gray-900">Total Package Price</span>
+                      <span className="text-3xl font-bold text-green-600">${calculateTotal().toLocaleString()}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
               
-              <div className="mt-4 pt-4 border-t border-gray-200 flex justify-end">
-                <button
-                  onClick={() => setCurrentView('book')}
-                  className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl font-semibold transition-colors flex items-center"
-                >
-                  <span>Proceed to Booking</span>
-                  <ChevronRight className="w-5 h-5 ml-2" />
-                </button>
+                  {/* Navigation Buttons */}
+                  <div className="flex justify-between items-center">
+                    <button 
+                      onClick={goBackStep}
+                      className="flex items-center px-6 py-3 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+                    >
+                      ← Back to {skipCustomization ? 'Package Details' : 'Customization'}
+                    </button>
+                    <button 
+                      onClick={() => setShowCustomizePanel(true)}
+                      className="px-8 py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-lg transition-colors shadow-lg"
+                    >
+                      Complete Booking - ${calculateTotal().toLocaleString()}
+                    </button>
+                  </div>
+                  <p className="text-center text-sm text-gray-600 mt-3">Free consultation • No payment required to start</p>
+                </div>
               </div>
-            </div>
-          </div>
-        )}
-        
-        {/* Booking Section */}
-        {currentView === 'book' && (
-          <div className="space-y-8">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Complete Your Booking</h2>
-              <p className="text-gray-600">Review your package and start your consultation</p>
-            </div>
+            )}
             
-            <BookingCard 
-              data={data} 
-              selectedTourismRoute={selectedOptions.tourismRoute} 
-              includeAccommodation={selectedOptions.includeAccommodation}
-            />
           </div>
-        )}
+        </div>
+            {/* Package Gallery - Only on Step 1 (Package Details) */}
+            {currentWizardStep === 1 && (
+              <div className="max-w-7xl mx-auto px-4 mt-6">
+                <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">📸 See What's Included in Detail</h3>
+                    <PackageImages data={data} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Additional Info - Only on Step 3 (Final Review) */}
+            {currentWizardStep === 3 && (
+              <div className="max-w-7xl mx-auto px-4 mt-6">
+                <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">📅 Your Complete Itinerary</h3>
+                    <div className="bg-blue-50 rounded-xl p-4 mb-4">
+                      <h4 className="font-semibold text-blue-900 mb-2">What to Expect:</h4>
+                      <div className="grid md:grid-cols-2 gap-4 text-sm text-blue-800">
+                        <div className="space-y-2">
+                          <div>📋 Day 1-2: Medical consultations & tests</div>
+                          <div>🏥 Day 3: Results review & treatment planning</div>
+                        </div>
+                        <div className="space-y-2">
+                          {addedServices.activities && <div>🎯 Day 4-5: Wellness activities & recovery</div>}
+                          {addedServices.accommodation && <div>🏨 All days: Premium hotel accommodation</div>}
+                          {addedServices.guide && <div>👨‍💼 All days: Personal guide assistance</div>}
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 text-center">
+                      Your complete medical tourism package is ready. Next step: consultation and booking confirmation.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
       </div>
+      
+      {/* Booking Modal */}
+      {showCustomizePanel && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Complete Your Booking</h2>
+                <button 
+                  onClick={() => setShowCustomizePanel(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <BookingCard 
+                data={data} 
+                selectedTourismRoute={addedServices.selectedRoute} 
+                includeAccommodation={addedServices.accommodation}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

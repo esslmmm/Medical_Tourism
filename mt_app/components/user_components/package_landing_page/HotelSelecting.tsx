@@ -79,7 +79,7 @@ const HotelSelecting: React.FC<PackageDetailProps> = ({ includeAccommodation, se
           >
             <div className="text-4xl mb-3">🏨</div>
             <h4 className="font-bold text-gray-900 mb-2">We'll Help You</h4>
-            <p className="text-sm text-gray-600">Select from our partner hotels</p>
+            <p className="text-sm text-gray-700">Select from our partner hotels</p>
           </button>
           
           <button
@@ -92,7 +92,7 @@ const HotelSelecting: React.FC<PackageDetailProps> = ({ includeAccommodation, se
           >
             <div className="text-4xl mb-3">🏠</div>
             <h4 className="font-bold text-gray-900 mb-2">I'll Arrange</h4>
-            <p className="text-sm text-gray-600">Handle my own accommodation</p>
+            <p className="text-sm text-gray-700">Handle my own accommodation</p>
           </button>
         </div>
 
@@ -105,7 +105,7 @@ const HotelSelecting: React.FC<PackageDetailProps> = ({ includeAccommodation, se
                 Partner Hotels Available
               </div>
               <h4 className="text-xl font-bold text-gray-900 mb-2">Select Your Hotel</h4>
-              <p className="text-gray-600 text-sm">Medical-friendly accommodations near healthcare facilities</p>
+              <p className="text-gray-700 text-sm">Medical-friendly accommodations near healthcare facilities</p>
             </div>
 
             {/* Hotel Cards */}
@@ -119,18 +119,17 @@ const HotelSelecting: React.FC<PackageDetailProps> = ({ includeAccommodation, se
                   onClick={() => setSelectedHotel(index)}
                 >
                   <div className="relative h-48 rounded-t-2xl overflow-hidden">
-                    <Image
+                    <img
                       src={hotel.image}
                       alt={hotel.name}
-                      fill
-                      className="object-cover"
+                      className="w-full h-full object-cover"
                     />
                     <div className="absolute top-4 right-4">
                       <div className="bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full">
                         <div className="flex items-center">
                           <Star className="w-4 h-4 text-yellow-500 fill-current mr-1" />
                           <span className="font-bold text-sm">{hotel.rating}</span>
-                          <span className="text-gray-600 text-xs ml-1">({hotel.reviews})</span>
+                          <span className="text-gray-700 text-xs ml-1">({hotel.reviews})</span>
                         </div>
                       </div>
                     </div>
@@ -143,7 +142,7 @@ const HotelSelecting: React.FC<PackageDetailProps> = ({ includeAccommodation, se
                   
                   <div className="p-6">
                     <h5 className="text-xl font-bold text-gray-900 mb-2">{hotel.name}</h5>
-                    <div className="flex items-center text-gray-600 mb-4">
+                    <div className="flex items-center text-gray-700 mb-4">
                       <MapPin className="w-4 h-4 mr-2" />
                       <span className="text-sm">{hotel.distance}</span>
                     </div>
@@ -200,7 +199,7 @@ const HotelSelecting: React.FC<PackageDetailProps> = ({ includeAccommodation, se
           <div className="text-center bg-gray-50 p-6 rounded-2xl mt-8">
             <div className="text-4xl mb-3">🏠</div>
             <h4 className="text-lg font-bold text-gray-900 mb-2">Self-Arranged Accommodation</h4>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-700 text-sm">
               We can provide hotel recommendations during your consultation if needed.
             </p>
           </div>
