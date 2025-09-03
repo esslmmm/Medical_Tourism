@@ -6,7 +6,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
 import { useRouter } from "next/navigation";
 import PackagesSkeleton from "../skeleton-screen/DoctorProfile/PackageSkeleton";
-import Image from "next/image";
 import "@/app/globals.css";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });
@@ -116,14 +115,8 @@ const PackageList: React.FC = () => {
             onClick={() => router.push(`/user/package_landing_page/${pkg.package_id}`)} // Navigate to doctor details
             whileTap={{ scale: 0.98 }}
           >
-            <div className="relative w-full h-52">
-              <Image
-                src={pkg.image}
-                alt={pkg.package_name}
-                layout="fill"
-                objectFit="cover"
-                className="rounded-lg"
-              />
+            <div className="relative w-full h-52 bg-gray-200 rounded-lg flex items-center justify-center">
+              <span className="text-gray-500 text-sm">No Image</span>
             </div>
             <h3 className={`${poppins.className} font-medium text-[#023F76] text-md mt-4`}>
               {pkg.package_name}

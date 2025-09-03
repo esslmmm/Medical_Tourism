@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
-import { Heart, Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Heart, Check, ChevronLeft, ChevronRight, Camera, Play, Maximize2, Calendar, Clock, MapPin, Star, Award } from 'lucide-react';
+import Image from 'next/image';
 
 interface Packages {
   package_id: number;
@@ -74,136 +75,264 @@ const PackageImage: React.FC<PackageDetailProps> = ({ data }) => {
     );
   }
 
-  // Hardcoded travel plan (since it's not in your data structure)
+  // Sample gallery images from public folder
+  const galleryImages = [
+    { src: "/img/medical.png", title: "Medical Facility", type: "photo" },
+    { src: "/img/package.png", title: "Package Overview", type: "photo" },
+    { src: "/img/hotels/wanasom01.jpg", title: "Luxury Accommodation", type: "photo" },
+    { src: "/img/place.png", title: "Tourist Destinations", type: "photo" },
+    { src: "/img/Homepage/health-checkup.jpg", title: "Health Checkup", type: "photo" }
+  ];
+
+  // Enhanced travel plan with more details
   const travelPlan = [
     {
       day: 1,
       title: "Arrival & Initial Consultation",
-      activities: ["Airport pickup", "Hotel check-in", "Welcome dinner", "Initial medical consultation"]
+      location: "Bangkok Airport - Hotel - Hospital",
+      activities: ["VIP airport pickup & transfer", "5-star hotel check-in", "Welcome dinner", "Initial medical consultation", "Meet your care coordinator"]
     },
     {
       day: 2,
-      title: "Medical Procedures",
-      activities: ["Medical treatments", "Recovery time", "City orientation tour"]
+      title: "Medical Procedures & Diagnostics",
+      location: "Premium Medical Center",
+      activities: ["Comprehensive medical examination", "Diagnostic tests & imaging", "Consultation with specialists", "Treatment planning session", "Light city orientation tour"]
     },
     {
       day: 3,
-      title: "Recovery & Sightseeing",
-      activities: ["Follow-up appointment", "Sightseeing activities", "Cultural experiences"]
+      title: "Treatment & Recovery",
+      location: "Hospital - Hotel",
+      activities: ["Medical treatment procedures", "Recovery monitoring", "Therapeutic sessions", "Nutritional counseling", "Relaxation & wellness activities"]
+    },
+    {
+      day: 4,
+      title: "Cultural Exploration",
+      location: "Bangkok City Tour",
+      activities: ["Grand Palace visit", "Wat Pho Temple tour", "Traditional Thai massage", "Floating market experience", "Cultural dining experience"]
     }
   ];
 
-
   const nextImage = () => {
-    if (data?.package_image && data.package_image.length > 0) {
-      setSelectedImageIndex((prev) => (prev + 1) % data.package_image.length);
-    }
+    setSelectedImageIndex((prev) => (prev + 1) % galleryImages.length);
   };
 
   const prevImage = () => {
-    if (data?.package_image && data.package_image.length > 0) {
-      setSelectedImageIndex((prev) => (prev - 1 + data.package_image.length) % data.package_image.length);
-    }
+    setSelectedImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
   };
 
   return (
-      <div className="space-y-8">
-        {/* Image Gallery */}
-        {data.package_image && data.package_image.length > 0 && (
-          <div className="relative">
-            <div className="aspect-video rounded-2xl overflow-hidden relative">
-              <img
-                src={data.package_image[selectedImageIndex]?.images || ''}
-                alt={data.package_image[selectedImageIndex]?.title || `Package image ${selectedImageIndex + 1}`}
-                className="w-full h-full object-cover"
-              />
-              {data.package_image.length > 1 && (
-                <>
-                  <button
-                    onClick={prevImage}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full transition-all"
-                  >
-                    <ChevronLeft className="w-6 h-6" />
-                  </button>
-                  <button
-                    onClick={nextImage}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full transition-all"
-                  >
-                    <ChevronRight className="w-6 h-6" />
-                  </button>
-                </>
-              )}
-            </div>
-            {data.package_image.length > 1 && (
-              <div className="flex space-x-2 mt-4">
-                {data.package_image.map((img, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`w-32 h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedImageIndex === index ? 'border-teal-500' : 'border-gray-200'
-                    }`}
-                  >
-                    <img src={img.images} alt={img.title || `Thumbnail ${index + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
+    <div className="space-y-12">
+      {/* Enhanced Image Gallery */}
+      <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-3xl font-bold text-gray-900">Package Gallery</h2>
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <Camera className="w-4 h-4" />
+            <span>{galleryImages.length} Photos</span>
           </div>
-        )}
+        </div>
 
-        {/* Medical Services */}
-        {data.description && data.description.length > 0 && (
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Medical Services Included</h2>
-            <div className="grid md:grid-cols-2 gap-3">
-              {data.description.map((service, index) => (
-                <div key={service.description_id || index} className="flex items-center space-x-3">
-                  <Check className="w-5 h-5 text-teal-600 flex-shrink-0" />
-                  <div>
-                    <span className="text-gray-900 font-medium">{service.title}</span>
+        <div className="relative">
+          {/* Main Image */}
+          <div className="relative h-96 rounded-2xl overflow-hidden group">
+            <Image
+              src={galleryImages[selectedImageIndex].src}
+              alt={galleryImages[selectedImageIndex].title}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+            
+            {/* Image Controls */}
+            <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button
+                onClick={prevImage}
+                className="bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button
+                onClick={nextImage}
+                className="bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Image Info Overlay */}
+            <div className="absolute bottom-4 left-4 right-4">
+              <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4">
+                <h3 className="font-semibold text-gray-900">{galleryImages[selectedImageIndex].title}</h3>
+                <p className="text-sm text-gray-600">{selectedImageIndex + 1} of {galleryImages.length}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Thumbnail Strip */}
+          <div className="flex gap-3 mt-4 overflow-x-auto pb-2">
+            {galleryImages.map((img, index) => (
+              <button
+                key={index}
+                onClick={() => setSelectedImageIndex(index)}
+                className={`relative flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                  selectedImageIndex === index ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <Image
+                  src={img.src}
+                  alt={img.title}
+                  fill
+                  className="object-cover"
+                />
+                {img.type === 'video' && (
+                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                    <Play className="w-4 h-4 text-white" />
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Enhanced Medical Services */}
+      {data.description && data.description.length > 0 && (
+        <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-3xl p-8 shadow-lg border border-gray-100">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center bg-green-100 text-green-700 px-4 py-2 rounded-full font-medium mb-4">
+              <Award className="w-5 h-5 mr-2" />
+              Premium Medical Services
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">What's Included in Your Package</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Comprehensive medical care combined with luxury amenities for your comfort and peace of mind</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {data.description.map((service, index) => (
+              <div key={service.description_id || index} className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <Check className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 mb-2">{service.title}</h3>
+                    <p className="text-sm text-gray-600">{service.details}</p>
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
+          </div>
+
+          {/* Additional Benefits */}
+          <div className="mt-8 grid md:grid-cols-3 gap-4">
+            <div className="text-center p-4 bg-white/50 rounded-xl">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Star className="w-6 h-6 text-blue-600" />
+              </div>
+              <h4 className="font-semibold text-gray-900">5-Star Care</h4>
+              <p className="text-sm text-gray-600">Premium medical facilities</p>
+            </div>
+            <div className="text-center p-4 bg-white/50 rounded-xl">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Clock className="w-6 h-6 text-purple-600" />
+              </div>
+              <h4 className="font-semibold text-gray-900">24/7 Support</h4>
+              <p className="text-sm text-gray-600">Round-the-clock assistance</p>
+            </div>
+            <div className="text-center p-4 bg-white/50 rounded-xl">
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Award className="w-6 h-6 text-orange-600" />
+              </div>
+              <h4 className="font-semibold text-gray-900">JCI Certified</h4>
+              <p className="text-sm text-gray-600">International standards</p>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Travel Plan */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Your Travel Itinerary</h2>
+      {/* Enhanced Travel Itinerary */}
+      <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-medium mb-4">
+            <Calendar className="w-5 h-5 mr-2" />
+            Day-by-Day Itinerary
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-3">Your Complete Journey</h2>
+          <div className="flex items-center justify-center gap-4 mb-6">
             <button
               onClick={() => setShowFullItinerary(!showFullItinerary)}
-              className="text-teal-600 hover:text-teal-700 font-medium"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-medium transition-colors"
             >
-              {showFullItinerary ? 'Show Less' : 'View Full Itinerary'}
+              {showFullItinerary ? 'Show Summary' : 'View Full Itinerary'}
             </button>
           </div>
-          <div className="space-y-6">
-            {(showFullItinerary ? travelPlan : travelPlan.slice(0, 2)).map((day) => (
-              <div key={day.day} className="relative">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
-                    <span className="text-teal-600 font-bold">{day.day}</span>
+        </div>
+
+        <div className="space-y-6">
+          {(showFullItinerary ? travelPlan : travelPlan.slice(0, 2)).map((day, index) => (
+            <div key={day.day} className="relative">
+              {/* Day Card */}
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 hover:shadow-md transition-shadow">
+                <div className="flex items-start gap-6">
+                  {/* Day Number */}
+                  <div className="flex-shrink-0">
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                      {day.day}
+                    </div>
                   </div>
-                  <div className="flex-1 pb-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{day.title}</h3>
-                    <div className="grid md:grid-cols-2 gap-2">
-                      {day.activities.map((activity, index) => (
-                        <div key={index} className="flex items-center space-x-2 text-gray-600">
-                          <div className="w-2 h-2 bg-teal-300 rounded-full"></div>
-                          <span className="text-sm">{activity}</span>
+                  
+                  {/* Day Content */}
+                  <div className="flex-1">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">{day.title}</h3>
+                        <div className="flex items-center text-gray-600 mb-3">
+                          <MapPin className="w-4 h-4 mr-2" />
+                          <span className="text-sm">{day.location}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center bg-white px-3 py-1 rounded-full text-sm text-gray-600">
+                        <Clock className="w-4 h-4 mr-1" />
+                        Full Day
+                      </div>
+                    </div>
+                    
+                    {/* Activities */}
+                    <div className="grid md:grid-cols-2 gap-3">
+                      {day.activities.map((activity, actIndex) => (
+                        <div key={actIndex} className="flex items-center bg-white rounded-lg p-3 shadow-sm">
+                          <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mr-3"></div>
+                          <span className="text-gray-700 text-sm font-medium">{activity}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+              
+              {/* Connection Line */}
+              {index < (showFullItinerary ? travelPlan : travelPlan.slice(0, 2)).length - 1 && (
+                <div className="flex justify-center my-4">
+                  <div className="w-px h-8 bg-gradient-to-b from-blue-400 to-purple-400"></div>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
+
+        {!showFullItinerary && travelPlan.length > 2 && (
+          <div className="text-center mt-8">
+            <p className="text-gray-600 mb-4">And {travelPlan.length - 2} more amazing days...</p>
+            <button
+              onClick={() => setShowFullItinerary(true)}
+              className="text-blue-600 hover:text-blue-700 font-medium underline"
+            >
+              See complete {travelPlan.length}-day itinerary →
+            </button>
+          </div>
+        )}
       </div>
+    </div>
   );
 };
 

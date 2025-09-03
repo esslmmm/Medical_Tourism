@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { Lato } from "next/font/google";
 import "@/app/globals.css";
 
@@ -93,15 +92,9 @@ const Hospitaltap: React.FC = () => {
             >
               
               <div className="w-1/3">
-                {hospital.image && (
-                  <Image
-                    src={hospital.image}
-                    width={180}
-                    height={120}
-                    alt={hospital.name}
-                    className="rounded-lg object-cover"
-                  />
-                )}
+                <div className="w-[180px] h-[120px] bg-gray-200 rounded-lg flex items-center justify-center">
+                  <span className="text-gray-500 text-sm">No Image</span>
+                </div>
               </div>
 
               <div className="w-2/3">

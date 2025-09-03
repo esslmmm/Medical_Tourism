@@ -3,7 +3,6 @@
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Poppins } from "next/font/google";
 import DoctorCardSkeleton from "../skeleton-screen/HomePage/DoctorCardSkeleton";
@@ -99,13 +98,9 @@ const DoctorList: React.FC = () => {
             whileTap={{ scale: 0.98 }}
           >
             <div className="relative w-32 h-32 mx-auto">
-              <Image
-                src={doctor.image}
-                alt={doctor.name}
-                width={128}
-                height={128}
-                className="rounded-full object-cover"
-              />
+              <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center">
+                <span className="text-gray-500 text-sm">No Image</span>
+              </div>
             </div>
             <h3 className={`${poppins.className} text-[#023F76] font-bold text-lg mt-4`}>
               {doctor.name}

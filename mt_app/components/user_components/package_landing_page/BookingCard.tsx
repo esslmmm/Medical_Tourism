@@ -196,106 +196,178 @@ const BookingCard: React.FC<PackageDetailProps> = ({ selectedTourismRoute, data,
   
   
   return (
-    <div className="lg:col-span-1">
-      <div className="bg-white rounded-2xl p-6 shadow-lg sticky top-24">
-        {/* Price Section */}
-        <div className="mb-6">
-          <div className="flex items-baseline space-x-2 mb-2">
-            <span className="text-3xl font-bold text-gray-900">${calculateTotalPrice().toLocaleString()}</span>
-            <span className="text-gray-600">package total</span>
+    <div className="w-full">
+      {/* Enhanced Full-Width Booking Card */}
+      <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+        
+        {/* Header Section */}
+        <div className="bg-gradient-to-r from-green-500 to-teal-600 p-8 text-white">
+          <div className="text-center">
+            <h3 className="text-3xl font-bold mb-3">🚀 Ready to Start Your Medical Journey?</h3>
+            <p className="text-green-100 text-lg max-w-2xl mx-auto">
+              Complete your package selection and begin the booking process. Our team will guide you through every step.
+            </p>
           </div>
-          
-          {/* Pricing Breakdown */}
-          <div className="space-y-2 mb-4">
+        </div>
 
-            {/* Accommodation Pricing */}
-            {includeAccommodation && (
-              <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
-                <div className="flex items-start space-x-2">
-                  <Info className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-amber-900">Accommodation</p>
-                    <p className="text-xs text-amber-700 mt-1">
-                      Hotel pricing will be shown on the next page after you select your preferred accommodation.
-                    </p>
+        <div className="p-4 sm:p-6 lg:p-8">
+          {/* Two-Column Layout */}
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
+            
+            {/* Left Column - Steps & Summary */}
+            <div>
+              {/* What Happens Next */}
+              <div className="mb-6 lg:mb-8">
+                <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 text-center lg:text-left">What happens next?</h4>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4 p-4 bg-blue-50 rounded-xl">
+                    <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">1</div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900">Instant Booking Confirmation</p>
+                      <p className="text-sm text-gray-600">Get immediate confirmation & care coordinator contact</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4 p-4 bg-green-50 rounded-xl">
+                    <div className="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">2</div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900">Personal Consultation</p>
+                      <p className="text-sm text-gray-600">Free 30-minute call to plan your journey</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4 p-4 bg-purple-50 rounded-xl">
+                    <div className="w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold">3</div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900">Complete Planning</p>
+                      <p className="text-sm text-gray-600">Finalize dates, medical appointments & travel</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            )}
+            </div>
 
-            {/* Tourism Route Pricing */}
-            {selectedTourismRoute && (
-              <div className="flex justify-between items-center py-2 border-b border-gray-200">
-                <span className="text-sm text-gray-600">Tourism package:</span>
-                <span className="text-sm font-medium text-gray-900">
-                  ${selectedTourismRoute.trips.total_price.toLocaleString()}
-                </span>
+            {/* Right Column - Package Summary */}
+            <div>
+              <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-6 h-full">
+                <h4 className="text-2xl font-bold text-gray-900 mb-6 text-center">Your Package Summary</h4>
+            
+            {/* Selected Services */}
+            <div className="space-y-3 mb-6">
+              {selectedTourismRoute && (
+                <div className="flex items-center justify-between p-3 bg-white rounded-xl">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                      <span className="text-orange-600 font-bold">🌏</span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">Wellness Tourism Experience</p>
+                      <p className="text-sm text-gray-600">Recovery-friendly cultural activities</p>
+                    </div>
+                  </div>
+                  <span className="text-lg font-bold text-green-600">
+                    ${selectedTourismRoute.trips.total_price.toLocaleString()}
+                  </span>
+                </div>
+              )}
+              
+              {includeAccommodation && (
+                <div className="flex items-center justify-between p-3 bg-white rounded-xl">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span className="text-blue-600 font-bold">🏨</span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">Accommodation</p>
+                      <p className="text-sm text-gray-600">Premium hotel stay</p>
+                    </div>
+                  </div>
+                  <span className="text-sm text-amber-600 font-medium">Selected</span>
+                </div>
+              )}
+              
+              <div className="flex items-center justify-between p-3 bg-white rounded-xl border-2 border-green-200">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                    <span className="text-green-600 font-bold">⚕️</span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">Medical Care</p>
+                    <p className="text-sm text-gray-600">Expert treatment & support</p>
+                  </div>
+                </div>
+                <span className="text-green-600 font-bold">Included</span>
               </div>
-            )}
-          </div>
-        </div>
+            </div>
 
-        <button 
-          className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors mb-4 disabled:opacity-50 disabled:cursor-not-allowed" 
-          onClick={handleStart}
-          disabled={startloading}
-        >
-          {startloading ? 'Processing...' : 'Continue Booking'}
-        </button>
-
-        {/* Included Services */}
-        <div className="space-y-3 text-sm text-gray-600 mb-6">
-          <h4 className="font-medium text-gray-900 text-base">What's Included:</h4>
-          <div className="flex items-center space-x-2">
-            <Check className="w-4 h-4 text-teal-600 flex-shrink-0" />
-            <span>Free cancellation up to 48 hours</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Check className="w-4 h-4 text-teal-600 flex-shrink-0" />
-            <span>24/7 medical support coordination</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Check className="w-4 h-4 text-teal-600 flex-shrink-0" />
-            <span>Hospital transfers included</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Check className="w-4 h-4 text-teal-600 flex-shrink-0" />
-            <span>English-speaking coordinator</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Check className="w-4 h-4 text-teal-600 flex-shrink-0" />
-            <span>Pre-treatment consultation</span>
-          </div>
-        </div>
-
-        {/* Warning section */}
-        <div className="space-y-2">
-         {/* Medical Treatment Pricing */}
-            <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-              <div className="flex items-start space-x-2">
-                <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-sm font-medium text-blue-900">Medical Treatment</p>
-                  <p className="text-xs text-blue-700 mt-1">
-                    Medical costs are paid directly to the hospital based on your treatment plan. 
-                    Final pricing will be provided during consultation.
-                  </p>
+            {/* Total Display */}
+            <div className="border-t border-gray-200 pt-4">
+              <div className="flex items-center justify-between">
+                <span className="text-lg font-semibold text-gray-900">Service Coordination Fee:</span>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-green-600">${calculateTotalPrice().toLocaleString()}</div>
+                  <div className="text-sm text-gray-600">Medical costs quoted separately</div>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Important Pricing Note */}
-          <div className="bg-gray-50 p-3 rounded-lg border-l-4 border-teal-500">
-            <div className="flex items-start space-x-2">
-              <AlertCircle className="w-4 h-4 text-teal-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="text-xs text-gray-700">
-                  <strong>Package includes:</strong> Coordination services, transfers, and support. 
-                  Medical and accommodation costs are additional and will be clarified during booking process.
-                </p>
+          </div>
+          </div>
+
+          {/* Call to Action - Full Width & Prominent */}
+          <div className="mt-8 pt-8 border-t border-gray-200">
+            <div className="text-center mb-6">
+              <h4 className="text-2xl font-bold text-gray-900 mb-2">Ready to Begin?</h4>
+              <p className="text-gray-600">
+                Start your consultation process. No payment required - we'll create your personalized treatment plan first.
+              </p>
+            </div>
+            
+            <button 
+              className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white font-bold py-6 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mb-8 text-xl" 
+              onClick={handleStart}
+              disabled={startloading}
+            >
+              {startloading ? (
+                <div className="flex items-center justify-center space-x-3">
+                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Setting up your booking...</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center space-x-3">
+                  <span>🚀 Start Your Medical Journey</span>
+                  <span className="text-2xl">→</span>
+                </div>
+              )}
+            </button>
+
+            {/* Trust & Security Footer */}
+            <div className="text-center">
+              <p className="text-sm text-gray-500 mb-4">
+                ✅ Free cancellation • ✅ Secure booking • ✅ No hidden fees
+              </p>
+              <div className="flex items-center justify-center space-x-6 text-sm text-gray-600">
+                <div className="flex items-center space-x-2">
+                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                    <Check className="w-4 h-4 text-green-600" />
+                  </div>
+                  <span>Secure Booking</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Check className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <span>HIPAA Compliant</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                    <Check className="w-4 h-4 text-purple-600" />
+                  </div>
+                  <span>JCI Accredited</span>
+                </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
       

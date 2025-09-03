@@ -6,31 +6,16 @@ import { prisma } from '@/lib/prisma';
 export async function GET(request: Request, { params }: { params: { id: string } }) {
     try {
         const resolvedParams = await params;
-        const package_id = resolvedParams.id; // Convert ID to integer
+        const package_id = resolvedParams.id; // Keep as string for UUID
+        
+        console.log("Fetching package with ID:", package_id);
   
-  
-      // Fetch package along with associated data
+      // Fetch package with basic relations
       const packageData = await prisma.packages.findUnique({
         where: { package_id },
         include: {
-          package_guides: true,
-          package_doc: true,
-          package_hotels: true,
-          routes:{
-            include: {
-                trips: {
-                    include: {
-                      package_places: {
-                        include: {
-                            places: true
-                        }
-                      }
-                    }
-                  },
-            }
-          },
+          description: true,
           package_image: true,
-          description:true,
         },
       });
   

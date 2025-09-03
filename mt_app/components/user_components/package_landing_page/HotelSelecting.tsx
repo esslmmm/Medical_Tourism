@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Hotel, MapPin, Users, Calendar, CheckCircle2, Info, Star, Wifi, Car, Utensils } from 'lucide-react';
+import { Hotel, MapPin, Users, Calendar, CheckCircle2, Star, Wifi, Car, Utensils, Shield, Waves, Coffee, Zap } from 'lucide-react';
+import Image from 'next/image';
 
 
 interface PackageDetailProps {
@@ -8,159 +9,202 @@ interface PackageDetailProps {
   }
 
 const HotelSelecting: React.FC<PackageDetailProps> = ({ includeAccommodation, setIncludeAccommodation }) => {
-  const [showDetails, setShowDetails] = useState(false);
+  const [selectedHotel, setSelectedHotel] = useState(0);
 
-  const benefits = [
-    "Convenient location near medical facilities",
-    "Comfortable recovery environment",
-    "24/7 concierge assistance",
-    "Transportation coordination",
-  ];
-
-  const amenities = [
-    { icon: Wifi, label: "Free WiFi" },
-    { icon: Car, label: "Hospital Transfer" },
-    { icon: Utensils, label: "Dining Options" },
-    { icon: Users, label: "Guest Services" }
+  const featuredHotels = [
+    {
+      name: "Grand Medical Plaza Bangkok",
+      image: "/img/hotels/wanasom01.jpg",
+      rating: 4.9,
+      reviews: 1247,
+      price: 180,
+      distance: "5 min to hospital",
+      highlights: ["Medical Wing", "Recovery Suites", "Thai Spa"],
+      amenities: [
+        { icon: Wifi, label: "Free WiFi" },
+        { icon: Waves, label: "Pool & Spa" },
+        { icon: Car, label: "Medical Transfer" },
+        { icon: Utensils, label: "Healthy Dining" }
+      ]
+    },
+    {
+      name: "Wellness Resort & Spa",
+      image: "/img/room1.png",
+      rating: 4.8,
+      reviews: 934,
+      price: 220,
+      distance: "8 min to hospital",
+      highlights: ["Luxury Spa", "Garden Views", "Private Balcony"],
+      amenities: [
+        { icon: Wifi, label: "Free WiFi" },
+        { icon: Coffee, label: "24h Room Service" },
+        { icon: Shield, label: "Private Security" },
+        { icon: Car, label: "VIP Transport" }
+      ]
+    },
+    {
+      name: "Modern Care Hotel",
+      image: "/img/room2.png", 
+      rating: 4.7,
+      reviews: 756,
+      price: 150,
+      distance: "3 min to hospital",
+      highlights: ["Nurse Station", "Medical Equipment", "Quiet Zone"],
+      amenities: [
+        { icon: Wifi, label: "Free WiFi" },
+        { icon: Zap, label: "Fast Recovery" },
+        { icon: Users, label: "Caregiver Support" },
+        { icon: Car, label: "Emergency Transport" }
+      ]
+    }
   ];
 
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-blue-50 to-teal-50 p-6 border-b border-gray-100">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="bg-blue-100 p-3 rounded-full">
-              <Hotel className="h-6 w-6 text-blue-600" />
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900">Accommodation Services</h3>
-              <p className="text-gray-600 mt-1">Comfortable stay during your medical treatment in Thailand</p>
-            </div>
-          </div>
+    <div className="space-y-8">
+      {/* Simplified Choice Section */}
+      <div className="space-y-6">
+        <div className="text-center">
+          <h3 className="text-xl font-bold text-gray-900 mb-4">Accommodation Preference</h3>
         </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="p-6">
-        {/* Service Toggle */}
-        <div className="bg-gray-50 rounded-lg p-4 mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id="accommodation-toggle"
-                checked={includeAccommodation}
-                onChange={(e) => setIncludeAccommodation(e.target.checked)}
-                className="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-2"
-              />
-              <label htmlFor="accommodation-toggle" className="text-lg font-medium text-gray-900 cursor-pointer">
-                Include accommodation in my medical package
-              </label>
-            </div>
-            <button
-              onClick={() => setShowDetails(!showDetails)}
-              className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 transition-colors"
-            >
-              <Info className="h-4 w-4" />
-              <span className="text-sm font-medium">Details</span>
-            </button>
-          </div>
-
-          {includeAccommodation && (
-            <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
-              <div className="flex items-center space-x-2">
-                <CheckCircle2 className="h-5 w-5 text-green-600" />
-                <span className="text-green-800 font-medium">Accommodation added to your package</span>
-              </div>
-              <p className="text-green-700 text-sm mt-1">
-                You'll be able to select your preferred hotel and room details on the next page.
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Details Section */}
-        {showDetails && (
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            {/* Benefits */}
-            <div className="space-y-4">
-              <h4 className="text-lg font-medium text-gray-900 flex items-center space-x-2">
-                <MapPin className="h-5 w-5 text-blue-600" />
-                <span>Why Choose Our Accommodation?</span>
-              </h4>
-              <ul className="space-y-2">
-                {benefits.map((benefit, index) => (
-                  <li key={index} className="flex items-start space-x-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">{benefit}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Amenities */}
-            <div className="space-y-4">
-              <h4 className="text-lg font-medium text-gray-900">Included Amenities</h4>
-              <div className="grid grid-cols-2 gap-3">
-                {amenities.map((amenity, index) => (
-                  <div key={index} className="flex items-center space-x-2 bg-white p-3 rounded-lg border border-gray-200">
-                    <amenity.icon className="h-4 w-4 text-blue-600" />
-                    <span className="text-sm text-gray-700">{amenity.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Information Cards */}
-        <div className="grid md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-blue-50 p-4 rounded-lg text-center">
-            <Calendar className="h-6 w-6 text-blue-600 mx-auto mb-2" />
-            <h5 className="font-medium text-gray-900 mb-1">Flexible Booking</h5>
-            <p className="text-sm text-gray-600">Choose your stay duration based on treatment schedule</p>
-          </div>
+        
+        {/* Modern Toggle Cards */}
+        <div className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+          <button
+            onClick={() => setIncludeAccommodation(true)}
+            className={`p-6 rounded-2xl border-2 transition-all duration-300 text-center ${
+              includeAccommodation 
+                ? 'border-blue-500 bg-blue-50 shadow-lg transform scale-105' 
+                : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-md'
+            }`}
+          >
+            <div className="text-4xl mb-3">🏨</div>
+            <h4 className="font-bold text-gray-900 mb-2">We'll Help You</h4>
+            <p className="text-sm text-gray-600">Select from our partner hotels</p>
+          </button>
           
-          <div className="bg-teal-50 p-4 rounded-lg text-center">
-            <MapPin className="h-6 w-6 text-teal-600 mx-auto mb-2" />
-            <h5 className="font-medium text-gray-900 mb-1">Prime Locations</h5>
-            <p className="text-sm text-gray-600">Hotels within 20 minutes of medical facilities</p>
-          </div>
-          
-          <div className="bg-purple-50 p-4 rounded-lg text-center">
-            <Users className="h-6 w-6 text-purple-600 mx-auto mb-2" />
-            <h5 className="font-medium text-gray-900 mb-1">Companion Friendly</h5>
-            <p className="text-sm text-gray-600">Accommodations for patients and companions</p>
-          </div>
+          <button
+            onClick={() => setIncludeAccommodation(false)}
+            className={`p-6 rounded-2xl border-2 transition-all duration-300 text-center ${
+              !includeAccommodation 
+                ? 'border-gray-500 bg-gray-50 shadow-lg transform scale-105' 
+                : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-md'
+            }`}
+          >
+            <div className="text-4xl mb-3">🏠</div>
+            <h4 className="font-bold text-gray-900 mb-2">I'll Arrange</h4>
+            <p className="text-sm text-gray-600">Handle my own accommodation</p>
+          </button>
         </div>
 
-        {/* Call to Action */}
+        {/* Hotel Selection */}
         {includeAccommodation && (
-          <div className="bg-gradient-to-r from-blue-500 to-teal-500 text-white p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium">Ready to select your accommodation?</h4>
-                <p className="text-sm text-blue-100 mt-1">Browse our partner hotels and room options</p>
+          <div className="space-y-6 mt-8">
+            <div className="text-center">
+              <div className="inline-flex items-center bg-green-100 text-green-700 px-4 py-2 rounded-full font-medium mb-4">
+                <CheckCircle2 className="w-4 h-4 mr-2" />
+                Partner Hotels Available
+              </div>
+              <h4 className="text-xl font-bold text-gray-900 mb-2">Select Your Hotel</h4>
+              <p className="text-gray-600 text-sm">Medical-friendly accommodations near healthcare facilities</p>
+            </div>
+
+            {/* Hotel Cards */}
+            <div className="grid md:grid-cols-3 gap-6">
+              {featuredHotels.map((hotel, index) => (
+                <div 
+                  key={index}
+                  className={`bg-white rounded-2xl shadow-lg border-2 transition-all cursor-pointer hover:shadow-xl ${
+                    selectedHotel === index ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-gray-200'
+                  }`}
+                  onClick={() => setSelectedHotel(index)}
+                >
+                  <div className="relative h-48 rounded-t-2xl overflow-hidden">
+                    <Image
+                      src={hotel.image}
+                      alt={hotel.name}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute top-4 right-4">
+                      <div className="bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full">
+                        <div className="flex items-center">
+                          <Star className="w-4 h-4 text-yellow-500 fill-current mr-1" />
+                          <span className="font-bold text-sm">{hotel.rating}</span>
+                          <span className="text-gray-600 text-xs ml-1">({hotel.reviews})</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="absolute bottom-4 left-4">
+                      <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                        ${hotel.price}/night
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-6">
+                    <h5 className="text-xl font-bold text-gray-900 mb-2">{hotel.name}</h5>
+                    <div className="flex items-center text-gray-600 mb-4">
+                      <MapPin className="w-4 h-4 mr-2" />
+                      <span className="text-sm">{hotel.distance}</span>
+                    </div>
+                    
+                    {/* Highlights */}
+                    <div className="space-y-2 mb-4">
+                      {hotel.highlights.map((highlight, idx) => (
+                        <div key={idx} className="flex items-center">
+                          <div className="w-2 h-2 bg-blue-400 rounded-full mr-3"></div>
+                          <span className="text-sm text-gray-700">{highlight}</span>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {/* Amenities */}
+                    <div className="grid grid-cols-2 gap-2">
+                      {hotel.amenities.slice(0, 4).map((amenity, idx) => (
+                        <div key={idx} className="flex items-center bg-gray-50 px-2 py-1 rounded-lg">
+                          <amenity.icon className="w-3 h-3 text-blue-600 mr-2" />
+                          <span className="text-xs text-gray-700">{amenity.label}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {selectedHotel === index && (
+                      <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                        <div className="flex items-center text-blue-800">
+                          <CheckCircle2 className="w-4 h-4 mr-2" />
+                          <span className="text-sm font-medium">Selected as your preferred hotel</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Simple Confirmation */}
+            <div className="bg-gradient-to-r from-green-500 to-teal-600 text-white p-6 rounded-2xl text-center">
+              <h4 className="text-lg font-bold mb-2">✅ Hotel Selected</h4>
+              <p className="text-green-100 mb-3">
+                {featuredHotels[selectedHotel].name}
+              </p>
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 inline-block">
+                <div className="text-xl font-bold">${featuredHotels[selectedHotel].price}/night</div>
+                <div className="text-green-100 text-xs">Pricing confirmed during consultation</div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Important Notes */}
-        <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-          <div className="flex items-start space-x-2">
-            <Info className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
-            <div>
-              <h5 className="font-medium text-amber-800 mb-1">Important Information</h5>
-              <ul className="text-sm text-amber-700 space-y-1">
-                <li>• Accommodation can be modified up to 48 hours afetr reservation</li>
-                <li>• Prices vary by hotel</li>
-                <li>• Facilities vary from hotel to hotel</li>
-              </ul>
-            </div>
+        {/* No Accommodation Selected */}
+        {!includeAccommodation && (
+          <div className="text-center bg-gray-50 p-6 rounded-2xl mt-8">
+            <div className="text-4xl mb-3">🏠</div>
+            <h4 className="text-lg font-bold text-gray-900 mb-2">Self-Arranged Accommodation</h4>
+            <p className="text-gray-600 text-sm">
+              We can provide hotel recommendations during your consultation if needed.
+            </p>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
