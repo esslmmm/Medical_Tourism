@@ -15,7 +15,9 @@ import {
   LogOut,
   Hotel,
   User,
-  Stethoscope
+  Stethoscope,
+  MapPin,
+  Route
 } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
@@ -28,6 +30,8 @@ const Sidebar: React.FC = () => {
     { name: 'Doctor Management', href: '/admin/doctors', icon: Stethoscope },
     { name: 'Hotel Management', href: '/admin/hotel', icon: Hotel },
     { name: 'Package Management', href: '/admin/packages', icon: Package },
+    { name: 'Place Management', href: '/admin/places', icon: MapPin },
+    { name: 'Trip Management', href: '/admin/trips', icon: Route },
     { name: 'Booking Management', href: '/admin/booking', icon: Calendar },
     { name: 'Customer Feedback', href: '/admin/feedback', icon: MessageSquare },
     { name: 'Profile', href: '/admin/profile', icon: User },

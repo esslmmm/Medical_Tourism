@@ -92,9 +92,21 @@ const AccommodationCard = ({ hotelBooking }: { hotelBooking: HotelBooking | null
               | {nights} night(s)
             </span>
           </p>
-          <p className="text-md font-bold">
-            Room type: <span className="font-normal">{hotelBooking?.room_aggregate[0]?.hotel_rooms?.room_type ?? "N/A"}</span>
-          </p>
+          <div className="text-md font-bold">
+            Room Details:
+            <div className="ml-4 mt-1 space-y-1">
+              {hotelBooking?.room_aggregate && hotelBooking.room_aggregate.length > 0 ? (
+                hotelBooking.room_aggregate.map((room, index) => (
+                  <div key={index} className="text-sm font-normal bg-gray-50 p-2 rounded border">
+                    <p><span className="font-semibold">Room {index + 1}:</span> {room.hotel_rooms?.room_type ?? "N/A"}</p>
+                    <p><span className="font-semibold">Price:</span> ฿{room.amount?.toLocaleString()}</p>
+                  </div>
+                ))
+              ) : (
+                <span className="font-normal text-gray-500">No room details available</span>
+              )}
+            </div>
+          </div>
           <p className="text-md font-bold">
             Guest: <span className="font-normal">{hotelBooking?.guest_adult ?? "0"} Adults, {hotelBooking?.guest_children ?? "0"} Children</span>
           </p>

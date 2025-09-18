@@ -127,7 +127,7 @@ const Guide = ({guideBooking, setPackageBooking}: GuideProps) => {
       <div className="flex items-start">
         {/* Guide Image */}
         <img 
-          src={guideBooking.guides.image} 
+          src={guideBooking.guides?.image} 
           alt="Guide" 
           className="w-30 h-30 rounded-full ml-15 mb-5 border border-gray-300 mr-4"
         />

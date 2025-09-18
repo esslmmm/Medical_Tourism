@@ -1,82 +1,63 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import StatsCard from '@/components/admin_component/Common/StatsCard';
-import { Calendar, Clock, CheckCircle, XCircle, Search, Filter } from 'lucide-react';
+import { Calendar, Clock, CheckCircle, Search, Filter, Eye } from 'lucide-react';
 import { Booking } from '@/types/admin';
 import '@/app/admin/styles/globals.css';
+import { useRouter } from 'next/navigation';
 
 const BookingManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'confirmed' | 'completed' | 'cancelled'>('all');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'in_progress' | 'pending' | 'approved' | 'completed' | 'rejected' | 'cancelled'>('all');
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  // Mock data - replace with actual API calls
-  const bookings: Booking[] = [
-    {
-      id: '1',
-      userId: '1',
-      userName: 'John Doe',
-      packageId: '1',
-      packageTitle: 'Complete Heart Surgery Package',
-      hospitalName: 'Bangkok Heart Hospital',
-      status: 'confirmed',
-      bookingDate: '2024-02-01',
-      travelDate: '2024-03-15',
-      totalAmount: 150000,
-      createdAt: '2024-02-01'
-    },
-    {
-      id: '2',
-      userId: '2',
-      userName: 'Jane Smith',
-      packageId: '2',
-      packageTitle: 'Premium Dental Care Package',
-      hospitalName: 'Bumrungrad International Hospital',
-      status: 'pending',
-      bookingDate: '2024-02-05',
-      travelDate: '2024-02-20',
-      totalAmount: 45000,
-      createdAt: '2024-02-05'
-    },
-    {
-      id: '3',
-      userId: '3',
-      userName: 'Mike Johnson',
-      packageId: '3',
-      packageTitle: 'Orthopedic Surgery Package',
-      hospitalName: 'Chiang Mai Ram Hospital',
-      status: 'completed',
-      bookingDate: '2024-01-20',
-      travelDate: '2024-01-25',
-      totalAmount: 75000,
-      createdAt: '2024-01-20'
-    },
-    {
-      id: '4',
-      userId: '4',
-      userName: 'Sarah Wilson',
-      packageId: '1',
-      packageTitle: 'Complete Heart Surgery Package',
-      hospitalName: 'Bangkok Heart Hospital',
-      status: 'cancelled',
-      bookingDate: '2024-01-15',
-      travelDate: '2024-02-01',
-      totalAmount: 150000,
-      createdAt: '2024-01-15'
+  // Fetch bookings from API
+  useEffect(() => {
+    async function fetchBookings() {
+      try {
+        setLoading(true);
+        const params = new URLSearchParams();
+        if (filterStatus !== 'all') {
+          params.append('status', filterStatus);
+        }
+        if (searchTerm) {
+          params.append('search', searchTerm);
+        }
+
+        const response = await fetch(`/api/admin/booking/packages?${params.toString()}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch bookings');
+        }
+        const data = await response.json();
+        setBookings(data);
+      } catch (error) {
+        console.error('Error fetching bookings:', error);
+        setError('Error fetching bookings');
+      } finally {
+        setLoading(false);
+      }
     }
-  ];
 
-  const filteredBookings = bookings.filter(booking => {
-    const matchesSearch = booking.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         booking.packageTitle.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === 'all' || booking.status === filterStatus;
-    return matchesSearch && matchesStatus;
-  });
+    fetchBookings();
+  }, [filterStatus, searchTerm]);
+
+
+  // Handle view booking details
+  const handleViewBooking = (bookingId: string) => {
+    router.push(`/admin/booking/${bookingId}`);
+  };
+
+  // Since we're now filtering on the backend, we don't need client-side filtering
+  const filteredBookings = bookings;
 
   const totalBookings = bookings.length;
-  const pendingBookings = bookings.filter(b => b.status === 'pending').length;
-  const confirmedBookings = bookings.filter(b => b.status === 'confirmed').length;
+  const pendingBookings = bookings.filter(b => b.status === 'pending' || b.status === 'in_progress').length;
+  const confirmedBookings = bookings.filter(b => b.status === 'approved').length;
   const completedBookings = bookings.filter(b => b.status === 'completed').length;
 
   return (
@@ -182,9 +163,11 @@ const BookingManagement: React.FC = () => {
                 onChange={(e) => setFilterStatus(e.target.value as any)}
               >
                 <option value="all">All Status</option>
+                <option value="in_progress">In Progress</option>
                 <option value="pending">Pending</option>
-                <option value="confirmed">Confirmed</option>
+                <option value="approved">Approved</option>
                 <option value="completed">Completed</option>
+                <option value="rejected">Rejected</option>
                 <option value="cancelled">Cancelled</option>
               </select>
               <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
@@ -201,14 +184,32 @@ const BookingManagement: React.FC = () => {
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Booking ID</th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Customer</th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Package</th>
-                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Travel Date</th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Amount</th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredBookings.map((booking) => (
+                {loading ? (
+                  <tr>
+                    <td className="py-8 px-4 text-center text-gray-500" colSpan={7}>
+                      Loading bookings...
+                    </td>
+                  </tr>
+                ) : error ? (
+                  <tr>
+                    <td className="py-8 px-4 text-center text-red-600" colSpan={7}>
+                      {error}
+                    </td>
+                  </tr>
+                ) : filteredBookings.length === 0 ? (
+                  <tr>
+                    <td className="py-8 px-4 text-center text-gray-500" colSpan={7}>
+                      No bookings found
+                    </td>
+                  </tr>
+                ) : (
+                  filteredBookings.map((booking) => (
                   <tr key={booking.id} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="py-4 px-4">
                       <div className="font-medium text-gray-900">#{booking.id}</div>
@@ -224,9 +225,6 @@ const BookingManagement: React.FC = () => {
                       <div className="font-medium text-gray-900">{booking.packageTitle}</div>
                       <div className="text-sm text-gray-500">{booking.hospitalName}</div>
                     </td>
-                    <td className="py-4 px-4 text-gray-900">
-                      {new Date(booking.travelDate).toLocaleDateString()}
-                    </td>
                     <td className="py-4 px-4">
                       <span className="font-semibold text-gray-900">
                         ฿{booking.totalAmount.toLocaleString()}
@@ -234,26 +232,29 @@ const BookingManagement: React.FC = () => {
                     </td>
                     <td className="py-4 px-4">
                       <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                        booking.status === 'confirmed' ? 'bg-green-100 text-green-800' :
-                        booking.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                          booking.status === 'approved' ? 'bg-green-100 text-green-800' :
+                          booking.status === 'pending' || booking.status === 'in_progress' ? 'bg-yellow-100 text-yellow-800' :
                         booking.status === 'completed' ? 'bg-blue-100 text-blue-800' :
                         'bg-red-100 text-red-800'
                       }`}>
                         {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
                       </span>
                     </td>
-                    <td className="py-4 px-4">
-                      <div className="flex space-x-2">
-                        <button className="text-green-600 hover:text-green-800">
-                          <CheckCircle className="h-4 w-4" />
-                        </button>
-                        <button className="text-red-600 hover:text-red-800">
-                          <XCircle className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
+                                          <td className="py-4 px-4">
+                        <div className="flex space-x-2">
+                          {/* View Button */}
+                          <button
+                            onClick={() => handleViewBooking(booking.id)}
+                            className="text-blue-600 hover:text-blue-800"
+                            title="View Details"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
                   </tr>
-                ))}
+                  ))
+                )}
               </tbody>
             </table>
           </div>

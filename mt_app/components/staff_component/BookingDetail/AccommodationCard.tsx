@@ -148,7 +148,6 @@ const AccommodationCard = ({ hotelBooking, setPackageBooking }: AccommodationCar
           <p className="text-md font-bold">
             Date: <span className="font-normal">
               {formatDate(hotelBooking.check_in_date)} - {formatDate(hotelBooking.check_out_date)}
-              | {hotelBooking.room_aggregate[0]?.amount ?? 1} night(s)
             </span>
           </p>
           <p className="text-md font-bold">
