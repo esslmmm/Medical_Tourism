@@ -137,87 +137,122 @@ const MedicalBookingOverview = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <button className="p-3 hover:bg-white/80 rounded-full shadow-sm border">
-              <ArrowLeft className="w-5 h-5 text-gray-600" />
-            </button>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-800">Appointment Overview</h1>
-              <p className="text-gray-600 mt-1">Review your medical appointment details</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-4 lg:p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Modern Header with Status Bar */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg border border-white/50 p-6 mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <button className="group p-3 hover:bg-blue-50 rounded-2xl transition-all duration-300 border border-gray-200 hover:border-blue-300 hover:shadow-md">
+                <ArrowLeft className="w-5 h-5 text-gray-600 group-hover:text-blue-600 transition-colors" />
+              </button>
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    Appointment Overview
+                  </h1>
+                  <div className="hidden lg:block w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                </div>
+                <p className="text-gray-600 font-medium">Review and manage your medical appointment details</p>
+              </div>
             </div>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-gray-500">Appointment ID</p>
-            <p className="font-mono text-lg font-semibold text-blue-600">{bookingData.dateTime.appointmentRef}</p>
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+              <div className="text-right">
+                <p className="text-sm text-gray-500 font-medium mb-1">Appointment ID</p>
+                <div className="flex items-center gap-2">
+                  <p className="font-mono text-lg font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-xl">
+                    {bookingData.dateTime.appointmentRef}
+                  </p>
+                  <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <FileText className="w-4 h-4 text-gray-500" />
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-green-50 px-4 py-2 rounded-xl border border-green-200">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="text-sm font-semibold text-green-700">Confirmed</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="xl:col-span-2 space-y-6">
-            
-            {/* Hospital Information */}
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300">
-              <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center">
-                      <Hospital className="w-8 h-8 text-white" />
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+          {/* Main Content - Takes 3 columns */}
+          <div className="xl:col-span-3 space-y-6">
+
+            {/* Hospital Information - Enhanced Card */}
+            <div className="group bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 overflow-hidden hover:shadow-2xl hover:scale-[1.01] transition-all duration-500">
+              <div className="relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 p-8 text-white overflow-hidden">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full -translate-y-16 translate-x-16"></div>
+                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-white rounded-full translate-y-12 -translate-x-12"></div>
+                </div>
+
+                <div className="relative flex items-center justify-between">
+                  <div className="flex items-center gap-6">
+                    <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg border border-white/30">
+                      <Hospital className="w-10 h-10 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold">{editableData.hospital.name}</h2>
-                      <p className="text-blue-100 font-medium">{editableData.hospital.type}</p>
-                      <div className="flex items-center gap-3 mt-2">
-                        <div className="flex items-center gap-1">
+                      <h2 className="text-3xl font-bold mb-1">{editableData.hospital.name}</h2>
+                      <p className="text-blue-100 font-semibold text-lg">{editableData.hospital.type}</p>
+                      <div className="flex items-center gap-4 mt-3">
+                        <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
                           <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          <span className="text-sm font-medium">{editableData.hospital.rating}</span>
+                          <span className="text-sm font-bold">{editableData.hospital.rating}</span>
                           <span className="text-xs text-blue-200">({editableData.hospital.reviews} reviews)</span>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Star className="w-4 h-4 text-yellow-400" />
-                          <span className="text-xs text-blue-200">{editableData.hospital.accreditation}</span>
+                        <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                          <Check className="w-4 h-4 text-green-400" />
+                          <span className="text-xs font-semibold text-blue-100">{editableData.hospital.accreditation}</span>
                         </div>
                       </div>
                     </div>
                   </div>
                   <button
                     onClick={() => handleEditSection('hospital')}
-                    className="text-white/80 hover:text-white p-2 hover:bg-white/20 rounded-lg transition-colors"
+                    className="group/edit text-white/70 hover:text-white p-3 hover:bg-white/20 rounded-xl transition-all duration-300 backdrop-blur-sm border border-white/20 hover:border-white/40"
                   >
-                    <Edit3 className="w-5 h-5" />
+                    <Edit3 className="w-5 h-5 group-hover/edit:scale-110 transition-transform" />
                   </button>
                 </div>
               </div>
               
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="w-5 h-5 text-gray-400 mt-1" />
+              <div className="p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex items-start gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-100">
+                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                      <MapPin className="w-6 h-6 text-blue-600" />
+                    </div>
                     <div>
-                      <p className="text-sm text-gray-500">Address</p>
-                      <p className="text-gray-800">{editableData.hospital.address}</p>
+                      <p className="text-sm font-semibold text-blue-600 mb-1">Hospital Address</p>
+                      <p className="text-gray-800 font-medium leading-relaxed">{editableData.hospital.address}</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <Phone className="w-5 h-5 text-gray-400 mt-1" />
+                  <div className="flex items-start gap-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-100">
+                    <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                      <Phone className="w-6 h-6 text-green-600" />
+                    </div>
                     <div>
-                      <p className="text-sm text-gray-500">Hospital Phone</p>
-                      <p className="text-gray-800">{editableData.hospital.phone}</p>
+                      <p className="text-sm font-semibold text-green-600 mb-1">Contact Number</p>
+                      <p className="text-gray-800 font-medium">{editableData.hospital.phone}</p>
                     </div>
                   </div>
                 </div>
-                
-                <div className="mt-6 pt-4 border-t border-gray-100">
-                  <h3 className="font-semibold text-gray-800 mb-3">Available Facilities</h3>
+
+                <div className="mt-8 pt-6 border-t border-gray-100">
+                  <h3 className="font-bold text-gray-800 mb-4 text-lg flex items-center gap-2">
+                    <Building className="w-5 h-5 text-blue-600" />
+                    Available Facilities
+                  </h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {bookingData.facilities.map((facility, index) => (
-                      <div key={index} className="flex items-center gap-2 text-sm">
-                        <Check className="w-4 h-4 text-green-500" />
-                        <span className="text-gray-700">{facility}</span>
+                      <div key={index} className="flex items-center gap-3 text-sm p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                        <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                          <Check className="w-3 h-3 text-green-600" />
+                        </div>
+                        <span className="text-gray-700 font-medium">{facility}</span>
                       </div>
                     ))}
                   </div>
@@ -225,125 +260,165 @@ const MedicalBookingOverview = () => {
               </div>
             </div>
 
-            {/* Medical Information */}
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                  <Heart className="w-6 h-6 text-red-500" />
+            {/* Medical Information - Modernized */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-8 hover:shadow-2xl hover:scale-[1.01] transition-all duration-500">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <Heart className="w-6 h-6 text-white" />
+                  </div>
                   Medical Details
                 </h2>
                 <button
                   onClick={() => handleEditSection('medical')}
-                  className="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-lg transition-colors"
+                  className="group text-blue-600 hover:text-blue-700 p-3 hover:bg-blue-50 rounded-xl transition-all duration-300 border border-blue-200 hover:border-blue-300 hover:shadow-md"
                 >
-                  <Edit3 className="w-5 h-5" />
+                  <Edit3 className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
-                  <Building className="w-8 h-8 text-blue-600" />
-                  <div>
-                    <p className="text-sm text-gray-500">Department</p>
-                    <p className="font-semibold text-gray-800">{editableData.medical.department}</p>
+                <div className="group relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 p-6 rounded-2xl border border-blue-200 hover:shadow-lg transition-all duration-300">
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-blue-200/30 rounded-full -translate-y-10 translate-x-10"></div>
+                  <div className="relative flex items-start gap-4">
+                    <div className="w-14 h-14 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                      <Building className="w-7 h-7 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-blue-600 mb-1">Department</p>
+                      <p className="font-bold text-gray-800 text-lg">{editableData.medical.department}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl">
-                  <Activity className="w-8 h-8 text-purple-600" />
-                  <div>
-                    <p className="text-sm text-gray-500">Appointment Type</p>
-                    <p className="font-semibold text-gray-800">{editableData.medical.appointmentType}</p>
+                <div className="group relative overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100 p-6 rounded-2xl border border-purple-200 hover:shadow-lg transition-all duration-300">
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-purple-200/30 rounded-full -translate-y-10 translate-x-10"></div>
+                  <div className="relative flex items-start gap-4">
+                    <div className="w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
+                      <Activity className="w-7 h-7 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-purple-600 mb-1">Appointment Type</p>
+                      <p className="font-bold text-gray-800 text-lg">{editableData.medical.appointmentType}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl">
-                  <FileText className="w-8 h-8 text-orange-600" />
-                  <div>
-                    <p className="text-sm text-gray-500">Service Type</p>
-                    <p className="font-semibold text-gray-800">{editableData.medical.serviceType}</p>
+                <div className="group relative overflow-hidden bg-gradient-to-br from-orange-50 via-red-50 to-orange-100 p-6 rounded-2xl border border-orange-200 hover:shadow-lg transition-all duration-300">
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-orange-200/30 rounded-full -translate-y-10 translate-x-10"></div>
+                  <div className="relative flex items-start gap-4">
+                    <div className="w-14 h-14 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+                      <FileText className="w-7 h-7 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-orange-600 mb-1">Service Type</p>
+                      <p className="font-bold text-gray-800 text-lg">{editableData.medical.serviceType}</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Appointment Schedule */}
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-800">Appointment Schedule</h2>
+            {/* Appointment Schedule - Enhanced */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-8 hover:shadow-2xl hover:scale-[1.01] transition-all duration-500">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <Calendar className="w-6 h-6 text-white" />
+                  </div>
+                  Appointment Schedule
+                </h2>
                 <button
                   onClick={() => handleEditSection('dateTime')}
-                  className="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-lg transition-colors"
+                  className="group text-blue-600 hover:text-blue-700 p-3 hover:bg-blue-50 rounded-xl transition-all duration-300 border border-blue-200 hover:border-blue-300 hover:shadow-md"
                 >
-                  <Edit3 className="w-5 h-5" />
+                  <Edit3 className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </button>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl">
-                  <div className="w-14 h-14 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-                    <Calendar className="w-7 h-7 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Date</p>
-                    <p className="font-semibold text-gray-800">{bookingData.dateTime.date}</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl">
-                  <div className="w-14 h-14 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
-                    <Clock className="w-7 h-7 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Time</p>
-                    <p className="font-semibold text-gray-800">{bookingData.dateTime.time}</p>
-                    <p className="text-xs text-gray-500">{bookingData.dateTime.timezone}</p>
+                <div className="group relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 p-6 rounded-2xl border border-blue-200 hover:shadow-lg transition-all duration-300">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-100/50 to-indigo-100/50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative flex items-center gap-5">
+                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <Calendar className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-blue-600 mb-1">Appointment Date</p>
+                      <p className="font-bold text-gray-800 text-lg leading-tight">{bookingData.dateTime.date}</p>
+                    </div>
                   </div>
                 </div>
-                
-                <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl">
-                  <div className="w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
-                    <Clock className="w-7 h-7 text-white" />
+
+                <div className="group relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 p-6 rounded-2xl border border-green-200 hover:shadow-lg transition-all duration-300">
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-100/50 to-emerald-100/50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative flex items-center gap-5">
+                    <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <Clock className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-green-600 mb-1">Time & Zone</p>
+                      <p className="font-bold text-gray-800 text-lg">{bookingData.dateTime.time}</p>
+                      <p className="text-xs text-green-600 font-medium">{bookingData.dateTime.timezone}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Duration</p>
-                    <p className="font-semibold text-gray-800">{bookingData.dateTime.duration}</p>
+                </div>
+
+                <div className="group relative overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100 p-6 rounded-2xl border border-purple-200 hover:shadow-lg transition-all duration-300">
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-100/50 to-pink-100/50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative flex items-center gap-5">
+                    <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <Clock className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-purple-600 mb-1">Duration</p>
+                      <p className="font-bold text-gray-800 text-lg">{bookingData.dateTime.duration}</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Patient Information */}
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-800">Patient Information</h2>
+            {/* Patient Information - Enhanced */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-8 hover:shadow-2xl hover:scale-[1.01] transition-all duration-500">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <User className="w-6 h-6 text-white" />
+                  </div>
+                  Patient Information
+                </h2>
                 <button
                   onClick={() => handleEditSection('patients')}
-                  className="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-lg transition-colors"
+                  className="group text-blue-600 hover:text-blue-700 p-3 hover:bg-blue-50 rounded-xl transition-all duration-300 border border-blue-200 hover:border-blue-300 hover:shadow-md"
                 >
-                  <Edit3 className="w-5 h-5" />
+                  <Edit3 className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </button>
               </div>
-              
-              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                    <User className="w-10 h-10 text-white" />
+
+              <div className="relative bg-gradient-to-br from-indigo-50 via-purple-50 to-indigo-100 rounded-3xl p-8 border border-indigo-200 overflow-hidden">
+                {/* Background decoration */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-r from-indigo-200/30 to-purple-200/30 rounded-full -translate-y-16 translate-x-16"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-r from-purple-200/30 to-indigo-200/30 rounded-full translate-y-12 -translate-x-12"></div>
+
+                <div className="relative flex flex-col lg:flex-row items-start lg:items-center gap-6">
+                  <div className="w-24 h-24 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-xl border-4 border-white">
+                    <User className="w-12 h-12 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-800">{bookingData.patients.primaryPatient.name}</h3>
-                    <div className="grid grid-cols-3 gap-4 mt-2 text-sm">
-                      <div>
-                        <span className="text-gray-500">Age: </span>
-                        <span className="font-medium">{bookingData.patients.primaryPatient.age}</span>
+                    <h3 className="text-2xl font-bold text-gray-800 mb-4">{bookingData.patients.primaryPatient.name}</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-indigo-200">
+                        <p className="text-sm font-semibold text-indigo-600 mb-1">Age</p>
+                        <p className="text-lg font-bold text-gray-800">{bookingData.patients.primaryPatient.age} years</p>
                       </div>
-                      <div>
-                        <span className="text-gray-500">Gender: </span>
-                        <span className="font-medium">{bookingData.patients.primaryPatient.gender}</span>
+                      <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-purple-200">
+                        <p className="text-sm font-semibold text-purple-600 mb-1">Gender</p>
+                        <p className="text-lg font-bold text-gray-800">{bookingData.patients.primaryPatient.gender}</p>
                       </div>
-                      <div>
-                        <span className="text-gray-500">Patient ID: </span>
-                        <span className="font-mono text-blue-600">{bookingData.patients.primaryPatient.patientId}</span>
+                      <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-indigo-200">
+                        <p className="text-sm font-semibold text-indigo-600 mb-1">Patient ID</p>
+                        <p className="font-mono text-lg font-bold text-blue-600">{bookingData.patients.primaryPatient.patientId}</p>
                       </div>
                     </div>
                   </div>
@@ -351,35 +426,54 @@ const MedicalBookingOverview = () => {
               </div>
             </div>
 
-            {/* Selected Services */}
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-800">Medical Services</h2>
+            {/* Selected Services - Enhanced */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-8 hover:shadow-2xl hover:scale-[1.01] transition-all duration-500">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <Heart className="w-6 h-6 text-white" />
+                  </div>
+                  Medical Services
+                </h2>
                 <button
                   onClick={() => handleEditSection('selectedServices')}
-                  className="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-lg transition-colors"
+                  className="group text-blue-600 hover:text-blue-700 p-3 hover:bg-blue-50 rounded-xl transition-all duration-300 border border-blue-200 hover:border-blue-300 hover:shadow-md"
                 >
-                  <Edit3 className="w-5 h-5" />
+                  <Edit3 className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </button>
               </div>
-              
-              <div className="space-y-4">
+
+              <div className="space-y-6">
                 {bookingData.selectedServices.map((service, index) => (
-                  <div key={index} className="flex items-center justify-between p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl hover:shadow-lg transition-all duration-300 border border-gray-100">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
-                        <Heart className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-800 text-lg">{service.name}</p>
-                        <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
-                          <span className="bg-white px-2 py-1 rounded-full">Duration: {service.duration}</span>
-                          <span className="bg-white px-2 py-1 rounded-full">Code: {service.code}</span>
+                  <div key={index} className="group relative bg-gradient-to-r from-gray-50 via-blue-50 to-indigo-50 p-6 rounded-2xl border border-gray-200 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 overflow-hidden">
+                    {/* Background Pattern */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-100/30 to-indigo-100/30 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+                    <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                      <div className="flex items-center gap-6">
+                        <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                          <Heart className="w-8 h-8 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-gray-800 text-xl mb-2">{service.name}</h3>
+                          <div className="flex flex-wrap gap-3">
+                            <span className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold text-blue-600 border border-blue-200">
+                              <Clock className="w-4 h-4 inline mr-1" />
+                              {service.duration}
+                            </span>
+                            <span className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold text-gray-600 border border-gray-200">
+                              <FileText className="w-4 h-4 inline mr-1" />
+                              {service.code}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-2xl text-blue-600">฿{service.price.toLocaleString()}</p>
+                      <div className="text-right lg:text-left">
+                        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-4 rounded-2xl shadow-lg">
+                          <p className="text-sm font-medium opacity-90 mb-1">Price</p>
+                          <p className="font-bold text-2xl">฿{service.price.toLocaleString()}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -387,129 +481,187 @@ const MedicalBookingOverview = () => {
             </div>
           </div>
 
-          {/* Sidebar */}
+          {/* Enhanced Sidebar */}
           <div className="space-y-6">
-            
 
-            {/* Contact Information */}
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Contact Details</h2>
+            {/* Contact Information - Enhanced */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-6 hover:shadow-2xl transition-all duration-500">
+              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <User className="w-4 h-4 text-white" />
+                </div>
+                Contact Details
+              </h2>
+
+              <div className="space-y-6">
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-2xl border border-blue-200">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                      <span className="text-sm font-bold text-white">
+                        {bookingData.contact.name.split(' ').map(n => n[0]).join('')}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-800 text-lg">{bookingData.contact.name}</p>
+                      <p className="text-sm font-semibold text-blue-600">Primary Contact</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 p-3 bg-white/70 backdrop-blur-sm rounded-xl">
+                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                        <Mail className="w-4 h-4 text-green-600" />
+                      </div>
+                      <span className="text-gray-700 font-medium">{bookingData.contact.email}</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-white/70 backdrop-blur-sm rounded-xl">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <Phone className="w-4 h-4 text-blue-600" />
+                      </div>
+                      <span className="text-gray-700 font-medium">{bookingData.contact.phone}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-orange-50 to-red-50 p-6 rounded-2xl border border-orange-200">
+                  <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                    <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
+                      <Phone className="w-3 h-3 text-red-600" />
+                    </div>
+                    Emergency Contact
+                  </h3>
+                  <div className="space-y-2">
+                    <p className="font-semibold text-gray-800">{bookingData.contact.emergencyContact.name}</p>
+                    <p className="text-sm font-medium text-orange-600 bg-white/70 px-3 py-1 rounded-full inline-block">
+                      {bookingData.contact.emergencyContact.relation}
+                    </p>
+                    <p className="text-sm font-medium text-gray-700">{bookingData.contact.emergencyContact.phone}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Summary - Enhanced */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-6 hover:shadow-2xl transition-all duration-500">
+              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-white" />
+                </div>
+                Payment Summary
+              </h2>
+
               <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span className="text-sm font-bold text-blue-600">
-                      {bookingData.contact.name.split(' ').map(n => n[0]).join('')}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-800">{bookingData.contact.name}</p>
-                    <p className="text-sm text-gray-500">Primary Contact</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-3">
-                    <Mail className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-700">{bookingData.contact.email}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-700">{bookingData.contact.phone}</span>
+                <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-4 rounded-xl border border-gray-200">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700 font-medium">Consultation</span>
+                    <span className="font-bold text-gray-800">฿{bookingData.pricing.consultation.toLocaleString()}</span>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-gray-100">
-                  <h3 className="font-semibold text-gray-800 mb-2">Emergency Contact</h3>
-                  <p className="text-sm text-gray-700">{bookingData.contact.emergencyContact.name}</p>
-                  <p className="text-xs text-gray-500">{bookingData.contact.emergencyContact.relation}</p>
-                  <p className="text-sm text-gray-700">{bookingData.contact.emergencyContact.phone}</p>
+                <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-4 rounded-xl border border-gray-200">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700 font-medium">Medical Tests</span>
+                    <span className="font-bold text-gray-800">฿{bookingData.pricing.tests.toLocaleString()}</span>
+                  </div>
+                </div>
+
+                <div className="border-t-2 border-dashed border-gray-300 pt-4">
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-gray-700 font-semibold">Subtotal</span>
+                      <span className="font-bold text-gray-800">฿{bookingData.pricing.subtotal.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 rounded-2xl shadow-lg text-white">
+                  <div className="flex justify-between items-center">
+                    <span className="text-lg font-bold">Total Amount</span>
+                    <span className="text-2xl font-bold">฿{bookingData.pricing.total.toLocaleString()}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Payment Breakdown */}
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Payment Summary</h2>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Consultation</span>
-                  <span className="font-medium">฿{bookingData.pricing.consultation.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Medical Tests</span>
-                  <span className="font-medium">฿{bookingData.pricing.tests.toLocaleString()}</span>
-                </div>
-                <hr className="my-3" />
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">฿{bookingData.pricing.subtotal.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-xl font-bold">
-                  <span className="text-gray-800">Total Amount</span>
-                  <span className="text-blue-600">฿{bookingData.pricing.total.toLocaleString()}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
+            {/* Action Buttons - Enhanced */}
             <div className="space-y-4">
               <button
                 onClick={handleConfirmAppointment}
                 disabled={isLoading}
-                className={`w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 text-white py-4 rounded-2xl font-semibold hover:from-blue-700 hover:via-indigo-700 hover:to-purple-800 transition-all duration-300 flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none`}
+                className={`group relative w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 text-white py-5 rounded-2xl font-bold hover:from-blue-700 hover:via-indigo-700 hover:to-purple-800 transition-all duration-300 flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none overflow-hidden`}
               >
-                {isLoading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <UserCheck className="w-5 h-5" />
-                    Confirm Appointment
-                  </>
-                )}
+                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="relative flex items-center gap-3">
+                  {isLoading ? (
+                    <>
+                      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-lg">Processing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <UserCheck className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                      <span className="text-lg">Confirm Appointment</span>
+                    </>
+                  )}
+                </div>
               </button>
-              <div className="grid grid-cols-2 gap-3">
+
+              <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={() => window.print()}
-                  className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-medium hover:from-green-600 hover:to-emerald-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                  className="group relative w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl overflow-hidden"
                 >
-                  <Download className="w-4 h-4" />
-                  Save PDF
+                  <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative flex items-center gap-2">
+                    <Download className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                    <span>Save PDF</span>
+                  </div>
                 </button>
                 <button
                   onClick={() => alert('Share functionality would be implemented here')}
-                  className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-3 rounded-xl font-medium hover:from-orange-600 hover:to-red-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                  className="group relative w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-4 rounded-xl font-semibold hover:from-orange-600 hover:to-red-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl overflow-hidden"
                 >
-                  <Share className="w-4 h-4" />
-                  Share
+                  <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative flex items-center gap-2">
+                    <Share className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                    <span>Share</span>
+                  </div>
                 </button>
               </div>
             </div>
 
-            {/* Important Information */}
-            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-4">
-              <h3 className="font-semibold text-yellow-800 mb-3 flex items-center gap-2">
-                <FileText className="w-4 h-4" />
+            {/* Important Information - Enhanced */}
+            <div className="bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-6 shadow-lg">
+              <h3 className="font-bold text-amber-800 mb-4 text-lg flex items-center gap-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-white" />
+                </div>
                 Before Your Visit
               </h3>
-              <ul className="text-sm text-yellow-700 space-y-2">
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-yellow-600 mt-0.5" />
-                  <span>Arrive 15 minutes early for check-in</span>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3 p-3 bg-white/70 backdrop-blur-sm rounded-xl border border-amber-200">
+                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
+                    <Check className="w-3 h-3 text-green-600" />
+                  </div>
+                  <span className="text-amber-800 font-medium">Arrive 15 minutes early for check-in</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-yellow-600 mt-0.5" />
-                  <span>Bring valid ID and medical records</span>
+                <li className="flex items-start gap-3 p-3 bg-white/70 backdrop-blur-sm rounded-xl border border-amber-200">
+                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
+                    <Check className="w-3 h-3 text-green-600" />
+                  </div>
+                  <span className="text-amber-800 font-medium">Bring valid ID and medical records</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-yellow-600 mt-0.5" />
-                  <span>Fasting may be required for blood tests</span>
+                <li className="flex items-start gap-3 p-3 bg-white/70 backdrop-blur-sm rounded-xl border border-amber-200">
+                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
+                    <Check className="w-3 h-3 text-green-600" />
+                  </div>
+                  <span className="text-amber-800 font-medium">Fasting may be required for blood tests</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-yellow-600 mt-0.5" />
-                  <span>Free cancellation up to 2 hours before</span>
+                <li className="flex items-start gap-3 p-3 bg-white/70 backdrop-blur-sm rounded-xl border border-amber-200">
+                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
+                    <Check className="w-3 h-3 text-green-600" />
+                  </div>
+                  <span className="text-amber-800 font-medium">Free cancellation up to 2 hours before</span>
                 </li>
               </ul>
             </div>
