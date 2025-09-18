@@ -117,7 +117,7 @@ return (
   <div className={`${inter.className} mb-8`}>
   <h2 className="ml-2 text-lg font-bold mb-2" style={{ fontSize: "25px" }}>Places to Visit</h2>
   <div className="border border-[#C5D1E0] w-[850px] p-4 rounded-xl shadow-md bg-white relative">
-    {tripBooking.trips.package_places.map((place, index) => (
+    {tripBooking.trips?.package_places.map((place, index) => (
       <div
         key={place.packplace_id}
         className={`flex items-center gap-6 p-4 ${

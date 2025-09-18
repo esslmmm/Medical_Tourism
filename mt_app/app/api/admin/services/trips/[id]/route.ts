@@ -3,7 +3,8 @@ import { NextResponse } from 'next/server';
 
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
   try {
-    const tour_id = Number(params.id);
+    const resolvedParams = await params;
+    const tour_id = Number(resolvedParams.id);
     const trip = await prisma.trips.findUnique({
       where: { tour_id },
       include: {

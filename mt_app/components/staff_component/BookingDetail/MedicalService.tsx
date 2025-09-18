@@ -196,8 +196,8 @@ const MedicalServiceCard = ({packageBooking, setPackageBooking}: MedicalServiceC
 
 
   // ✅ Convert `check_in_date` and `appointments.date` into Date objects
-  const checkInDate = new Date(packageBooking.hotel_bookings.check_in_date);
-  const appointmentDate = new Date(packageBooking.appointments.date);
+  const checkInDate = new Date(packageBooking.hotel_bookings?.check_in_date);
+  const appointmentDate = new Date(packageBooking.appointments?.date);
 
   if (isNaN(checkInDate.getTime()) || isNaN(appointmentDate.getTime())) return null; // Prevents errors
   // ✅ Calculate expected date based on check-in date and selectedDay

@@ -51,11 +51,15 @@ export interface User {
     packageId: string;
     packageTitle: string;
     hospitalName: string;
-    status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
+    status: 'in_progress' | 'pending' | 'approved' | 'completed' | 'rejected' | 'cancelled';
     bookingDate: string;
-    travelDate: string;
     totalAmount: number;
     createdAt: string;
+    appointments: Appointment;
+  }
+
+  export interface Appointment{
+    date: string
   }
   
   export interface Feedback {
@@ -125,4 +129,15 @@ export interface DocEducation {
     doc_education: DocEducation[];
     doc_certificate: DocCertificate[];
     doc_language: DocLanguage[];
+  }
+
+  export interface Trip {
+    tour_id: number;
+    description: string | null;
+    duration: number | null;
+    name?: string;
+    status?: 'Active' | 'Inactive';
+    image?: string;
+    category?: string;
+    createdAt?: string;
   }

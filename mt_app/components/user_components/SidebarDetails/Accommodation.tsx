@@ -60,7 +60,18 @@ const Accommodation: React.FC<BookingDetailsProps> = ({ data }) => {
               <div>
                   <p className="font-bold text-black text-sm">{data?.hotel_bookings.hotels.name}</p>
                   <p className="text-sm text-black">{formatDate(data?.hotel_bookings.check_in_date)} - {formatDate(data?.hotel_bookings.check_out_date)} | {nights} Nights</p>
-                  <p className="text-sm text-black">{data?.hotel_bookings.room_aggregate[0]?.amount} x {data?.hotel_bookings.room_aggregate[0]?.hotel_rooms.room_type}</p>
+                  <div className="text-sm text-black">
+                    {data?.hotel_bookings.room_aggregate && data.hotel_bookings.room_aggregate.length > 0 ? (
+                      data.hotel_bookings.room_aggregate.map((room, index) => (
+                        <p key={index}>
+                          {room.amount} x {room.hotel_rooms.room_type}
+                          {index < data.hotel_bookings.room_aggregate.length - 1 && ', '}
+                        </p>
+                      ))
+                    ) : (
+                      <p>No room details available</p>
+                    )}
+                  </div>
                   <p className="text-sm text-black">Guest(s): {data?.hotel_bookings.guest_adult} Adult, {data?.hotel_bookings.guest_children} Children</p>
               </div>
           </div>

@@ -4,82 +4,99 @@ import React, { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import StatsCard from '@/components/admin_component/Common/StatsCard';
 import { MapPin, TrendingUp, Search, Filter, Edit, Eye, ToggleLeft, Plus } from 'lucide-react';
-import { Trip } from '@/types/admin';
-import { useRouter } from 'next/navigation';
 import '@/app/admin/styles/globals.css';
+import { useRouter } from 'next/navigation';
 
-const TripsPage: React.FC = () => {
+interface Place {
+  place_id: string;
+  place_name: string;
+  contact_info?: string;
+  location?: string;
+  city?: string;
+  image?: string;
+  description?: string;
+  fee?: number;
+}
+
+const PlacesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState<string>('all');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'Active' | 'Inactive'>('all');
-  const [trips, setTrips] = useState<Trip[]>([]);
+  const [filterCity, setFilterCity] = useState<string>('all');
+  const [places, setPlaces] = useState<Place[]>([]);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchTrips() {
+    async function fetchPlaces() {
       try {
-        const response = await fetch("/api/admin/services/trips");
+        setLoading(true);
+        const response = await fetch("/api/admin/services/places");
         if (!response.ok) {
-          throw new Error("Failed to fetch trips");
+          throw new Error("Failed to fetch places");
         }
         const data = await response.json();
-        setTrips(data);
+        setPlaces(data);
       } catch (error) {
-        console.error("Error fetching trips:", error);
-        setError("Error fetching trips");
+        console.error("Error fetching places:", error);
+        setError("Error fetching places");
       } finally {
         setLoading(false);
       }
     }
 
-    fetchTrips();
+    fetchPlaces();
   }, []);
 
-  const handleView = (id: number) => {
-    router.push(`/admin/trips/${id}`); // Navigate to detail page
+  const handleView = (id: string) => {
+    router.push(`/admin/places/${id}`); // Navigate to detail page
   };
 
-  const handleEdit = (id: number) => {
-    router.push(`/admin/trips/edit/${id}`); // Navigate to edit page
+  const handleEdit = (id: string) => {
+    router.push(`/admin/places/edit/${id}`); // Navigate to edit page
   };
 
   const handleAdd = () => {
-    router.push(`/admin/trips/add`); // Navigate to add page
+    router.push(`/admin/places/add`); // Navigate to add page
   };
 
-  const filteredTrips = trips.filter(trip => {
-    const matchesSearch = trip.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         trip.name?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === 'all' || trip.category === filterCategory;
-    const matchesStatus = filterStatus === 'all' || trip.status === filterStatus;
-    return matchesSearch && matchesCategory && matchesStatus;
+  const filteredPlaces = places.filter(place => {
+    const matchesSearch = place.place_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         place.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         place.location?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCity = filterCity === 'all' || place.city === filterCity;
+    return matchesSearch && matchesCity;
   });
 
-  const totalTrips = trips.length;
+  const totalPlaces = places.length;
+  const uniqueCities = [...new Set(places.map(place => place.city).filter(Boolean))];
 
   return (
     <AdminLayout>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Trip Management</h1>
-            <p className="text-gray-600">Manage tour routes and destinations</p>
+            <h1 className="text-3xl font-bold text-gray-900">Place Management</h1>
+            <p className="text-gray-600">Manage tourist destinations and attractions</p>
           </div>
           <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center" onClick={() => handleAdd()}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Trip
+            Add Place
           </button>
         </div>
         
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatsCard
-            title="Total Trips"
-            value={totalTrips}
+            title="Total Places"
+            value={totalPlaces}
             icon={MapPin}
             color="blue"
+          />
+          <StatsCard
+            title="Cities"
+            value={uniqueCities.length}
+            icon={TrendingUp}
+            color="green"
           />
         </div>
         
@@ -91,7 +108,7 @@ const TripsPage: React.FC = () => {
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search trips..."
+                  placeholder="Search places..."
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -101,36 +118,26 @@ const TripsPage: React.FC = () => {
             <div className="flex gap-2">
               <select
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
+                value={filterCity}
+                onChange={(e) => setFilterCity(e.target.value)}
               >
-                <option value="all">All Categories</option>
-                <option value="Cultural">Cultural</option>
-                <option value="Adventure">Adventure</option>
-                <option value="Religious">Religious</option>
-                <option value="Medical">Medical</option>
-              </select>
-              <select
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value as any)}
-              >
-                <option value="all">All Status</option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
+                <option value="all">All Cities</option>
+                {uniqueCities.map(city => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
               </select>
             </div>
           </div>
           
-          {/* Trips Table */}
+          {/* Places Table */}
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Trip</th>
-                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Description</th>
-                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Duration</th>
-                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Place</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Location</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">City</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Fee</th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
                 </tr>
               </thead>
@@ -138,7 +145,7 @@ const TripsPage: React.FC = () => {
                 {loading ? (
                   <tr>
                     <td className="py-8 px-4 text-center text-gray-500" colSpan={5}>
-                      Loading trips...
+                      Loading places...
                     </td>
                   </tr>
                 ) : error ? (
@@ -147,51 +154,56 @@ const TripsPage: React.FC = () => {
                       {error}
                     </td>
                   </tr>
-                ) : filteredTrips.length === 0 ? (
+                ) : filteredPlaces.length === 0 ? (
                   <tr>
                     <td className="py-8 px-4 text-center text-gray-500" colSpan={5}>
-                      No trips found
+                      No places found
                     </td>
                   </tr>
                 ) : (
-                  filteredTrips.map((trip) => (
+                  filteredPlaces.map((place) => (
                     <tr
-                      key={trip.tour_id}
+                      key={place.place_id}
                       className="border-b border-gray-100 hover:bg-gray-50"
                     >
                       <td className="py-4 px-4">
                         <div className="flex items-center">
-                          {/* Trip Image placeholder */}
-                          <div className="w-28 h-20 rounded-lg mr-3 bg-gray-200 flex items-center justify-center">
-                            <MapPin className="h-8 w-8 text-gray-400" />
+                          {/* Place Image */}
+                          <div className="w-28 h-20 rounded-lg mr-3 bg-gray-200 flex items-center justify-center overflow-hidden">
+                            {place.image ? (
+                              <img 
+                                src={place.image} 
+                                alt={place.place_name || 'Place'} 
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <MapPin className="h-8 w-8 text-gray-400" />
+                            )}
                           </div>
                           <div>
                             <div className="font-medium text-gray-900">
-                              Trip #{trip.tour_id}
+                              {place.place_name || 'Unnamed Place'}
                             </div>
                             <div className="text-sm text-gray-500">
-                              {trip.category || 'General'}
+                              {place.description ? 
+                                (place.description.length > 50 ? 
+                                  `${place.description.substring(0, 50)}...` : 
+                                  place.description
+                                ) : 'No description'
+                              }
                             </div>
                           </div>
                         </div>
                       </td>
                       
                       <td className="py-4 px-4 text-gray-900">
-                        {trip.description || 'No description available'}
+                        {place.location || 'Not specified'}
                       </td>
                       <td className="py-4 px-4 text-gray-900">
-                        {trip.duration ? `${trip.duration} days` : 'Not specified'}
+                        {place.city || 'Not specified'}
                       </td>
-                      <td className="py-4 px-4">
-                        <span
-                          className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                            trip.status === "Active"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {trip.status || 'Active'}
-                        </span>
+                      <td className="py-4 px-4 text-gray-900">
+                        {place.fee ? `$${place.fee}` : 'Free'}
                       </td>
                       
                       <td className="py-4 px-4">
@@ -199,7 +211,7 @@ const TripsPage: React.FC = () => {
                           {/* Eye Button (View) */}
                           <button
                             className="text-blue-600 hover:text-blue-800 cursor-pointer"
-                            onClick={() => handleView(trip.tour_id)}
+                            onClick={() => handleView(place.place_id)}
                             title="View Details"
                           >
                             <Eye className="h-4 w-4" />
@@ -208,15 +220,10 @@ const TripsPage: React.FC = () => {
                           {/* Edit Button */}
                           <button
                             className="text-green-600 hover:text-green-800 cursor-pointer"
-                            onClick={() => handleEdit(trip.tour_id)}
-                            title="Edit Trip"
+                            onClick={() => handleEdit(place.place_id)}
+                            title="Edit Place"
                           >
                             <Edit className="h-4 w-4" />
-                          </button>
-                          
-                          {/* Toggle Button */}
-                          <button className="text-orange-600 hover:text-orange-800 cursor-pointer">
-                            <ToggleLeft className="h-4 w-4" />
                           </button>
                         </div>
                       </td>
@@ -232,6 +239,4 @@ const TripsPage: React.FC = () => {
   );
 };
 
-export default TripsPage;
-
-
+export default PlacesPage;
