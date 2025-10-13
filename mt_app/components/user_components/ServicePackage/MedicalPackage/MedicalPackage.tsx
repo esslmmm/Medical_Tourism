@@ -15,6 +15,7 @@ import {
   ChatBubbleBottomCenterTextIcon,
   MapIcon
 } from '@heroicons/react/24/solid';
+import { X } from 'lucide-react';
 import MakeAppointment from './MakeAppointment';
 import Link from 'next/link';
 
@@ -196,9 +197,9 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
             <div className="bg-white rounded-2xl p-6 max-w-5xl w-full relative overflow-y-auto max-h-[90vh] border border-gray-300">
               <button
                 onClick={() => setShowAll(false)}
-                className="absolute top-3 right-3 text-teal-500 rounded-full w-8 h-8 flex items-center justify-center hover:bg-teal-500 hover:text-white transition"
+                className="absolute top-3 right-3 flex items-center justify-center text-gray-500 hover:text-gray-700"
               >
-                ✕
+                <X className=" w-8 h-8 " />
               </button>
 
               <h2 className="text-xl font-semibold mb-4 text-black">All Photos</h2>
