@@ -17,7 +17,7 @@ import {
 import TripCard from '@/components/user_components/ServicePackage/TourismPackage/TripCard';
 import MakeBooking from '@/components/user_components/ServicePackage/TourismPackage/MakeBooking';
 
-const MedicalCheckup = () => {
+const TourismPackage = () => {
   const [selectedDate, setSelectedDate] = useState('5 October 2025');
   const [selectedTime, setSelectedTime] = useState('7:00');
   const [adultCount, setAdultCount] = useState(0);
@@ -382,4 +382,4 @@ const MedicalCheckup = () => {
   );
 };
 
-export default MedicalCheckup; 
+export default TourismPackage; 

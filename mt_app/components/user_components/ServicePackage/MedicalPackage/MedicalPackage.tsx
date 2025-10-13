@@ -131,7 +131,11 @@ const recommendedPackages = [
 
 const tabs = ['Description', 'Service', 'Facilities', 'Available Language', 'Hospital', 'Frequently'];
 
-const MedicalCheckup = () => {
+interface MedicalPackageProps {
+  onNextStep?: () => void;
+}
+
+const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
   const [activeTab, setActiveTab] = useState('Description');
   const [showAll, setShowAll] = useState(false);
   const [selectedImage, setSelectedImage] = useState(
@@ -520,7 +524,7 @@ const MedicalCheckup = () => {
         </div>
         <div className="lg:col-span-1">
           <div className="sticky top-10">
-            <MakeAppointment />
+            <MakeAppointment onNextStep={onNextStep} />
   </div>
 </div>
 
@@ -529,4 +533,4 @@ const MedicalCheckup = () => {
   );
 };
 
-export default MedicalCheckup;
+export default MedicalPackage;

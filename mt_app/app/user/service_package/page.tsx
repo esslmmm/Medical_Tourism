@@ -77,7 +77,7 @@ const ServicePackage = () => {
         </div>
 
         {/* Conditional Rendering */}
-        {selectedService === "medical" ? <MedicalPackage /> : <TourismPackage />}
+        {selectedService === "medical" ? <MedicalPackage onNextStep={() => setSelectedService("tourism")} /> : <TourismPackage />}
       </div>
       <Footer />
     </div>
