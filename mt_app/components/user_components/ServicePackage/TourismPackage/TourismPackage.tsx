@@ -3,15 +3,11 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { 
-  CheckIcon, 
   StarIcon, 
   ChevronDownIcon, 
   ChevronUpIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  ShareIcon,
-  ChatBubbleLeftIcon,
-  HomeIcon,
   PhoneIcon,
   PaperClipIcon,
   EnvelopeIcon,
@@ -117,7 +113,7 @@ const MedicalCheckup = () => {
 
 
            {/* Header */}
-              <h1 className="text-4xl font-bold text-black mt-5">Medical Check-up</h1>
+              <h1 className="text-4xl font-bold text-black mt-5">Phuket Trip</h1>
               
               
               {/* Images */}
