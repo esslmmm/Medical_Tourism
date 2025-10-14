@@ -80,33 +80,11 @@ export async function GET(request: NextRequest) {
             status: true
           }
         },
-        hotel_bookings: {
-          select: {
-            booking_id: true,
-            check_in_date: true,
-            check_out_date: true,
-            total_price: true,
-            status: true,
-            hotels: {
-              select: {
-                name: true,
-                image: true,
-                hotel_code: true
-              }
-            }
-          }
-        },
         tourism_bookings: {
           select: {
             tourism_id: true,
             status: true,
-            trips: {
-              select: {
-                tour_id: true,
-                duration: true,
-                description: true
-              }
-            }
+            routes: true,
           }
         },
         guide_bookings: {
@@ -115,12 +93,6 @@ export async function GET(request: NextRequest) {
             start: true,
             end: true,
             status: true,
-            guides: {
-              select: {
-                name: true,
-                image: true
-              }
-            }
           }
         },
         user_contact_detail: {

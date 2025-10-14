@@ -157,6 +157,7 @@
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import { MapPin } from "lucide-react";
 import { Poppins } from "next/font/google";
 import { useRouter } from "next/navigation";
 import PackagesSkeleton from "../skeleton-screen/DoctorProfile/PackageSkeleton";
@@ -238,17 +239,21 @@ const PackageList: React.FC = () => {
   };
 
   const getPackageTypeColor = (type: string) => {
-    if (!type) return 'bg-gradient-to-r from-slate-500 to-slate-600 text-white';
+    if (!type) return 'bg-slate-200 text-slate-700';
     
     switch (type.toLowerCase()) {
+      case 'medical_tourism':
+        return 'bg-green-100 text-green-700';
+      case 'medical_service_only':
+        return 'bg-blue-100 text-blue-700';
       case 'premium':
-        return 'bg-gradient-to-r from-blue-600 to-blue-700 text-white';
+        return 'bg-slate-200 text-slate-700';
       case 'basic':
-        return 'bg-gradient-to-r from-cyan-500 to-cyan-600 text-white';
+        return 'bg-slate-200 text-slate-700';
       case 'specialized':
-        return 'bg-gradient-to-r from-indigo-500 to-indigo-600 text-white';
+        return 'bg-slate-200 text-slate-700';
       default:
-        return 'bg-gradient-to-r from-slate-500 to-slate-600 text-white';
+        return 'bg-slate-200 text-slate-700';
     }
   };
 
@@ -260,20 +265,21 @@ const PackageList: React.FC = () => {
 
   return (
     <div className="container mx-auto p-12 relative bg-white">
-      {/* New Stylized Header Design */}
+      {/* Professional Header Design */}
       <div className="text-left mb-8 pl-6">
-        <div className="relative inline-block">
-          
-          
-          {/* Main title with gradient and shadow effects */}
-          <h2 className="relative text-2xl lg:text-3xl font-black text-slate-800 mb-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent drop-shadow-lg">
-            Medical and Tourism Packages
-          </h2>
+        <div className="flex items-center mb-4">
+          <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mr-4">
+            <MapPin className="w-6 h-6 text-green-600" />
+          </div>
+          <div>
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-2">
+              Medical + Tourism Packages
+            </h2>
+            <p className="text-slate-600 text-lg">
+              Complete healthcare experience with travel and tourism
+            </p>
+          </div>
         </div>
-        
-        <p className="text-slate-600 text-base leading-relaxed max-w-xl">
-          Discover comprehensive healthcare packages designed for your wellness journey
-        </p>
       </div>
       
       {canScrollLeft && (
@@ -290,31 +296,31 @@ const PackageList: React.FC = () => {
         className="overflow-hidden scrollbar-hide flex space-x-8 pl-5 pr-10 scroll-smooth snap-x"
         onScroll={checkScrollPosition}
       >
-        {packages.map((pkg) => (
+        {packages.filter(pkg => pkg.package_type === 'Medical_Tourism').map((pkg) => (
           <motion.div
             key={pkg.package_id}
-            className="flex-shrink-0 w-[340px] bg-white shadow-xl rounded-2xl p-6 text-left border border-slate-200 snap-center cursor-pointer overflow-hidden group hover:shadow-2xl transition-all duration-300"
-            whileHover={{ y: -8, transition: { duration: 0.3 } }}
+            className="flex-shrink-0 w-[340px] bg-white shadow-lg rounded-xl p-6 text-left border border-slate-200 snap-center cursor-pointer overflow-hidden group hover:shadow-xl transition-all duration-300"
+            whileHover={{ y: -4, transition: { duration: 0.3 } }}
             onClick={() => router.push(`/user/package_landing_page/${pkg.package_id}`)}
             whileTap={{ scale: 0.98 }}
           >
-            <div className="relative w-full h-52 mb-6">
+            <div className="relative w-full h-48 mb-6">
               <Image
                 src={pkg.image}
                 alt={pkg.package_name}
                 layout="fill"
                 objectFit="cover"
-                className="rounded-xl group-hover:scale-105 transition-transform duration-500"
+                className="rounded-lg group-hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute top-4 right-4">
-                <span className={`px-3 py-1 text-xs font-semibold rounded-full ${getPackageTypeColor(pkg.package_type)}`}>
-                  {pkg.package_type}
+                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
+                  Medical + Tourism
                 </span>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h3 className={`${poppins.className} font-semibold text-slate-800 text-lg leading-tight group-hover:text-blue-700 transition-colors duration-300`}>
+              <h3 className={`${poppins.className} font-semibold text-slate-800 text-lg leading-tight group-hover:text-green-700 transition-colors duration-300`}>
                 {pkg.package_name}
               </h3>
               
@@ -333,10 +339,10 @@ const PackageList: React.FC = () => {
               </div>
 
               <div className="pt-2">
-                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-3 group-hover:from-blue-100 group-hover:to-cyan-100 transition-all duration-300">
+                <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 group-hover:bg-slate-100 transition-all duration-300">
                   <div className="flex items-center justify-between">
-                    <span className="text-blue-700 font-semibold text-sm">View Details</span>
-                    <ChevronRightIcon className="w-4 h-4 text-blue-600 group-hover:translate-x-1 transition-transform duration-300" />
+                    <span className="text-slate-700 font-semibold text-sm">View Details</span>
+                    <ChevronRightIcon className="w-4 h-4 text-slate-600 group-hover:translate-x-1 transition-transform duration-300" />
                   </div>
                 </div>
               </div>

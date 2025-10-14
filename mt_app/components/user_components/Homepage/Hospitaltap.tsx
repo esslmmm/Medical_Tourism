@@ -132,6 +132,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { FaMapMarkerAlt, FaBed, FaUserMd, FaStar } from "react-icons/fa";
+import { Shield } from "lucide-react";
 import { HiOutlineArrowRight } from "react-icons/hi";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
@@ -252,36 +253,24 @@ const Hospitaltap: React.FC = () => {
   }
 
   return (
-    <div id="hospitals-section" className={`${lato.className} bg-gradient-to-br from-slate-50 to-blue-50 py-16`}>
+    <div id="hospitals-section" className={`${lato.className} bg-slate-50 py-16`}>
       <div className="container mx-auto px-6 lg:px-16">
         {/* Header Section */}
         <div className="text-center mb-12">
-          
-          {/* New Stylized Header Design */}
-          <div className="relative inline-block">
-            {/* Background decoration */}
-            <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 rounded-2xl blur opacity-20 animate-pulse"></div>
-            
-            {/* Main title with gradient and shadow effects */}
-            <h2 className="relative text-4xl lg:text-5xl font-black text-slate-800 mb-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent drop-shadow-2xl">
-              Premier Healthcare Facilities
-            </h2>
-            
-            {/* Decorative elements */}
-            <div className="flex justify-center items-center space-x-6 mb-4">
-              <div className="w-16 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-full"></div>
-              <div className="flex space-x-2">
-                <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full animate-pulse"></div>
-                <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse delay-75"></div>
-                <div className="w-3 h-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full animate-pulse delay-150"></div>
-              </div>
-              <div className="w-16 h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent rounded-full"></div>
+          {/* Professional Header Design */}
+          <div className="flex items-center justify-center mb-6">
+            <div className="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center mr-4">
+              <Shield className="w-8 h-8 text-slate-600" />
+            </div>
+            <div>
+              <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-2">
+                Premier Healthcare Facilities
+              </h2>
+              <p className="text-slate-600 text-lg">
+                World-class hospitals with cutting-edge technology and certified professionals
+              </p>
             </div>
           </div>
-          
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Discover world-class hospitals equipped with cutting-edge technology and internationally certified medical professionals
-          </p>
         </div>
 
         {/* Hospitals Grid */}
@@ -318,92 +307,80 @@ const Hospitaltap: React.FC = () => {
           {hospitals.map((hospital, index) => (
             <motion.div
               key={hospital.hospital_id || `hospital-${index}`}
-              className="min-w-[420px] lg:min-w-[480px] bg-white rounded-3xl shadow-xl hover:shadow-2xl border border-slate-200 flex-shrink-0 overflow-hidden group cursor-pointer"
-              whileHover={{ y: -8, transition: { duration: 0.4 } }}
+              className="min-w-[420px] lg:min-w-[480px] bg-white rounded-xl shadow-lg hover:shadow-xl border border-slate-200 flex-shrink-0 overflow-hidden group cursor-pointer"
+              whileHover={{ y: -4, transition: { duration: 0.4 } }}
               whileTap={{ scale: 0.98 }}
               onClick={() => navigateToHospitalPage(hospital.hospital_id)}
             >
               {/* Image Section */}
-              <div className="relative h-64 overflow-hidden">
+              <div className="relative h-56 overflow-hidden">
                 {hospital.image && (
                   <Image
                     src={hospital.image}
                     fill
                     alt={hospital.name}
-                    className="object-cover group-hover:scale-110 transition-transform duration-700"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                <div className="absolute inset-0 bg-black/20"></div>
                 
                 {/* Floating Badge */}
-                <div className="absolute top-6 left-6">
-                  <div className="bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 flex items-center space-x-2">
-                    <FaStar className="text-yellow-500 text-sm" />
+                <div className="absolute top-4 left-4">
+                  <div className="bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 flex items-center space-x-2">
+                    <FaStar className="text-slate-600 text-sm" />
                     <span className="text-slate-800 font-semibold text-sm">4.8</span>
                   </div>
                 </div>
 
                 {/* Status Indicators */}
-                <div className="absolute top-6 right-6 flex space-x-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-md"></div>
-                  <div className="text-white text-xs font-semibold bg-green-500/80 backdrop-blur-sm rounded-full px-2 py-1">
+                <div className="absolute top-4 right-4 flex space-x-2">
+                  <div className="w-2 h-2 bg-slate-500 rounded-full border border-white"></div>
+                  <div className="text-white text-xs font-semibold bg-slate-500/80 backdrop-blur-sm rounded-lg px-2 py-1">
                     Available
                   </div>
                 </div>
               </div>
 
               {/* Content Section */}
-              <div className="p-8">
-                <h3 className="text-2xl font-bold text-slate-800 mb-3 group-hover:text-blue-700 transition-colors duration-300">
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-slate-800 mb-3 group-hover:text-slate-600 transition-colors duration-300">
                   {hospital.name}
                 </h3>
                 
-                <div className="flex items-center text-slate-600 mb-6">
-                  <FaMapMarkerAlt className="mr-3 text-red-500 text-lg" />
-                  <p className="text-base font-medium">{hospital.location}</p>
+                <div className="flex items-center text-slate-600 mb-4">
+                  <FaMapMarkerAlt className="mr-3 text-slate-500 text-sm" />
+                  <p className="text-sm font-medium">{hospital.location}</p>
                 </div>
 
                 {/* Features */}
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="flex items-center space-x-2 bg-blue-50 rounded-lg p-3">
-                    <FaUserMd className="text-blue-600" />
-                    <span className="text-blue-800 text-sm font-medium">Expert Doctors</span>
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="flex items-center space-x-2 bg-slate-50 rounded-lg p-2">
+                    <FaUserMd className="text-slate-600 text-sm" />
+                    <span className="text-slate-700 text-xs font-medium">Expert Doctors</span>
                   </div>
-                  <div className="flex items-center space-x-2 bg-cyan-50 rounded-lg p-3">
-                    <FaBed className="text-cyan-600" />
-                    <span className="text-cyan-800 text-sm font-medium">Modern Facilities</span>
+                  <div className="flex items-center space-x-2 bg-slate-50 rounded-lg p-2">
+                    <FaBed className="text-slate-600 text-sm" />
+                    <span className="text-slate-700 text-xs font-medium">Modern Facilities</span>
                   </div>
                 </div>
 
                 {/* Action Button */}
                 <motion.button
-                  className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 group"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  className="w-full bg-slate-600 text-white py-3 rounded-lg font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 group hover:bg-slate-700"
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
                   onClick={(e) => {
                     e.stopPropagation();
                     navigateToHospitalPage(hospital.hospital_id);
                   }}
                 >
                   <span>Explore Hospital</span>
-                  <HiOutlineArrowRight className="text-xl group-hover:translate-x-1 transition-transform duration-300" />
+                  <HiOutlineArrowRight className="text-lg group-hover:translate-x-1 transition-transform duration-300" />
                 </motion.button>
               </div>
             </motion.div>
                       ))}
           </div>
-        </div>
-
-        {/* Bottom CTA */}
-        <div className="text-center mt-12">
-          <p className="text-slate-600 mb-4">Need help choosing the right hospital?</p>
-          <motion.button 
-            className="bg-white text-blue-600 border-2 border-blue-600 px-8 py-3 rounded-xl font-semibold hover:bg-blue-600 hover:text-white transition-all duration-300 shadow-lg"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Contact Our Medical Concierge
-          </motion.button>
         </div>
       </div>
     </div>

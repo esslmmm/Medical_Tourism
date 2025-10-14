@@ -131,13 +131,47 @@ export interface DocEducation {
     doc_language: DocLanguage[];
   }
 
+  export interface TripImage {
+    image_id: number;
+    tour_id: number;
+    image: string;
+  }
+
+  export interface Place {
+    place_id: string;
+    place_name: string;
+    location: string | null;
+    city: string | null;
+  }
+
+  export interface PackagePlace {
+    packplace_id: number;
+    route_id: number | null;
+    place_id: string | null;
+    places: Place | null;
+  }
+
+  export interface Route {
+    route_id: number;
+    route_name: string | null;
+    duration: number | null;
+    description: string | null;
+    total_price: number | null;
+    created_at: Date;
+    package_places: PackagePlace[];
+  }
+
+  export interface TripRouteLink {
+    trip_route_id: number;
+    trip_id: number;
+    route_id: number;
+    sequence_order: number;
+    routes: Route;
+  }
+
   export interface Trip {
     tour_id: number;
-    description: string | null;
-    duration: number | null;
-    name?: string;
-    status?: 'Active' | 'Inactive';
-    image?: string;
-    category?: string;
-    createdAt?: string;
+    city: string | null;
+    Trip_Routes?: TripRouteLink[];
+    trip_images: TripImage[];
   }

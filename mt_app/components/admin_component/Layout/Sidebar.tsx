@@ -28,7 +28,6 @@ const Sidebar: React.FC = () => {
     { name: 'User Management', href: '/admin/user', icon: Users },
     { name: 'Hospital Management', href: '/admin/hospital', icon: Building },
     { name: 'Doctor Management', href: '/admin/doctors', icon: Stethoscope },
-    { name: 'Hotel Management', href: '/admin/hotel', icon: Hotel },
     { name: 'Package Management', href: '/admin/packages', icon: Package },
     { name: 'Place Management', href: '/admin/places', icon: MapPin },
     { name: 'Trip Management', href: '/admin/trips', icon: Route },

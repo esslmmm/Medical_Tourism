@@ -1,21 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import { ArrowLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import SingleImageUpload from '@/components/admin_component/ui/SingleImageUpload';
 import ImageUpload from '@/components/admin_component/ui/ImageUpload';
 import '@/app/admin/styles/globals.css';
+import { useToast, ToastContainer } from '@/components/admin_component/ui/Toast';
 
 const AddPlacePage: React.FC = () => {
   const router = useRouter();
+  const params = useParams();
+  const placesId = params?.id as string;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const { toasts, removeToast, showSuccess, showError } = useToast();
+  const [saving, setSaving] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [placeImages, setPlaceImages] = useState<Array<{ id: string; url: string; name: string; publicId?: string }>>([]);
-  
   const [formData, setFormData] = useState({
     place_name: '',
     contact_info: '',
@@ -37,43 +40,94 @@ const AddPlacePage: React.FC = () => {
     setImage(imageUrl);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+  useEffect(() => {
+    async function fetchPlaces() {
+      try {
+        const response = await fetch(`/api/admin/services/places/${placesId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch places");
+        }
+        const data = await response.json();
+        setFormData({
+          place_name: data.place_name,
+          contact_info: data.contact_info,
+          location: data.location,
+          city: data.city,
+          description: data.description,
+          fee: data.fee,
+        });
+        setImage(data.image || null);
+        
+        // Load existing place_images
+        const existingPlaceImages = (data.place_image || []).map((img: any, index: number) => ({
+          id: `existing-${img.image_id}`,
+          url: img.image,
+          name: `Place Image ${index + 1}`,
+          publicId: img.image && img.image.includes('cloudinary') 
+            ? img.image.split('/').pop()?.split('.')[0] 
+            : undefined
+        }));
+        setPlaceImages(existingPlaceImages);
+      } catch (error) {
+        setError("Error fetching places. Please try again.");
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
 
+    fetchPlaces();
+  }, []);
+
+  const handleSave = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+    
+    setSaving(true);
     try {
-      const response = await fetch('/api/admin/services/places', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          fee: formData.fee ? parseFloat(formData.fee) : null,
-          image: image,
-          place_images: placeImages.map(img => img.url),
-        }),
+      // Validate required fields
+      if (!formData.place_name.trim()) {
+        showError('Missing required field', 'Please enter a place name');
+        setSaving(false);
+        return;
+      }
+
+      const payload: any = {
+        place_name: formData.place_name,
+        contact_info: formData.contact_info,
+        location: formData.location,
+        city: formData.city,
+        description: formData.description,
+        fee: formData.fee ? parseFloat(formData.fee) : 0,
+        image: image,
+        place_images: placeImages.map(img => img.url),
+      };
+
+      const response = await fetch(`/api/admin/services/places/${placesId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create place');
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.error || 'Failed to update place');
       }
 
-      setSuccess(true);
-      setTimeout(() => {
-        router.push('/admin/places');
-      }, 2000);
+      showSuccess('Place updated', 'The place has been saved successfully');
+      setTimeout(() => router.push(`/admin/places/${placesId}`), 1200);
     } catch (error) {
-      console.error('Error creating place:', error);
-      setError(error instanceof Error ? error.message : 'Failed to create place');
+      console.error('Error updating place:', error);
+      showError('Update failed', 'Please check the form and try again');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
   return (
+    <>
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
     <AdminLayout>
       <div className="space-y-6">
         <div className="flex items-center gap-4">
@@ -85,14 +139,14 @@ const AddPlacePage: React.FC = () => {
             Back
           </button>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Add New Place</h1>
-            <p className="text-gray-600">Create a new tourist destination</p>
+            <h1 className="text-3xl font-bold text-gray-900">Edit Place</h1>
+            <p className="text-gray-600">Update {formData.place_name} place</p>
           </div>
         </div>
 
-        {success && (
+        {saving && (
           <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
-            Place created successfully! Redirecting...
+            Place updated successfully! Redirecting...
           </div>
         )}
 
@@ -102,7 +156,7 @@ const AddPlacePage: React.FC = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <form onSubmit={(e) => handleSave(e)} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           {/* Main Image Upload */}
           <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -111,8 +165,8 @@ const AddPlacePage: React.FC = () => {
               <SingleImageUpload
                 image={image}
                 onImageChange={handleImageChange}
-                disabled={loading}
-                placeholder="Click to upload main place image or drag and drop"
+                disabled={saving}
+                placeholder="Click to upload or replace main place image"
               />
             </div>
 
@@ -225,7 +279,7 @@ const AddPlacePage: React.FC = () => {
                 images={placeImages}
                 onImagesChange={setPlaceImages}
                 maxImages={10}
-                disabled={loading}
+                disabled={saving}
               />
             </div>
           </div>
@@ -241,15 +295,16 @@ const AddPlacePage: React.FC = () => {
             </button>
             <button
               type="submit"
-              disabled={loading}
+              disabled={saving}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Creating...' : 'Create Place'}
+              {saving ? 'Updating...' : 'Update Place'}
             </button>
           </div>
         </form>
       </div>
     </AdminLayout>
+    </>
   );
 };
 

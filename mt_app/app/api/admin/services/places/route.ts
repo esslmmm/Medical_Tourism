@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { place_name, contact_info, location, city, description, fee, images } = body;
+    const { place_name, contact_info, location, city, description, fee, image, place_images } = body;
 
     // Validate required fields
     if (!place_name) {
@@ -59,29 +59,17 @@ export async function POST(request: NextRequest) {
         city: city || null,
         description: description || null,
         fee: fee || null,
-        image: images && images.length > 0 ? images[0] : null,
+        image: image || null,
+        place_image: place_images && place_images.length > 0 ? {
+          create: place_images.map((img: string) => ({ image: img }))
+        } : undefined,
       },
-    });
-
-    // Create place images if provided
-    if (images && images.length > 0) {
-      await prisma.place_image.createMany({
-        data: images.map((image: string) => ({
-          place_id: place.place_id,
-          image,
-        })),
-      });
-    }
-
-    // Fetch the created place with images
-    const createdPlace = await prisma.places.findUnique({
-      where: { place_id: place.place_id },
       include: {
         place_image: true,
       },
     });
 
-    return NextResponse.json(createdPlace, { status: 201 });
+    return NextResponse.json(place, { status: 201 });
   } catch (error) {
     console.error('Error creating place:', error);
     return NextResponse.json(

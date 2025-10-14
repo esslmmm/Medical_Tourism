@@ -13,9 +13,10 @@ export async function GET(
     if (!session || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const resolvedParams = await params;
 
     const place = await prisma.places.findUnique({
-      where: { place_id: params.id },
+      where: { place_id: resolvedParams.id },
       include: {
         place_image: true,
       },
@@ -51,7 +52,7 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { place_name, contact_info, location, city, description, fee, images } = body;
+    const { place_name, contact_info, location, city, description, fee, image, place_images } = body;
 
     // Check if place exists
     const existingPlace = await prisma.places.findUnique({
@@ -75,27 +76,29 @@ export async function PUT(
         city: city !== undefined ? city : existingPlace.city,
         description: description !== undefined ? description : existingPlace.description,
         fee: fee !== undefined ? fee : existingPlace.fee,
-        image: images && images.length > 0 ? images[0] : existingPlace.image,
+        image: image !== undefined ? image : existingPlace.image,
       },
     });
 
-    // Update place images if provided
-    if (images && images.length > 0) {
-      // Delete existing images
+    // Update place_images if provided
+    if (place_images !== undefined) {
+      // Delete existing place_images
       await prisma.place_image.deleteMany({
         where: { place_id: params.id },
       });
 
-      // Create new images
-      await prisma.place_image.createMany({
-        data: images.map((image: string) => ({
-          place_id: params.id,
-          image,
-        })),
-      });
+      // Create new place_images
+      if (place_images.length > 0) {
+        await prisma.place_image.createMany({
+          data: place_images.map((img: string) => ({
+            place_id: params.id,
+            image: img,
+          })),
+        });
+      }
     }
 
-    // Fetch the updated place with images
+    // Fetch the updated place with place_images
     const finalPlace = await prisma.places.findUnique({
       where: { place_id: params.id },
       include: {

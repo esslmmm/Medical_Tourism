@@ -4,7 +4,23 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   try {
     const trips = await prisma.trips.findMany({
-      select: { tour_id: true, description: true, duration: true }
+      include: {
+        Trip_Routes: {
+          include: {
+            routes: {
+              select: {
+                route_id: true,
+                route_name: true,
+                duration: true,
+                description: true,
+                total_price: true,
+                created_at: true
+              }
+            }
+          }
+        },
+        trip_images: true
+      }
     });
     return NextResponse.json(trips);
   } catch (error) {
@@ -17,25 +33,40 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { description, duration, total_price, place_ids } = body;
+    const { city, route_ids, images } = body as { 
+      city?: string; 
+      route_ids?: number[]; 
+      images?: Array<{ url: string; publicId?: string }> 
+    };
+
+    if (!city) {
+      return NextResponse.json({ error: 'city is required' }, { status: 400 });
+    }
+
+    const routeIdsArray = Array.isArray(route_ids) ? route_ids.filter((r) => Number.isFinite(r)) : [];
+    const imagesArray = Array.isArray(images) ? images : [];
 
     const created = await prisma.trips.create({
       data: {
-        description: description || null,
-        duration: typeof duration === 'number' ? duration : null,
-        total_price: typeof total_price === 'number' ? total_price : null,
+        city,
+        Trip_Routes: routeIdsArray.length
+          ? {
+              create: routeIdsArray.map((rid, idx) => ({ route_id: rid as number, sequence_order: idx + 1 }))
+            }
+          : undefined,
+        trip_images: imagesArray.length
+          ? {
+              create: imagesArray.map(img => ({ image: img.url }))
+            }
+          : undefined
       },
-    });
-
-    if (Array.isArray(place_ids) && place_ids.length > 0) {
-      const validPlaces = place_ids.filter((id: any) => typeof id === 'string' && id.length > 0);
-      if (validPlaces.length > 0) {
-        await prisma.package_places.createMany({
-          data: validPlaces.map((place_id: string) => ({ tour_id: created.tour_id, place_id })),
-          skipDuplicates: true,
-        });
+      include: {
+        Trip_Routes: {
+          include: { routes: true }
+        },
+        trip_images: true
       }
-    }
+    });
 
     return NextResponse.json(created, { status: 201 });
   } catch (error) {

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import { ArrowLeft, Edit, MapPin, Phone, Mail, DollarSign, Calendar } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import '@/app/admin/styles/globals.css';
 
 interface Place {
@@ -21,8 +21,10 @@ interface Place {
   }>;
 }
 
-const PlaceDetailPage: React.FC<{ params: { id: string } }> = ({ params }) => {
+const PlaceDetailPage: React.FC = () => {
   const router = useRouter();
+  const params = useParams();
+  const placeId = params?.id as string;
   const [place, setPlace] = useState<Place | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +32,7 @@ const PlaceDetailPage: React.FC<{ params: { id: string } }> = ({ params }) => {
   useEffect(() => {
     async function fetchPlace() {
       try {
-        const response = await fetch(`/api/admin/services/places/${params.id}`);
+        const response = await fetch(`/api/admin/services/places/${placeId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch place');
         }
@@ -45,10 +47,10 @@ const PlaceDetailPage: React.FC<{ params: { id: string } }> = ({ params }) => {
     }
 
     fetchPlace();
-  }, [params.id]);
+  }, [placeId]);
 
   const handleEdit = () => {
-    router.push(`/admin/places/edit/${params.id}`);
+    router.push(`/admin/places/edit/${placeId}`);
   };
 
   if (loading) {
@@ -76,7 +78,7 @@ const PlaceDetailPage: React.FC<{ params: { id: string } }> = ({ params }) => {
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => router.back()}
+            onClick={() => router.push('/admin/places')}
             className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />

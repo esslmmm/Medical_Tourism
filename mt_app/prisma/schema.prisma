@@ -118,7 +118,6 @@ model doctors {
   doc_education   doc_education[]
   doc_language    doc_language[]
   hospitals       hospitals?        @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction, map: "doctors_ibfk_1")
-  package_doc     package_doc[]
 
   @@index([hospital_id], map: "hospital_id")
 }
@@ -217,23 +216,11 @@ model package_bookings {
   @@index([guide_booking_id])
 }
 
-model package_doc {
-  doc_id     Int       @id @default(autoincrement())
-  package_id String?
-  doctor_id  String?
-  doctors    doctors?  @relation(fields: [doctor_id], references: [doctor_id], onDelete: NoAction, onUpdate: NoAction)
-  packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@index([package_id])
-  @@index([doctor_id])
-}
 
 model package_image {
-  images     String?   @db.VarChar(255)
   image_id   Int       @id @default(autoincrement())
   package_id String?
-  detail     String
-  title      String
+  image     String?   @db.VarChar(255)
   packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([package_id])
@@ -253,6 +240,8 @@ model package_places {
 model packages {
   package_id           String                 @id @default(uuid())
   package_name         String                 @db.VarChar(255)
+  package_type         packages_package_type
+  tour_id              Int
   hospital_id          String
   image                String                 @db.VarChar(255)
   detail               String                 @db.VarChar(100)
@@ -262,11 +251,11 @@ model packages {
   create_at            DateTime               @default(now()) @db.Timestamp(0)
   description          description[]
   package_bookings     package_bookings[]
-  package_doc          package_doc[]
   package_image        package_image[]
   hospitals            hospitals              @relation(fields: [hospital_id], references: [hospital_id], onDelete: NoAction, onUpdate: NoAction)
-  trips                trips[]
+  trips                trips                 @relation(fields: [tour_id], references: [tour_id], onDelete: NoAction, onUpdate: NoAction)
 
+  @@index([tour_id])
   @@index([hospital_id])
 }
 
@@ -334,7 +323,7 @@ model tourism_bookings {
   created_at       DateTime                 @default(now()) @db.Timestamp(0)
   updated_at       DateTime                 @default(now()) @db.Timestamp(0)
   package_bookings package_bookings[]
-  routes            routes                   @relation(fields: [route_id], references: [route_id], onDelete: NoAction, onUpdate: NoAction)
+  routes           routes                   @relation(fields: [route_id], references: [route_id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([route_id])
 }
@@ -378,13 +367,22 @@ model patient_details {
 
 model trips {
   tour_id          Int                @id @default(autoincrement())
-  route_id         Int
-  package_id       String
-  routes           routes           @relation(fields: [route_id], references: [route_id], onUpdate: Restrict)
+  city             String
+  Trip_Routes      Trip_Routes[]
   packages         packages[]
   trip_images      trip_images[]
+}
 
-  @@index([package_id])
+model Trip_Routes {
+  trip_route_id    Int @id @default(autoincrement())
+  trip_id          Int
+  route_id         Int
+  sequence_order   Int
+
+  routes           routes           @relation(fields: [route_id], references: [route_id], onUpdate: Restrict)
+  trips            trips            @relation(fields: [trip_id], references: [tour_id], onUpdate: Restrict)
+
+  @@index([trip_id])
   @@index([route_id])
 }
 
@@ -399,12 +397,13 @@ model trip_images {
 
 model routes {
   route_id      Int @id @default(autoincrement())
+  route_name    String?
   duration         Int?
   description      String?
   total_price      Float?
   created_at       DateTime           @default(now()) @db.Timestamp(0)
   package_places   package_places[]
-  trips            trips[]
+  Trip_Routes            Trip_Routes[]
   tourism_bookings tourism_bookings[]
 }
 

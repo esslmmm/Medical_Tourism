@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
-import { ArrowLeft, Edit, MapPin, Clock } from 'lucide-react';
+import { ArrowLeft, Edit, MapPin, Clock, ImageIcon } from 'lucide-react';
 import '@/app/admin/styles/globals.css';
+import ImageModal from '@/components/admin_component/ui/ImageModal';
 
 const PackageDetailPage: React.FC = () => {
   const router = useRouter();
@@ -11,14 +12,14 @@ const PackageDetailPage: React.FC = () => {
   const packageId = params?.id as string;
   const [pkg, setPkg] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchPackages = async () => {
       try {
         setLoading(true);
-        console.log('Fetching package with ID:', packageId);
         const response = await fetch(`/api/admin/services/packages/${packageId}`);
-        console.log('Response status:', response.status);
         
         if (response.ok) {
           const data = await response.json();
@@ -38,6 +39,11 @@ const PackageDetailPage: React.FC = () => {
       fetchPackages();
     }
   }, [packageId]);
+
+  const handleImageClick = (index: number) => {
+    setCurrentImageIndex(index);
+    setIsImageModalOpen(true);
+  };
 
   if (loading) {
     return (
@@ -119,66 +125,35 @@ const PackageDetailPage: React.FC = () => {
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h2 className="text-xl font-semibold mb-4 text-gray-900">Images</h2>
               {pkg.package_image && pkg.package_image.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {pkg.package_image.map((img: any) => (
-                    <div key={img.image_id} className="space-y-2">
-                      {img.images && (
-                        <img src={img.images} alt={img.title} className="w-full h-32 object-cover rounded-md border" />
-                      )}
-                      <div className="text-sm font-medium text-gray-900">{img.title}</div>
-                      <div className="text-xs text-gray-700">{img.detail}</div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {pkg.package_image.map((image: any, index: number) => (
+                    <div 
+                      key={image.image_id} 
+                      className="relative group cursor-pointer"
+                      onClick={() => handleImageClick(index)}
+                    >
+                      <img
+                        src={image.image}
+                        alt={`Trip image ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg border border-gray-200 hover:shadow-lg transition-shadow"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-opacity-20 transition-all rounded-lg flex items-center justify-center">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button className="bg-white bg-opacity-90 text-gray-800 px-3 py-1 rounded-full text-xs font-medium">
+                            View Full
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-500">No images available.</p>
+                <div className="text-center py-8 text-gray-500">
+                  <ImageIcon className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                  <p>No images available.</p>
+                </div>
               )}
             </div>
-
-            {/* Associations */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <h2 className="text-xl font-semibold mb-4 text-gray-900">Associations</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="font-semibold text-gray-900 mb-2">Doctors</div>
-                  {pkg.package_doc && pkg.package_doc.length > 0 ? (
-                    <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
-                      {pkg.package_doc.map((pd: any) => (
-                        <li key={pd.doc_id}>{pd.doctors?.name || 'Unnamed'}{pd.doctors?.specialization ? ` - ${pd.doctors.specialization}` : ''}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <div className="text-gray-500 text-sm">No linked doctors.</div>
-                  )}
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="font-semibold text-gray-900 mb-2">Hotels</div>
-                  {pkg.package_hotels && pkg.package_hotels.length > 0 ? (
-                    <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
-                      {pkg.package_hotels.map((ph: any) => (
-                        <li key={ph.packhotel_id}>{ph.hotels?.name || 'Unnamed'}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <div className="text-gray-500 text-sm">No linked hotels.</div>
-                  )}
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="font-semibold text-gray-900 mb-2">Guides</div>
-                  {pkg.package_guides && pkg.package_guides.length > 0 ? (
-                    <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
-                      {pkg.package_guides.map((pg: any) => (
-                        <li key={pg.pack_guide_id}>{pg.guides?.name || 'Unnamed'}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <div className="text-gray-500 text-sm">No linked guides.</div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-
           </div>
 
           {/* Sidebar */}
@@ -202,18 +177,6 @@ const PackageDetailPage: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-gray-800">Created</span>
                   <span className="font-medium text-gray-900">{new Date(pkg.create_at).toLocaleDateString()}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-800">Doctors</span>
-                  <span className="font-medium text-gray-900">{pkg.package_doc?.length || 0}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-800">Hotels</span>
-                  <span className="font-medium text-gray-900">{pkg.package_hotels?.length || 0}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-800">Guides</span>
-                  <span className="font-medium text-gray-900">{pkg.package_guides?.length || 0}</span>
                 </div>
               </div>
             </div>
@@ -247,6 +210,16 @@ const PackageDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Image Modal */}
+      <ImageModal
+        isOpen={isImageModalOpen}
+        onClose={() => setIsImageModalOpen(false)}
+        images={pkg.package_image || []}
+        currentIndex={currentImageIndex}
+        onIndexChange={setCurrentImageIndex}
+      />
+      
     </AdminLayout>
   );
 };

@@ -142,6 +142,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import { Users } from "lucide-react";
 import { Poppins } from "next/font/google";
 import DoctorCardSkeleton from "../skeleton-screen/HomePage/DoctorCardSkeleton";
 
@@ -209,11 +210,11 @@ const DoctorList: React.FC = () => {
     if (!specialization) return 'bg-slate-100 text-slate-600';
     
     const colors = [
-      'bg-blue-100 text-blue-700',
-      'bg-cyan-100 text-cyan-700',
-      'bg-indigo-100 text-indigo-700',
-      'bg-teal-100 text-teal-700',
-      'bg-sky-100 text-sky-700',
+      'bg-slate-100 text-slate-700',
+      'bg-slate-200 text-slate-800',
+      'bg-slate-100 text-slate-700',
+      'bg-slate-200 text-slate-800',
+      'bg-slate-100 text-slate-700',
     ];
     
     const hash = specialization.split('').reduce((a, b) => {
@@ -230,29 +231,22 @@ const DoctorList: React.FC = () => {
   if (error) return <p className="text-red-500 text-center">{error}</p>;
   
   return (
-    <div id="doctors-section" className="container mx-auto p-8 relative bg-slate-50">
+    <div id="doctors-section" className="container mx-auto p-8 relative bg-white">
       <div className="mb-8 text-center">
-        {/* New Stylized Header Design */}
-        <div className="relative inline-block">
-          {/* Background decoration */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 rounded-lg blur opacity-25 animate-pulse"></div>
-          
-          {/* Main title with gradient and shadow effects */}
-          <h2 className="relative text-4xl lg:text-5xl font-black mb-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent drop-shadow-2xl">
-            Expert Medical Professionals
-          </h2>
-          
-          {/* Decorative line */}
-          <div className="flex justify-center items-center space-x-4 mb-4">
-            <div className="w-12 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-full"></div>
-            <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full animate-pulse"></div>
-            <div className="w-12 h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent rounded-full"></div>
+        {/* Professional Header Design */}
+        <div className="flex items-center justify-center mb-6">
+          <div className="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center mr-4">
+            <Users className="w-8 h-8 text-slate-600" />
+          </div>
+          <div>
+            <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-2">
+              Expert Medical Professionals
+            </h2>
+            <p className="text-slate-600 text-lg">
+              Internationally trained specialists committed to world-class healthcare
+            </p>
           </div>
         </div>
-        
-        <p className="text-slate-600 max-w-2xl mx-auto text-lg leading-relaxed">
-          Meet our team of internationally trained specialists committed to providing world-class healthcare
-        </p>
       </div>
 
       {canScrollLeft && (
@@ -273,30 +267,30 @@ const DoctorList: React.FC = () => {
           <motion.button
             key={doctor.doctor_id}
             onClick={() => router.push(`/user/Doctorprofile/${doctor.doctor_id}`)}
-            className="flex-shrink-0 w-[380px] bg-white shadow-xl rounded-2xl p-8 text-center cursor-pointer focus:outline-none border border-slate-200 group hover:shadow-2xl transition-all duration-300"
-            whileHover={{ y: -8, transition: { duration: 0.3 } }}
+            className="flex-shrink-0 w-[380px] bg-white shadow-lg rounded-xl p-8 text-center cursor-pointer focus:outline-none border border-slate-200 group hover:shadow-xl transition-all duration-300"
+            whileHover={{ y: -4, transition: { duration: 0.3 } }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className="relative w-36 h-36 mx-auto mb-6">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full"></div>
+            <div className="relative w-32 h-32 mx-auto mb-6">
+              <div className="absolute inset-0 bg-slate-100 rounded-full"></div>
               <Image
                 src={doctor.image}
                 alt={doctor.name}
-                width={144}
-                height={144}
+                width={128}
+                height={128}
                 className="relative rounded-full object-cover border-4 border-white shadow-lg group-hover:scale-105 transition-transform duration-300"
               />
-              <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center">
-                <div className="w-2 h-2 bg-white rounded-full"></div>
+              <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-slate-500 rounded-full border-2 border-white flex items-center justify-center">
+                <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h3 className={`${poppins.className} text-slate-800 font-bold text-xl group-hover:text-blue-700 transition-colors duration-300`}>
+              <h3 className={`${poppins.className} text-slate-800 font-bold text-xl group-hover:text-slate-600 transition-colors duration-300`}>
                 Dr. {doctor.name}
               </h3>
               
-              <div className="w-16 h-1 bg-gradient-to-r from-blue-600 to-cyan-500 mx-auto rounded-full"></div>
+              <div className="w-16 h-0.5 bg-slate-300 mx-auto rounded-full"></div>
               
               <div className="flex justify-center">
                 <span className={`px-4 py-2 rounded-full text-sm font-semibold ${getSpecializationColor(doctor.specialization)}`}>
@@ -305,10 +299,10 @@ const DoctorList: React.FC = () => {
               </div>
 
               <div className="pt-4">
-                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-4 group-hover:from-blue-100 group-hover:to-cyan-100 transition-all duration-300">
+                <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 group-hover:bg-slate-100 transition-all duration-300">
                   <div className="flex items-center justify-center space-x-2">
-                    <span className="text-blue-700 font-semibold text-sm">View Profile</span>
-                    <ChevronRightIcon className="w-4 h-4 text-blue-600 group-hover:translate-x-1 transition-transform duration-300" />
+                    <span className="text-slate-700 font-semibold text-sm">View Profile</span>
+                    <ChevronRightIcon className="w-4 h-4 text-slate-600 group-hover:translate-x-1 transition-transform duration-300" />
                   </div>
                 </div>
               </div>
@@ -316,11 +310,11 @@ const DoctorList: React.FC = () => {
 
             <div className="flex justify-center space-x-4 mt-6 pt-4 border-t border-slate-100">
               <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-slate-500 rounded-full"></div>
                 <span className="text-xs text-slate-500">Certified</span>
               </div>
               <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-slate-500 rounded-full"></div>
                 <span className="text-xs text-slate-500">Available</span>
               </div>
             </div>
