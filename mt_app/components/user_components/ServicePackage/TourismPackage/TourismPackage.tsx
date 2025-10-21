@@ -7,38 +7,150 @@ import {
   ChevronDownIcon, 
   ChevronUpIcon,
   ChevronLeftIcon,
-  ChevronRightIcon,
-  PhoneIcon,
-  PaperClipIcon,
-  EnvelopeIcon,
-  ChatBubbleBottomCenterTextIcon,
-  MapIcon
+  ChevronRightIcon, 
+  UserGroupIcon, 
+  MapIcon,
+  GiftIcon 
 } from '@heroicons/react/24/solid';
-import TripCard from '@/components/user_components/ServicePackage/TourismPackage/TripCard';
+import { Car, Plane, X } from 'lucide-react';
 import MakeBooking from '@/components/user_components/ServicePackage/TourismPackage/MakeBooking';
+import TripList from './TripList';
 
-const TourismPackage = () => {
-  const [selectedDate, setSelectedDate] = useState('5 October 2025');
-  const [selectedTime, setSelectedTime] = useState('7:00');
-  const [adultCount, setAdultCount] = useState(0);
-  const [childCount, setChildCount] = useState(0);
-  const [activeTab, setActiveTab] = useState('Description');
-
-  const services = [
-    'Comprehensive dental examination',
-    'Comprehensive dental examination',
-    'Follow-up consultations',
-    'Dental implants (if required)',
-    'Cosmetic dental procedures',
-    'Professional teeth cleaning'
-  ];
+ const tourism_package = {
+  name: 'Phuket Trip',
+  images: [
+    {url:'/img/Homepage/Test.jpg', alt:'Medical facility'},
+    {url:'/img/Homepage/Test.jpg', alt:'Medical facility'},
+    {url:'/img/Homepage/Test.jpg', alt:'Medical facility'},
+    {url:'/img/Homepage/Test4.jpg', alt:'Medical facility'},
+    {url:'/img/Homepage/Test.jpg', alt:'Medical facility'},
+    {url:'/img/Homepage/Test.jpg', alt:'Medical facility'},
+  ],
+  description: 'Ran-Tong is devoted to rescuing abused elephants from all over Thailand and surrounding countries. Every elephant rescued is brought to the sanctuary in Chiang Mai and cared for with great passion and enthusiasm. Our mission is not only geared towards the protection and prevention of abused Elephants in Thailand but also to educate the public about their long history within Thai culture. Founded in 2009, Ran-Tong has rescued over 40 elephants to date with the help of public generosity, support, and private donation they can continue their ongoing vital work. Our priority is animal welfare. At Ran-Tong Save & Rescue Elephant Centre, you will completely get to learn a lot about elephants and have a memorable experience with them.',
+  trips : [
+    {
+      description: "Experience the best of Phuket with our 3-day tour package. Explore the stunning Phi Phi Islands, enjoy a city tour, and visit the iconic James Bond Island. Perfect for a summer holiday filled with relaxation and adventure.",
+      image:["https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80","https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80","https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"],
+      title: "Phuket Go Around",
+      duration: "1 days",
+      attractions: [{
+        name:"Phi Phi Islands",
+        description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
+        highlight: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        include:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        important_info:{
+          not_allowed:["People with back problems","Pregnant","Heart complaints or other serious medical conditions","Epilepsy","Motion sickness"],
+          recommend_to_bring:["Swimwear and towel","Sunscreen and hat","Camera to capture the memories","Cash for personal expenses and tips"],
+          know_before_you_go:["This tour involves a moderate amount of walking, including some uneven surfaces and stairs.","Snorkeling is subject to weather and sea conditions. The operator reserves the right to modify or cancel snorkeling activities for safety reasons.","Please inform us of any dietary restrictions or allergies in advance so we can accommodate your needs.","Children must be accompanied by an adult at all times during the tour."]
+        },
+        location:{
+          text:"Royal Phuket Marina, 68, Thep Krasattri Rd, Tambon Ko Kaeo, 83000",
+          url:"https://www.google.com/maps/@9.5488479,99.9470193,12.86z?hl=en-US&entry=ttu&g_ep=EgoyMDI1MTAwOC4wIKXMDSoASAFQAw%3D%3D"
+        }
+      }],
+      tags: ["Summer", "Holiday", "Relax"],
+      price: 2000,
+      priceColor: "text-red-500",
+    },
+    {
+      description: "Experience the best of Phuket with our 3-day tour package. Explore the stunning Phi Phi Islands, enjoy a city tour, and visit the iconic James Bond Island. Perfect for a summer holiday filled with relaxation and adventure.",
+      image:["https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80","https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80","https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",],
+      title: "Summer Fun",
+      duration: "2 days",
+      attractions: [{
+        name:"Phi Phi Islands",
+        description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
+        highlight: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        include:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        important_info:{
+          not_allowed:["People with back problems","Pregnant","Heart complaints or other serious medical conditions","Epilepsy","Motion sickness"],
+          recommend_to_bring:["Swimwear and towel","Sunscreen and hat","Camera to capture the memories","Cash for personal expenses and tips"],
+          know_before_you_go:["This tour involves a moderate amount of walking, including some uneven surfaces and stairs.","Snorkeling is subject to weather and sea conditions. The operator reserves the right to modify or cancel snorkeling activities for safety reasons.","Please inform us of any dietary restrictions or allergies in advance so we can accommodate your needs.","Children must be accompanied by an adult at all times during the tour."]
+        },
+        location:{
+          text:"Royal Phuket Marina, 68, Thep Krasattri Rd, Tambon Ko Kaeo, 83000",
+          url:"https://www.google.com/maps/@9.5488479,99.9470193,12.86z?hl=en-US&entry=ttu&g_ep=EgoyMDI1MTAwOC4wIKXMDSoASAFQAw%3D%3D"
+        }
+      }, {
+        name:"Phi Phi Islands",
+        description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
+        highlight: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        include:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        important_info:{
+          not_allowed:["People with back problems","Pregnant","Heart complaints or other serious medical conditions","Epilepsy","Motion sickness"],
+          recommend_to_bring:["Swimwear and towel","Sunscreen and hat","Camera to capture the memories","Cash for personal expenses and tips"],
+          know_before_you_go:["This tour involves a moderate amount of walking, including some uneven surfaces and stairs.","Snorkeling is subject to weather and sea conditions. The operator reserves the right to modify or cancel snorkeling activities for safety reasons.","Please inform us of any dietary restrictions or allergies in advance so we can accommodate your needs.","Children must be accompanied by an adult at all times during the tour."]
+        },
+        location:{
+          text:"Royal Phuket Marina, 68, Thep Krasattri Rd, Tambon Ko Kaeo, 83000",
+          url:"https://www.google.com/maps/@9.5488479,99.9470193,12.86z?hl=en-US&entry=ttu&g_ep=EgoyMDI1MTAwOC4wIKXMDSoASAFQAw%3D%3D"
+        }
+      }],
+      tags: ["Holiday", "Relax"],
+      price: 1000,
+      priceColor: "text-red-500",
+    },
+    {
+      description: "Experience the best of Phuket with our 3-day tour package. Explore the stunning Phi Phi Islands, enjoy a city tour, and visit the iconic James Bond Island. Perfect for a summer holiday filled with relaxation and adventure.",
+      image:["https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80","https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80","https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",],
+      title: "Phuket City",
+      duration: "3 day",
+      attractions: [{
+        name:"Phi Phi Islands",
+        description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
+        highlight: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        include:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        important_info:{
+          not_allowed:["People with back problems","Pregnant","Heart complaints or other serious medical conditions","Epilepsy","Motion sickness"],
+          recommend_to_bring:["Swimwear and towel","Sunscreen and hat","Camera to capture the memories","Cash for personal expenses and tips"],
+          know_before_you_go:["This tour involves a moderate amount of walking, including some uneven surfaces and stairs.","Snorkeling is subject to weather and sea conditions. The operator reserves the right to modify or cancel snorkeling activities for safety reasons.","Please inform us of any dietary restrictions or allergies in advance so we can accommodate your needs.","Children must be accompanied by an adult at all times during the tour."]
+        },
+        location:{
+          text:"Royal Phuket Marina, 68, Thep Krasattri Rd, Tambon Ko Kaeo, 83000",
+          url:"https://www.google.com/maps/@9.5488479,99.9470193,12.86z?hl=en-US&entry=ttu&g_ep=EgoyMDI1MTAwOC4wIKXMDSoASAFQAw%3D%3D"
+        }
+      }, {
+        name:"Phi Phi Islands",
+        description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
+        highlight: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        include:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        important_info:{
+          not_allowed:["People with back problems","Pregnant","Heart complaints or other serious medical conditions","Epilepsy","Motion sickness"],
+          recommend_to_bring:["Swimwear and towel","Sunscreen and hat","Camera to capture the memories","Cash for personal expenses and tips"],
+          know_before_you_go:["This tour involves a moderate amount of walking, including some uneven surfaces and stairs.","Snorkeling is subject to weather and sea conditions. The operator reserves the right to modify or cancel snorkeling activities for safety reasons.","Please inform us of any dietary restrictions or allergies in advance so we can accommodate your needs.","Children must be accompanied by an adult at all times during the tour."]
+        },
+        location:{
+          text:"Royal Phuket Marina, 68, Thep Krasattri Rd, Tambon Ko Kaeo, 83000",
+          url:"https://www.google.com/maps/@9.5488479,99.9470193,12.86z?hl=en-US&entry=ttu&g_ep=EgoyMDI1MTAwOC4wIKXMDSoASAFQAw%3D%3D"
+        }
+      }, {
+        name:"Phi Phi Islands",
+        description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
+        highlight: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        include:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        important_info:{
+          not_allowed:["People with back problems","Pregnant","Heart complaints or other serious medical conditions","Epilepsy","Motion sickness"],
+          recommend_to_bring:["Swimwear and towel","Sunscreen and hat","Camera to capture the memories","Cash for personal expenses and tips"],
+          know_before_you_go:["This tour involves a moderate amount of walking, including some uneven surfaces and stairs.","Snorkeling is subject to weather and sea conditions. The operator reserves the right to modify or cancel snorkeling activities for safety reasons.","Please inform us of any dietary restrictions or allergies in advance so we can accommodate your needs.","Children must be accompanied by an adult at all times during the tour."]
+        },
+        location:{
+          text:"Royal Phuket Marina, 68, Thep Krasattri Rd, Tambon Ko Kaeo, 83000",
+          url:"https://www.google.com/maps/@9.5488479,99.9470193,12.86z?hl=en-US&entry=ttu&g_ep=EgoyMDI1MTAwOC4wIKXMDSoASAFQAw%3D%3D"
+        }
+      }],
+      tags: ["Holiday", "Relax"],
+      price: 500,
+      priceColor: "text-red-500",
+    },
+  ]
+};
 
   const facilities = [
-    { icon: MapIcon, title: 'Hospital\npick-up & drop-off' },
-    { icon: EnvelopeIcon, title: 'Invitation Letter' },
-    { icon: ChatBubbleBottomCenterTextIcon, title: 'Coordinator' },
-    { icon: PhoneIcon, title: 'Post-treatment\nfollow-up' },
-    { icon: PaperClipIcon, title: 'Diagnostic\nTests & Lab Reports' }
+    { icon: Plane, title: 'Airport\npick up & drop-off' },
+    { icon: MapIcon, title: 'Guided Tour' },
+    { icon: Car, title: 'Car Service' },
+    { icon: UserGroupIcon, title: 'Private Trip' },
+    { icon: GiftIcon, title: 'Souvenirs' }
   ];
 
   const reviews = [
@@ -101,10 +213,20 @@ const TourismPackage = () => {
     }
   ];
 
-  const timeSlots = ['7:00', '8:00', '9:00', '10:00'];
-  const dates = ['Fri\nOct', 'Fri\nOct', 'Fri\nOct', 'Fri\nOct'];
+const TourismPackage = () => {
+  
+  const [activeTab, setActiveTab] = useState('Description');
+    const [showAll, setShowAll] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(
+      tourism_package.images.length > 0 ? tourism_package.images[0] : null
+    );
 
   const tabs = ['Description', 'Service', 'Facilities', 'Available Language', 'Hospital', 'Frequently'];
+
+  const previewImages = tourism_package.images.slice(0, 3);
+  const remainingImages = tourism_package.images.slice(3);
+
+  
 
   return (
 
@@ -113,50 +235,104 @@ const TourismPackage = () => {
 
 
            {/* Header */}
-              <h1 className="text-4xl font-bold text-black mt-5">Phuket Trip</h1>
+              <h1 className="text-4xl font-bold text-black mt-5">{tourism_package.name}</h1>
               
               
               {/* Images */}
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-5">
-                {/* Left wide image */}
-                <div className="lg:col-span-2 relative">
-                  <Image
-                    src="/img/Homepage/Test.jpg"
-                    alt="Medical facility"
-                    width={800}
-                    height={400}
-                    className="w-full h-full object-cover rounded-l-2xl"
-                  />
-                  <button className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded text-sm font-bold">
-                    See all photos
-                  </button>
-                </div>
+                    <div className="mt-5">
+                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 relative">
+                        <div className="lg:col-span-2 relative">
+                          <Image
+                            src={previewImages[0].url}
+                            alt={previewImages[0].alt}
+                            width={800}
+                            height={400}
+                            className="w-full h-full object-cover rounded-l-2xl"
+                          />
+                        </div>
               
-                {/* Right stacked images */}
-                <div className="flex flex-col gap-4">
-                  <Image
-                    src="/img/Homepage/Test.jpg"
-                    alt="Doctor consultation"
-                    width={400}
-                    height={200}
-                    className="w-full h-full object-cover rounded-tr-2xl"
-                  />
-                  <Image
-                    src="/img/Homepage/Test.jpg"
-                    alt="Medical equipment"
-                    width={400}
-                    height={200}
-                    className="w-full h-full object-cover rounded-br-2xl"
-                  />
-                </div>
+                        <div className="flex flex-col gap-4 relative">
+                          {previewImages.slice(1, 3).map((img, i) => (
+                            <div key={i} className="relative">
+                              <Image
+                                src={img.url}
+                                alt={img.alt}
+                                width={400}
+                                height={200}
+                                className={`w-full h-full object-cover ${
+                                  i === 0 ? "rounded-tr-2xl" : "rounded-br-2xl"
+                                }`}
+                              />
+                              {i === 1 && remainingImages.length > 0 && (
+                                <button
+                                  onClick={() => setShowAll(true)}
+                                  className="absolute bottom-4 right-4 bg-white bg-opacity-50 text-teal-500 px-3 py-1 rounded border-teal-500 border text-sm font-bold hover:bg-opacity-70 hover:text-white hover:bg-teal-500 transition"
+                                >
+                                  See all photos
+                                </button>
+                              )}
                             </div>
+                          ))}
+                        </div>
+                      </div>
+              
+                      {/* Modal */}
+                      {showAll && (
+                        <div className="fixed inset-0 backdrop-blur-xs bg-opacity-70 flex items-center justify-center z-50">
+                          <div className="bg-white rounded-2xl p-6 max-w-5xl w-full relative overflow-y-auto max-h-[90vh] border border-gray-300">
+                            <button
+                              onClick={() => setShowAll(false)}
+                              className="absolute top-3 right-3 flex items-center justify-center text-gray-500 hover:text-gray-700"
+                            >
+                              <X className=" w-8 h-8 " />
+                            </button>
+              
+                            <h2 className="text-xl font-semibold mb-4 text-black">All Photos</h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            {selectedImage && (
+                              <div className="mb-4 w-full flex justify-center">
+                                <Image
+                                  src={selectedImage.url}
+                                  alt={selectedImage.alt}
+                                  width={600}
+                                  height={400}
+                                  className="w-full max-w-4xl h-auto object-cover rounded-lg"
+                                />
+                              </div>
+                            )}
+              
+                            <div className="flex gap-4 overflow-x-auto py-2">
+                              {tourism_package.images.map((img, i) => (
+                                <button
+                                  key={i}
+                                  onClick={() => setSelectedImage(img)}
+                                  className={`flex-shrink-0 border-2 rounded-lg overflow-hidden ${
+                                    selectedImage!.url === img.url
+                                      ? "border-teal-500"
+                                      : "border-transparent"
+                                  }`}
+                                >
+                                  <Image
+                                    src={img.url}
+                                    alt={img.alt}
+                                    width={150}
+                                    height={100}
+                                    className="w-[150px] h-auto object-cover"
+                                  />
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8 ">
           {/* Main Content */}
 
           <div className="lg:col-span-2 space-y-8">
             {/* Navigation Tabs */}
-            <div className="border-b">
+            <div className="border-b sticky top-10  bg-white">
               <div className="flex gap-8 overflow-x-auto">
                 {tabs.map((tab) => (
                   <button
@@ -179,19 +355,13 @@ const TourismPackage = () => {
               <div>
                 <h2 className="text-2xl font-bold mb-4 text-black">Description</h2>
                 <p className="text-gray-700 leading-relaxed">
-                  Ran-Tong is devoted to rescuing abused elephants from all over Thailand and surrounding countries. 
-                  Every elephant rescued is brought to the sanctuary in Chiang Mai and cared for with great passion and enthusiasm. 
-                  Our mission is not only geared towards the protection and prevention of abused Elephants in Thailand but also 
-                  to educate the public about their long history within Thai culture. Founded in 2009, Ran-Tong has rescued over 
-                  40 elephants to date with the help of public generosity, support, and private donation they can continue their 
-                  ongoing vital work. Our priority is animal welfare. At Ran-Tong Save & Rescue Elephant Centre, you will completely 
-                  get to learn a lot about elephants and have a memorable experience with them.
+                  {tourism_package.description}
                 </p>
               </div>
             )}
 
-            {/* TripCard */}
-            <TripCard/>
+
+            <TripList/>
             
 
              {/* Facilities */}
@@ -376,7 +546,11 @@ const TourismPackage = () => {
      </div>
 
           {/* Booking Sidebar */}
+          <div className='lg:col-span-1'>
+            <div className='sticky top-10'>
               <MakeBooking />
+            </div>
+          </div>
         </div>
       </div>
   );

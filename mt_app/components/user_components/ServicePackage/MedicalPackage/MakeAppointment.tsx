@@ -118,7 +118,7 @@ const MakeAppointment: React.FC<MakeAppointmentProps> = ({ onNextStep }) => {
 
       {/* Date Selection */}
       <div className="max-w-md mx-auto bg-white rounded-3xl shadow-lg p-6 space-y-6 border-2 border-gray-200">
-        <div className="flex items-start justify-between mb-4">
+        <div className="flex items-start justify-between">
           <div>
             <p className="text-lg font-semibold text-gray-900">Select Date</p>
             <button onClick={() => setShowCalendar(true)} className="text-xs text-teal-500 font-bold hover:text-teal-600 transition-colors">
@@ -196,7 +196,7 @@ const MakeAppointment: React.FC<MakeAppointmentProps> = ({ onNextStep }) => {
 
       {/* Time Selection */}
       <div className='max-w-md mx-auto bg-white rounded-3xl shadow-lg p-6 space-y-6 border-2 border-gray-200'>
-        <div className="flex items-start justify-between mb-4">
+        <div className="flex items-start justify-between ">
           <div>
             <p className="text-lg font-semibold text-gray-900">Select Time</p>
             <button onClick={() => setShowTimeModal(true)} className="text-xs text-teal-500 font-bold hover:text-teal-600 transition-colors">Show more time slots</button>
