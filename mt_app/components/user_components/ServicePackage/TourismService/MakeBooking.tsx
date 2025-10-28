@@ -23,7 +23,7 @@ export default function BookingCard() {
   const [showOtherLanguageModal, setShowOtherLanguageModal] =
     useState<boolean>(false);
   const [adults, setAdults] = useState<number>(1);
-  const [children, setChildren] = useState<number>(1);
+  const [children, setChildren] = useState<number>(0);
   
 
   // Collapse states
@@ -410,7 +410,7 @@ export default function BookingCard() {
                 <div className="font-semibold text-gray-900">
                   Adult (ages 16 - 80)
                 </div>
-                <div className="text-sm text-gray-500">฿ 1,000 per person</div>
+                <div className="text-sm text-gray-500">฿ {tourism_service.trips[0].adult_price} per person</div>
               </div>
               <div className="flex items-center bg-white rounded-full border border-gray-200">
                 <button
@@ -436,7 +436,7 @@ export default function BookingCard() {
                 <div className="font-semibold text-gray-900">
                   Child (ages 4 - 15)
                 </div>
-                <div className="text-sm text-gray-500">฿ 500 per person</div>
+                <div className="text-sm text-gray-500">฿ {tourism_service.trips[0].child_price} per person</div>
               </div>
               <div className="flex items-center bg-white rounded-full border border-gray-200">
                 <button
@@ -476,23 +476,37 @@ export default function BookingCard() {
           <>
             <hr className="border-t border-gray-300 my-6" />
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="font-semibold text-gray-900">
-                  Adult (ages 16 - 80)
-                </div>
-                <div className="text-gray-900 font-medium">
-                  ฿ 1,000 × {adults}
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
+              {adults > 0 ? (
+                  <div className="flex items-center justify-between">
                 <div className="font-semibold text-gray-900">
                   Child (ages 4 - 15)
                 </div>
-                <div className="text-gray-900 font-medium">
-                  ฿ 500 × {children}
-                </div>
+                  <div className="text-gray-900 font-medium">
+                    ฿ {tourism_service.trips[0].adult_price} × {adults}
+                  </div>
               </div>
+                ) : (
+                  <div>
+
+              </div>
+                )}
+
+
+                {children > 0 ? (
+                  <div className="flex items-center justify-between">
+                <div className="font-semibold text-gray-900">
+                  Child (ages 4 - 15)
+                </div>
+                  <div className="text-gray-900 font-medium">
+                    ฿ {tourism_service.trips[0].child_price} × {children}
+                  </div>
+              </div>
+                ) : (
+                  <div>
+
+              </div>
+                )}
+
 
               <div className="flex items-center justify-between">
                 <div className="font-semibold text-gray-900">Guide</div>
