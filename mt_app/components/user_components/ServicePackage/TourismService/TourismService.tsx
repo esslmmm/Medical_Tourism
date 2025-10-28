@@ -241,7 +241,6 @@ const tourism_service = {
   ];
 
 const TourismService = () => {
-  const [selectedTrip, setSelectedTrip] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('Description');
     const [showAll, setShowAll] = useState(false);
     const [selectedImage, setSelectedImage] = useState(

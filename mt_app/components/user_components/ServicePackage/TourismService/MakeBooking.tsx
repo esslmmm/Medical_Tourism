@@ -9,10 +9,6 @@ import {
   X,
 } from "lucide-react";
 
-interface MakeBookingProps {
-  selectedTrip: any;
-}
-
 export default function BookingCard() {
   const [selectedDate, setSelectedDate] = useState<number>(5);
   const [currentMonth, setCurrentMonth] = useState<number>(9); // October

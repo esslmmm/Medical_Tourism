@@ -1,7 +1,7 @@
 // new old
 
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, MapPin } from 'lucide-react';
 import Image from 'next/image';
 
@@ -202,14 +202,16 @@ const tourism_service = {
   ]
 };
 // ✅ Trip Detail Modal Component
-const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, onClose }) => {
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, onClose }) => {  
+      if (!isOpen || !trip) return null;
   
-      const [selectedImage, setSelectedImage] = useState(
-        tourism_service.images.length > 0 ? tourism_service.images[0] : null
-      );
+  // Flatten all images from all attractions
+  const allAttractionImages = trip.attractions.flatMap(attraction =>
+    attraction.images.map(imgUrl => ({ url: imgUrl, alt: attraction.name }))
+  );
 
-  if (!isOpen || !trip) return null;
+  const [selectedImage, setSelectedImage] = useState(allAttractionImages[0] || null);
+    const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
 
   const toggleSection = (attractionIndex: number, section: string) => {
     const key = `${attractionIndex}-${section}`;
@@ -218,6 +220,7 @@ const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, onClose
       [key]: !prev[key],
     }));
   };
+
 
   return (
     <div className="fixed inset-0 backdrop-blur-xs bg-opacity-50 z-50 flex items-center justify-center p-4">
@@ -233,42 +236,40 @@ const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, onClose
           </button>
         </div>
 
-        {/* Image Gallery */}
+        {/* Overview Trip Image Gallery */}
         <div>
-                                    {selectedImage && (
-                                      <div className="mb-4 w-full flex justify-center">
-                                        <Image
-                                          src={selectedImage.url}
-                                          alt={selectedImage.alt}
-                                          width={600}
-                                          height={400}
-                                          className="w-full max-w-4xl h-auto object-cover rounded-lg"
-                                        />
-                                      </div>
-                                    )}
-                      
-                                    <div className="flex gap-4 overflow-x-auto py-2">
-                                      {tourism_service.images.map((img, i) => (
-                                        <button
-                                          key={i}
-                                          onClick={() => setSelectedImage(img)}
-                                          className={`flex-shrink-0 border-2 rounded-lg overflow-hidden ${
-                                            selectedImage!.url === img.url
-                                              ? "border-teal-500"
-                                              : "border-transparent"
-                                          }`}
-                                        >
-                                          <Image
-                                            src={img.url}
-                                            alt={img.alt}
-                                            width={150}
-                                            height={100}
-                                            className="w-[150px] h-auto object-cover"
-                                          />
-                                        </button>
-                                      ))}
-                                    </div>
-                                </div>
+          {selectedImage && (
+            <div className="mb-4 w-full flex justify-center">
+              <Image
+                src={selectedImage.url}
+                alt={selectedImage.alt}
+                width={600}
+                height={400}
+                className="w-full max-w-4xl h-auto object-cover rounded-lg"
+              />
+            </div>
+          )}
+
+          <div className="flex gap-4 overflow-x-auto py-2">
+  {allAttractionImages.map((img, i) => (
+    <button
+      key={i}
+      onClick={() => setSelectedImage(img)}
+      className={`flex-shrink-0 border-2 rounded-lg overflow-hidden ${
+        selectedImage!.url === img.url ? "border-teal-500" : "border-transparent"
+      }`}
+    >
+      <Image
+        src={img.url}
+        alt={img.alt}
+        width={150}
+        height={100}
+        className="w-[150px] h-auto object-cover"
+      />
+    </button>
+  ))}
+</div>
+        </div>
 
         {/* Description */}
         <div className="px-6 mb-6">
