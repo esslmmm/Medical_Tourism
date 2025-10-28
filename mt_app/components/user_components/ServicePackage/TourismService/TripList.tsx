@@ -1,3 +1,6 @@
+// new old
+
+"use client";
 import React, { useState } from 'react';
 import { X, MapPin } from 'lucide-react';
 import Image from 'next/image';
@@ -18,6 +21,7 @@ interface ImportantInfo {
 interface Attraction {
   name: string;
   description: string;
+  images: string[];
   highlights: string[];
   includes: string[];
   important_info: ImportantInfo;
@@ -26,9 +30,9 @@ interface Attraction {
 
 interface Trip {
   description: string;
-  images: string[];
+  image?: string;
   title: string;
-  duration: string;
+  duration: number;
   attractions: Attraction[];
   tags: string[];
   price: number;
@@ -42,25 +46,43 @@ interface TripDetailModalProps {
 }
 
 // ✅ Mock Data
-const tourism_package = {
+const tourism_service = {
   name: 'Phuket Trip',
+  languages:[
+  { name: "English", flag: "🇬🇧" },
+  { name: "Arabic", flag: "🇸🇦" },
+  { name: "Japanese", flag: "🇯🇵" },
+  { name: "Chinese", flag: "🇨🇳" },
+  { name: "Korean", flag: "🇰🇷" },
+  { name: "Thai", flag: "🇹🇭" },
+  { name: "Spanish", flag: "🇪🇸" },
+  { name: "French", flag: "🇫🇷" },
+  { name: "German", flag: "🇩🇪" },
+  { name: "Italian", flag: "🇮🇹" },
+  { name: "Russian", flag: "🇷🇺" },
+  { name: "Hindi", flag: "🇮🇳" },
+  { name: "Other", flag: "🌐" },
+],
   images: [
+    {url:'/img/Homepage/Mfu.JPG', alt:'Medical facility'},
+    {url:'/img/Homepage/hospital3.png', alt:'Medical facility'},
     {url:'/img/Homepage/Test.jpg', alt:'Medical facility'},
-    {url:'/img/Homepage/Test.jpg', alt:'Medical facility'},
-    {url:'/img/Homepage/Test.jpg', alt:'Medical facility'},
-    {url:'/img/Homepage/Test4.jpg', alt:'Medical facility'},
-    {url:'/img/Homepage/Test.jpg', alt:'Medical facility'},
+    {url:'/img/Homepage/hospital4.png', alt:'Medical facility'},
+    {url:'/img/Homepage/hospital5.png', alt:'Medical facility'},
     {url:'/img/Homepage/Test.jpg', alt:'Medical facility'},
   ],
   description: 'Ran-Tong is devoted to rescuing abused elephants from all over Thailand and surrounding countries. Every elephant rescued is brought to the sanctuary in Chiang Mai and cared for with great passion and enthusiasm. Our mission is not only geared towards the protection and prevention of abused Elephants in Thailand but also to educate the public about their long history within Thai culture. Founded in 2009, Ran-Tong has rescued over 40 elephants to date with the help of public generosity, support, and private donation they can continue their ongoing vital work. Our priority is animal welfare. At Ran-Tong Save & Rescue Elephant Centre, you will completely get to learn a lot about elephants and have a memorable experience with them.',
   trips : [
     {
       description: "Experience the best of Phuket with our 3-day tour package. Explore the stunning Phi Phi Islands, enjoy a city tour, and visit the iconic James Bond Island. Perfect for a summer holiday filled with relaxation and adventure.",
-      images:["https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80","https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80","https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"],
       title: "Phuket Go Around",
-      duration: "1 days",
+      image:"/img/Homepage/hospital3.png",
+      duration: 1,
+      adult_price: 1000,
+      child_price: 500,
       attractions: [{
         name:"Phi Phi Islands",
+        images:["/img/Homepage/hospital3.png","/img/Homepage/hospital4.png","/img/Homepage/hospital5.png"],
         description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
         highlights: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
         includes:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
@@ -80,11 +102,14 @@ const tourism_package = {
     },
     {
       description: "Experience the best of Phuket with our 3-day tour package. Explore the stunning Phi Phi Islands, enjoy a city tour, and visit the iconic James Bond Island. Perfect for a summer holiday filled with relaxation and adventure.",
-      images:["https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80","https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80","https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",],
+      image:"/img/Homepage/Mfu.JPG",
       title: "Summer Fun",
-      duration: "2 days",
+      duration: 2,
+      adult_price: 2000,
+      child_price: 1000,
       attractions: [{
         name:"Phi Phi Islands",
+        images:["/img/Homepage/hospital4.png","/img/Homepage/hospital3.png","/img/Homepage/hospital5.png"],
         description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
         highlights: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
         includes:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
@@ -99,6 +124,7 @@ const tourism_package = {
         }
       }, {
         name:"Phi Phi Islands",
+        images:["/img/Homepage/hospital3.png","/img/Homepage/hospital5.png","/img/Homepage/hospital3.png"],
         description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
         highlights: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
         includes:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
@@ -118,11 +144,14 @@ const tourism_package = {
     },
     {
       description: "Experience the best of Phuket with our 3-day tour package. Explore the stunning Phi Phi Islands, enjoy a city tour, and visit the iconic James Bond Island. Perfect for a summer holiday filled with relaxation and adventure.",
-      images:["https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80","https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80","https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",],
+      image:"/img/Homepage/hospital4.png",
       title: "Phuket City",
-      duration: "3 day",
+      duration: 3,
+      adult_price: 1000,
+      child_price: 500,
       attractions: [{
         name:"Phi Phi Islands",
+        images:["/img/Homepage/Test.jpg","/img/Homepage/hospital3.png","/img/Homepage/hospital5.png"],
         description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
         highlights: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
         includes:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
@@ -137,6 +166,7 @@ const tourism_package = {
         }
       }, {
         name:"Phi Phi Islands",
+        images:["/img/Homepage/hospital5.png","/img/Homepage/hospital4.png","/img/Homepage/hospital5.png"],
         description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
         highlights: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
         includes:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
@@ -151,6 +181,7 @@ const tourism_package = {
         }
       }, {
         name:"Phi Phi Islands",
+        images:["/img/Homepage/hospital4.png","/img/Homepage/hospital4.png","/img/Homepage/hospital5.png"],
         description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
         highlights: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
         includes:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
@@ -175,7 +206,7 @@ const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, onClose
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
   
       const [selectedImage, setSelectedImage] = useState(
-        tourism_package.images.length > 0 ? tourism_package.images[0] : null
+        tourism_service.images.length > 0 ? tourism_service.images[0] : null
       );
 
   if (!isOpen || !trip) return null;
@@ -217,7 +248,7 @@ const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, onClose
                                     )}
                       
                                     <div className="flex gap-4 overflow-x-auto py-2">
-                                      {tourism_package.images.map((img, i) => (
+                                      {tourism_service.images.map((img, i) => (
                                         <button
                                           key={i}
                                           onClick={() => setSelectedImage(img)}
@@ -238,34 +269,6 @@ const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, onClose
                                       ))}
                                     </div>
                                 </div>
-        {/* <div className="px-6 pt-6">
-          <div className="grid grid-cols-3 gap-2 mb-6">
-            <div className="col-span-2 row-span-2">
-              <img
-                src={trip.images[0]}
-                alt={trip.title}
-                className="w-full h-full object-cover rounded-2xl"
-              />
-            </div>
-            <div className="space-y-2">
-              <img
-                src={trip.images[1] || trip.images[0]}
-                alt={trip.title}
-                className="w-full h-32 object-cover rounded-2xl"
-              />
-              <div className="relative">
-                <img
-                  src={trip.images[2] || trip.images[0]}
-                  alt={trip.title}
-                  className="w-full h-32 object-cover rounded-2xl"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-50 rounded-2xl flex items-center justify-center">
-                  <span className="text-white font-semibold">See all photos</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> */}
 
         {/* Description */}
         <div className="px-6 mb-6">
@@ -273,7 +276,7 @@ const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, onClose
             Description <span className="text-orange-500 font-normal">({trip.duration})</span>
           </h3>
           <p className="text-gray-700 text-sm leading-relaxed mb-4">
-            {tourism_package.description}
+            {tourism_service.description}
           </p>
 
           {/* Tags */}
@@ -293,13 +296,16 @@ const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, onClose
         {trip.attractions.map((attraction: Attraction, attractionIndex: number) => (
           <div key={attractionIndex} className="px-6 mb-6 border-t border-gray-200 pt-6">
             <div className="flex gap-4 mb-4">
+              {/* Attraction Images (updated) */}
               <div className="grid grid-cols-2 gap-2 w-64 flex-shrink-0">
+                {attraction.images.map((img, idx) => (
                   <img
-                    key={trip.title}
-                    src={trip.images[0]}
+                    key={idx}
+                    src={img}
                     alt={attraction.name}
-                    className=" object-cover rounded-xl"
+                    className="object-cover rounded-xl"
                   />
+                ))}
               </div>
 
               {/* Name & Description */}
@@ -461,6 +467,7 @@ const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, onClose
 // ✅ Trip List Component
 const TripsList: React.FC = () => {
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
+  const [selectedTripIndex, setSelectedTripIndex] = useState(0); 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleSeeDetails = (trip: Trip) => {
@@ -479,169 +486,73 @@ const TripsList: React.FC = () => {
         <h1 className="text-2xl font-bold text-gray-900">Trip</h1>
       </div>
 
-      {/* Trip List Card */}
-      {/* <div className="space-y-4">
-  {tourism_package.trips.map((trip: Trip, index: number) => (
-    <div
-      key={index}
-      className="bg-white rounded-2xl drop-shadow-lg border border-gray-300 p-4 mb-4"
-    >
-      <div className="flex gap-6">
-        <div className="flex-shrink-0">
-          <img
-            src={trip.images[0]}
-            alt={trip.title}
-            className="w-56 h-full object-cover rounded-2xl"
-          />
-        </div>
-        <div className="flex-1 py-2">
-          <div className="flex justify-between items-start mb-3">
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-1">
-                {trip.title}{' '}
-                <span className="text-orange-500 font-normal">({trip.duration})</span>
-              </h3>
-              <ul className="text-gray-600 text-sm space-y-1">
-                {trip.attractions.map((attraction: Attraction, idx: number) => (
-                  <li key={idx} className="flex items-center">
-                    <span className="w-1 h-1 bg-gray-400 rounded-full mr-2"></span>
-                    {attraction.name}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <button
-              onClick={() => handleSeeDetails(trip)}
-              className="text-teal-400 hover:text-teal-500 text-sm font-medium flex items-center gap-1"
-            >
-              See details
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <div className="flex gap-2 mb-4">
-            {trip.tags.map((tag: string, idx: number) => (
-              <span
-                key={idx}
-                className="px-3 py-1 bg-teal-100 text-teal-700 text-sm rounded-full font-medium"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          <div className="flex justify-between items-center">
-            <div className="flex items-baseline gap-1">
-              <span className="text-gray-600 text-sm">Start from</span>
-              <span className="text-gray-400 text-sm">฿</span>
-              <span className={`text-2xl font-bold ${trip.priceColor}`}>
-                {trip.price.toLocaleString()}
-              </span>
-            </div>
-            <button className="px-6 py-2 border-2 border-teal-200 text-teal-400 hover:bg-teal-50 rounded-full font-medium transition-colors">
-              Choose
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  ))}
-</div> */}
-
       <div className="space-y-4">
-  {tourism_package.trips.map((trip: Trip, index: number) => (
-    <div
-      key={index}
-      className="bg-white rounded-2xl drop-shadow-lg border border-gray-300 p-4 mb-4"
-    >
-      <div className="flex gap-6">
-        <div className="flex-shrink-0">
-          <img
-            src={trip.images[0]}
-            alt={trip.title}
-            className="w-32 h-48 object-cover rounded-2xl"
-          />
-        </div>
+        {tourism_service.trips.map((trip: Trip, index: number) => (
+          <div key={index} className={`bg-white rounded-2xl drop-shadow-lg border p-4 mb-4 transition-colors ${
+    selectedTripIndex === index ? "border-teal-500 border-2" : "border-gray-300"
+  }`}>
+            <div className="flex gap-6">
+              <div className="flex-shrink-0">
+                <img src={trip.image} alt={trip.title} className="w-32 h-48 object-cover rounded-2xl" />
+              </div>
 
-        <div className="flex-1 py-2 flex flex-col">
-          <div className="flex justify-between items-start mb-3">
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-1">
-                {trip.title}{' '}
-                <span className="text-orange-500 font-normal">({trip.duration})</span>
-              </h3>
-              <ul className="text-gray-600 text-sm space-y-1">
-                {trip.attractions.map((attraction: Attraction, idx: number) => (
-                  <li key={idx} className="flex items-center">
-                    <span className="w-1 h-1 bg-gray-400 rounded-full mr-2"></span>
-                    {attraction.name}
-                  </li>
-                ))}
-              </ul>
+              <div className="flex-1 py-2 flex flex-col">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                      {trip.title} <span className="text-orange-500 font-normal">({trip.duration} {trip.duration > 1 ? "days" : "day"})</span>
+                    </h3>
+                    <ul className="text-gray-600 text-sm space-y-1">
+                      {trip.attractions.map((attraction: Attraction, idx: number) => (
+                        <li key={idx} className="flex items-center">
+                          <span className="w-1 h-1 bg-gray-400 rounded-full mr-2"></span>
+                          {attraction.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <button
+                    onClick={() => handleSeeDetails(trip)}
+                    className="text-teal-400 hover:text-teal-500 text-sm font-medium flex items-center gap-1"
+                  >
+                    See details
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="flex gap-2">
+                  {trip.tags.map((tag: string, idx: number) => (
+                    <span key={idx} className="px-3 py-1 bg-teal-100 text-teal-700 text-sm rounded-full font-medium">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="flex justify-between items-center mt-auto">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-gray-600 text-sm">Start from</span>
+                    <span className="text-gray-400 text-sm">฿</span>
+                    <span className={`text-2xl font-bold ${trip.priceColor}`}>
+                      {trip.price.toLocaleString()}
+                    </span>
+                  </div>
+                  <button
+  onClick={() => setSelectedTripIndex(index)}
+  className={`px-6 py-2 rounded-full font-medium transition-colors border-2 ${
+    selectedTripIndex === index
+      ? "border-teal-500 text-teal-500 bg-teal-50"
+      : "border-teal-200 text-teal-400 hover:bg-teal-50"
+  }`}
+> Choose
+                  </button>
+                </div>
+              </div>
             </div>
-            <button
-              onClick={() => handleSeeDetails(trip)}
-              className="text-teal-400 hover:text-teal-500 text-sm font-medium flex items-center gap-1"
-            >
-              See details
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button>
           </div>
-
-          <div className="flex gap-2">
-            {trip.tags.map((tag: string, idx: number) => (
-              <span
-                key={idx}
-                className="px-3 py-1 bg-teal-100 text-teal-700 text-sm rounded-full font-medium"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
-
-
-          <div className="flex justify-between items-center mt-auto">
-            <div className="flex items-baseline gap-1">
-              <span className="text-gray-600 text-sm">Start from</span>
-              <span className="text-gray-400 text-sm">฿</span>
-              <span className={`text-2xl font-bold ${trip.priceColor}`}>
-                {trip.price.toLocaleString()}
-              </span>
-            </div>
-            <button className="px-6 py-2 border-2 border-teal-200 text-teal-400 hover:bg-teal-50 rounded-full font-medium transition-colors">
-              Choose
-            </button>
-          </div>
-        </div>
+        ))}
       </div>
-    </div>
-  ))}
-</div>
 
       <TripDetailModal trip={selectedTrip} isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>

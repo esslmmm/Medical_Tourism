@@ -36,8 +36,8 @@
 import { useState } from "react"
 import Navbar from "@/components/user_components/ServicePackage/Navbar"
 import Breadcrumb from "@/components/user_components/ServicePackage/Breadcrumb"
-import MedicalPackage from "@/components/user_components/ServicePackage/MedicalPackage/MedicalPackage"
-import TourismPackage from "@/components/user_components/ServicePackage/TourismPackage/TourismPackage"
+import MedicalPackage from "@/components/user_components/ServicePackage/MedicalService/MedicalPackage"
+import TourismPackage from "@/components/user_components/ServicePackage/TourismService/TourismService"
 import Footer from "@/components/user_components/Main/Footer"
 
 const ServicePackage = () => {
