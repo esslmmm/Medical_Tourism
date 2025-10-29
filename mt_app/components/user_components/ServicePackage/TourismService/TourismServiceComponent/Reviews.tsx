@@ -15,7 +15,7 @@ interface Review {
   flag: string;
   date: string;
   rating: number;
-  text: string;
+  text?: string;
 }
 
 interface TourismService {
@@ -25,6 +25,7 @@ interface TourismService {
 //
 // ✅ Mock Data
 //
+
 const tourism_service: TourismService = {
   reviews: [
     {
@@ -106,7 +107,6 @@ const tourism_service: TourismService = {
       flag: '🇲🇲',
       date: 'August 2025',
       rating: 1,
-      text: 'We had such a lovely experience where we really enjoyed and met the elephants during the whole day...'
     },
     
   ]
@@ -136,9 +136,11 @@ const Reviews = () => {
   }
 
   // ✅ Pagination logic
-  const totalPages = Math.ceil(filteredReviews.length / REVIEWS_PER_PAGE);
-  const startIndex = (page - 1) * REVIEWS_PER_PAGE;
-  const currentReviews = filteredReviews.slice(startIndex, startIndex + REVIEWS_PER_PAGE);
+  const nonEmptyReviews = filteredReviews.filter(r => r.text && r.text.trim() !== '');
+const totalPages = Math.ceil(nonEmptyReviews.length / REVIEWS_PER_PAGE);
+const startIndex = (page - 1) * REVIEWS_PER_PAGE;
+const currentReviews = nonEmptyReviews.slice(startIndex, startIndex + REVIEWS_PER_PAGE);
+
 
   // ✅ Handlers
   const handleNext = () => {
@@ -183,7 +185,6 @@ ratingCounts.forEach((r) => {
   r.width = Math.round((r.count / maxCount) * 100);
 });
 
-  
 
   return (
     <div>
@@ -256,40 +257,43 @@ ratingCounts.forEach((r) => {
 
       {/* Review list */}
       <div className="space-y-6">
-        {currentReviews.length > 0 ? (
-          currentReviews.map((review: Review, index: number) => (
-            <div key={index} className="border-b pb-6">
-              <div className="flex items-start gap-4">
-                <img
-                  src={review.profile}
-                  alt={review.name}
-                  className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                />
-                <div className="flex-1">
-                  <div className="flex items-center gap-4 mb-1">
-                    <h4 className="font-bold text-gray-600">{review.name}</h4>
-                    <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-full border text-xs">
-                      <span>{review.flag}</span>
-                      <span className="font-bold text-black">{review.country}</span>
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-600 mb-2">Reviewed on {review.date}</p>
-                  <p className="text-sm mb-3 text-black">{review.text}</p>
-                  <div className="flex items-center gap-2">
-                    <div className="flex">
-                      {[...Array(review.rating)].map((_, i) => (
-                        <StarIcon key={i} className="w-4 h-4 text-yellow-400" />
-                      ))}
-                    </div>
-                    <span className="text-xs text-gray-600">{review.rating} out of 5 rating</span>
-                  </div>
-                </div>
+        {currentReviews.filter(r => r.text && r.text.trim() !== '').length > 0 ? (
+  currentReviews
+    .filter(r => r.text && r.text.trim() !== '')
+    .map((review: Review, index: number) => (
+      <div key={index} className="border-b pb-6">
+        <div className="flex items-start gap-4">
+          <img
+            src={review.profile}
+            alt={review.name}
+            className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+          />
+          <div className="flex-1">
+            <div className="flex items-center gap-4 mb-1">
+              <h4 className="font-bold text-gray-600">{review.name}</h4>
+              <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-full border text-xs">
+                <span>{review.flag}</span>
+                <span className="font-bold text-black">{review.country}</span>
               </div>
             </div>
-          ))
-        ) : (
-          <p className="text-gray-500 text-sm">No reviews with {filter}-star rating.</p>
-        )}
+            <p className="text-xs text-gray-600 mb-2">Reviewed on {review.date}</p>
+            <p className="text-sm mb-3 text-black">{review.text}</p>
+            <div className="flex items-center gap-2">
+              <div className="flex">
+                {[...Array(review.rating)].map((_, i) => (
+                  <StarIcon key={i} className="w-4 h-4 text-yellow-400" />
+                ))}
+              </div>
+              <span className="text-xs text-gray-600">{review.rating} out of 5 rating</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    ))
+) : (
+  <p className="text-gray-500 text-sm">No reviews with {filter}-star rating.</p>
+)}
+
       </div>
 
       {/* ✅ Pagination */}
