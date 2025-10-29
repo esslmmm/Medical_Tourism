@@ -26,6 +26,7 @@ export default function BookingCard({ selectedTrip, appointmentDate }: MakeBooki
   // ✅ Mock Data
 const tourism_service = {
   name: 'Phuket Trip',
+  city: 'Phuket',
   languages:[
   { name: "English", flag: "🇬🇧" },
   { name: "Arabic", flag: "🇸🇦" },
