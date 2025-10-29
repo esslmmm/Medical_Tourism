@@ -9,7 +9,12 @@ import {
   X,
 } from "lucide-react";
 
-export default function BookingCard() {
+interface MakeBookingProps {
+  selectedTrip?: any;
+}
+
+
+export default function BookingCard({ selectedTrip }: MakeBookingProps) {
   const [selectedDate, setSelectedDate] = useState<number>(5);
   const [currentMonth, setCurrentMonth] = useState<number>(9); // October
   const [currentYear, setCurrentYear] = useState<number>(2025);
@@ -31,6 +36,7 @@ export default function BookingCard() {
   const [showLanguageSection, setShowLanguageSection] = useState(true);
   const [showTouristSection, setShowTouristSection] = useState(true);
   const [showPriceSection, setShowPriceSection] = useState(true);
+  const [isPolicyChecked, setIsPolicyChecked] = useState(false);
 
   const months = [
     "January",
@@ -154,6 +160,8 @@ export default function BookingCard() {
       duration: 1,
       adult_price: 1000,
       child_price: 500,
+      guide_price: 1000,
+      car_service_price: 600,
       attractions: [{
         name:"Phi Phi Islands",
         images:["/img/Homepage/hospital3.png","/img/Homepage/hospital4.png","/img/Homepage/hospital5.png"],
@@ -171,7 +179,6 @@ export default function BookingCard() {
         }
       }],
       tags: ["Summer", "Holiday", "Relax"],
-      price: 2000,
       priceColor: "text-red-500",
     },
     {
@@ -181,6 +188,8 @@ export default function BookingCard() {
       duration: 2,
       adult_price: 2000,
       child_price: 1000,
+      guide_price: 1500,
+      car_service_price: 900,
       attractions: [{
         name:"Phi Phi Islands",
         images:["/img/Homepage/hospital3.png","/img/Homepage/hospital4.png","/img/Homepage/hospital5.png"],
@@ -213,7 +222,6 @@ export default function BookingCard() {
         }
       }],
       tags: ["Summer", "Holiday", "Relax"],
-      price: 2000,
       priceColor: "text-red-500",
     },
   ]
@@ -268,11 +276,6 @@ export default function BookingCard() {
             </div>
 
             <div className="grid grid-cols-7 gap-2">{renderCalendar()}</div>
-
-            <div className="flex items-center mt-4 text-sm text-emerald-600">
-              <div className="w-4 h-2 bg-emerald-200 rounded-full mr-2"></div>
-              Trip
-            </div>
 
             <div className="mt-4 space-y-2 text-black">
               <div className="text-sm">
@@ -410,7 +413,7 @@ export default function BookingCard() {
                 <div className="font-semibold text-gray-900">
                   Adult (ages 16 - 80)
                 </div>
-                <div className="text-sm text-gray-500">฿ {tourism_service.trips[0].adult_price} per person</div>
+                <div className="text-sm text-gray-500">฿ {selectedTrip?.adult_price ?? 0} per person</div>
               </div>
               <div className="flex items-center bg-white rounded-full border border-gray-200">
                 <button
@@ -436,7 +439,7 @@ export default function BookingCard() {
                 <div className="font-semibold text-gray-900">
                   Child (ages 4 - 15)
                 </div>
-                <div className="text-sm text-gray-500">฿ {tourism_service.trips[0].child_price} per person</div>
+                <div className="text-sm text-gray-500">฿ {selectedTrip?.child_price ?? 0} per person</div>
               </div>
               <div className="flex items-center bg-white rounded-full border border-gray-200">
                 <button
@@ -479,10 +482,10 @@ export default function BookingCard() {
               {adults > 0 ? (
                   <div className="flex items-center justify-between">
                 <div className="font-semibold text-gray-900">
-                  Child (ages 4 - 15)
+                  Adult (ages 4 - 15)
                 </div>
                   <div className="text-gray-900 font-medium">
-                    ฿ {tourism_service.trips[0].adult_price} × {adults}
+                    ฿ {selectedTrip?.adult_price ?? 0} × {adults}
                   </div>
               </div>
                 ) : (
@@ -498,7 +501,7 @@ export default function BookingCard() {
                   Child (ages 4 - 15)
                 </div>
                   <div className="text-gray-900 font-medium">
-                    ฿ {tourism_service.trips[0].child_price} × {children}
+                    ฿ {selectedTrip?.child_price ?? 0} × {children}
                   </div>
               </div>
                 ) : (
@@ -507,42 +510,68 @@ export default function BookingCard() {
               </div>
                 )}
 
-
-              <div className="flex items-center justify-between">
-                <div className="font-semibold text-gray-900">Guide</div>
-                <div className="text-gray-900 font-medium">฿ 1,000</div>
-              </div>
-
-              <div className="flex items-center justify-between">
+              {selectedTrip?.guide_price != null && (
+  <div className="flex items-center justify-between">
+    <div className="font-semibold text-gray-900">Guide</div>
+    <div className="text-gray-900 font-medium">
+      ฿ {selectedTrip?.guide_price}
+    </div>
+  </div>
+)}
+              {/* <div className="flex items-center justify-between">
                 <div className="font-semibold text-gray-900">Car Service</div>
-                <div className="text-gray-900 font-medium">฿ 1,000</div>
-              </div>
+                <div className="text-gray-900 font-medium">฿ {selectedTrip?.car_service_price ?? 0}</div>
+              </div> */}
+              {selectedTrip?.car_service_price != null && (
+  <div className="flex items-center justify-between">
+    <div className="font-semibold text-gray-900">Car Service</div>
+    <div className="text-gray-900 font-medium">
+      ฿ {selectedTrip?.car_service_price}
+    </div>
+  </div>
+)}
             </div>
 
             <div className="flex items-center justify-between pt-8">
               <div className="text-3xl font-bold text-gray-900">Total</div>
               <div className="text-3xl font-bold text-red-500">
-                ฿ {1000 * adults + 500 * children + 2000}
+                ฿ {((selectedTrip?.adult_price ?? 0) * adults) + ((selectedTrip?.child_price ?? 0) * children) + (selectedTrip?.guide_price ?? 0) + (selectedTrip?.car_service_price ?? 0)}
               </div>
             </div>
 
-            <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-4 rounded-2xl transition-colors mt-6">
-              Book Now
-            </button>
+            <div>
+      {/* Book Now Button */}
+      <button
+        className={`w-full bg-emerald-500 text-white font-semibold py-4 rounded-2xl transition-colors mt-6
+          ${!isPolicyChecked ? 'opacity-50 cursor-not-allowed' : 'hover:bg-emerald-600'}`}
+        disabled={!isPolicyChecked}
+        onClick={() => {
+          if (isPolicyChecked) {
+            // your booking logic here
+            console.log("Booking confirmed!");
+          }
+        }}
+      >
+        Book Now
+      </button>
 
-            <div className="flex items-center mt-4">
-              <input
-                type="checkbox"
-                id="policy"
-                className="form-checkbox text-emerald-500 rounded-lg h-5 w-5 mr-2"
-              />
-              <label htmlFor="policy" className="text-gray-600 text-sm">
-                I read and agree{" "}
-                <a href="#" className="text-emerald-500 font-medium underline">
-                  Terms and Policy
-                </a>
-              </label>
-            </div>
+      {/* Policy Checkbox */}
+      <div className="flex items-center mt-4">
+        <input
+          type="checkbox"
+          id="policy"
+          className="form-checkbox text-emerald-500 rounded-lg h-5 w-5 mr-2"
+          checked={isPolicyChecked}
+          onChange={(e) => setIsPolicyChecked(e.target.checked)}
+        />
+        <label htmlFor="policy" className="text-gray-600 text-sm">
+          I read and agree{" "}
+          <a href="#" className="text-emerald-500 font-medium underline">
+            Terms and Policy
+          </a>
+        </label>
+      </div>
+    </div>
           </>
         )}
       </div>

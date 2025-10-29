@@ -272,7 +272,7 @@ const MakeAppointment: React.FC<MakeAppointmentProps> = ({ onNextStep }) => {
             </div>
           </>
         )}
-        {/* Book Now */}
+        {/* Next Step */}
            <button
   onClick={() => {
     if (onNextStep) onNextStep();

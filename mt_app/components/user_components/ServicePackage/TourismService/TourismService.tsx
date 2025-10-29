@@ -16,6 +16,7 @@ import { Car, Plane, X } from 'lucide-react';
 import MakeBooking from '@/components/user_components/ServicePackage/TourismService/MakeBooking';
 import TripList from './TripList';
 
+// ✅ Mock Data
 const tourism_service = {
   name: 'Phuket Trip',
   languages:[
@@ -50,6 +51,8 @@ const tourism_service = {
       duration: 1,
       adult_price: 1000,
       child_price: 500,
+      guide_price: 1000,
+      car_service_price: 600,
       attractions: [{
         name:"Phi Phi Islands",
         images:["/img/Homepage/hospital3.png","/img/Homepage/hospital4.png","/img/Homepage/hospital5.png"],
@@ -67,7 +70,6 @@ const tourism_service = {
         }
       }],
       tags: ["Summer", "Holiday", "Relax"],
-      price: 2000,
       priceColor: "text-red-500",
     },
     {
@@ -77,6 +79,8 @@ const tourism_service = {
       duration: 2,
       adult_price: 2000,
       child_price: 1000,
+      guide_price: 1500,
+      car_service_price: 900,
       attractions: [{
         name:"Phi Phi Islands",
         images:["/img/Homepage/hospital4.png","/img/Homepage/hospital3.png","/img/Homepage/hospital5.png"],
@@ -109,7 +113,6 @@ const tourism_service = {
         }
       }],
       tags: ["Holiday", "Relax"],
-      price: 1000,
       priceColor: "text-red-500",
     },
     {
@@ -117,8 +120,10 @@ const tourism_service = {
       image:"/img/Homepage/hospital4.png",
       title: "Phuket City",
       duration: 3,
-      adult_price: 1000,
-      child_price: 500,
+      adult_price: 3000,
+      child_price: 1500,
+      guide_price: 2000,
+      car_service_price: 1200,
       attractions: [{
         name:"Phi Phi Islands",
         images:["/img/Homepage/Test.jpg","/img/Homepage/hospital3.png","/img/Homepage/hospital5.png"],
@@ -166,7 +171,6 @@ const tourism_service = {
         }
       }],
       tags: ["Holiday", "Relax"],
-      price: 500,
       priceColor: "text-red-500",
     },
   ]
@@ -241,6 +245,7 @@ const tourism_service = {
   ];
 
 const TourismService = () => {
+  const [selectedTrip, setSelectedTrip] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState('Description');
     const [showAll, setShowAll] = useState(false);
     const [selectedImage, setSelectedImage] = useState(
@@ -387,7 +392,7 @@ const TourismService = () => {
             )}
 
 
-            <TripList />
+            <TripList onTripSelect={setSelectedTrip} />
             
 
              {/* Facilities */}
@@ -574,7 +579,7 @@ const TourismService = () => {
           {/* Booking Sidebar */}
           <div className='lg:col-span-1'>
             <div className='sticky top-10'>
-              <MakeBooking />
+              <MakeBooking selectedTrip={selectedTrip} />
             </div>
           </div>
         </div>

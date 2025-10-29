@@ -18,6 +18,10 @@ interface ImportantInfo {
   know_before_you_go: string[];
 }
 
+interface TripListProps {
+  onTripSelect?: (trip: any) => void;
+}
+
 interface Attraction {
   name: string;
   description: string;
@@ -35,7 +39,8 @@ interface Trip {
   duration: number;
   attractions: Attraction[];
   tags: string[];
-  price: number;
+  guide_price: number;
+  car_service_price: number;
   priceColor: string;
 }
 
@@ -80,6 +85,8 @@ const tourism_service = {
       duration: 1,
       adult_price: 1000,
       child_price: 500,
+      guide_price: 1000,
+      car_service_price: 600,
       attractions: [{
         name:"Phi Phi Islands",
         images:["/img/Homepage/hospital3.png","/img/Homepage/hospital4.png","/img/Homepage/hospital5.png"],
@@ -97,7 +104,6 @@ const tourism_service = {
         }
       }],
       tags: ["Summer", "Holiday", "Relax"],
-      price: 2000,
       priceColor: "text-red-500",
     },
     {
@@ -107,6 +113,8 @@ const tourism_service = {
       duration: 2,
       adult_price: 2000,
       child_price: 1000,
+      guide_price: 1500,
+      car_service_price: 900,
       attractions: [{
         name:"Phi Phi Islands",
         images:["/img/Homepage/hospital4.png","/img/Homepage/hospital3.png","/img/Homepage/hospital5.png"],
@@ -139,7 +147,6 @@ const tourism_service = {
         }
       }],
       tags: ["Holiday", "Relax"],
-      price: 1000,
       priceColor: "text-red-500",
     },
     {
@@ -147,8 +154,10 @@ const tourism_service = {
       image:"/img/Homepage/hospital4.png",
       title: "Phuket City",
       duration: 3,
-      adult_price: 1000,
-      child_price: 500,
+      adult_price: 3000,
+      child_price: 1500,
+      guide_price: 2000,
+      car_service_price: 1200,
       attractions: [{
         name:"Phi Phi Islands",
         images:["/img/Homepage/Test.jpg","/img/Homepage/hospital3.png","/img/Homepage/hospital5.png"],
@@ -196,7 +205,6 @@ const tourism_service = {
         }
       }],
       tags: ["Holiday", "Relax"],
-      price: 500,
       priceColor: "text-red-500",
     },
   ]
@@ -466,8 +474,8 @@ const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, onClose
 };
 
 // ✅ Trip List Component
-const TripsList: React.FC = () => {
-  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
+const TripList: React.FC<TripListProps> = ({ onTripSelect }) => {
+  const [selectedTrip, setSelectedTrip] = useState<any | null>(null);
   const [selectedTripIndex, setSelectedTripIndex] = useState(0); 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -481,6 +489,12 @@ const TripsList: React.FC = () => {
     setSelectedTrip(null);
   };
 
+  const handleSelectTrip = (trip: any, index:number) => {
+    setSelectedTripIndex(index)
+    setSelectedTrip(trip);
+    if (onTripSelect) onTripSelect(trip); // ✅ send selected trip to parent
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-6">
@@ -489,9 +503,12 @@ const TripsList: React.FC = () => {
 
       <div className="space-y-4">
         {tourism_service.trips.map((trip: Trip, index: number) => (
-          <div key={index} className={`bg-white rounded-2xl drop-shadow-lg border p-4 mb-4 transition-colors ${
+          <div key={index}
+          onClick={() => handleSelectTrip(trip, index)} // ✅ trigger selection
+          className={`cursor-pointer bg-white rounded-2xl drop-shadow-lg border p-4 mb-4 transition-colors ${
     selectedTripIndex === index ? "border-teal-500 border-2" : "border-gray-300"
-  }`}>
+  }`}
+        >
             <div className="flex gap-6">
               <div className="flex-shrink-0">
                 <img src={trip.image} alt={trip.title} className="w-32 h-48 object-cover rounded-2xl" />
@@ -514,7 +531,7 @@ const TripsList: React.FC = () => {
                   </div>
                   <button
                     onClick={() => handleSeeDetails(trip)}
-                    className="text-teal-400 hover:text-teal-500 text-sm font-medium flex items-center gap-1"
+                    className="cursor-pointer text-teal-400 hover:text-teal-500 text-sm font-medium flex items-center gap-1"
                   >
                     See details
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -536,12 +553,12 @@ const TripsList: React.FC = () => {
                     <span className="text-gray-600 text-sm">Start from</span>
                     <span className="text-gray-400 text-sm">฿</span>
                     <span className={`text-2xl font-bold ${trip.priceColor}`}>
-                      {trip.price.toLocaleString()}
+                      {(trip.guide_price + trip.car_service_price).toLocaleString()}
                     </span>
                   </div>
                   <button
   onClick={() => setSelectedTripIndex(index)}
-  className={`px-6 py-2 rounded-full font-medium transition-colors border-2 ${
+  className={`cursor-pointer px-6 py-2 rounded-full font-medium transition-colors border-2 ${
     selectedTripIndex === index
       ? "border-teal-500 text-teal-500 bg-teal-50"
       : "border-teal-200 text-teal-400 hover:bg-teal-50"
@@ -560,4 +577,4 @@ const TripsList: React.FC = () => {
   );
 };
 
-export default TripsList;
+export default TripList;
