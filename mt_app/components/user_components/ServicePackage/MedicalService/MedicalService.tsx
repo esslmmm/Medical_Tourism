@@ -18,6 +18,7 @@ import {
 import { X } from 'lucide-react';
 import MakeAppointment from './MakeAppointment';
 import Link from 'next/link';
+import FAQ from './MedicalServiceComponent/FAQ';
 
 const medical_package = {
   name: 'Medical Check-up',
@@ -359,39 +360,7 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
           </div>
 
           {/* FAQ */}
-          <div>
-            <h2 className="text-2xl font-bold mb-6 text-black">Frequently asked questions</h2>
-            <div className="space-y-4">
-              <div className="border-b pb-4">
-                <div className="flex justify-between items-center mb-4 cursor-pointer">
-                  <h3 className="font-bold text-teal-500">How can I cancel my booking ?</h3>
-                  <ChevronDownIcon className="w-6 h-6" />
-                </div>
-                <div className="text-gray-600 text-sm space-y-2">
-                  <p>You can cancel your booking online on the Agoda website or app, under the "My bookings" section in the account menu.</p>
-                  <p>Please double-check the cancellation policy of your activity before booking. Some operators do not allow refunds in case of cancellation.</p>
-                </div>
-              </div>
-              <div className="border-b pb-4">
-                <div className="flex justify-between items-center cursor-pointer">
-                  <h3 className="font-bold text-black">When will I receive the refund for cancelled bookings?</h3>
-                  <ChevronUpIcon className="w-6 h-6" />
-                </div>
-              </div>
-              <div className="border-b pb-4">
-                <div className="flex justify-between items-center cursor-pointer">
-                  <h3 className="font-bold text-black">How do vouchers work?</h3>
-                  <ChevronUpIcon className="w-6 h-6" />
-                </div>
-              </div>
-              <div className="border-b pb-4">
-                <div className="flex justify-between items-center cursor-pointer">
-                  <h3 className="font-bold text-black">Who and when do I pay?</h3>
-                  <ChevronUpIcon className="w-6 h-6" />
-                </div>
-              </div>
-            </div>
-          </div>
+          <FAQ/>
 
           {/* Recommended Packages */}
           <div>
