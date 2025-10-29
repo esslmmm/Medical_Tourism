@@ -5,16 +5,15 @@ import Image from 'next/image';
 import { 
   CheckIcon, 
   StarIcon, 
-  ChevronLeftIcon,
-  ChevronRightIcon,
 } from '@heroicons/react/24/solid';
 import { X } from 'lucide-react';
 import MakeAppointment from './MedicalServiceComponent/MakeAppointment';
 import Link from 'next/link';
 import FAQ from './MedicalServiceComponent/FAQ';
 import Facilities from './MedicalServiceComponent/Facilities';
+import Reviews from './MedicalServiceComponent/Reviews';
 
-const medical_package = {
+const medical_service = {
   name: 'Medical Check-up',
   images: [
     {url:'/img/Homepage/Test.jpg', alt:'Medical facility'},
@@ -56,34 +55,6 @@ const medical_package = {
     { language: 'Myanmar', flag: '🇲🇲' }
   ]
 };
-
-
-const reviews = [
-  {
-    name: 'Ahmed Muhammad',
-    country: 'Saudi Arabia',
-    flag: '🇸🇦',
-    date: 'August 2025',
-    rating: 5,
-    text: 'We had such a lovely experience where we really enjoyed and met the elephants during the whole day. We made them lunch and washed them in the lake. Our own dinner was excellent as well 👌'
-  },
-  {
-    name: 'Ahmed Muhammad',
-    country: 'Qatar',
-    flag: '🇶🇦',
-    date: 'August 2025',
-    rating: 5,
-    text: 'We had such a lovely experience where we really enjoyed and met the elephants during the whole day. We made them lunch and washed them in the lake. Our own dinner was excellent as well 👌'
-  },
-  {
-    name: 'Wunna Kaungmyat',
-    country: 'Myanmar',
-    flag: '🇲🇲',
-    date: 'August 2025',
-    rating: 4,
-    text: 'We had such a lovely experience where we really enjoyed and met the elephants during the whole day. We made them lunch and washed them in the lake. Our own dinner was excellent as well 👌'
-  }
-];
 
 const recommendedPackages = [
   {
@@ -128,18 +99,18 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
   const [activeTab, setActiveTab] = useState('Description');
   const [showAll, setShowAll] = useState(false);
   const [selectedImage, setSelectedImage] = useState(
-    medical_package.images.length > 0 ? medical_package.images[0] : null
+    medical_service.images.length > 0 ? medical_service.images[0] : null
   );
 
-  const previewImages = medical_package.images.slice(0, 3);
-  const remainingImages = medical_package.images.slice(3);
-  const displayedCenters = medical_package.hospital.centersAndClinics.slice(0, 3);
-  const remainingCount = medical_package.hospital.centersAndClinics.length - 3;
+  const previewImages = medical_service.images.slice(0, 3);
+  const remainingImages = medical_service.images.slice(3);
+  const displayedCenters = medical_service.hospital.centersAndClinics.slice(0, 3);
+  const remainingCount = medical_service.hospital.centersAndClinics.length - 3;
 
   return (
     <div>
       {/* Header */}
-      <h1 className="text-4xl font-bold text-black mt-5">{medical_package.name}</h1>
+      <h1 className="text-4xl font-bold text-black mt-5">{medical_service.name}</h1>
 
       {/* Images */}
       <div className="mt-5">
@@ -205,7 +176,7 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
               )}
 
               <div className="flex gap-4 overflow-x-auto py-2">
-                {medical_package.images.map((img, i) => (
+                {medical_service.images.map((img, i) => (
                   <button
                     key={i}
                     onClick={() => setSelectedImage(img)}
@@ -254,7 +225,7 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
           {activeTab === 'Description' && (
             <div>
               <h2 className="text-2xl font-bold mb-4 text-black">Description</h2>
-              <p className="text-gray-700 leading-relaxed">{medical_package.description}</p>
+              <p className="text-gray-700 leading-relaxed">{medical_service.description}</p>
             </div>
           )}
 
@@ -262,7 +233,7 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
           <div>
             <h2 className="text-2xl font-bold mb-4 text-black">Services</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {medical_package.services.map((service, index) => (
+              {medical_service.services.map((service, index) => (
                 <div key={index} className="flex items-center gap-3">
                   <CheckIcon className="w-6 h-6 text-green-500 flex-shrink-0" />
                   <span className="text-black">{service}</span>
@@ -278,7 +249,7 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
           <div>
             <h2 className="text-2xl font-bold mb-4 text-black">Available Language</h2>
             <div className="flex gap-4">
-              {medical_package.available_languages.map((lang, index) => (
+              {medical_service.available_languages.map((lang, index) => (
                 <div key={index} className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border text-xs">
                   <span>{lang.flag}</span>
                   <span className="font-bold text-sm text-black">{lang.language}</span>
@@ -292,17 +263,17 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
             <h2 className="text-2xl font-bold mb-4 text-black">Hospital</h2>
             <div className="bg-white overflow-hidden">
               <Image
-                src={medical_package.hospital.image}
-                alt={medical_package.hospital.name}
+                src={medical_service.hospital.image}
+                alt={medical_service.hospital.name}
                 width={773}
                 height={434}
                 className="w-full object-cover rounded-lg"
               />
               <div className="pt-5">
-                <h3 className="text-xl font-bold mb-4 text-black">{medical_package.hospital.name}</h3>
+                <h3 className="text-xl font-bold mb-4 text-black">{medical_service.hospital.name}</h3>
                 <div className="mb-4">
                   <h4 className="font-bold mb-2 text-black">📍 Location</h4>
-                  <p className="text-black">{medical_package.hospital.location.address}</p>
+                  <p className="text-black">{medical_service.hospital.location.address}</p>
                 </div>
 
                 <div className="mb-4">
@@ -322,7 +293,7 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
                 </div>
 
                 <Link
-                  href={medical_package.hospital.detailLinkText}
+                  href={medical_service.hospital.detailLinkText}
                   className="inline-flex items-center gap-2 border border-teal-500 text-teal-500 font-semibold px-5 py-2.5 rounded-full shadow-md hover:text-white hover:bg-teal-600 transition-all duration-200"
                 >
                   View More Details
@@ -375,88 +346,7 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
           </div>
 
           {/* Reviews */}
-          <div>
-            <h2 className="text-2xl font-bold mb-4 text-black">Review</h2>
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-4">
-                <StarIcon className="w-4 h-4 text-yellow-400" />
-                <span className="font-bold text-black">4.8</span>
-                <span className="text-sm text-gray-600">(556 reviews) from 900+ booked</span>
-              </div>
-              
-              {/* Rating breakdown */}
-              <div className="space-y-2 mb-6">
-                {[
-                  { stars: 5, count: 492, width: 88 },
-                  { stars: 4, count: 42, width: 8 },
-                  { stars: 3, count: 15, width: 4 },
-                  { stars: 2, count: 0, width: 1 },
-                  { stars: 1, count: 0, width: 1 }
-                ].map((rating) => (
-                  <div key={rating.stars} className="flex items-center gap-3 text-xs">
-                    <span className="font-bold text-black">{rating.stars} Star</span>
-                    <div className="flex-1 bg-gray-200 rounded-full h-1">
-                      <div 
-                        className="bg-teal-500 h-1 rounded-full" 
-                        style={{ width: `${rating.width}%` }}
-                      ></div>
-                    </div>
-                    <span className="text-gray-600">{rating.count}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Filter buttons */}
-              <div className="flex gap-4 mb-6 text-sm">
-                <button className="text-teal-500">5 Star</button>
-                <button className="text-teal-500">4 Star</button>
-                <button className="text-teal-500">3 Star</button>
-                <button className="text-teal-500">2 Star</button>
-                <button className="text-teal-500">1 Star</button>
-                <div className="ml-auto border border-teal-500 rounded-full px-4 py-1">
-                  <span className="text-teal-500">Most relevant</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Review items */}
-            <div className="space-y-6">
-              {reviews.map((review, index) => (
-                <div key={index} className="border-b pb-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-gray-300 rounded-full flex-shrink-0"></div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-4 mb-1">
-                        <h4 className="font-bold text-gray-600">{review.name}</h4>
-                        <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-full border text-xs">
-                          <span>{review.flag}</span>
-                          <span className="font-bold text-black">{review.country}</span>
-                        </div>
-                      </div>
-                      <p className="text-xs text-gray-600 mb-2">Reviewed on {review.date}</p>
-                      <p className="text-sm mb-3 text-black">{review.text}</p>
-                      <div className="flex items-center gap-2">
-                        <div className="flex">
-                          {[...Array(review.rating)].map((_, i) => (
-                            <StarIcon key={i} className="w-4 h-4 text-yellow-400" />
-                          ))}
-                        </div>
-                        <span className="text-xs text-gray-600">{review.rating} out of 5 rating</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Pagination */}
-            <div className="flex justify-center items-center gap-4 mt-6">
-              <ChevronLeftIcon className="w-6 h-6 text-gray-400" />
-              <div className="border border-teal-500 rounded w-6 h-6"></div>
-              <span>...</span>
-              <ChevronRightIcon className="w-6 h-6 text-gray-400" />
-            </div>
-          </div>
+          <Reviews />
         </div>
         
         <div className="lg:col-span-1">
