@@ -3,7 +3,6 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@heroicons/react/24/solid';
-import { profile } from 'console';
 
 const medical_service = {
   name: 'Medical Check-up',

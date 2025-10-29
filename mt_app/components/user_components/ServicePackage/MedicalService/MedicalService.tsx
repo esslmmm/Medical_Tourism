@@ -23,7 +23,7 @@ const medical_service = {
     {url:'/img/Homepage/Test.jpg', alt:'Medical facility'},
     {url:'/img/Homepage/Test.jpg', alt:'Medical facility'},
   ],
-  description: 'Ran-Tong is devoted to rescuing abused elephants from all over Thailand and surrounding countries. Every elephant rescued is brought to the sanctuary in Chiang Mai and cared for with great passion and enthusiasm. Our mission is not only geared towards the protection and prevention of abused Elephants in Thailand but also to educate the public about their long history within Thai culture. Founded in 2009, Ran-Tong has rescued over 40 elephants to date with the help of public generosity, support, and private donation they can continue their ongoing vital work. Our priority is animal welfare. At Ran-Tong Save & Rescue Elephant Centre, you will completely get to learn a lot about elephants and have a memorable experience with them.',
+  description: 'Ran-Tong is devoted to rescuing abused elephants from all over Thailand and surrounding countries...',
   services: [
     'Comprehensive dental examination',
     'Follow-up consultations',
@@ -53,6 +53,35 @@ const medical_service = {
     { language: 'Saudi Arabia', flag: '🇸🇦' },
     { language: 'Qatar', flag: '🇶🇦' },
     { language: 'Myanmar', flag: '🇲🇲' }
+  ],
+  reviews:[
+    {
+      name: 'Ahmed Muhammad',
+      profile: '/img/Homepage/Test.jpg',
+      country: 'Saudi Arabia',
+      flag: '🇸🇦',
+      date: 'August 2025',
+      rating: 5,
+      text: 'We had such a lovely experience where we really enjoyed and met the elephants during the whole day...'
+    },
+    {
+      name: 'Ahmed Muhammad',
+      profile: '/img/Homepage/Test.jpg',
+      country: 'Qatar',
+      flag: '🇶🇦',
+      date: 'August 2025',
+      rating: 5,
+      text: 'We had such a lovely experience where we really enjoyed and met the elephants during the whole day...'
+    },
+    {
+      name: 'Wunna Kaungmyat',
+      profile: '/img/Homepage/Test.jpg',
+      country: 'Myanmar',
+      flag: '🇲🇲',
+      date: 'August 2025',
+      rating: 4,
+      text: 'We had such a lovely experience where we really enjoyed and met the elephants during the whole day...'
+    }
   ]
 };
 
