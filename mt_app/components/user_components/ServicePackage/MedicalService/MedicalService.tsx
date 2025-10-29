@@ -133,7 +133,7 @@ const recommendedPackages = [
 const tabs = ['Description', 'Service', 'Facilities', 'Available Language', 'Hospital', 'Frequently'];
 
 interface MedicalPackageProps {
-  onNextStep?: () => void;
+  onNextStep?: (date: Date) => void;
 }
 
 const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
@@ -311,10 +311,6 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
                   <span className="font-bold text-sm text-black">{lang.language}</span>
                 </div>
               ))}
-                              {/* <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border">
-                  <div className="w-6 h-6 rounded-full bg-green-500"></div>
-                  <span className="font-bold text-sm text-black">Arabic</span>
-                </div> */}
             </div>
           </div>
 
@@ -362,173 +358,171 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
             </div>
           </div>
 
-                      {/* FAQ */}
-            <div>
-              <h2 className="text-2xl font-bold mb-6 text-black">Frequently asked questions</h2>
-              <div className="space-y-4">
-                <div className="border-b pb-4">
-                  <div className="flex justify-between items-center mb-4 cursor-pointer">
-                    <h3 className="font-bold text-teal-500">How can I cancel my booking ?</h3>
-                    <ChevronDownIcon className="w-6 h-6" />
-                  </div>
-                  <div className="text-gray-600 text-sm space-y-2">
-                    <p>You can cancel your booking online on the Agoda website or app, under the "My bookings" section in the account menu.</p>
-                    <p>Please double-check the cancellation policy of your activity before booking. Some operators do not allow refunds in case of cancellation.</p>
-                  </div>
+          {/* FAQ */}
+          <div>
+            <h2 className="text-2xl font-bold mb-6 text-black">Frequently asked questions</h2>
+            <div className="space-y-4">
+              <div className="border-b pb-4">
+                <div className="flex justify-between items-center mb-4 cursor-pointer">
+                  <h3 className="font-bold text-teal-500">How can I cancel my booking ?</h3>
+                  <ChevronDownIcon className="w-6 h-6" />
                 </div>
-                <div className="border-b pb-4">
-                  <div className="flex justify-between items-center cursor-pointer">
-                    <h3 className="font-bold text-black">When will I receive the refund for cancelled bookings?</h3>
-                    <ChevronUpIcon className="w-6 h-6" />
-                  </div>
+                <div className="text-gray-600 text-sm space-y-2">
+                  <p>You can cancel your booking online on the Agoda website or app, under the "My bookings" section in the account menu.</p>
+                  <p>Please double-check the cancellation policy of your activity before booking. Some operators do not allow refunds in case of cancellation.</p>
                 </div>
-                <div className="border-b pb-4">
-                  <div className="flex justify-between items-center cursor-pointer">
-                    <h3 className="font-bold text-black">How do vouchers work?</h3>
-                    <ChevronUpIcon className="w-6 h-6" />
-                  </div>
+              </div>
+              <div className="border-b pb-4">
+                <div className="flex justify-between items-center cursor-pointer">
+                  <h3 className="font-bold text-black">When will I receive the refund for cancelled bookings?</h3>
+                  <ChevronUpIcon className="w-6 h-6" />
                 </div>
-                <div className="border-b pb-4">
-                  <div className="flex justify-between items-center cursor-pointer">
-                    <h3 className="font-bold text-black">Who and when do I pay?</h3>
-                    <ChevronUpIcon className="w-6 h-6" />
-                  </div>
+              </div>
+              <div className="border-b pb-4">
+                <div className="flex justify-between items-center cursor-pointer">
+                  <h3 className="font-bold text-black">How do vouchers work?</h3>
+                  <ChevronUpIcon className="w-6 h-6" />
+                </div>
+              </div>
+              <div className="border-b pb-4">
+                <div className="flex justify-between items-center cursor-pointer">
+                  <h3 className="font-bold text-black">Who and when do I pay?</h3>
+                  <ChevronUpIcon className="w-6 h-6" />
                 </div>
               </div>
             </div>
+          </div>
 
-
-            {/* Recommended Packages */}
-            <div>
-              <h2 className="text-2xl font-bold mb-6 text-black">Recommended Package</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {recommendedPackages.map((pkg, index) => (
-                  <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm">
-                    <Image
-                      src={pkg.image}
-                      alt={pkg.title}
-                      width={269}
-                      height={186}
-                      className="w-full object-cover"
-                    />
-                    <div className="p-4">
-                      <h3 className="font-bold text-xl mb-2 text-black">{pkg.title}</h3>
-                      <div className="mb-2">
-                        <span className="bg-teal-100 text-teal-600 px-3 py-1 rounded text-xs font-bold">
-                          {pkg.category}
+          {/* Recommended Packages */}
+          <div>
+            <h2 className="text-2xl font-bold mb-6 text-black">Recommended Package</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {recommendedPackages.map((pkg, index) => (
+                <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm">
+                  <Image
+                    src={pkg.image}
+                    alt={pkg.title}
+                    width={269}
+                    height={186}
+                    className="w-full object-cover"
+                  />
+                  <div className="p-4">
+                    <h3 className="font-bold text-xl mb-2 text-black">{pkg.title}</h3>
+                    <div className="mb-2">
+                      <span className="bg-teal-100 text-teal-600 px-3 py-1 rounded text-xs font-bold">
+                        {pkg.category}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 mb-2 text-xs">
+                      <StarIcon className="w-4 h-4 text-yellow-400" />
+                      <span className="font-bold text-black">{pkg.rating}</span>
+                      <span className="text-gray-600">{pkg.reviews}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-500 line-through">{pkg.originalPrice}</span>
+                        <span className="bg-red-100 text-red-600 px-2 py-1 rounded text-xs font-bold">
+                          {pkg.discount}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 mb-2 text-xs">
-                        <StarIcon className="w-4 h-4 text-yellow-400" />
-                        <span className="font-bold text-black">{pkg.rating}</span>
-                        <span className="text-gray-600">{pkg.reviews}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-gray-500 line-through">{pkg.originalPrice}</span>
-                          <span className="bg-red-100 text-red-600 px-2 py-1 rounded text-xs font-bold">
-                            {pkg.discount}
-                          </span>
-                        </div>
-                        <span className="text-red-600 text-xs font-bold">{pkg.price}</span>
-                      </div>
+                      <span className="text-red-600 text-xs font-bold">{pkg.price}</span>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
+          </div>
 
-            {/* Reviews */}
-            <div>
-              <h2 className="text-2xl font-bold mb-4 text-black">Review</h2>
-              <div className="mb-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <StarIcon className="w-4 h-4 text-yellow-400" />
-                  <span className="font-bold text-black">4.8</span>
-                  <span className="text-sm text-gray-600">(556 reviews) from 900+ booked</span>
-                </div>
-                
-                {/* Rating breakdown */}
-                <div className="space-y-2 mb-6">
-                  {[
-                    { stars: 5, count: 492, width: 88 },
-                    { stars: 4, count: 42, width: 8 },
-                    { stars: 3, count: 15, width: 4 },
-                    { stars: 2, count: 0, width: 1 },
-                    { stars: 1, count: 0, width: 1 }
-                  ].map((rating) => (
-                    <div key={rating.stars} className="flex items-center gap-3 text-xs">
-                      <span className="font-bold text-black">{rating.stars} Star</span>
-                      <div className="flex-1 bg-gray-200 rounded-full h-1">
-                        <div 
-                          className="bg-teal-500 h-1 rounded-full" 
-                          style={{ width: `${rating.width}%` }}
-                        ></div>
-                      </div>
-                      <span className="text-gray-600">{rating.count}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Filter buttons */}
-                <div className="flex gap-4 mb-6 text-sm">
-                  <button className="text-teal-500">5 Star</button>
-                  <button className="text-teal-500">4 Star</button>
-                  <button className="text-teal-500">3 Star</button>
-                  <button className="text-teal-500">2 Star</button>
-                  <button className="text-teal-500">1 Star</button>
-                  <div className="ml-auto border border-teal-500 rounded-full px-4 py-1">
-                    <span className="text-teal-500">Most relevant</span>
-                  </div>
-                </div>
+          {/* Reviews */}
+          <div>
+            <h2 className="text-2xl font-bold mb-4 text-black">Review</h2>
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-4">
+                <StarIcon className="w-4 h-4 text-yellow-400" />
+                <span className="font-bold text-black">4.8</span>
+                <span className="text-sm text-gray-600">(556 reviews) from 900+ booked</span>
               </div>
-
-              {/* Review items */}
-              <div className="space-y-6">
-                {reviews.map((review, index) => (
-                  <div key={index} className="border-b pb-6">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-gray-300 rounded-full flex-shrink-0"></div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-4 mb-1">
-                          <h4 className="font-bold text-gray-600">{review.name}</h4>
-                          <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-full border text-xs">
-                            <span>{review.flag}</span>
-                            <span className="font-bold text-black">{review.country}</span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-gray-600 mb-2">Reviewed on {review.date}</p>
-                        <p className="text-sm mb-3 text-black">{review.text}</p>
-                        <div className="flex items-center gap-2">
-                          <div className="flex">
-                            {[...Array(review.rating)].map((_, i) => (
-                              <StarIcon key={i} className="w-4 h-4 text-yellow-400" />
-                            ))}
-                          </div>
-                          <span className="text-xs text-gray-600">{review.rating} out of 5 rating</span>
-                        </div>
-                      </div>
+              
+              {/* Rating breakdown */}
+              <div className="space-y-2 mb-6">
+                {[
+                  { stars: 5, count: 492, width: 88 },
+                  { stars: 4, count: 42, width: 8 },
+                  { stars: 3, count: 15, width: 4 },
+                  { stars: 2, count: 0, width: 1 },
+                  { stars: 1, count: 0, width: 1 }
+                ].map((rating) => (
+                  <div key={rating.stars} className="flex items-center gap-3 text-xs">
+                    <span className="font-bold text-black">{rating.stars} Star</span>
+                    <div className="flex-1 bg-gray-200 rounded-full h-1">
+                      <div 
+                        className="bg-teal-500 h-1 rounded-full" 
+                        style={{ width: `${rating.width}%` }}
+                      ></div>
                     </div>
+                    <span className="text-gray-600">{rating.count}</span>
                   </div>
                 ))}
               </div>
 
-              {/* Pagination */}
-              <div className="flex justify-center items-center gap-4 mt-6">
-                <ChevronLeftIcon className="w-6 h-6 text-gray-400" />
-                <div className="border border-teal-500 rounded w-6 h-6"></div>
-                <span>...</span>
-                <ChevronRightIcon className="w-6 h-6 text-gray-400" />
+              {/* Filter buttons */}
+              <div className="flex gap-4 mb-6 text-sm">
+                <button className="text-teal-500">5 Star</button>
+                <button className="text-teal-500">4 Star</button>
+                <button className="text-teal-500">3 Star</button>
+                <button className="text-teal-500">2 Star</button>
+                <button className="text-teal-500">1 Star</button>
+                <div className="ml-auto border border-teal-500 rounded-full px-4 py-1">
+                  <span className="text-teal-500">Most relevant</span>
+                </div>
               </div>
             </div>
-          
+
+            {/* Review items */}
+            <div className="space-y-6">
+              {reviews.map((review, index) => (
+                <div key={index} className="border-b pb-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-gray-300 rounded-full flex-shrink-0"></div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-4 mb-1">
+                        <h4 className="font-bold text-gray-600">{review.name}</h4>
+                        <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-full border text-xs">
+                          <span>{review.flag}</span>
+                          <span className="font-bold text-black">{review.country}</span>
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-600 mb-2">Reviewed on {review.date}</p>
+                      <p className="text-sm mb-3 text-black">{review.text}</p>
+                      <div className="flex items-center gap-2">
+                        <div className="flex">
+                          {[...Array(review.rating)].map((_, i) => (
+                            <StarIcon key={i} className="w-4 h-4 text-yellow-400" />
+                          ))}
+                        </div>
+                        <span className="text-xs text-gray-600">{review.rating} out of 5 rating</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            <div className="flex justify-center items-center gap-4 mt-6">
+              <ChevronLeftIcon className="w-6 h-6 text-gray-400" />
+              <div className="border border-teal-500 rounded w-6 h-6"></div>
+              <span>...</span>
+              <ChevronRightIcon className="w-6 h-6 text-gray-400" />
+            </div>
+          </div>
         </div>
+        
         <div className="lg:col-span-1">
           <div className="sticky top-10">
             <MakeAppointment onNextStep={onNextStep} />
-  </div>
-</div>
-
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,132 +1,30 @@
 "use client";
-import React, { useState } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  Plus,
-  Minus,
-  X,
-} from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight, ChevronDown,   Plus, Minus, X, } from "lucide-react";
 
 interface MakeBookingProps {
-  selectedTrip?: any;
+  selectedTrip?: any
+  appointmentDate?: Date | null;
 }
 
-
-export default function BookingCard({ selectedTrip }: MakeBookingProps) {
-  const [selectedDate, setSelectedDate] = useState<number>(5);
-  const [currentMonth, setCurrentMonth] = useState<number>(9); // October
-  const [currentYear, setCurrentYear] = useState<number>(2025);
+export default function BookingCard({ selectedTrip, appointmentDate }: MakeBookingProps) {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [calendarMonth, setCalendarMonth] = useState<Date>(new Date(2025, 9));
+  const [showDateSection, setShowDateSection] = useState(true);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("English");
   const [customLanguage, setCustomLanguage] = useState<string>("");
   const [customLanguageFlag, setCustomLanguageFlag] = useState("🌐");
-  const [mainLanguage, setMainLanguage] = useState<{ name: string; flag: string }>({
-  name: "English",
-  flag: "🇬🇧",
-});
   const [showOtherLanguageModal, setShowOtherLanguageModal] =
-    useState<boolean>(false);
+  useState<boolean>(false);
   const [adults, setAdults] = useState<number>(1);
   const [children, setChildren] = useState<number>(0);
-  
-
-  // Collapse states
-  const [showDateSection, setShowDateSection] = useState(true);
   const [showLanguageSection, setShowLanguageSection] = useState(true);
   const [showTouristSection, setShowTouristSection] = useState(true);
   const [showPriceSection, setShowPriceSection] = useState(true);
   const [isPolicyChecked, setIsPolicyChecked] = useState(false);
 
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const daysOfWeek = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
-
-  const getDaysInMonth = (month: number, year: number) =>
-    new Date(year, month + 1, 0).getDate();
-
-  const getFirstDayOfMonth = (month: number, year: number) => {
-    const firstDay = new Date(year, month, 1).getDay();
-    return firstDay === 0 ? 6 : firstDay - 1;
-  };
-
-  const renderCalendar = () => {
-    const daysInMonth = getDaysInMonth(currentMonth, currentYear);
-    const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
-    const days = [];
-
-    // Previous month days
-    for (let i = 0; i < firstDay; i++) {
-      const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-      const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-      const daysInPrevMonth = getDaysInMonth(prevMonth, prevYear);
-      const day = daysInPrevMonth - firstDay + i + 1;
-      days.push(
-        <button
-          key={`prev-${day}`}
-          className="w-12 h-12 text-gray-300 hover:bg-gray-50 rounded-lg"
-        >
-          {day}
-        </button>
-      );
-    }
-
-    // Current month days
-    for (let day = 1; day <= daysInMonth; day++) {
-      const isSelected = day === selectedDate;
-      const isTrip = day >= 8 && day <= 10;
-      const isAppointment = day === 5;
-
-      days.push(
-        <button
-          key={day}
-          onClick={() => setSelectedDate(day)}
-          className={`
-            w-12 h-12 rounded-lg font-medium transition-all
-            ${
-              isSelected && isAppointment
-                ? "bg-emerald-500 text-white"
-                : isTrip
-                ? "bg-emerald-100 text-emerald-700 border-2 border-emerald-200"
-                : "text-gray-700 hover:bg-gray-100"
-            }
-          `}
-        >
-          {day}
-        </button>
-      );
-    }
-
-    return days;
-  };
-
-  const navigateMonth = (direction: "prev" | "next") => {
-    if (direction === "prev") {
-      if (currentMonth === 0) {
-        setCurrentMonth(11);
-        setCurrentYear(currentYear - 1);
-      } else setCurrentMonth(currentMonth - 1);
-    } else {
-      if (currentMonth === 11) {
-        setCurrentMonth(0);
-        setCurrentYear(currentYear + 1);
-      } else setCurrentMonth(currentMonth + 1);
-    }
-  };
-
-  const tourism_service = {
+  // ✅ Mock Data
+const tourism_service = {
   name: 'Phuket Trip',
   languages:[
   { name: "English", flag: "🇬🇧" },
@@ -183,8 +81,8 @@ export default function BookingCard({ selectedTrip }: MakeBookingProps) {
     },
     {
       description: "Experience the best of Phuket with our 3-day tour package. Explore the stunning Phi Phi Islands, enjoy a city tour, and visit the iconic James Bond Island. Perfect for a summer holiday filled with relaxation and adventure.",
-      title: "Phuket Go Around",
-      image:"/img/Homepage/hospital3.png",
+      image:"/img/Homepage/Mfu.JPG",
+      title: "Summer Fun",
       duration: 2,
       adult_price: 2000,
       child_price: 1000,
@@ -192,7 +90,7 @@ export default function BookingCard({ selectedTrip }: MakeBookingProps) {
       car_service_price: 900,
       attractions: [{
         name:"Phi Phi Islands",
-        images:["/img/Homepage/hospital3.png","/img/Homepage/hospital4.png","/img/Homepage/hospital5.png"],
+        images:["/img/Homepage/hospital4.png","/img/Homepage/hospital3.png","/img/Homepage/hospital5.png"],
         description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
         highlights: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
         includes:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
@@ -205,9 +103,9 @@ export default function BookingCard({ selectedTrip }: MakeBookingProps) {
           text:"Royal Phuket Marina, 68, Thep Krasattri Rd, Tambon Ko Kaeo, 83000",
           url:"https://www.google.com/maps/@9.5488479,99.9470193,12.86z?hl=en-US&entry=ttu&g_ep=EgoyMDI1MTAwOC4wIKXMDSoASAFQAw%3D%3D"
         }
-      },{
+      }, {
         name:"Phi Phi Islands",
-        images:["/img/Homepage/hospital3.png","/img/Homepage/hospital4.png","/img/Homepage/hospital5.png"],
+        images:["/img/Homepage/hospital3.png","/img/Homepage/hospital5.png","/img/Homepage/hospital3.png"],
         description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
         highlights: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
         includes:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
@@ -221,55 +119,182 @@ export default function BookingCard({ selectedTrip }: MakeBookingProps) {
           url:"https://www.google.com/maps/@9.5488479,99.9470193,12.86z?hl=en-US&entry=ttu&g_ep=EgoyMDI1MTAwOC4wIKXMDSoASAFQAw%3D%3D"
         }
       }],
-      tags: ["Summer", "Holiday", "Relax"],
+      tags: ["Holiday", "Relax"],
+      priceColor: "text-red-500",
+    },
+    {
+      description: "Experience the best of Phuket with our 3-day tour package. Explore the stunning Phi Phi Islands, enjoy a city tour, and visit the iconic James Bond Island. Perfect for a summer holiday filled with relaxation and adventure.",
+      image:"/img/Homepage/hospital4.png",
+      title: "Phuket City",
+      duration: 3,
+      adult_price: 3000,
+      child_price: 1500,
+      guide_price: 2000,
+      car_service_price: 1200,
+      attractions: [{
+        name:"Phi Phi Islands",
+        images:["/img/Homepage/Test.jpg","/img/Homepage/hospital3.png","/img/Homepage/hospital5.png"],
+        description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
+        highlights: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        includes:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        important_info:{
+          not_allowed:["People with back problems","Pregnant","Heart complaints or other serious medical conditions","Epilepsy","Motion sickness"],
+          recommend_to_bring:["Swimwear and towel","Sunscreen and hat","Camera to capture the memories","Cash for personal expenses and tips"],
+          know_before_you_go:["This tour involves a moderate amount of walking, including some uneven surfaces and stairs.","Snorkeling is subject to weather and sea conditions. The operator reserves the right to modify or cancel snorkeling activities for safety reasons.","Please inform us of any dietary restrictions or allergies in advance so we can accommodate your needs.","Children must be accompanied by an adult at all times during the tour."]
+        },
+        location:{
+          text:"Royal Phuket Marina, 68, Thep Krasattri Rd, Tambon Ko Kaeo, 83000",
+          url:"https://www.google.com/maps/@9.5488479,99.9470193,12.86z?hl=en-US&entry=ttu&g_ep=EgoyMDI1MTAwOC4wIKXMDSoASAFQAw%3D%3D"
+        }
+      }, {
+        name:"Phi Phi Islands",
+        images:["/img/Homepage/hospital5.png","/img/Homepage/hospital4.png","/img/Homepage/hospital5.png"],
+        description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
+        highlights: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        includes:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        important_info:{
+          not_allowed:["People with back problems","Pregnant","Heart complaints or other serious medical conditions","Epilepsy","Motion sickness"],
+          recommend_to_bring:["Swimwear and towel","Sunscreen and hat","Camera to capture the memories","Cash for personal expenses and tips"],
+          know_before_you_go:["This tour involves a moderate amount of walking, including some uneven surfaces and stairs.","Snorkeling is subject to weather and sea conditions. The operator reserves the right to modify or cancel snorkeling activities for safety reasons.","Please inform us of any dietary restrictions or allergies in advance so we can accommodate your needs.","Children must be accompanied by an adult at all times during the tour."]
+        },
+        location:{
+          text:"Royal Phuket Marina, 68, Thep Krasattri Rd, Tambon Ko Kaeo, 83000",
+          url:"https://www.google.com/maps/@9.5488479,99.9470193,12.86z?hl=en-US&entry=ttu&g_ep=EgoyMDI1MTAwOC4wIKXMDSoASAFQAw%3D%3D"
+        }
+      }, {
+        name:"Phi Phi Islands",
+        images:["/img/Homepage/hospital4.png","/img/Homepage/hospital4.png","/img/Homepage/hospital5.png"],
+        description:"The Phi Phi Islands are a group of islands located in the Andaman Sea, off the coast of Thailand. They are known for their stunning beaches, crystal-clear waters, and vibrant marine life. The islands are a popular destination for tourists and offer a range of activities such as snorkeling, diving, and island hopping.",
+        highlights: ["Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun.","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        includes:["Hotel pickup and drop-off by air-conditioned vehicle","Speedboat transfer to and from Phi Phi Islands","Professional English-speaking guide","Snorkeling equipment and life jackets","Bottled water and refreshments on board","Experience the thrill of a speedboat to the stunning Phi Phi Islands","Snorkel in crystal-clear waters teeming with vibrant marine life.","Relax on pristine beaches and soak up the tropical sun."],
+        important_info:{
+          not_allowed:["People with back problems","Pregnant","Heart complaints or other serious medical conditions","Epilepsy","Motion sickness"],
+          recommend_to_bring:["Swimwear and towel","Sunscreen and hat","Camera to capture the memories","Cash for personal expenses and tips"],
+          know_before_you_go:["This tour involves a moderate amount of walking, including some uneven surfaces and stairs.","Snorkeling is subject to weather and sea conditions. The operator reserves the right to modify or cancel snorkeling activities for safety reasons.","Please inform us of any dietary restrictions or allergies in advance so we can accommodate your needs.","Children must be accompanied by an adult at all times during the tour."]
+        },
+        location:{
+          text:"Royal Phuket Marina, 68, Thep Krasattri Rd, Tambon Ko Kaeo, 83000",
+          url:"https://www.google.com/maps/@9.5488479,99.9470193,12.86z?hl=en-US&entry=ttu&g_ep=EgoyMDI1MTAwOC4wIKXMDSoASAFQAw%3D%3D"
+        }
+      }],
+      tags: ["Holiday", "Relax"],
       priceColor: "text-red-500",
     },
   ]
 };
 
+  // Use the passed appointment date or default
+  const actualAppointmentDate = appointmentDate || new Date(2025, 10, 5);
+  const tripDuration = selectedTrip?.duration || 3;
+
+  // Update calendar month when appointment date changes
+  useEffect(() => {
+    if (appointmentDate) {
+      setCalendarMonth(new Date(appointmentDate.getFullYear(), appointmentDate.getMonth()));
+    }
+  }, [appointmentDate]);
+
+  const monthNames = [
+    "January","February","March","April","May","June",
+    "July","August","September","October","November","December"
+  ];
+  const daysOfWeek = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+  const isSameDay = (date1: Date, date2: Date) =>
+    date1.getDate() === date2.getDate() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getFullYear() === date2.getFullYear();
+
+  const getDaysInMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    return { daysInMonth: lastDay.getDate(), startingDayOfWeek: firstDay.getDay() };
+  };
+  
+  const isConflict = (day: Date) => {
+    const tripStart = day;
+    const tripEnd = new Date(day.getTime() + tripDuration * 86400000 - 1);
+    return actualAppointmentDate >= tripStart && actualAppointmentDate <= tripEnd;
+  };
+
+  const renderCalendar = (): React.ReactNode[] => {
+    const { daysInMonth, startingDayOfWeek } = getDaysInMonth(calendarMonth);
+    const days: React.ReactNode[] = [];
+    const today = new Date();
+
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(<div key={`empty-${i}`} className="w-12 h-12" />);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const currentDate = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), day);
+      const isAppointment = isSameDay(currentDate, actualAppointmentDate);
+      const isPast = currentDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const isTripDay = selectedDate && currentDate >= selectedDate && currentDate < new Date(selectedDate.getTime() + tripDuration*86400000);
+      const isTripStart = selectedDate && isSameDay(currentDate, selectedDate);
+      const hasConflict = isConflict(currentDate);
+
+      days.push(
+        <button
+          key={day}
+          onClick={() => { if (!isPast && !isAppointment && !hasConflict) setSelectedDate(currentDate); }}
+          disabled={isPast || isAppointment || hasConflict}
+          className={
+            `w-12 h-12 rounded-lg flex items-center justify-center font-medium transition-colors
+            ${isAppointment ? "bg-emerald-500 text-white" : ""}
+            ${hasConflict ? "text-red-400 cursor-not-allowed" : ""}
+            ${isTripDay ? "bg-emerald-100 text-emerald-700 border-2 border-emerald-300" : ""}
+            ${isTripStart ? "bg-emerald-300 text-emerald-700" : ""}
+            ${!isAppointment && !isTripDay && !isPast && !hasConflict ? "hover:bg-gray-100 text-gray-700" : ""}
+            ${isPast ? "text-gray-300 cursor-not-allowed" : "cursor-pointer"}
+          `}
+        >
+          {day}
+        </button>
+      );
+    }
+
+    return days;
+  };
+
+  const changeMonth = (direction: number) => {
+    const newMonth = new Date(calendarMonth);
+    newMonth.setMonth(calendarMonth.getMonth() + direction);
+    setCalendarMonth(newMonth);
+  };
 
   return (
     <div>
       <h1 className="my-5 text-2xl font-bold text-gray-900">Make a Booking</h1>
 
-      {/* === Date Section === */}
       <div className="max-w-md mx-auto bg-white rounded-3xl shadow-lg p-6 space-y-6 border-2 border-gray-200">
         <div className="flex items-center justify-between">
           <span className="text-lg font-semibold text-gray-900">Select Date</span>
           <ChevronDown
             onClick={() => setShowDateSection(!showDateSection)}
-            className={`w-5 h-5 text-emerald-500 cursor-pointer transition-transform ${
-              showDateSection ? "rotate-180" : ""
-            }`}
+            className={`w-5 h-5 text-emerald-500 cursor-pointer transition-transform ${showDateSection ? "rotate-180" : ""}`}
           />
         </div>
 
         {showDateSection && (
           <>
             <div className="flex items-center justify-between my-6">
-              <button
-                onClick={() => navigateMonth("prev")}
-                className="p-2 hover:bg-gray-200 rounded-lg"
-              >
+              <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-gray-200 rounded-lg">
                 <ChevronLeft className="w-5 h-5 text-gray-600" />
               </button>
               <h2 className="text-xl font-semibold text-gray-900">
-                {months[currentMonth]} {currentYear}
+                {monthNames[calendarMonth.getMonth()]} {calendarMonth.getFullYear()}
               </h2>
-              <button
-                onClick={() => navigateMonth("next")}
-                className="p-2 hover:bg-gray-200 rounded-lg"
-              >
+              <button onClick={() => changeMonth(1)} className="p-2 hover:bg-gray-200 rounded-lg">
                 <ChevronRight className="w-5 h-5 text-gray-600" />
               </button>
             </div>
 
             <div className="grid grid-cols-7 gap-2 mb-2">
               {daysOfWeek.map((day) => (
-                <div
-                  key={day}
-                  className="text-center text-sm font-medium text-gray-500 py-2"
-                >
+                <div key={day} className="text-center text-sm font-medium text-gray-500 py-2">
                   {day}
                 </div>
               ))}
@@ -277,25 +302,29 @@ export default function BookingCard({ selectedTrip }: MakeBookingProps) {
 
             <div className="grid grid-cols-7 gap-2">{renderCalendar()}</div>
 
-            <div className="mt-4 space-y-2 text-black">
-              <div className="text-sm">
-                <span className="font-semibold">Appointment Date: </span>
-                <span>
-                  {selectedDate} {months[currentMonth]} {currentYear}
-                </span>
+            {selectedDate && (
+              <div className="mt-4 space-y-2 text-black text-sm">
+                <div>
+                  <span className="font-semibold">Appointment Date: </span>
+                  <span>
+                    {actualAppointmentDate.getDate()} {monthNames[actualAppointmentDate.getMonth()]} {actualAppointmentDate.getFullYear()}
+                  </span>
+                </div>
+                <div>
+                  <span className="font-semibold">Trip Date: </span>
+                  <span>
+                    {tripDuration === 1
+                      ? `${selectedDate.getDate()} ${monthNames[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`
+                      : `${selectedDate.getDate()} - ${new Date(selectedDate.getTime() + (tripDuration - 1) * 86400000).getDate()} ${monthNames[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`}
+                  </span>
+                </div>
               </div>
-              <div className="text-sm">
-                <span className="font-semibold">Trip Date: </span>
-                <span>
-                  8 - 10 {months[currentMonth]} {currentYear}
-                </span>
-              </div>
-            </div>
+            )}
           </>
         )}
       </div>
 
-{/* === Language Section === */}
+      {/* === Language Section === */}
 <div className="max-w-md mx-auto bg-white rounded-3xl shadow-lg p-6 border-2 border-gray-200 mt-5">
   <div className="flex items-center justify-between">
     <span className="text-lg font-semibold text-gray-900">
@@ -575,6 +604,8 @@ export default function BookingCard({ selectedTrip }: MakeBookingProps) {
           </>
         )}
       </div>
+
+      
     </div>
   );
 }

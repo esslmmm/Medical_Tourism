@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import { ChevronLeft, ChevronRight, ChevronDown, X, Plus, Minus } from 'lucide-react';
 
 interface MakeAppointmentProps {
-  onNextStep?: () => void;
+  onNextStep?: (date: Date) => void;
 }
 
 const MakeAppointment: React.FC<MakeAppointmentProps> = ({ onNextStep }) => {
@@ -110,6 +110,12 @@ const MakeAppointment: React.FC<MakeAppointmentProps> = ({ onNextStep }) => {
   };
 
   const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  const handleNextStep = () => {
+    if (onNextStep && isPolicyChecked) {
+      onNextStep(selectedDate);
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -272,34 +278,32 @@ const MakeAppointment: React.FC<MakeAppointmentProps> = ({ onNextStep }) => {
             </div>
           </>
         )}
+        
         {/* Next Step */}
-           <button
-  onClick={() => {
-    if (onNextStep) onNextStep();
-  }}
-  disabled={!isPolicyChecked}
-  className={`w-full bg-emerald-500 text-white font-semibold py-4 rounded-2xl transition-colors 
-    ${!isPolicyChecked ? 'opacity-50 cursor-not-allowed' : 'hover:bg-emerald-600'}`}
->
-  Next Step
-</button>
+        <button
+          onClick={handleNextStep}
+          disabled={!isPolicyChecked}
+          className={`w-full bg-emerald-500 text-white font-semibold py-4 rounded-2xl transition-colors 
+            ${!isPolicyChecked ? 'opacity-50 cursor-not-allowed' : 'hover:bg-emerald-600'}`}
+        >
+          Next Step
+        </button>
 
         {/* Policy */}
-            <div className="flex items-start mt-4">
-              <input
-  type="checkbox"
-  id="policy"
-  className="form-checkbox text-emerald-500 rounded-lg h-5 w-5 mr-2"
-  checked={isPolicyChecked}
-  onChange={(e) => setIsPolicyChecked(e.target.checked)}
-/>
-              <label htmlFor="policy" className="text-gray-600 text-sm">
-                This package covers appointment arrangements only. All medical expenses and related costs must be paid directly to the hospital.
-              </label>
-            </div>
+        <div className="flex items-start mt-4">
+          <input
+            type="checkbox"
+            id="policy"
+            className="form-checkbox text-emerald-500 rounded-lg h-5 w-5 mr-2"
+            checked={isPolicyChecked}
+            onChange={(e) => setIsPolicyChecked(e.target.checked)}
+          />
+          <label htmlFor="policy" className="text-gray-600 text-sm">
+            This package covers appointment arrangements only. All medical expenses and related costs must be paid directly to the hospital.
+          </label>
+        </div>
       </div>
       
-
       <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar { display: none; }
       `}</style>

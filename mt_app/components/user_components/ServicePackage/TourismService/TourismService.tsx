@@ -16,6 +16,10 @@ import { Car, Plane, X } from 'lucide-react';
 import MakeBooking from '@/components/user_components/ServicePackage/TourismService/MakeBooking';
 import TripList from './TripList';
 
+interface TourismServiceProps {
+  appointmentDate?: Date | null;
+}
+
 // ✅ Mock Data
 const tourism_service = {
   name: 'Phuket Trip',
@@ -244,7 +248,7 @@ const tourism_service = {
     }
   ];
 
-const TourismService = () => {
+const TourismService: React.FC<TourismServiceProps> = ({ appointmentDate }) => {
   const [selectedTrip, setSelectedTrip] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState('Description');
     const [showAll, setShowAll] = useState(false);
@@ -579,8 +583,8 @@ const TourismService = () => {
           {/* Booking Sidebar */}
           <div className='lg:col-span-1'>
             <div className='sticky top-10'>
-              <MakeBooking selectedTrip={selectedTrip} />
-            </div>
+              <MakeBooking selectedTrip={selectedTrip} appointmentDate={appointmentDate} />
+         </div>
           </div>
         </div>
       </div>

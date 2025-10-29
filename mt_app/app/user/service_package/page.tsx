@@ -9,6 +9,12 @@ import Footer from "@/components/user_components/Main/Footer"
 
 const ServicePackage = () => {
   const [selectedService, setSelectedService] = useState<"medical" | "tourism">("medical")
+  const [appointmentDate, setAppointmentDate] = useState<Date | null>(null)
+
+  const handleNextStep = (date: Date) => {
+    setAppointmentDate(date)
+    setSelectedService("tourism")
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -44,7 +50,11 @@ const ServicePackage = () => {
         </div>
 
         {/* Conditional Rendering */}
-        {selectedService === "medical" ? <MedicalPackage onNextStep={() => setSelectedService("tourism")} /> : <TourismPackage />}
+        {selectedService === "medical" ? (
+          <MedicalPackage onNextStep={handleNextStep} />
+        ) : (
+          <TourismPackage appointmentDate={appointmentDate} />
+        )}
       </div>
       <Footer />
     </div>
