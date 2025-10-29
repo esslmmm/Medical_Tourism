@@ -29,7 +29,7 @@ const medical_service = {
     'Cosmetic dental procedures',
     'Professional teeth cleaning'
   ],
-  hospital: {
+  provider: {
     name: "Bangkok Hospital Phuket",
     image: "/img/Homepage/Test.jpg",
     location: {

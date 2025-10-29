@@ -19,8 +19,8 @@ const medical_service = {
     'Cosmetic dental procedures',
     'Professional teeth cleaning'
   ],
-  hospital: {
-    name: "Bangkok Hospital Phuket",
+  provider: {
+    name: "Bangkok provider Phuket",
     image: "/img/Homepage/Test.jpg",
     location: {
       address: "Hongyok, Hongyokutis Rd, Taladyai, Muang, Phuket, Thailand",
@@ -35,7 +35,7 @@ const medical_service = {
       "Colorectal Deseases",
       "Brain",
     ],
-    detailLinkText: "/user/Hospital/745f7b01-f313-40bb-8c45-8568a544e03d"
+    detailLinkText: "/user/provider/745f7b01-f313-40bb-8c45-8568a544e03d"
   },
   available_languages: [
     { language: 'Saudi Arabia', flag: '🇸🇦' },
@@ -73,25 +73,25 @@ const medical_service = {
   ]
 };
 
-const Hospital = () => {
-    const displayedCenters = medical_service.hospital.centersAndClinics.slice(0, 3);
-    const remainingCount = medical_service.hospital.centersAndClinics.length - 3;
+const provider = () => {
+    const displayedCenters = medical_service.provider.centersAndClinics.slice(0, 3);
+    const remainingCount = medical_service.provider.centersAndClinics.length - 3;
   return (
     <div>
-            <h2 className="text-2xl font-bold mb-4 text-black">Hospital</h2>
+            <h2 className="text-2xl font-bold mb-4 text-black">provider</h2>
             <div className="bg-white overflow-hidden">
               <Image
-                src={medical_service.hospital.image}
-                alt={medical_service.hospital.name}
+                src={medical_service.provider.image}
+                alt={medical_service.provider.name}
                 width={773}
                 height={434}
                 className="w-full object-cover rounded-lg"
               />
               <div className="pt-5">
-                <h3 className="text-xl font-bold mb-4 text-black">{medical_service.hospital.name}</h3>
+                <h3 className="text-xl font-bold mb-4 text-black">{medical_service.provider.name}</h3>
                 <div className="mb-4">
                   <h4 className="font-bold mb-2 text-black">📍 Location</h4>
-                  <p className="text-black">{medical_service.hospital.location.address}</p>
+                  <p className="text-black">{medical_service.provider.location.address}</p>
                 </div>
 
                 <div className="mb-4">
@@ -111,7 +111,7 @@ const Hospital = () => {
                 </div>
 
                 <Link
-                  href={medical_service.hospital.detailLinkText}
+                  href={medical_service.provider.detailLinkText}
                   className="inline-flex items-center gap-2 border border-teal-500 text-teal-500 font-semibold px-5 py-2.5 rounded-full shadow-md hover:text-white hover:bg-teal-600 transition-all duration-200"
                 >
                   View More Details
@@ -121,4 +121,4 @@ const Hospital = () => {
           </div>
   )
 }
-export default Hospital
+export default provider
