@@ -88,7 +88,7 @@ const tabs = [
   'Service',
   'Facilities',
   'Available Language',
-  'Hospital',
+  'Provider',
   'Frequently asked questions',
   'Recommended Packages',
   'Review'
@@ -223,7 +223,7 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
             <Languages />
 
           {/* Hospital */}
-          <div id="hospital">
+          <div id="provider">
           </div>
             <Hospital />
 
