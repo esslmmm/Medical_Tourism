@@ -5,20 +5,14 @@ import Image from 'next/image';
 import { 
   CheckIcon, 
   StarIcon, 
-  ChevronDownIcon, 
-  ChevronUpIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  PhoneIcon,
-  PaperClipIcon,
-  EnvelopeIcon,
-  ChatBubbleBottomCenterTextIcon,
-  MapIcon
 } from '@heroicons/react/24/solid';
 import { X } from 'lucide-react';
-import MakeAppointment from './MakeAppointment';
+import MakeAppointment from './MedicalServiceComponent/MakeAppointment';
 import Link from 'next/link';
 import FAQ from './MedicalServiceComponent/FAQ';
+import Facilities from './MedicalServiceComponent/Facilities';
 
 const medical_package = {
   name: 'Medical Check-up',
@@ -63,13 +57,6 @@ const medical_package = {
   ]
 };
 
-const facilities = [
-  { icon: MapIcon, title: 'Hospital\npick-up & drop-off' },
-  { icon: EnvelopeIcon, title: 'Invitation Letter' },
-  { icon: ChatBubbleBottomCenterTextIcon, title: 'Coordinator' },
-  { icon: PhoneIcon, title: 'Post-treatment\nfollow-up' },
-  { icon: PaperClipIcon, title: 'Diagnostic\nTests & Lab Reports' }
-];
 
 const reviews = [
   {
@@ -285,22 +272,7 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
           </div>
 
           {/* Facilities */}
-          <div>
-            <h2 className="text-2xl font-bold mb-4 text-black">Facilities</h2>
-            <div className="bg-white p-10 border border-gray-300 rounded-2xl shadow-lg">
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-                {facilities.map((facility, index) => {
-                  const IconComponent = facility.icon;
-                  return (
-                    <div key={index} className="text-center">
-                      <IconComponent className="w-6 h-6 mx-auto mb-2 text-teal-500" />
-                      <p className="text-xs font-bold whitespace-pre-line text-black">{facility.title}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
+          <Facilities />
 
           {/* Languages */}
           <div>
