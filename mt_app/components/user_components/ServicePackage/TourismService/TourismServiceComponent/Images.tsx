@@ -1,19 +1,7 @@
-"use client"
+import Image from 'next/image';
+import React, { useState } from 'react';
+import { X } from 'lucide-react';
 
-import React, { useState, useRef, useEffect } from 'react';
-import {ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
-import MakeBooking from '@/components/user_components/ServicePackage/TourismService/TourismServiceComponent/MakeBooking';
-import TripList from './TourismServiceComponent/TripList';
-import FAQ from './TourismServiceComponent/FAQ';
-import Facilities from './TourismServiceComponent/Facilities';
-import Reviews from './TourismServiceComponent/Reviews';
-import Images from './TourismServiceComponent/Images';
-
-interface TourismServiceProps {
-  appointmentDate?: Date | null;
-}
-
-// ✅ Mock Data
 const tourism_service = {
   name: 'Phuket Trip',
   languages:[
@@ -202,150 +190,105 @@ const tourism_service = {
   ]
 };
 
-const TourismService: React.FC<TourismServiceProps> = ({ appointmentDate }) => {
-  const [selectedTrip, setSelectedTrip] = useState<any | null>(null);
-    const [activeTab, setActiveTab] = useState('Description');
-    const [showLeftArrow, setShowLeftArrow] = useState(false);
-    const [showRightArrow, setShowRightArrow] = useState(true);
-    const tabsContainerRef = useRef<HTMLDivElement>(null);
+const Images = () => {
+        const [showAll, setShowAll] = useState(false);
+        const [selectedImage, setSelectedImage] = useState(
+          tourism_service.images.length > 0 ? tourism_service.images[0] : null
+        );
+const previewImages = tourism_service.images.slice(0, 3);
+  const remainingImages = tourism_service.images.slice(3);
 
-    const tabs = [
-  'Description',
-  'Trips',
-  'Facilities',
-  'Frequently asked questions',
-  'Review'
-];
-
-  // Handle scroll behavior
-    const handleScroll = () => {
-      if (tabsContainerRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = tabsContainerRef.current;
-        setShowLeftArrow(scrollLeft > 0);
-        setShowRightArrow(scrollLeft + clientWidth < scrollWidth - 5);
-      }
-    };
   
-    const handleScrollLeft = () => {
-      tabsContainerRef.current?.scrollBy({ left: -150, behavior: 'smooth' });
-    };
-  
-    const handleScrollRight = () => {
-      tabsContainerRef.current?.scrollBy({ left: 150, behavior: 'smooth' });
-    };
-  
-    useEffect(() => {
-      const ref = tabsContainerRef.current;
-      if (!ref) return;
-      ref.addEventListener('scroll', handleScroll);
-      handleScroll(); // initialize
-      return () => ref.removeEventListener('scroll', handleScroll);
-    }, []);
-  
-    const handleTabClick = (tab: string) => {
-      const sectionId = tab.replace(/\s+/g, '-').toLowerCase();
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-      setActiveTab(tab);
-    };
   return (
-
-      <div className="">
-           {/* Header */}
-              <h1 className="text-4xl font-bold text-black mt-5">{tourism_service.name}</h1>
+    <div>
+        <div className="mt-5">
+                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 relative">
+                        <div className="lg:col-span-2 relative">
+                          <Image
+                            src={previewImages[0].url}
+                            alt={previewImages[0].alt}
+                            width={800}
+                            height={400}
+                            className="w-full h-full object-cover rounded-l-2xl"
+                          />
+                        </div>
               
+                        <div className="flex flex-col gap-4 relative">
+                          {previewImages.slice(1, 3).map((img, i) => (
+                            <div key={i} className="relative">
+                              <Image
+                                src={img.url}
+                                alt={img.alt}
+                                width={400}
+                                height={200}
+                                className={`w-full h-full object-cover ${
+                                  i === 0 ? "rounded-tr-2xl" : "rounded-br-2xl"
+                                }`}
+                              />
+                              {i === 1 && remainingImages.length > 0 && (
+                                <button
+                                  onClick={() => setShowAll(true)}
+                                  className="absolute bottom-4 right-4 bg-white bg-opacity-50 text-teal-500 px-3 py-1 rounded border-teal-500 border text-sm font-bold hover:bg-opacity-70 hover:text-white hover:bg-teal-500 transition"
+                                >
+                                  See all photos
+                                </button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
               
-              {/* Images */}
-              <Images />
+                      {/* Modal */}
+                      {showAll && (
+                        <div className="fixed inset-0 backdrop-blur-xs bg-opacity-70 flex items-center justify-center z-50">
+                          <div className="bg-white rounded-2xl p-6 max-w-5xl w-full relative overflow-y-auto max-h-[90vh] border border-gray-300">
+                            <button
+                              onClick={() => setShowAll(false)}
+                              className="absolute top-3 right-3 flex items-center justify-center text-gray-500 hover:text-gray-700"
+                            >
+                              <X className=" w-8 h-8 " />
+                            </button>
+              
+                            <h2 className="text-xl font-semibold mb-4 text-black">All Photos</h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8 ">
-          <div className="lg:col-span-2 space-y-8">
-            {/* Tabs Section */}
-          <div className="sticky top-0 z-40 bg-white border-b border-gray-200 flex items-center">
-            {/* Chevron Left */}
-            {showLeftArrow && (
-              <button
-                onClick={handleScrollLeft}
-                className="p-2 text-gray-500 hover:text-gray-700"
-                aria-label="Scroll left"
-              >
-                <ChevronLeftIcon className="h-5 w-5" />
-              </button>
-            )}
-
-            {/* Tabs */}
-            <div
-              ref={tabsContainerRef}
-              className="flex gap-6 overflow-x-auto scrollbar-hide px-4 py-3 snap-x snap-mandatory flex-1"
-            >
-              {tabs.map((tab) => (
-                <button
-                  key={tab}
-                  className={`pb-2 border-b-2 px-2 transition-colors whitespace-nowrap text-sm md:text-base snap-start ${
-                    activeTab === tab
-                      ? 'border-teal-500 text-teal-600 font-semibold'
-                      : 'border-transparent text-gray-500 hover:text-gray-700'
-                  }`}
-                  onClick={() => handleTabClick(tab)}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-
-            {/* Chevron Right */}
-            {showRightArrow && (
-              <button
-                onClick={handleScrollRight}
-                className="p-2 text-gray-500 hover:text-gray-700"
-                aria-label="Scroll right"
-              >
-                <ChevronRightIcon className="h-5 w-5" />
-              </button>
-            )}
-          </div>
-
-            {/* Description */}
-            <section id="description">
-          <h2 className="text-2xl font-bold mb-4 text-black">Description</h2>
-          <p className="text-gray-700 leading-relaxed">
-            {tourism_service.description}
-          </p>
-        </section>
-
-        {/* TripList */}
-        <section id="trips">
-          <TripList onTripSelect={setSelectedTrip} />
-        </section>
-
-        {/* Facilites */}
-        <section id="facilities">
-          <Facilities />
-        </section>
-
-        {/* FAQ */}
-        <section id="frequently-asked-questions">
-          <FAQ />
-        </section>
-
-        {/* Reviews */}
-        <section id="review">
-          <Reviews />
-        </section>
-
-     </div>
-
-          {/* Booking Sidebar */}
-          <div className='lg:col-span-1'>
-            <div className='sticky top-10'>
-              <MakeBooking selectedTrip={selectedTrip} appointmentDate={appointmentDate} />
-         </div>
-          </div>
-        </div>
-      </div>
-  );
-};
-
-export default TourismService; 
+                            {selectedImage && (
+                              <div className="mb-4 w-full flex justify-center">
+                                <Image
+                                  src={selectedImage.url}
+                                  alt={selectedImage.alt}
+                                  width={600}
+                                  height={400}
+                                  className="w-full max-w-4xl h-auto object-cover rounded-lg"
+                                />
+                              </div>
+                            )}
+              
+                            <div className="flex gap-4 overflow-x-auto py-2">
+                              {tourism_service.images.map((img, i) => (
+                                <button
+                                  key={i}
+                                  onClick={() => setSelectedImage(img)}
+                                  className={`flex-shrink-0 border-2 rounded-lg overflow-hidden ${
+                                    selectedImage!.url === img.url
+                                      ? "border-teal-500"
+                                      : "border-transparent"
+                                  }`}
+                                >
+                                  <Image
+                                    src={img.url}
+                                    alt={img.alt}
+                                    width={150}
+                                    height={100}
+                                    className="w-[150px] h-auto object-cover"
+                                  />
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+    </div>
+  )
+}
+export default Images

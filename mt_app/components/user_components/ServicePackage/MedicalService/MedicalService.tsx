@@ -146,7 +146,7 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ onNextStep }) => {
       {/* Images */}
       <Images />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-5">
         <div className="lg:col-span-2 space-y-8">
           {/* Tabs Section */}
           <div className="sticky top-0 z-40 bg-white border-b border-gray-200 flex items-center">
