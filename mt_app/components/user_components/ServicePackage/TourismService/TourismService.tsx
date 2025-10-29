@@ -2,9 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { 
-  StarIcon, 
-} from '@heroicons/react/24/solid';
+
 import { X } from 'lucide-react';
 import MakeBooking from '@/components/user_components/ServicePackage/TourismService/TourismServiceComponent/MakeBooking';
 import TripList from './TourismServiceComponent/TripList';
@@ -205,39 +203,6 @@ const tourism_service = {
   ]
 };
 
-  const recommendedPackages = [
-    {
-      title: 'Metal Health Package',
-      price: '฿2,000',
-      originalPrice: '฿4,000',
-      discount: '50% OFF',
-      rating: 4.8,
-      reviews: '(180 reviews) from 150+ booked',
-      category: 'Medical Package',
-      image: '/img/Homepage/Test.jpg'
-    },
-    {
-      title: 'Dental Package',
-      price: '฿2,000',
-      originalPrice: '฿4,000',
-      discount: '50% OFF',
-      rating: 4.8,
-      reviews: '(180 reviews) from 150+ booked',
-      category: 'Medical Package',
-      image: '/img/Homepage/Test.jpg'
-    },
-    {
-      title: 'Physical Therapy Package',
-      price: '฿2,000',
-      originalPrice: '฿4,000',
-      discount: '50% OFF',
-      rating: 4.8,
-      reviews: '(180 reviews) from 150+ booked',
-      category: 'Medical Tourism Package',
-      image: '/img/Homepage/Test.jpg'
-    }
-  ];
-
 const TourismService: React.FC<TourismServiceProps> = ({ appointmentDate }) => {
   const [selectedTrip, setSelectedTrip] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState('Description');
@@ -394,47 +359,6 @@ const TourismService: React.FC<TourismServiceProps> = ({ appointmentDate }) => {
 
             {/* FAQ */}
             <FAQ />
-
-
-            {/* Recommended Packages */}
-            <div>
-              <h2 className="text-2xl font-bold mb-6 text-black">Recommended Package</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {recommendedPackages.map((pkg, index) => (
-                  <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm">
-                    <Image
-                      src={pkg.image}
-                      alt={pkg.title}
-                      width={269}
-                      height={186}
-                      className="w-full object-cover"
-                    />
-                    <div className="p-4">
-                      <h3 className="font-bold text-xl mb-2 text-black">{pkg.title}</h3>
-                      <div className="mb-2">
-                        <span className="bg-teal-100 text-teal-600 px-3 py-1 rounded text-xs font-bold">
-                          {pkg.category}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 mb-2 text-xs">
-                        <StarIcon className="w-4 h-4 text-yellow-400" />
-                        <span className="font-bold text-black">{pkg.rating}</span>
-                        <span className="text-gray-600">{pkg.reviews}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-gray-500 line-through">{pkg.originalPrice}</span>
-                          <span className="bg-red-100 text-red-600 px-2 py-1 rounded text-xs font-bold">
-                            {pkg.discount}
-                          </span>
-                        </div>
-                        <span className="text-red-600 text-xs font-bold">{pkg.price}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
 
             {/* Reviews */}
             <Reviews />
