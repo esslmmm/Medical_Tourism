@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import { Calendar, Clock, Users, ChevronDown, Search, Heart, Activity, Bone, ClipboardCheck, Scissors, Smile, Eye, Baby, Brain, Star, MapPin, ChevronRight, Globe } from 'lucide-react';
+import Footer from '@/components/user_components/Main/Footer';
 
 export default function MedicalTourismHome() {
   const [activeTab, setActiveTab] = useState('medical-service');
@@ -142,7 +143,7 @@ export default function MedicalTourismHome() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Navbar */}
       <nav className="bg-teal-500 text-white px-6 py-4 flex justify-between items-center">
         <div className="text-xl font-bold">
@@ -411,6 +412,8 @@ export default function MedicalTourismHome() {
           ))}
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }
