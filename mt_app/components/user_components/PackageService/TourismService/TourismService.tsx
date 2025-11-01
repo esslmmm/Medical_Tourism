@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import {ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
-import MakeBooking from '@/components/user_components/ServicePackage/TourismService/TourismServiceComponent/MakeBooking';
+import MakeBooking from '@/components/user_components/PackageService/TourismService/TourismServiceComponent/MakeBooking';
 import TripList from './TourismServiceComponent/TripList';
 import FAQ from './TourismServiceComponent/FAQ';
 import Facilities from './TourismServiceComponent/Facilities';
