@@ -16,25 +16,26 @@ export async function GET() {
 // POST request - Create a new appointment along with patient details
 export async function POST(req: Request) {
   try {
-    const { date, timeslot, description, patient_id, status, patient } = await req.json()
+    const { date, description, timeslot, child, adult, status, patient } = await req.json()
 
     const newAppointment = await prisma.appointments.create({
       data: {
         date,
         timeslot,
+        child,
+        adult,
         description,
-        patient_id,
         status,
-        patient_details: {
-          create: {
-            firstname: patient.firstname,
-            lastname: patient.lastname,
-            gender: patient.gender,
-            dateofbirth: patient.dateofbirth,
-            nationality: patient.nationality,
-            passport_number: patient.passport_number,
-          },
-        },
+        // patient_details: {
+        //   create: {
+        //     firstname: patient.firstname,
+        //     lastname: patient.lastname,
+        //     gender: patient.gender,
+        //     dateofbirth: patient.dateofbirth,
+        //     nationality: patient.nationality,
+        //     passport_number: patient.passport_number,
+        //   },
+        // },
       }
     });
 

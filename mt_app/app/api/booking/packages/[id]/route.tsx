@@ -19,59 +19,74 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     const packageBookingId = resolvedParams.id;
       const packageBooking = await prisma.package_bookings.findUnique({
         where: { booking_id: packageBookingId },
-        include: {
+        select: {
+          price: true,
+          user_id: true,
           user: true,
-          packages: true,
-          tourism_bookings:{
-            include: {
-              trips:{
-                include:{
-                  package_places:{
-                    include: {
-                      places: true
-                    }
-                  }
+          packages: {
+            select:{
+              image: true,
+              package_name: true,
+              package_type: true,
+              hospitals:{
+                select:{
+                  name: true,
+                  image: true,
+                  logo: true,
                 }
               }
             }
           },
+          tourism_bookings:{
+            select: {
+                child: true,
+                adult: true,
+                start: true,
+                end: true,
+                guide_bookings: true,
+                routes:{
+                  select:{
+                    title: true,
+                    description: true,
+                    image: true,
+                    tags: true,
+                    attractions:{
+                      select:{
+                        places:{
+                          select:{
+                            name: true,
+                            description: true,
+                            location: true,
+                            image: true,
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+          },
           appointments: {
-            include: {
+            select: {
+              child: true,
+              adult: true,
+              date: true,
+              timeslot: true,
+              description: true,
               appointment_files: {
-                include: {
+                select: {
                   files: true,
                 }
               }
             }
           },
-          hotel_bookings: {
-            include: {
-              hotels:{
-                select: {
-                  name: true,
-                  image: true,
-                  check_in_time: true,
-                  contact_info: true
-                }
-              },
-              room_aggregate: {
-                include: {
-                  hotel_rooms: true
-                }
-              }
-            }
-          },
-          user_contact_detail: true,
-          guide_bookings: {
-            include: {
-              guides: {
-                select: {
-                  name: true,
-                  image: true,
-                  language: true,
-                  phone: true
-                }
-              }
+          user_contact_detail: {
+            select: {
+              phone: true,
+              firstname: true,
+              lastname: true,
+              email: true,
+              country: true,
             }
           },
           payment: true,
@@ -101,9 +116,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
         package_id,
         tourism_booking_id,
         appointment_id,
-        hotel_booking_id,
         contact_id,
-        guide_booking_id,
         status,
       } = await req.json();
       
@@ -116,9 +129,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
             package_id,
             tourism_booking_id,
             appointment_id,
-            hotel_booking_id,
             contact_id,
-            guide_booking_id,
             status,
           },
       })

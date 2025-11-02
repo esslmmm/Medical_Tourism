@@ -15,11 +15,11 @@ export async function GET() {
 // POST request - Create a new guide booking
 export async function POST(req: Request) {
   try {
-    const { guide_id, start, end, status } = await req.json()
+    const { language, start, end, status } = await req.json()
 
     const newGuideBooking = await prisma.guide_bookings.create({
       data: {
-        guide_id,
+        language,
         start,
         end,
         status,

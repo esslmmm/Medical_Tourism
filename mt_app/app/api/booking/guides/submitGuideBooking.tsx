@@ -1,8 +1,8 @@
 
 export async function submitGuideBooking(data: {
-    guide_id: number;
-    start: null;
-    end: null;
+    language: string;
+    start: Date | null;
+    end: Date | null;
     status: string;
 }) {
   try {

@@ -28,11 +28,11 @@ const ContactDetails = () => {
               <div className="grid grid-cols-2 gap-4 text-gray-600">
                   <div>
                       <p className="font-medium">First Name</p>
-                      <p>{form.patient.firstname}</p>
+                      <p>{form.contact.firstname}</p>
                   </div>
                   <div>
                       <p className="font-medium">Last Name</p>
-                      <p>{form.patient.lastname}</p>
+                      <p>{form.contact.lastname}</p>
                   </div>
                   <div>
                       <p className="font-medium">Country</p>

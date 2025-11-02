@@ -12,21 +12,60 @@ export async function GET(request: Request, { params }: { params: { id: string }
       // Fetch package along with associated data
       const packageData = await prisma.packages.findUnique({
         where: { package_id },
-        include: {
-          package_guides: true,
-          package_doc: true,
-          package_hotels: true,
-          routes:{
-            include: {
-                trips: {
-                    include: {
-                      package_places: {
-                        include: {
-                            places: true
+        select: {
+          package_name: true,
+          package_type: true,
+          detail: true,
+          hospitals: true,
+          trips: {
+            include:{
+              languages: true,
+              images: true,
+              Trip_Routes: {
+                select:{
+                  routes:{
+                    select:{
+                      route_id: true,
+                      description: true,
+                      duration: true,
+                      title: true,
+                      image: true,
+                      adult_price: true,
+                      child_price: true,
+                      guide_price: true,
+                      car_service_price: true,
+                      tags: {
+                        select:{
+                          tag_id: true,
+                          tag: true,
+                        }
+                      },
+                      attractions:{
+                        select:{
+                          places: {
+                            select:{
+                              name: true,
+                              image: true,
+                              description: true,
+                                location: true,
+                                place_image: true,
+                                includes: true,
+                                highlights: true,
+                                important_info:{
+                                  include:{
+                                    not_allowed: true,
+                                    recommend_to_bring: true,
+                                    know_before_you_go: true
+                                  }
+                                }
+                            },
+                          }
                         }
                       }
                     }
-                  },
+                  }
+                }
+              },
             }
           },
           package_image: true,
@@ -44,33 +83,3 @@ export async function GET(request: Request, { params }: { params: { id: string }
       return NextResponse.json({ error: "Failed to fetch package" }, { status: 500 });
     }
   }
-
-
-  
-  
-  
-  /**
- * PUT: TEST CASE
- */
-//   {
-//   "package_name": "Premium Health Package",
-//   "expired_date": "2025-12-31",
-
-//   "images": [
-//    { "images": "https://example.com/image2.jpg" }
-//   ],
-//   "descriptions": [
-//     { "id": 27, "text": "Includes full body check-up and diagnostic tests." }],
-//        "trips": [
-//     { "description": "Guided tour of the hospital facilities." }
-//   ],
-
-//   "package_places": [
-//     {
-//       "place_id": 1,
-//       "date": "2025-05-16",
-//       "start": "14:00",
-//       "end": "16:00"
-//     }
-//   ]
-// }

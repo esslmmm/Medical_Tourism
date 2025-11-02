@@ -20,7 +20,7 @@ export async function GET() {
   export async function POST(request: Request) {
     try {
         const {
-            place_name,
+            name,
             contact_info,
             location,
             city,
@@ -32,7 +32,7 @@ export async function GET() {
 
         const newPlace = await prisma.places.create({
             data: {
-                place_name,
+                name,
                 contact_info,
                 location,
                 city,
@@ -47,7 +47,7 @@ export async function GET() {
             await prisma.place_image.createMany({
                 data: place_images.map((img: { image: string }) => ({
                     place_id: newPlace.place_id,
-                    image: img.image,
+                    url: img.image,
                 })),
             });
         }

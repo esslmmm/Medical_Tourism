@@ -1,22 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import DatePicker from "react-datepicker";
+import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 import { AppointmentFormData } from "../../../app/user/Form/form";
 
-const timeSlots = [
-  "7:00 - 7:30", "7:30 - 8:00", "8:00 - 8:30", "8:30 - 9:00", 
-  "9:00 - 9:30", "9:30 - 10:00", "10:00 - 10:30", "10:30 - 11:00", 
-  "11:00 - 11:30", "11:30 - 12:00", "12:00 - 12:30", "12:30 - 13:00"
-];
-
-// Validation types
-interface ValidationErrors {
-  selectedDate?: string;
-  selectedTime?: string;
+type ValidationErrors = {
   file?: string;
   details?: string;
   contact: {
@@ -33,8 +22,9 @@ interface ValidationErrors {
     lastname?: string;
     dob?: string;
     passportId?: string;
-  };
-}
+  }[];
+};
+
 
 // Validation functions
 const validateEmail = (email: string): boolean => {
@@ -82,170 +72,189 @@ const validateAge = (dob: string): boolean => {
   return actualAge >= 0 && actualAge <= 150; // Reasonable age range
 };
 
-const validateFutureDate = (date: Date): boolean => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return date >= today;
-};
-
 export default function MedicalAppointment() {
   const params = useParams<{ id: string }>();
   const id = params?.id;
   const [fileDataUrl, setFileDataUrl] = useState<string | null>(null);
   const [errors, setErrors] = useState<ValidationErrors>({
     contact: {},
-    patient: {}
+    patient: [],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+  const router = useRouter();
   const [form, setForm] = useState<AppointmentFormData>({
-    selectedDate: new Date(),
-    selectedTime: '',
     file: null,
     details: '',
     contact: {
       firstname: '', lastname: '', email: '', country: '', dialCode: '', phoneNumber: ''
     },
-    patient: {
-      gender: '', firstname: '', lastname: '', dob: '', passportId: ''
-    }
+    patient: [],
   });
-  
-  const router = useRouter();
+
+  useEffect(() => {
+    const savedForm = localStorage.getItem('appointmentFormData');
+    if (savedForm) {
+      const parsedForm = JSON.parse(savedForm);
+
+      const adultCount = parseInt(parsedForm.adult) || 0;
+      const childCount = parseInt(parsedForm.child) || 0;
+      const total = adultCount + childCount;
+
+      // Create empty patient slots
+      const patientsArray = Array.from({ length: total }, () => ({
+        gender: '',
+        firstname: '',
+        lastname: '',
+        dob: '',
+        passportId: '',
+      }));
+
+      setForm((prev) => ({
+        ...prev,
+        ...parsedForm,
+        patient: patientsArray,
+      }));
+    }
+  }, []);
 
   // Validation function
   const validateForm = (): boolean => {
-    const newErrors: ValidationErrors = {
-      contact: {},
-      patient: {}
-    };
-
-    // Date validation
-    if (!form.selectedDate || !validateFutureDate(form.selectedDate)) {
-      newErrors.selectedDate = 'Please select a valid future date';
-    }
-
-    // Time validation
-    if (!form.selectedTime) {
-      newErrors.selectedTime = 'Please select a time slot';
-    }
-
-    // File validation
-    if (form.file) {
-      if (!validateFileType(form.file)) {
-        newErrors.file = 'File must be PDF, JPEG, JPG, or PNG';
-      } else if (!validateFileSize(form.file)) {
-        newErrors.file = 'File size must be less than 10MB';
-      }
-    }
-
-    // Details validation
-    if (form.details && form.details.length > 1000) {
-      newErrors.details = 'Details must be less than 1000 characters';
-    }
-
-    // Contact validation
-    if (!form.contact.firstname.trim()) {
-      newErrors.contact.firstname = 'First name is required';
-    } else if (!validateName(form.contact.firstname)) {
-      newErrors.contact.firstname = 'First name must be 2-50 characters and contain only letters';
-    }
-
-    if (!form.contact.lastname.trim()) {
-      newErrors.contact.lastname = 'Last name is required';
-    } else if (!validateName(form.contact.lastname)) {
-      newErrors.contact.lastname = 'Last name must be 2-50 characters and contain only letters';
-    }
-
-    if (!form.contact.email.trim()) {
-      newErrors.contact.email = 'Email is required';
-    } else if (!validateEmail(form.contact.email)) {
-      newErrors.contact.email = 'Please enter a valid email address';
-    }
-
-    if (!form.contact.country) {
-      newErrors.contact.country = 'Please select a country';
-    }
-
-    if (!form.contact.dialCode) {
-      newErrors.contact.dialCode = 'Please select a dial code';
-    }
-
-    if (!form.contact.phoneNumber.trim()) {
-      newErrors.contact.phoneNumber = 'Phone number is required';
-    } else if (!validatePhoneNumber(form.contact.phoneNumber)) {
-      newErrors.contact.phoneNumber = 'Please enter a valid phone number (7-15 digits)';
-    }
-
-    // Patient validation
-    if (!form.patient.gender) {
-      newErrors.patient.gender = 'Please select a gender';
-    }
-
-    if (!form.patient.firstname.trim()) {
-      newErrors.patient.firstname = 'Patient first name is required';
-    } else if (!validateName(form.patient.firstname)) {
-      newErrors.patient.firstname = 'First name must be 2-50 characters and contain only letters';
-    }
-
-    if (!form.patient.lastname.trim()) {
-      newErrors.patient.lastname = 'Patient last name is required';
-    } else if (!validateName(form.patient.lastname)) {
-      newErrors.patient.lastname = 'Last name must be 2-50 characters and contain only letters';
-    }
-
-    if (!form.patient.dob) {
-      newErrors.patient.dob = 'Date of birth is required';
-    } else if (!validateAge(form.patient.dob)) {
-      newErrors.patient.dob = 'Please enter a valid date of birth';
-    }
-
-    if (!form.patient.passportId.trim()) {
-      newErrors.patient.passportId = 'Passport ID is required';
-    } else if (!validatePassportId(form.patient.passportId)) {
-      newErrors.patient.passportId = 'Passport ID must be 6-12 alphanumeric characters';
-    }
-
-    setErrors(newErrors);
-
-    // Check if there are any errors
-    const hasErrors = (
-      // Check top-level errors
-      newErrors.selectedDate ||
-      newErrors.selectedTime ||
-      newErrors.file ||
-      newErrors.details ||
-      // Check contact errors
-      Object.values(newErrors.contact).some(error => error) ||
-      // Check patient errors
-      Object.values(newErrors.patient).some(error => error)
-    );
-    return !hasErrors;
+  const newErrors: ValidationErrors = {
+    contact: {},
+    patient: []
   };
 
+  // File validation
+  if (form.file) {
+    if (!validateFileType(form.file)) {
+      newErrors.file = 'File must be PDF, JPEG, JPG, or PNG';
+    } else if (!validateFileSize(form.file)) {
+      newErrors.file = 'File size must be less than 10MB';
+    }
+  }
+
+  // Details validation
+  if (form.details && form.details.length > 1000) {
+    newErrors.details = 'Details must be less than 1000 characters';
+  }
+
+  // -------------------------------
+  // Contact validation
+  // -------------------------------
+  if (!form.contact.firstname.trim()) {
+    newErrors.contact.firstname = 'First name is required';
+  } else if (!validateName(form.contact.firstname)) {
+    newErrors.contact.firstname = 'First name must be 2-50 characters and contain only letters';
+  }
+
+  if (!form.contact.lastname.trim()) {
+    newErrors.contact.lastname = 'Last name is required';
+  } else if (!validateName(form.contact.lastname)) {
+    newErrors.contact.lastname = 'Last name must be 2-50 characters and contain only letters';
+  }
+
+  if (!form.contact.email.trim()) {
+    newErrors.contact.email = 'Email is required';
+  } else if (!validateEmail(form.contact.email)) {
+    newErrors.contact.email = 'Please enter a valid email address';
+  }
+
+  if (!form.contact.country) {
+    newErrors.contact.country = 'Please select a country';
+  }
+
+  if (!form.contact.dialCode) {
+    newErrors.contact.dialCode = 'Please select a dial code';
+  }
+
+  if (!form.contact.phoneNumber.trim()) {
+    newErrors.contact.phoneNumber = 'Phone number is required';
+  } else if (!validatePhoneNumber(form.contact.phoneNumber)) {
+    newErrors.contact.phoneNumber = 'Please enter a valid phone number (7–15 digits)';
+  }
+
+  // -------------------------------
+  // Patients validation
+  // -------------------------------
+  newErrors.patient = form.patient.map((patient) => {
+    const patientErrors: Record<string, string> = {};
+
+    if (!patient.gender) {
+      patientErrors.gender = 'Please select a gender';
+    }
+
+    if (!patient.firstname.trim()) {
+      patientErrors.firstname = 'Patient first name is required';
+    } else if (!validateName(patient.firstname)) {
+      patientErrors.firstname = 'First name must be 2–50 characters and contain only letters';
+    }
+
+    if (!patient.lastname.trim()) {
+      patientErrors.lastname = 'Patient last name is required';
+    } else if (!validateName(patient.lastname)) {
+      patientErrors.lastname = 'Last name must be 2–50 characters and contain only letters';
+    }
+
+    if (!patient.dob) {
+      patientErrors.dob = 'Date of birth is required';
+    } else if (!validateAge(patient.dob)) {
+      patientErrors.dob = 'Please enter a valid date of birth';
+    }
+
+    if (!patient.passportId.trim()) {
+      patientErrors.passportId = 'Passport ID is required';
+    } else if (!validatePassportId(patient.passportId)) {
+      patientErrors.passportId = 'Passport ID must be 6–12 alphanumeric characters';
+    }
+
+    return patientErrors;
+  });
+
+  // Save errors in state
+  setErrors(newErrors);
+
+  
+
+  // -------------------------------
+  // Check if any errors exist
+  // -------------------------------
+  const hasErrors =
+    newErrors.file ||
+    newErrors.details ||
+    Object.values(newErrors.contact).some((e) => e) ||
+    newErrors.patient.some((p) => Object.values(p).some((e) => e));
+
+  return !hasErrors;
+};
+
+
   const handleFormSubmit = async () => {
+    if (isSubmitting) return;
     setIsSubmitting(true);
     
     if (!validateForm()) {
       setIsSubmitting(false);
-      // Scroll to first error
-      const firstError = document.querySelector('.border-red-500');
-      if (firstError) {
-        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      // Scroll to first invalid field
+      setTimeout(() => {
+        const firstError = document.querySelector('.border-red-500');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
       return;
     }
-
+    
     try {
+      if (!form || !id) throw new Error("Form or ID missing");
+      
       // Save form data to localStorage
       const formDataForStorage = {
         ...form,
         file: null // Don't store file object directly
       };
-      
       localStorage.setItem('appointmentFormData', JSON.stringify(formDataForStorage));
       
-      // Navigate to confirmation page
+      // FIX: Add opening parenthesis here
       router.push(`/user/Form/BookingConfirm/${id}`);
     } catch (error) {
       console.error('Error saving form:', error);
@@ -254,6 +263,7 @@ export default function MedicalAppointment() {
       setIsSubmitting(false);
     }
   };
+
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -333,61 +343,9 @@ export default function MedicalAppointment() {
     <div className="max-w-2xl mx-auto p-6 space-y-6">
       {/* Appointment Booking Section */}
       <div className="text-center text-green-700 py-4">
-        <h1 className="text-4xl font-bold">Book an Appointment</h1>
+        <h1 className="text-4xl font-bold">An appointment form</h1>
       </div>
-
-      {/* Date & Time */}
-      <div className="bg-white border border-gray-200 shadow-md rounded-2xl p-6 space-y-6">
-        <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-[#000000] font-semibold mb-2">📅 Select Date</label>
-            <DatePicker
-              selected={form.selectedDate}
-              onChange={(date) => {
-                setForm((prev) => ({ ...prev, selectedDate: date || new Date() }));
-                clearError('selectedDate');
-              }}
-              dateFormat="MMMM d, yyyy"
-              minDate={new Date()}
-              className={`border text-[#000000] border-gray-300 bg-gray-50 p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 ${
-                errors.selectedDate ? 'border-red-500' : ''
-              }`}
-            />
-            {errors.selectedDate && (
-              <p className="text-red-500 text-sm mt-1">{errors.selectedDate}</p>
-            )}
-            <p className="text-sm text-gray-500 mt-2">
-              {form.selectedDate ? format(form.selectedDate, "EEEE, MMMM d, yyyy") : "Choose a date"}
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-[#000000] font-semibold mb-2">⏰ Select Time</label>
-            <div className="grid grid-cols-2 gap-2">
-              {timeSlots.map((time) => (
-                <button
-                  type="button"
-                  key={time}
-                  onClick={() => {
-                    setForm((prev) => ({ ...prev, selectedTime: time }));
-                    clearError('selectedTime');
-                  }}
-                  className={`p-2 text-sm border rounded-lg transition ${
-                    form.selectedTime === time
-                      ? "bg-green-100 text-green-700 border-green-500 font-medium"
-                      : "bg-gray-50 border-gray-300 hover:bg-gray-100"
-                  } ${errors.selectedTime ? 'border-red-500' : ''}`}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
-            {errors.selectedTime && (
-              <p className="text-red-500 text-sm mt-1">{errors.selectedTime}</p>
-            )}
-          </div>
-        </div>
-      </div>
+      
 
       {/* Symptoms Details Section */}
       <div className="p-6 bg-white shadow-lg rounded-xl">
@@ -573,79 +531,76 @@ export default function MedicalAppointment() {
             </label>
           </div>
         </div>
+      </div>
 
         {/* Patient Details */}
-        <h2 className="text-lg font-semibold mt-6 text-black">Patient Details</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Gender */}
-          <div className="col-span-1 sm:col-span-2">
-            <span className="font-medium text-sm text-black">Gender *</span>
-            <div className="flex items-center gap-6 mt-2">
-              {["Male", "Female"].map((g) => (
-                <label key={g} className="flex items-center gap-2 text-black cursor-pointer">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value={g}
-                    checked={form.patient.gender === g}
-                    onChange={(e) => {
-                      setForm((prev) => ({
-                        ...prev,
-                        patient: {
-                          ...prev.patient,
-                          gender: e.target.value
-                        }
-                      }));
-                      clearError('gender', 'patient');
-                    }}
-                  />
-                  {g.charAt(0).toUpperCase() + g.slice(1)}
-                </label>
-              ))}
-            </div>
-            {errors.patient.gender && (
-              <span className="text-red-500 text-xs">{errors.patient.gender}</span>
-            )}
-          </div>
+      {form.patient.map((patient, index) => (
+        <div
+          key={index}
+          className="bg-white border border-gray-200 shadow-md rounded-2xl p-4 sm:p-6 space-y-6 w-full max-w-5xl mx-auto"
+        >
+          <h2 className="text-lg font-semibold text-black">
+            Patient {index + 1} Details
+          </h2>
 
-          {[
-            { label: "First name", value: form.patient.firstname, key: "firstname" },
-            { label: "Last name", value: form.patient.lastname, key: "lastname" },
-            { label: "Date of Birth", value: form.patient.dob, key: "dob", type: "date" },
-            { label: "Passport ID", value: form.patient.passportId, key: "passportId" },
-          ].map(({ label, value, key, type = "text" }) => (
-            <label
-              key={key}
-              className={`col-span-2 flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition ${
-                errors.patient[key as keyof typeof errors.patient] ? 'border-red-500' : ''
-              }`}
-            >
-              <span className="font-medium text-sm text-black">{label} *</span>
-              <input
-                type={type}
-                value={value}
-                max={type === "date" ? new Date().toISOString().split('T')[0] : undefined}
-                onChange={(e) => {
-                  setForm((prev) => ({
-                    ...prev,
-                    patient: {
-                      ...prev.patient,
-                      [key]: e.target.value
-                    }
-                  }));
-                  clearError(key, 'patient');
-                }}
-                className="bg-transparent outline-none text-black"
-              />
-              {errors.patient[key as keyof typeof errors.patient] && (
-                <span className="text-red-500 text-xs">
-                  {errors.patient[key as keyof typeof errors.patient]}
-                </span>
-              )}
-            </label>
-          ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Gender */}
+            <div className="col-span-1 sm:col-span-2">
+              <span className="font-medium text-sm text-black">Gender *</span>
+              <div className="flex items-center gap-6 mt-2">
+                {["Male", "Female"].map((g) => (
+                  <label
+                    key={g}
+                    className="flex items-center gap-2 text-black cursor-pointer"
+                  >
+                    <input
+                      type="radio"
+                      name={`gender-${index}`}
+                      value={g}
+                      checked={patient.gender === g}
+                      onChange={(e) => {
+                        setForm((prev) => {
+                          const updatedPatients = [...prev.patient];
+                          updatedPatients[index].gender = e.target.value;
+                          return { ...prev, patient: updatedPatients };
+                        });
+                      }}
+                    />
+                    {g}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {[
+              { label: "First name", key: "firstname" },
+              { label: "Last name", key: "lastname" },
+              { label: "Date of Birth", key: "dob", type: "date" },
+              { label: "Passport ID", key: "passportId" },
+            ].map(({ label, key, type = "text" }) => (
+              <label
+                key={key}
+                className="col-span-2 flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
+              >
+                <span className="font-medium text-sm text-black">{label} *</span>
+                <input
+                  type={type}
+                  value={patient[key as keyof typeof patient]}
+                  max={type === "date" ? new Date().toISOString().split('T')[0] : undefined}
+                  onChange={(e) => {
+                    setForm((prev) => {
+                      const updatedPatients = [...prev.patient];
+                      updatedPatients[index][key as keyof typeof patient] = e.target.value;
+                      return { ...prev, patient: updatedPatients };
+                    });
+                  }}
+                  className="bg-transparent outline-none text-black"
+                />
+              </label>
+            ))}
+          </div>
         </div>
-      </div>
+      ))}
 
       {/* Continue Button */}
       <button 

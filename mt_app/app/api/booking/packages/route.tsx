@@ -8,9 +8,7 @@ export async function GET() {
     const packageBookings = await prisma.package_bookings.findMany({
       include: {
         appointments: { select:{status: true }},
-        hotel_bookings: { select:{status: true }},
         tourism_bookings: { select:{status: true }},
-        guide_bookings: { select:{status: true }},
         packages: {
           select:{
             package_id: true,
@@ -35,9 +33,8 @@ export async function POST(req: Request) {
       package_id,
       tourism_booking_id,
       appointment_id,
-      hotel_booking_id,
+      price,
       contact_id,
-      guide_booking_id,
       status,
     } = await req.json()
 
@@ -47,9 +44,8 @@ export async function POST(req: Request) {
         package_id,
         tourism_booking_id,
         appointment_id,
-        hotel_booking_id,
         contact_id,
-        guide_booking_id,
+        price,
         status,
       },
     })

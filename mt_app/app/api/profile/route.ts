@@ -38,24 +38,6 @@ export async function GET(request: Request) {
             }
           }
         },
-        review_hotel: {
-          include: {
-            hotels: {
-              select: {
-                name: true,
-              }
-            }
-          }
-        },
-        review_guide: {
-          include: {
-            guides: {
-              select: {
-                name: true,
-              }
-            }
-          }
-        },
         chat_chat_user1_idTouser: true,
         chat_chat_user2_idTouser: true,
         messages_messages_sender_idTouser: true,

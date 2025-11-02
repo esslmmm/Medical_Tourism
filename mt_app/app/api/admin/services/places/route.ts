@@ -16,7 +16,7 @@ export async function GET() {
         place_image: true,
       },
       orderBy: {
-        place_name: 'asc',
+        name: 'asc',
       },
     });
 
@@ -40,10 +40,10 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { place_name, contact_info, location, city, description, fee, image, place_images } = body;
+    const { name, contact_info, location, city, description, fee, image, place_images } = body;
 
     // Validate required fields
-    if (!place_name) {
+    if (!name) {
       return NextResponse.json(
         { error: 'Place name is required' },
         { status: 400 }
@@ -53,12 +53,12 @@ export async function POST(request: NextRequest) {
     // Create the place
     const place = await prisma.places.create({
       data: {
-        place_name,
+        name,
         contact_info: contact_info || null,
-        location: location || null,
         city: city || null,
         description: description || null,
         fee: fee || null,
+        // location_id: location || null,
         image: image || null,
         place_image: place_images && place_images.length > 0 ? {
           create: place_images.map((img: string) => ({ image: img }))

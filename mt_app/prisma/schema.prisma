@@ -67,8 +67,7 @@ model appointments {
 model description {
   description_id Int      @id @default(autoincrement())
   package_id     String
-  details        String   @db.VarChar(255)
-  title          String   @db.VarChar(100)
+  text           String
   packages       packages @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction, map: "description_ibfk_1")
 
   @@index([package_id], map: "package_id")
@@ -154,7 +153,7 @@ model guide_bookings {
   status           guide_bookings_status? @default(In_Progress)
   created_at       DateTime               @default(now()) @db.Timestamp(0)
   updated_at       DateTime               @default(now()) @db.Timestamp(0)
-  package_bookings package_bookings[]
+  tourism_bookings tourism_bookings[]
 }
 
 model medical_services {
@@ -196,13 +195,11 @@ model package_bookings {
   tourism_booking_id  String?
   appointment_id      String?
   contact_id          String?
-  guide_booking_id    Int?
   price               Float
   create_at           DateTime                @default(now()) @db.Timestamp(0)
   status              package_bookings_status @default(In_Progress)
   appointments        appointments?           @relation(fields: [appointment_id], references: [appointment_id], onDelete: NoAction, onUpdate: NoAction)
   user_contact_detail user_contact_detail?    @relation(fields: [contact_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  guide_bookings      guide_bookings?         @relation(fields: [guide_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction)
   packages            packages                @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction)
   tourism_bookings    tourism_bookings?       @relation(fields: [tourism_booking_id], references: [tourism_id], onDelete: NoAction, onUpdate: NoAction)
   user                user                    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -213,25 +210,25 @@ model package_bookings {
   @@index([tourism_booking_id])
   @@index([appointment_id])
   @@index([contact_id])
-  @@index([guide_booking_id])
 }
 
 
 model package_image {
   image_id   Int       @id @default(autoincrement())
   package_id String?
-  image     String?   @db.VarChar(255)
+  url        String   @db.VarChar(255)
+  alt        String?
   packages   packages? @relation(fields: [package_id], references: [package_id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([package_id])
 }
 
-model package_places {
-  packplace_id Int     @id @default(autoincrement())
-  route_id      Int?
-  place_id     String?
-  places       places? @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction)
-  routes       routes?  @relation(fields: [route_id], references: [route_id], onDelete: NoAction, onUpdate: NoAction)
+model attractions {
+  attraction_id Int     @id @default(autoincrement())
+  route_id      Int
+  place_id     String
+  places       places @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction)
+  routes       routes  @relation(fields: [route_id], references: [route_id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([route_id])
   @@index([place_id])
@@ -245,8 +242,7 @@ model packages {
   hospital_id          String
   image                String                 @db.VarChar(255)
   detail               String                 @db.VarChar(100)
-  duration             String?
-  expired_date         DateTime               @db.Date
+  expired_date         DateTime?               @db.Date
   status               package_status         @default(Active)
   create_at            DateTime               @default(now()) @db.Timestamp(0)
   description          description[]
@@ -276,9 +272,9 @@ model payment {
 }
 
 model place_image {
-  image    String? @db.VarChar(255)
   image_id Int     @id @default(autoincrement())
   place_id String?
+  url      String @db.VarChar(255)
   places   places? @relation(fields: [place_id], references: [place_id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([place_id])
@@ -286,15 +282,70 @@ model place_image {
 
 model places {
   place_id       String           @id @default(uuid())
-  place_name     String?          @db.VarChar(100)
-  contact_info   String?          @db.VarChar(255)
-  location       String?          @db.VarChar(255)
-  city           String?          @db.VarChar(255)
-  image          String?          @db.VarChar(255)
-  description    String?
-  fee            Float?
-  package_places package_places[]
+  name           String          @db.VarChar(100)
+  contact_info   String          @db.VarChar(255)
+  city           String          @db.VarChar(255)
+  image          String          @db.VarChar(255)
+  description    String
+  fee            Float
+  includes       includes[]
+  important_info important_info?
+  highlights     highlights[]
+  location       location?
+  attractions    attractions[]
   place_image    place_image[]
+}
+
+model includes {
+  id    Int @id @default(autoincrement())
+  place_id            String?
+  place               places?                 @relation(fields: [place_id], references: [place_id], onDelete: Cascade)
+  text                String
+}
+
+model highlights {
+  id      Int @id @default(autoincrement())
+  place_id            String?
+  place               places?                 @relation(fields: [place_id], references: [place_id], onDelete: Cascade)
+  text                String
+}
+
+model important_info {
+  info_id             Int                    @id @default(autoincrement())
+  place_id            String                 @unique
+  place               places                 @relation(fields: [place_id], references: [place_id], onDelete: Cascade)
+  not_allowed         not_allowed[]
+  recommend_to_bring  recommend_to_bring[]
+  know_before_you_go  know_before_you_go[]
+}
+
+model not_allowed {
+  id          Int             @id @default(autoincrement())
+  info_id     Int
+  text        String
+  important_info important_info @relation(fields: [info_id], references: [info_id], onDelete: Cascade)
+}
+
+model recommend_to_bring {
+  id          Int             @id @default(autoincrement())
+  info_id     Int
+  text        String
+  important_info important_info @relation(fields: [info_id], references: [info_id], onDelete: Cascade)
+}
+
+model know_before_you_go {
+  id          Int             @id @default(autoincrement())
+  info_id     Int
+  text        String
+  important_info important_info @relation(fields: [info_id], references: [info_id], onDelete: Cascade)
+}
+
+model location {
+  location_id Int @id @default(autoincrement())
+  text        String
+  url         String
+  place_id            String                 @unique
+  place               places                 @relation(fields: [place_id], references: [place_id], onDelete: Cascade)
 }
 
 model review_hospital {
@@ -315,6 +366,7 @@ model review_hospital {
 model tourism_bookings {
   tourism_id       String                   @id @default(uuid())
   route_id         Int
+  guide_booking_id         Int?
   child            Int
   adult            Int
   start            DateTime
@@ -323,9 +375,11 @@ model tourism_bookings {
   created_at       DateTime                 @default(now()) @db.Timestamp(0)
   updated_at       DateTime                 @default(now()) @db.Timestamp(0)
   package_bookings package_bookings[]
+  guide_bookings   guide_bookings?        @relation(fields: [guide_booking_id], references: [booking_id], onDelete: NoAction, onUpdate: NoAction)
   routes           routes                   @relation(fields: [route_id], references: [route_id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([route_id])
+  @@index([guide_booking_id])
 }
 
 model hospital_images {
@@ -360,7 +414,7 @@ model patient_details {
   dateofbirth     DateTime?               @db.Date
   nationality     String?                 @db.VarChar(255)
   passport_number String?                 @db.VarChar(255)
-  appointments    appointments            @relation(fields: [appointment_id], references: [appointment_id])
+  appointments    appointments            @relation(fields: [appointment_id], references: [appointment_id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([appointment_id])
 }
@@ -368,16 +422,28 @@ model patient_details {
 model trips {
   tour_id          Int                @id @default(autoincrement())
   city             String
+  description      String
+  languages        languages[]
   Trip_Routes      Trip_Routes[]
   packages         packages[]
-  trip_images      trip_images[]
+  images           images[]
+}
+
+model languages {
+  language_id       Int         @id @default(autoincrement())
+  name              String
+  flag              String
+  trip_id           Int
+
+  trips            trips            @relation(fields: [trip_id], references: [tour_id], onUpdate: Restrict)
+
+  @@index([trip_id])
 }
 
 model Trip_Routes {
   trip_route_id    Int @id @default(autoincrement())
   trip_id          Int
   route_id         Int
-  sequence_order   Int
 
   routes           routes           @relation(fields: [route_id], references: [route_id], onUpdate: Restrict)
   trips            trips            @relation(fields: [trip_id], references: [tour_id], onUpdate: Restrict)
@@ -386,25 +452,40 @@ model Trip_Routes {
   @@index([route_id])
 }
 
-model trip_images {
+model images {
   image_id   Int @id @default(autoincrement())
   tour_id    Int
-  image      String @db.VarChar(255)
+  url        String @db.VarChar(255)
+  alt        String?
   trips      trips @relation(fields: [tour_id], references: [tour_id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([tour_id])
 }
 
 model routes {
-  route_id      Int @id @default(autoincrement())
-  route_name    String?
-  duration         Int?
-  description      String?
-  total_price      Float?
+  route_id         Int @id @default(autoincrement())
+  title            String
+  image            String
+  duration         Int
+  adult_price      Float
+  child_price      Float
+  guide_price      Float
+  car_service_price Float
+  description      String
   created_at       DateTime           @default(now()) @db.Timestamp(0)
-  package_places   package_places[]
-  Trip_Routes            Trip_Routes[]
+  tags             tags[]
+  attractions      attractions[]
+  Trip_Routes      Trip_Routes[]
   tourism_bookings tourism_bookings[]
+}
+
+model tags {
+  tag_id     Int @id @default(autoincrement())
+  route_id   Int
+  tag        String
+  routes     routes  @relation(fields: [route_id], references: [route_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([route_id])
 }
 
 model contact_us {
@@ -485,13 +566,6 @@ enum MessageType {
   SYSTEM
   
   @@map("message_type")
-}
-
-enum languages_proficiency {
-  Basic
-  Conversational
-  Fluent
-  Native
 }
 
 enum contact_us_status {

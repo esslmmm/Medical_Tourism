@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { AppointmentFormData } from '@/app/user/Form/form';
 import { useRouter, useParams } from 'next/navigation'
-import { createAppointment } from '@/app/api/booking/appointments/createAppointment';
 import { createContactDetails } from '@/app/api/booking/user_contact_details/createContact';
-import { updatePackageBooking } from '@/app/api/booking/packages/updatePackageBooking';
 import { createAppointmentFile } from '@/app/api/files/createAppointmentFile';
 import { useUserId } from '@/hooks/useUserId';
+import { createPatient } from '@/app/api/booking/patients/createPatient';
+import { updateAppointment } from '@/app/api/booking/appointments/updateAppointment';
+import { createPackageBooking } from '@/app/api/booking/packages/createPackageBooking';
 
 const ConfirmButton = () => {
 	const params = useParams<{ id: string }>();
@@ -18,13 +19,12 @@ const ConfirmButton = () => {
 
     useEffect(() => {
       const savedForm = localStorage.getItem('appointmentFormData');
-      const savedFile = localStorage.getItem('selectedFile');
       if (savedForm) {
         setForm(JSON.parse(savedForm));
       } else {
         router.push(`/user/Form/medical_appointment/${id}`);
       }
-
+	  const savedFile = localStorage.getItem('selectedFile');
       if (savedFile) {
         setFileData(JSON.parse(savedFile));
       }
@@ -108,33 +108,56 @@ const ConfirmButton = () => {
 				`Failed to save file metadata: ${metadataResponse.status} - ${errorText}`
 			  );
 			}
-	  
-			const metadataData = await metadataResponse.json();
+
+		  const metadataData = await metadataResponse.json();
 			file_id = metadataData.fileId;
+		  }
+
+			const appointment_id = localStorage.getItem("appointment_id");
+		  console.log("Using appointment_id:", appointment_id);
+		  if (!appointment_id) {
+			throw new Error("Missing appointment_id in localStorage");
 		  }
 	  
 		  // Create appointment
-		  const appointmentData = {
-			date: form.selectedDate,
-			timeslot: form.selectedTime,
-			description: form.details,
-			status: "In_Progress",
-			patient: {
-			  firstname: form.patient.firstname,
-			  lastname: form.patient.lastname,
-			  gender: form.patient.gender,
-			  dateofbirth: new Date(form.patient.dob),
-			  nationality: form.contact.country,
-			  passport_number: form.patient.passportId,
-			},
-		  };
+		  const patientsData = form.patient.map((patient) => ({
+			appointment_id: appointment_id,
+			firstname: patient.firstname,
+			lastname: patient.lastname,
+			gender: patient.gender,
+			dateofbirth: new Date(patient.dob),
+			nationality: form.contact.country,
+			passport_number: patient.passportId,
+		  }));
 	  
-		  const appointmentResponse = await createAppointment(appointmentData);
+		  const patientResponse = await createPatient(patientsData);
 	  
-		  if (!appointmentResponse || appointmentResponse.error) {
+		  if (!patientResponse || patientResponse.error) {
 			throw new Error(
-			  appointmentResponse?.error || "Failed to create appointment"
+			  patientResponse?.error || "Failed to create patients"
 			);
+		  }
+
+		  const updateAppResponse = await updateAppointment(String(appointment_id), {
+			   description: form.details,
+		  });
+
+		  if (updateAppResponse && updateAppResponse.error) {
+			throw new Error(`Failed to update appointment booking: ${updateAppResponse.error}`);
+		  }
+
+		  // ✅ If file uploaded, link it with appointment
+		  if (file_id) {
+			const appointmentFileResponse = await createAppointmentFile(
+			  appointment_id,
+			  file_id
+			);
+	  
+			if (appointmentFileResponse && appointmentFileResponse.error) {
+			  throw new Error(
+				`Failed to create appointment file association: ${appointmentFileResponse.error}`
+			  );
+			}
 		  }
 	  
 		  // Create contact details
@@ -155,53 +178,43 @@ const ConfirmButton = () => {
 		  }
 	  
 		  // Extract IDs
-		  const appointment_id = appointmentResponse.appointment_id;
-		  const patient_id = appointmentResponse.patient_id;
 		  const contact_id = contactResponse.id;
-		  const status = "Pending";
-		  const package_booking_id = localStorage.getItem("package_booking_id");
-	  
-		  // Validate essential IDs
-		  if (!package_booking_id) {
-			throw new Error("Missing package_booking_id in localStorage");
+		  const tourism_id = localStorage.getItem("tourism_id");
+		  const TotalPriceString = localStorage.getItem("TotalPrice");
+
+		  if (!tourism_id) {
+			throw new Error("Missing toursim id for create package booking");
 		  }
 		  if (!appointment_id) {
-			throw new Error("Missing appointment_id from appointment response");
+			throw new Error("Missing appointment id for create package booking");
 		  }
 		  if (!contact_id) {
-			throw new Error("Missing contact_id from contact response");
+			throw new Error("Missing contact id for create package booking");
 		  }
-		  if (!patient_id) {
-			throw new Error("Missing patient_id from appointment response");
+
+		  const bookingData = {
+			package_id: id,
+			contact_id: contact_id,
+			price: Number(TotalPriceString),
+			appointment_id: appointment_id,
+			tourism_booking_id: tourism_id,
+			user_id: Number(userId),
+			status: "Pending",
+		  };
+	  
+		  // Create package booking
+		  const packageResponse = await createPackageBooking(bookingData);
+	  
+		  if (!packageResponse || packageResponse.error || !packageResponse.booking_id) {
+			throw new Error(packageResponse?.error || "Failed to create package booking");
 		  }
 	  
-		  // ✅ If file uploaded, link it with appointment
-		  if (file_id) {
-			const appointmentFileResponse = await createAppointmentFile(
-			  appointment_id,
-			  file_id
-			);
-	  
-			if (appointmentFileResponse && appointmentFileResponse.error) {
-			  throw new Error(
-				`Failed to create appointment file association: ${appointmentFileResponse.error}`
-			  );
-			}
-		  }
-	  
-		  // Update package booking
-		  const updateResponse = await updatePackageBooking(package_booking_id, {
-			appointment_id,
-			contact_id,
-			status,
-		  });
-	  
-		  if (updateResponse && updateResponse.error) {
-			throw new Error(`Failed to update package booking: ${updateResponse.error}`);
-		  }
 	  
 		  // Clean up localStorage
 		  localStorage.removeItem("appointmentFormData");
+		  localStorage.removeItem("appointment_id");
+		  localStorage.removeItem("tourism_id");
+		  localStorage.removeItem("TotalPrice");
 		  localStorage.removeItem("selectedFile");
 	  
 		  // Navigate to success page
