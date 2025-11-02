@@ -143,7 +143,7 @@ export default function MedicalTourismHome() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white text-black">
       {/* Navbar */}
       <nav className="bg-teal-500 text-white px-6 py-4 flex justify-between items-center">
         <div className="text-xl font-bold">
