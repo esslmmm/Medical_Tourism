@@ -99,7 +99,7 @@ const PackageLandingPage = () => {
           setData(packageData);
 
           // Fetch hospital using hospital_id from package
-          const hospitalRes = await fetch(`/api/services/hospitals/${packageData.hospital_id}`);
+          const hospitalRes = await fetch(`/api/services/hospitals/${packageData.hospitals.hospital_id}`);
           if (!hospitalRes.ok) throw new Error("Failed to fetch hospital details");
 
           const hospitalData = await hospitalRes.json();
