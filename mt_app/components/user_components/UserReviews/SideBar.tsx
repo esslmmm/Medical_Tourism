@@ -11,7 +11,7 @@ const SideBar = () => {
                                 <MdOutlineEventAvailable size={18} />
                                 <span>My bookings</span>
                             </li>
-                            <li className="flex items-center space-x-3 text-black bg-black text-white p-2 rounded-lg cursor-pointer">
+                            <li className="flex items-center space-x-3 bg-black text-white p-2 rounded-lg cursor-pointer">
                                 <FaStar size={18} />
                                 <span>Reviews</span>
                             </li>

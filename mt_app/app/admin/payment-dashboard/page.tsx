@@ -13,20 +13,20 @@ interface Payment {
   status: 'waiting' | 'successful';
 }
 
-const mockPayments: Payment[] = [
-  { id: '1', amount: '900THB', method: 'Card', dateTime: '12 Feb 2025 10:30 AM', name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'successful' },
-  { id: '2', amount: '2000THB', method: 'Card', dateTime: '12 Feb 2025 10:30 AM', name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'successful' },
-  { id: '3', amount: '2000THB', method: 'Card', dateTime: '12 Feb 2025 10:30 AM', name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'successful' },
-  { id: '4', amount: '2000THB', method: 'Card', dateTime: '12 Feb 2025 10:30 AM', name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'successful' },
-  { id: '5', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
-  { id: '6', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
-  { id: '7', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
-  { id: '8', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
-  { id: '9', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
-  { id: '10', amount: '1500THB', method: 'Bank Transfer', dateTime: '11 Feb 2025 09:15 AM', name: 'Sarah Johnson', email: 'sarah.j@example.com', status: 'successful' },
-  { id: '11', amount: '3500THB', name: 'Michael Chen', email: 'michael.c@example.com', status: 'waiting' },
-  { id: '12', amount: '1200THB', method: 'E-Wallet', dateTime: '10 Feb 2025 04:20 PM', name: 'Emma Wilson', email: 'emma.w@example.com', status: 'successful' },
-];
+// const mockPayments: Payment[] = [
+//   { id: '1', amount: '900THB', method: 'Card', dateTime: '12 Feb 2025 10:30 AM', name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'successful' },
+//   { id: '2', amount: '2000THB', method: 'Card', dateTime: '12 Feb 2025 10:30 AM', name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'successful' },
+//   { id: '3', amount: '2000THB', method: 'Card', dateTime: '12 Feb 2025 10:30 AM', name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'successful' },
+//   { id: '4', amount: '2000THB', method: 'Card', dateTime: '12 Feb 2025 10:30 AM', name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'successful' },
+//   { id: '5', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
+//   { id: '6', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
+//   { id: '7', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
+//   { id: '8', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
+//   { id: '9', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
+//   { id: '10', amount: '1500THB', method: 'Bank Transfer', dateTime: '11 Feb 2025 09:15 AM', name: 'Sarah Johnson', email: 'sarah.j@example.com', status: 'successful' },
+//   { id: '11', amount: '3500THB', name: 'Michael Chen', email: 'michael.c@example.com', status: 'waiting' },
+//   { id: '12', amount: '1200THB', method: 'E-Wallet', dateTime: '10 Feb 2025 04:20 PM', name: 'Emma Wilson', email: 'emma.w@example.com', status: 'successful' },
+// ];
 
 const PaymentDashboard: React.FC = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -80,11 +80,22 @@ const PaymentDashboard: React.FC = () => {
   }, []);
 
   // ✅ Stats summary
-  const stats = useMemo(() => {
-    const waiting = payments.filter((p) => p.status === 'waiting').length;
-    const successful = payments.filter((p) => p.status === 'successful').length;
-    return { waiting, successful };
-  }, [payments]);
+  // ✅ Stats summary
+const stats = useMemo(() => {
+  const waiting = payments.filter((p) => p.status === 'waiting').length;
+  const successful = payments.filter((p) => p.status === 'successful').length;
+
+  // Calculate total payment count
+  const totalPayments = payments.length;
+
+  // Calculate total income (only from successful payments)
+  const totalIncome = payments
+    .filter((p) => p.status === 'successful')
+    .reduce((sum, p) => sum + parseFloat(p.amount.replace(/[^\d.-]/g, '')), 0);
+
+  return { waiting, successful, totalPayments, totalIncome };
+}, [payments]);
+
 
   // ✅ Filtering & searching
   const filteredPayments = useMemo(() => {
@@ -142,29 +153,53 @@ const PaymentDashboard: React.FC = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            {/* Waiting */}
-            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
-                  <Clock className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg font-semibold">Waiting for Payment</h3>
-              </div>
-              <p className="text-5xl font-bold mt-4">{stats.waiting}</p>
-            </div>
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 
-            {/* Successful */}
-            <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
-                  <CheckCircle className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg font-semibold">Payment Successful</h3>
-              </div>
-              <p className="text-5xl font-bold mt-4">{stats.successful}</p>
-            </div>
-          </div>
+  {/* Total Payments */}
+  <div className="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
+    <div className="flex items-center gap-3 mb-2">
+      <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+        <Users className="w-6 h-6" />
+      </div>
+      <h3 className="text-lg font-semibold">Total Payments</h3>
+    </div>
+    <p className="text-5xl font-bold mt-4">{stats.totalPayments}</p>
+  </div>
+
+  {/* Total Income */}
+  <div className="bg-gradient-to-br from-amber-500 to-yellow-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
+    <div className="flex items-center gap-3 mb-2">
+      <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+        <CheckCircle className="w-6 h-6" />
+      </div>
+      <h3 className="text-lg font-semibold">Total Income</h3>
+    </div>
+    <p className="text-4xl font-bold mt-4">{stats.totalIncome.toLocaleString()} THB</p>
+  </div>
+
+  {/* Waiting */}
+  <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
+    <div className="flex items-center gap-3 mb-2">
+      <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+        <Clock className="w-6 h-6" />
+      </div>
+      <h3 className="text-lg font-semibold">Waiting for Payment</h3>
+    </div>
+    <p className="text-5xl font-bold mt-4">{stats.waiting}</p>
+  </div>
+
+  {/* Successful */}
+  <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
+    <div className="flex items-center gap-3 mb-2">
+      <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+        <CheckCircle className="w-6 h-6" />
+      </div>
+      <h3 className="text-lg font-semibold">Payment Successful</h3>
+    </div>
+    <p className="text-5xl font-bold mt-4">{stats.successful}</p>
+  </div>
+</div>
+
 
           {/* Table */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 text-black">
