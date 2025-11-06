@@ -103,28 +103,28 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 
   //Getting the Package data
-  useEffect(() => {
-    const fetchPackage = async () => {
-      try {
-        if (!id) return;
-        const res = await fetch(`/api/booking/packages/${id}`);
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.error || 'Unknown error');
-        }
-        const json = await res.json();
-        setData(json);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPackage();
-  }, [id]);
+  // useEffect(() => {
+  //   const fetchPackage = async () => {
+  //     try {
+  //       if (!id) return;
+  //       const res = await fetch(`/api/booking/packages/${id}`);
+  //       if (!res.ok) {
+  //         const errorData = await res.json();
+  //         throw new Error(errorData.error || 'Unknown error');
+  //       }
+  //       const json = await res.json();
+  //       setData(json);
+  //     } catch (err: any) {
+  //       setError(err.message);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchPackage();
+  // }, [id]);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p className="text-red-500">Error: {error}</p>;
+    // if (loading) return <p>Loading...</p>;
+    // if (error) return <p className="text-red-500">Error: {error}</p>;
 
     
   return (
@@ -134,9 +134,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <main className="flex bg-green-100">{children}
         <div className="w-1/3 bg-white border-l border-[#E0E0E0]">
           <MedicalService date={date} form={form}/>
-          {data?.tourism_bookings && <PlaceToVisit data={data} />}
+          {/* {data?.tourism_bookings && <PlaceToVisit data={data} />}
           {data?.hotel_bookings && <Accommodation data={data} />}
-          {data?.guide_bookings && <GuideDetail data={data} />}
+          {data?.guide_bookings && <GuideDetail data={data} />} */}
             <div className="mt-4 text-right">
               <a href="#" className="text-blue-500 text-sm font-semibold">Show all detail</a>
             </div>

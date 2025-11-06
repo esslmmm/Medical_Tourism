@@ -47,6 +47,10 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
                 routes:{
                   select:{
                     title: true,
+                    adult_price: true,
+                    child_price: true,
+                    guide_price: true,
+                    car_service_price: true,
                     description: true,
                     image: true,
                     tags: true,

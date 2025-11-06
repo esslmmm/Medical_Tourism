@@ -4,9 +4,7 @@ import PackageList from "../components/user_components/Homepage/PackageList";
 import DoctorList from "../components/user_components/Homepage/DoctorList";
 import Hospitaltap from "../components/user_components/Homepage/Hospitaltap";
 import Footer from "../components/user_components/Main/Footer";
-import Advertisement from "../components/user_components/Homepage/Advertisement";
 import AuthenticatedNavbar from "../components/user_components/Main/AuthenticatedNavbar";
-import MultiStepReviewModal from "./user/ReviewPopUp/[id]/page";
 import { useSearchParams } from 'next/navigation';
 import "./globals.css";
 import { useEffect, useState } from 'react';
@@ -19,7 +17,6 @@ import {
   MapPin, 
   Calendar,
   Users,
-  Star,
   CheckCircle,
   ArrowRight,
   Phone,

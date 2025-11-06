@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import BookingSkeleton from "../skeleton-screen/profile/BookingSkeleton";
-
+import { checkoutAction } from "@/app/checkout/checkout-action";
 
 interface Booking {
   booking_id: number;
@@ -31,40 +31,64 @@ const BookingTabs: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [processing, setProcessing] = useState<number | null>(null); // Track which booking is being paid
   const router = useRouter();
 
+  // Fetch user
   useEffect(() => {
     async function fetchUser() {
       try {
         const response = await fetch(`/api/profile`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch user");
-        }
+        if (!response.ok) throw new Error("Failed to fetch user");
         const data = await response.json();
         setUser(data);
       } catch (error) {
-        setError("Error fetching user data. Please try again.");
         console.error(error);
+        setError("Error fetching user data. Please try again.");
       } finally {
         setLoading(false);
       }
     }
-
     fetchUser();
   }, []);
 
+  // Helper: format date
   const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
-    return !isNaN(date.getTime()) 
-        ? new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }).format(date) 
-        : "Invalid Date";
-};
+    return !isNaN(date.getTime())
+      ? new Intl.DateTimeFormat("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }).format(date)
+      : "Invalid Date";
+  };
 
+  // Handle checkout logic
+  const handleCheckout = async (bookingId: number) => {
+    setProcessing(bookingId);
+    try {
+      const res = await fetch(`http://localhost:3000/api/booking/packages/${bookingId}`);
+      if (!res.ok) throw new Error("Failed to fetch booking details");
 
-  if (loading) {
-    return <BookingSkeleton />
-  }
+      const bookingData = await res.json();
+
+      // Pass fetched booking data to checkoutAction
+      await checkoutAction(bookingData, bookingId);
+    } catch (err) {
+      console.error("Checkout failed:", err);
+      alert("Failed to proceed with payment. Please try again.");
+    } finally {
+      setProcessing(null);
+    }
+  };
+
+  if (loading) return <BookingSkeleton />;
   if (error) return <p className="text-center text-red-500">{error}</p>;
+
+  const filteredBookings =
+    user?.package_bookings?.filter((b) => b.status === activeTab) || [];
+
 
   return (
     <div>
@@ -139,13 +163,19 @@ const BookingTabs: React.FC = () => {
 
                 {/* Pay Now Button (Only visible for Approved Bookings) */}
                 {booking.status === "Approved" && (
-                  <motion.button
-                    className="bg-black text-white px-5 py-2 rounded-lg font-medium shadow-md hover:bg-gray-900 transition-all duration-300 ease-in-out transform hover:scale-105"
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Pay Now
-                  </motion.button>
-                )}
+                <motion.button
+                  disabled={processing === booking.booking_id}
+                  className={`${
+                    processing === booking.booking_id
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-black hover:bg-gray-900"
+                  } text-white px-5 py-2 rounded-lg font-medium shadow-md transition-all duration-300 ease-in-out transform hover:scale-105`}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => handleCheckout(booking.booking_id)}
+                >
+                  {processing === booking.booking_id ? "Processing..." : "Pay Now"}
+                </motion.button>
+              )}
               </div>
             </div>
           ))
