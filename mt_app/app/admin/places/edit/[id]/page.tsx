@@ -20,21 +20,39 @@ const AddPlacePage: React.FC = () => {
   const [image, setImage] = useState<string | null>(null);
   const [placeImages, setPlaceImages] = useState<Array<{ id: string; url: string; name: string; publicId?: string }>>([]);
   const [formData, setFormData] = useState({
-    place_name: '',
+    name: '',
     contact_info: '',
-    location: '',
+    location: {
+      text: '',
+      url: '',
+    },
     city: '',
     description: '',
     fee: '',
   });
 
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+
+    // Handle nested location fields separately
+    if (name === 'text' || name === 'url') {
+      setFormData((prev) => ({
+        ...prev,
+        location: {
+          ...prev.location,
+          [name]: value,
+        },
+      }));
+    } else {
+      // Handle all other top-level fields
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
+
 
   const handleImageChange = (imageUrl: string | null) => {
     setImage(imageUrl);
@@ -49,20 +67,24 @@ const AddPlacePage: React.FC = () => {
         }
         const data = await response.json();
         setFormData({
-          place_name: data.place_name,
+          name: data.name,
           contact_info: data.contact_info,
-          location: data.location,
+          location: {
+            text: data.location?.text || '',
+            url: data.location?.url || '',
+          },
           city: data.city,
           description: data.description,
           fee: data.fee,
         });
+
         setImage(data.image || null);
         
         // Load existing place_images
         const existingPlaceImages = (data.place_image || []).map((img: any, index: number) => ({
           id: `existing-${img.image_id}`,
-          url: img.image,
-          name: `Place Image ${index + 1}`,
+          url: img.url,
+          name: img.name || `Place Image ${index + 1}`,
           publicId: img.image && img.image.includes('cloudinary') 
             ? img.image.split('/').pop()?.split('.')[0] 
             : undefined
@@ -87,16 +109,19 @@ const AddPlacePage: React.FC = () => {
     setSaving(true);
     try {
       // Validate required fields
-      if (!formData.place_name.trim()) {
+      if (!formData.name.trim()) {
         showError('Missing required field', 'Please enter a place name');
         setSaving(false);
         return;
       }
 
       const payload: any = {
-        place_name: formData.place_name,
+        name: formData.name,
         contact_info: formData.contact_info,
-        location: formData.location,
+        location: {
+          text: formData.location?.text,
+          url: formData.location?.url,
+        },
         city: formData.city,
         description: formData.description,
         fee: formData.fee ? parseFloat(formData.fee) : 0,
@@ -127,7 +152,7 @@ const AddPlacePage: React.FC = () => {
 
   return (
     <>
-      <ToastContainer toasts={toasts} onRemove={removeToast} />
+    <ToastContainer toasts={toasts} onRemove={removeToast} />
     <AdminLayout>
       <div className="space-y-6">
         <div className="flex items-center gap-4">
@@ -140,7 +165,7 @@ const AddPlacePage: React.FC = () => {
           </button>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Edit Place</h1>
-            <p className="text-gray-600">Update {formData.place_name} place</p>
+            <p className="text-gray-600">Update {formData.name} place</p>
           </div>
         </div>
 
@@ -178,9 +203,9 @@ const AddPlacePage: React.FC = () => {
               </label>
               <input
                 type="text"
-                id="place_name"
-                name="place_name"
-                value={formData.place_name}
+                id="name"
+                name="name"
+                value={formData.name}
                 onChange={handleInputChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -193,16 +218,28 @@ const AddPlacePage: React.FC = () => {
               <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
                 Location
               </label>
+
               <input
                 type="text"
-                id="location"
-                name="location"
-                value={formData.location}
+                id="text"
+                name="text"
+                value={formData.location?.text}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
+                placeholder="Enter location name"
+              />
+
+              <input
+                type="text"
+                id="url"
+                name="url"
+                value={formData.location?.url}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter location"
+                placeholder="Enter location URL"
               />
             </div>
+
 
             {/* City */}
             <div>

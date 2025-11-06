@@ -6,7 +6,7 @@ import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 interface ImageModalProps {
   isOpen: boolean;
   onClose: () => void;
-  images: Array<{ image_id: number; image: string }>;
+  images: Array<{ image_id: number; url: string; alt?: string }>;
   currentIndex: number;
   onIndexChange: (index: number) => void;
 }
@@ -69,7 +69,7 @@ const ImageModal: React.FC<ImageModalProps> = ({
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70"
       onClick={handleBackdropClick}
     >
       {/* Close Button */}
@@ -108,7 +108,7 @@ const ImageModal: React.FC<ImageModalProps> = ({
       {/* Main Image */}
       <div className="max-w-7xl max-h-[90vh] mx-4 flex items-center justify-center">
         <img
-          src={currentImage.image}
+          src={currentImage.url}
           alt={`Trip image ${currentIndex + 1}`}
           className="max-w-full max-h-full object-contain rounded-lg"
         />
@@ -135,8 +135,8 @@ const ImageModal: React.FC<ImageModalProps> = ({
               }`}
             >
               <img
-                src={img.image}
-                alt={`Thumbnail ${index + 1}`}
+                src={img.url}
+                alt={img.alt || `Thumbnail ${index + 1}`}
                 className="w-full h-full object-cover"
               />
             </button>

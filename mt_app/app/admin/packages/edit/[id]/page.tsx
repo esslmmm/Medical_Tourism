@@ -9,8 +9,7 @@ import ImageUpload from '@/components/admin_component/ui/ImageUpload';
 
 interface Description {
   id?: number;
-  title: string;
-  details: string;
+  text: string;
 }
 
 interface PackageImage {
@@ -52,7 +51,6 @@ const EditPackagePage: React.FC = () => {
     package_type: 'Medical_Tourism',
     hospital_id: '',
     detail: '',
-    duration: '',
     expired_date: '',
     status: 'Active',
   });
@@ -83,21 +81,20 @@ const EditPackagePage: React.FC = () => {
           package_type: pkg.package_type || 'Medical_Tourism',
           hospital_id: pkg.hospital_id || '',
           detail: pkg.detail || '',
-          duration: pkg.duration || '',
           expired_date: pkg.expired_date ? String(pkg.expired_date).slice(0, 10) : '',
           status: pkg.status || 'Active',
         });
 
         setImage(pkg.image || null);
         setDescriptions(
-          (pkg.description || []).map((d: any) => ({ id: d.description_id, title: d.title || '', details: d.details || '' }))
+          (pkg.description || []).map((d: any) => ({ id: d.description_id, text: d.text || '' }))
         );
 
         const existingImages: PackageImage[] = Array.isArray(pkg.package_image) 
           ? pkg.package_image.map((img: any, index: number) => ({
               id: `existing-${img.image_id}`,
-              url: img.image,
-              name: `Package's image ${index + 1}`,
+              url: img.url,
+              name: img.name || `Package's image ${index + 1}`,
               publicId: img.image && img.image.includes('cloudinary') 
                 ? img.image.split('/').pop()?.split('.')[0] 
                 : undefined
@@ -135,7 +132,7 @@ const EditPackagePage: React.FC = () => {
     setImage(imageUrl);
   };
 
-  const addDescription = () => setDescriptions([...descriptions, { title: '', details: '' }]);
+  const addDescription = () => setDescriptions([...descriptions, { text: '' }]);
   const removeDescription = (index: number) => setDescriptions(descriptions.filter((_, i) => i !== index));
 
   const refreshImages = async () => {
@@ -146,8 +143,8 @@ const EditPackagePage: React.FC = () => {
         const existingImages: PackageImage[] = Array.isArray(t.package_image) 
           ? t.package_image.map((img: any, index: number) => ({
               id: `existing-${img.image_id}`,
-              url: img.image,
-              name: `Package's image ${index + 1}`,
+              url: img.url,
+              name: img.name || `Package's image ${index + 1}`,
               publicId: img.image && img.image.includes('cloudinary') 
                 ? img.image.split('/').pop()?.split('.')[0] 
                 : undefined
@@ -191,13 +188,13 @@ const EditPackagePage: React.FC = () => {
       }
 
       // Validate: all feature rows must have a title
-      if (descriptions.some(desc => (desc.title || '').trim() === '')) {
+      if (descriptions.some(desc => (desc.text || '').trim() === '')) {
         showError('Missing feature titles', 'Please fill Title for all package features');
         setSaving(false);
         return;
       }
 
-      const cleanedDescriptions = descriptions.filter(d => d.title && d.title.trim() !== '');
+      const cleanedDescriptions = descriptions.filter(d => d.text && d.text.trim() !== '');
 
       const payload: any = {
         package_name: formData.package_name.trim(),
@@ -206,11 +203,10 @@ const EditPackagePage: React.FC = () => {
         image: image,
         status: formData.status,
         detail: formData.detail.trim(),
-        duration: formData.duration || null,
         expired_date: formData.expired_date,
         tour_id: routes[0]?.tour_id,
-        descriptions: cleanedDescriptions.map(d => ({ id: d.id, title: d.title.trim(), text: d.details.trim() })),
-        images: packageImages.map(img => ({ url: img.url, publicId: img.publicId }))
+        descriptions: cleanedDescriptions.map(d => ({ id: d.id, text: d.text.trim() })),
+        images: packageImages.map(img => ({ url: img.url, publicId: img.publicId, alt: img.name })),
       };
 
       const response = await fetch(`/api/admin/services/packages/${id}`, {
@@ -316,16 +312,6 @@ const EditPackagePage: React.FC = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
-                    <input
-                      type="text"
-                      value={formData.duration}
-                      onChange={(e) => handleInputChange('duration', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                      placeholder="e.g., 5 days"
-                    />
-                  </div>
-                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Expired Date *</label>
                     <input
                       type="date"
@@ -411,20 +397,10 @@ const EditPackagePage: React.FC = () => {
                           <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                           <input
                             type="text"
-                            value={description.title}
-                            onChange={(e) => handleDescriptionChange(index, 'title', e.target.value)}
+                            value={description.text}
+                            onChange={(e) => handleDescriptionChange(index, 'text', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm text-gray-900"
                             placeholder="e.g., Medical Consultation"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Details</label>
-                          <input
-                            type="text"
-                            value={description.details}
-                            onChange={(e) => handleDescriptionChange(index, 'details', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm text-gray-900"
-                            placeholder="e.g., Comprehensive health check-up with specialist"
                           />
                         </div>
                       </div>
@@ -521,7 +497,6 @@ const EditPackagePage: React.FC = () => {
                     <PackageIcon className="h-8 w-8 mx-auto text-blue-600 mb-2" />
                   </div>
                   <h4 className="font-semibold text-gray-900">{formData.package_name || 'Package Name'}</h4>
-                  <p className="text-sm text-blue-600 font-medium">{formData.duration || 'Duration'} Days</p>
                   <p className="text-sm text-gray-800 mt-2">{formData.status}</p>
                 </div>
               </div>

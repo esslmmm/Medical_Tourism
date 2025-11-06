@@ -35,7 +35,6 @@ export interface User {
       name: string;
     }
     category: string;
-    duration: string;
     description: string;
     services: string[];
     reviewCount: number;
@@ -134,7 +133,8 @@ export interface DocEducation {
   export interface TripImage {
     image_id: number;
     tour_id: number;
-    image: string;
+    url: string;
+    alt?: string;
   }
 
   export interface Place {
@@ -144,7 +144,7 @@ export interface DocEducation {
     city: string | null;
   }
 
-  export interface PackagePlace {
+  export interface attractions {
     packplace_id: number;
     route_id: number | null;
     place_id: string | null;
@@ -153,12 +153,16 @@ export interface DocEducation {
 
   export interface Route {
     route_id: number;
-    route_name: string | null;
+    image: string | null;
+    title: string | null;
     duration: number | null;
     description: string | null;
-    total_price: number | null;
+    adult_price: number | null;
+    child_price: number | null;
+    car_service_price: number | null;
+    guide_price: number | null;
     created_at: Date;
-    package_places: PackagePlace[];
+    attractions: attractions[];
   }
 
   export interface TripRouteLink {
@@ -172,6 +176,13 @@ export interface DocEducation {
   export interface Trip {
     tour_id: number;
     city: string | null;
+    description: string | null;
     Trip_Routes?: TripRouteLink[];
-    trip_images: TripImage[];
+    images: TripImage[];
+    languages: languages[];
+  }
+
+  export interface languages {
+    name: string;
+    flag: string;
   }

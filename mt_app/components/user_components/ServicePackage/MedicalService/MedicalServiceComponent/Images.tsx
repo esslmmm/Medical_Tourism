@@ -21,8 +21,8 @@ const previewImages = images.slice(0, 3);
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 relative">
                   <div className="lg:col-span-2 relative">
                   <Image
-                  src={previewImages[0].url}
-                  alt={previewImages[0].alt || ''}
+                  src={previewImages[0]?.url}
+                  alt={previewImages[0]?.alt || ''}
                   width={800}
                   height={400}
                   className="w-full h-full object-cover rounded-l-2xl"

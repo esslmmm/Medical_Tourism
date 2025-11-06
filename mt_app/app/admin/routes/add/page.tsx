@@ -1,28 +1,53 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import { useRouter } from 'next/navigation';
 import { Save, ArrowLeft, Trash2 } from 'lucide-react';
+import SingleImageUpload from '@/components/admin_component/ui/SingleImageUpload';
+
+const thaiCities = [
+    "All",
+    "Bangkok",
+    "Chiang mai",
+    "Phuket",
+    "Pattaya",
+    "Krabi",
+    "Chiang rai",
+    "Hua Hin",
+    "Ayutthaya",
+    "Nakhon Ratchasima",
+    "Surat Thani",
+  ];
 
 interface Place {
   place_id: string;
-  place_name: string | null;
-  city?: string | null;
+  description: string;
+  name: string | null;
+  city: string;
 }
 
 const AddRoutePage: React.FC = () => {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [places, setPlaces] = useState<Place[]>([]);
+  const [image, setImage] = useState<string | null>(null);
   const [selectedPlaceIds, setSelectedPlaceIds] = useState<string[]>([]);
+  const [selectedCity, setSelectedCity] = useState("All");
 
   const [formData, setFormData] = useState({
-    route_name: '',
+    title: '',
     description: '',
     duration: '',
-    total_price: '',
+    child_price: '',
+    adult_price: '',
+    car_service_price: '',
+    guide_price: '',
   });
+
+  const handleImageChange = (imageUrl: string | null) => {
+    setImage(imageUrl);
+  };
 
   useEffect(() => {
     const loadPlaces = async () => {
@@ -41,10 +66,14 @@ const AddRoutePage: React.FC = () => {
     setSaving(true);
     try {
       const payload = {
-        route_name: formData.route_name || null,
-        description: formData.description || null,
-        duration: formData.duration ? Number(formData.duration) : null,
-        total_price: formData.total_price ? Number(formData.total_price) : null,
+        title: formData?.title || null,
+        description: formData?.description || null,
+        duration: formData?.duration ? Number(formData.duration) : null,
+        child_price: formData?.child_price ? Number(formData.child_price) : null,
+        adult_price: formData?.adult_price ? Number(formData.adult_price) : null,
+        car_service_price: formData?.car_service_price ? Number(formData.car_service_price) : null,
+        guide_price: formData?.guide_price ? Number(formData.guide_price) : null,
+        image: image,
         place_ids: selectedPlaceIds,
       };
 
@@ -66,6 +95,19 @@ const AddRoutePage: React.FC = () => {
       setSaving(false);
     }
   };
+
+
+
+   // ✅ Filter attractions by selected city
+  const filteredAttractions = useMemo(() => {
+    if (selectedCity === "All") return places || [];
+    return (
+      places.filter(
+        (pp: any) =>
+          pp.places?.city?.toLowerCase() === selectedCity.toLowerCase()
+      ) || []
+    );
+  }, [places, selectedCity]);
 
   return (
     <AdminLayout>
@@ -91,26 +133,30 @@ const AddRoutePage: React.FC = () => {
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h2 className="text-xl font-semibold mb-6 text-gray-900">Route Details</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Main Image Upload */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Main Place Image
+                  </label>
+                  <SingleImageUpload
+                    image={image}
+                    onImageChange={handleImageChange}
+                    disabled={saving}
+                    placeholder="Click to upload main place image or drag and drop"
+                  />
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Route Name</label>
                   <input
                     type="text"
-                    value={formData.route_name}
-                    onChange={(e) => setFormData({ ...formData, route_name: e.target.value })}
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     placeholder="e.g., Bangkok City Tour"
                   />
                 </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                    placeholder="Route description"
-                  />
-                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Duration (days)</label>
                   <input
@@ -121,22 +167,85 @@ const AddRoutePage: React.FC = () => {
                     placeholder="e.g., 3"
                   />
                 </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    placeholder="Route description"
+                  />
+                </div>
+        
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Total Price</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Child Price</label>
                   <input
                     type="number"
-                    value={formData.total_price}
-                    onChange={(e) => setFormData({ ...formData, total_price: e.target.value })}
+                    value={formData.child_price}
+                    onChange={(e) => setFormData({ ...formData, child_price: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                    placeholder="e.g., 500"
+                    placeholder="e.g., 500THB"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Adult Price</label>
+                  <input
+                    type="number"
+                    value={formData.adult_price}
+                    onChange={(e) => setFormData({ ...formData, adult_price: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    placeholder="e.g., 500THB"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Car Service Price</label>
+                  <input
+                    type="number"
+                    value={formData.car_service_price}
+                    onChange={(e) => setFormData({ ...formData, car_service_price: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    placeholder="e.g., 500THB"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Guide Service Price</label>
+                  <input
+                    type="number"
+                    value={formData.guide_price}
+                    onChange={(e) => setFormData({ ...formData, guide_price: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    placeholder="e.g., 500THB"
                   />
                 </div>
               </div>
             </div>
 
+            {/* Places Selection */}
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-medium text-gray-900">Places</h3>
+                <div className="flex items-center space-x-2">
+          <label htmlFor="city" className="text-sm text-gray-700">
+            Filter by city:
+          </label>
+          <select
+            id="city"
+            className="border border-gray-300 rounded-md text-sm px-3 py-1 focus:outline-none focus:ring-1 focus:ring-green-500"
+            value={selectedCity}
+            onChange={(e) => setSelectedCity(e.target.value)}
+          >
+            {thaiCities.map((city) => (
+              <option key={city} value={city}>
+                {city}
+              </option>
+            ))}
+          </select>
+        </div>
                 <select
                   value=""
                   onChange={(e) => {
@@ -149,21 +258,23 @@ const AddRoutePage: React.FC = () => {
                 >
                   <option value="">Select Place</option>
                   {places
-                    .filter(p => p.place_id && !selectedPlaceIds.includes(p.place_id))
+                    .filter(p => p.place_id && !selectedPlaceIds.includes(p.place_id) && p.city === selectedCity || selectedCity === "All")
                     .map((p) => (
                       <option key={p.place_id} value={p.place_id}>
-                        {p.place_name || 'Unnamed Place'}
+                        {p.name || 'Unnamed Place'}
                         {p.city ? `, ${p.city}` : ''}
                       </option>
                     ))}
                 </select>
               </div>
+
+              
               <div className="space-y-2">
                 {selectedPlaceIds.map((pid) => {
                   const p = places.find(x => x.place_id === pid);
                   return (
                     <div key={pid} className="flex items-center justify-between bg-purple-50 border border-purple-200 rounded-lg px-3 py-2">
-                      <span className="text-sm text-gray-900">{p?.place_name || pid}</span>
+                      <span className="text-sm text-gray-900">{p?.name || pid}</span>
                       <button
                         onClick={() => setSelectedPlaceIds(selectedPlaceIds.filter(id => id !== pid))}
                         className="text-red-600 hover:text-red-800"
@@ -195,9 +306,24 @@ const AddRoutePage: React.FC = () => {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-800">Price</span>
+                  <span className="text-gray-800">Child Price</span>
                   <span className="font-medium text-gray-900">
-                    {formData.total_price ? `$${formData.total_price}` : 'Not set'}
+                    {formData.child_price ? `$${formData.child_price}` : 'Not set'}
+                  </span>
+                </div><div className="flex justify-between">
+                  <span className="text-gray-800">Adult Price</span>
+                  <span className="font-medium text-gray-900">
+                    {formData.child_price ? `$${formData.adult_price}` : 'Not set'}
+                  </span>
+                </div><div className="flex justify-between">
+                  <span className="text-gray-800">Car Service Price</span>
+                  <span className="font-medium text-gray-900">
+                    {formData.child_price ? `$${formData.car_service_price}` : 'Not set'}
+                  </span>
+                </div><div className="flex justify-between">
+                  <span className="text-gray-800">Guide Sercive Price</span>
+                  <span className="font-medium text-gray-900">
+                    {formData.child_price ? `$${formData.guide_price}` : 'Not set'}
                   </span>
                 </div>
               </div>

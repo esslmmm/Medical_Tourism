@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Pencil, MapPin, Clock, DollarSign, Route, Calendar, Users } from 'lucide-react';
+import { Route as RouteType } from '@/types/admin';
+
 
 const RouteDetailPage: React.FC = () => {
   const router = useRouter();
@@ -11,7 +13,7 @@ const RouteDetailPage: React.FC = () => {
   const id = params?.id as string;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [route, setRoute] = useState<any>(null);
+  const [route, setRoute] = useState<RouteType | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -68,7 +70,7 @@ const RouteDetailPage: React.FC = () => {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900">
-                    {route.route_name || `Route #${route.route_id}`}
+                    {route.title || `Route #${route.route_id}`}
                   </h1>
                   <p className="text-gray-600">
                     Created: {new Date(route.created_at).toLocaleDateString()}
@@ -77,7 +79,7 @@ const RouteDetailPage: React.FC = () => {
                 <div className="flex items-center space-x-4">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-blue-600">
-                      {route.package_places?.length || 0}
+                      {route.attractions?.length || 0}
                     </div>
                     <div className="text-sm text-gray-600">Places</div>
                   </div>
@@ -102,9 +104,35 @@ const RouteDetailPage: React.FC = () => {
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <div className="flex items-center mb-2">
                     <Route className="h-5 w-5 text-blue-600 mr-2" />
-                    <span className="font-medium text-blue-900">Route ID</span>
+                    <span className="font-medium text-blue-900">Car Service Price</span>
                   </div>
-                  <p className="text-sm text-blue-700">#{route.route_id}</p>
+                  <p className="text-sm text-blue-700">{route.car_service_price} THB</p>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center mb-2">
+                    <Route className="h-5 w-5 text-blue-600 mr-2" />
+                    <span className="font-medium text-blue-900">Guide Service Price</span>
+                  </div>
+                  <p className="text-sm text-blue-700">{route.guide_price} THB</p>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center mb-2">
+                    <Route className="h-5 w-5 text-blue-600 mr-2" />
+                    <span className="font-medium text-blue-900">Child Service Price</span>
+                  </div>
+                  <p className="text-sm text-blue-700">{route.child_price} THB</p>
+                </div>
+
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                  <div className="flex items-center mb-2">
+                    <DollarSign className="h-5 w-5 text-purple-600 mr-2" />
+                    <span className="font-medium text-purple-900">Price</span>
+                  </div>
+                  <p className="text-sm text-purple-700">
+                    {route.adult_price ? `$${route.adult_price}` : 'Not specified'}
+                  </p>
                 </div>
                 
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
@@ -114,16 +142,6 @@ const RouteDetailPage: React.FC = () => {
                   </div>
                   <p className="text-sm text-green-700">
                     {route.duration ? `${route.duration} days` : 'Not specified'}
-                  </p>
-                </div>
-                
-                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                  <div className="flex items-center mb-2">
-                    <DollarSign className="h-5 w-5 text-purple-600 mr-2" />
-                    <span className="font-medium text-purple-900">Price</span>
-                  </div>
-                  <p className="text-sm text-purple-700">
-                    {route.total_price ? `$${route.total_price}` : 'Not specified'}
                   </p>
                 </div>
               </div>
@@ -145,17 +163,17 @@ const RouteDetailPage: React.FC = () => {
                 <h2 className="text-xl font-semibold text-gray-900">Places in this Route</h2>
               </div>
               
-              {route.package_places && route.package_places.length > 0 ? (
+              {route.attractions && route.attractions.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {route.package_places.map((pp: any) => (
-                    <div key={pp.packplace_id} className="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:bg-gray-100 transition-colors">
+                  {route.attractions.map((pp: any) => (
+                    <div key={pp.attraction_id} className="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:bg-gray-100 transition-colors">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3 className="font-medium text-gray-900 mb-1">
-                            {pp.places?.place_name || 'Unnamed Place'}
+                            {pp.places?.name || 'Unnamed Place'}
                           </h3>
                           <p className="text-sm text-gray-600 mb-2">
-                            {pp.places?.location || 'Location not specified'}
+                            {pp.places?.location?.text || 'Location not specified'}
                           </p>
                           <div className="flex items-center text-xs text-gray-500">
                             <MapPin className="h-3 w-3 mr-1" />

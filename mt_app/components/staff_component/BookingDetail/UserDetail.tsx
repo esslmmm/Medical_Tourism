@@ -1,76 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Inter } from "next/font/google";
 import { useParams } from "next/navigation";
+import { PackageBooking, user } from '@/types/Booking';
 
 const inter = Inter({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
-interface PackageBooking {
-  booking_id: number;
-  user_id: number;
-  status: string;
-  create_at: string;
-  appointment_id: number;
-  package_id: number;
-  packages: Packages;
-  appointments: Appointments;
+interface MedicalServiceCardProps {
+  data: PackageBooking | null;
+  user?: user | null;
 }
 
-interface User {
-  id: number;
-  name: string;
-}
-
-interface Appointments {
-  appointment_id: number;
-  date: string;
-  timeslot: string;
-  description: string;
-  file_name: string;
-  file_path: string;
-}
-
-interface Packages {
-  package_id: number;
-  package_type: string;
-  image: string;
-  hospital_id: number;
-  package_name: string;
-}
-
-const UserDetail: React.FC = () => {
-  const params = useParams<{ id: string }>();
-  const id = params?.id;
-  const [data, setData] = useState<PackageBooking | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchPackageBooking = async () => {
-      try {
-        const response = await fetch(`/api/admin/booking/packages/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch data");
-        const result = await response.json();
-        setData(result);
-
-        if (result.user_id) {
-          const userResponse = await fetch(`/api/admin/profile/${result.user_id}`);
-          if (!userResponse.ok) throw new Error("Failed to fetch user data");
-          const userData: User = await userResponse.json();
-          setUser(userData);
-        }
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPackageBooking();
-  }, [id]);
+const UserDetail: React.FC<MedicalServiceCardProps> = ({data, user}) => {
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "Invalid Date";
@@ -84,41 +27,59 @@ const UserDetail: React.FC = () => {
     });
   };
 
-  if (loading)
-    return <p className="text-center text-gray-500">Loading package booking details...</p>;
-  if (error)
-    return <p className="text-center text-red-500">Error: {error}</p>;
-
   return (
-    <div className={`${inter.className} mb-2`}>
-      <h2 className="ml-2 text-lg font-bold mb-2" style={{ fontSize: "25px" }}>
-        Booking Detail
-      </h2>
-      <div className="border border-[#C5D1E0] w-[850px] p-4 rounded-xl shadow-md bg-white">
-          <div className='pl-2 flex gap-20'>
-            <div className='space-y-5'>
-            <p className="text-md font-bold">
-            Customer Name: <span className="font-normal">{user?.name || "N/A"}</span>
+   <div className={`${inter.className} mb-6`}>
+  <h2 className="ml-2 text-2xl font-bold mb-4 text-gray-800">Booking Detail</h2>
+
+  <div className="border border-[#C5D1E0] w-full max-w-[850px] p-6 rounded-2xl shadow-md bg-white hover:shadow-lg transition-all">
+    <div className="flex flex-col md:flex-row gap-12">
+      {/* Left Column — Customer Info */}
+      <div className="space-y-5">
+        <div>
+          <p className="text-md font-semibold text-gray-600">Customer Name</p>
+          <p className="text-lg font-medium text-gray-800">
+            {user?.name || "N/A"}
           </p>
-          <p className="text-md font-bold">
-            Appointment Date:{" "}
-            <span className="font-normal">
-              {data?.appointments ? formatDate(data.appointments.date) : "N/A"}
-            </span>
+        </div>
+
+        <div>
+          <p className="text-md font-semibold text-gray-600">Booking ID</p>
+          <p className="text-lg font-medium text-gray-800">
+            {data?.booking_id ?? "N/A"}
           </p>
-          <p className="text-md font-bold">
-            Booking ID: <span className="font-normal">{data?.booking_id ?? "N/A"}</span>
+        </div>
+      </div>
+
+      {/* Right Column — Contact Detail */}
+      <div className="flex-1 space-y-5">
+        <div>
+          <p className="text-md font-semibold text-gray-600">Contact Name</p>
+          <p className="text-lg font-medium text-gray-800">
+            {data?.user_contact_detail
+              ? `${data.user_contact_detail.firstname} ${data.user_contact_detail.lastname}`
+              : "N/A"}
           </p>
-            </div>
-          <div className='flex-1 space-y-5'>
-          <p className="text-md font-bold">
-            Appointment Time:{" "}
-            <span className="font-normal">{data?.appointments?.timeslot || "N/A"}</span>
-          </p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-10">
+          <div>
+            <p className="text-md font-semibold text-gray-600">Phone</p>
+            <p className="text-lg font-medium text-gray-800">
+              {data?.user_contact_detail?.phone ?? "N/A"}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-md font-semibold text-gray-600">Country</p>
+            <p className="text-lg font-medium text-gray-800">
+              {data?.user_contact_detail?.country ?? "N/A"}
+            </p>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
   );
 };
 

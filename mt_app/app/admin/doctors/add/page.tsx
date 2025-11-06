@@ -5,6 +5,7 @@ import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import { ArrowLeft, Save, Plus, Trash2, User } from 'lucide-react';
 import { useToast, ToastContainer } from '@/components/admin_component/ui/Toast';
 import '@/app/admin/styles/globals.css';
+import SingleImageUpload from '@/components/admin_component/ui/SingleImageUpload';
 
 // Define interfaces
 interface DocEducation {
@@ -28,6 +29,8 @@ const AddDoctorPage: React.FC = () => {
   const { toasts, removeToast, showSuccess, showError } = useToast();
   const [saving, setSaving] = useState(false);
   const [hospitals, setHospitals] = useState<any[]>([]);
+  const [image, setImage] = useState<string | null>(null);
+  
 
   // Form state
   const [formData, setFormData] = useState({
@@ -129,12 +132,6 @@ const AddDoctorPage: React.FC = () => {
         doc_language: cleanedLanguages,
       };
 
-      console.log('=== FRONTEND SENDING DATA ===');
-      console.log('Payload:', JSON.stringify(payload, null, 2));
-      console.log('Education count:', payload.doc_education.length);
-      console.log('Certificate count:', payload.doc_certificate.length);
-      console.log('Language count:', payload.doc_language.length);
-
       const response = await fetch('/api/admin/services/doctors/', {
         method: 'POST',
         headers: {
@@ -171,6 +168,10 @@ const AddDoctorPage: React.FC = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleImageChange = (imageUrl: string | null) => {
+    setImage(imageUrl);
   };
 
   return (
@@ -218,6 +219,18 @@ const AddDoctorPage: React.FC = () => {
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h2 className="text-xl font-semibold mb-6 text-gray-900">Basic Information</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Main Image Upload */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Main Place Image
+                    </label>
+                    <SingleImageUpload
+                      image={image}
+                      onImageChange={handleImageChange}
+                      disabled={saving}
+                      placeholder="Click to upload main package image or drag and drop"
+                    />
+                  </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Doctor Name *
@@ -271,18 +284,6 @@ const AddDoctorPage: React.FC = () => {
                     onChange={(e) => handleInputChange('experience', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     placeholder="e.g., 10 years"
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Image URL
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.image}
-                    onChange={(e) => handleInputChange('image', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                    placeholder="https://example.com/doctor-photo.jpg"
                   />
                 </div>
                 <div className="md:col-span-2">

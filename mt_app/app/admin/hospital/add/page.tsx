@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import { ArrowLeft, Save, Upload, X, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
 import '@/app/admin/styles/globals.css';
+import SingleImageUpload from '@/components/admin_component/ui/SingleImageUpload';
 
 interface HospitalImage {
   image_id?: number;
@@ -38,7 +39,8 @@ const THAILAND_CITIES = [
 
 const HospitalAddPage: React.FC = () => {
   const router = useRouter();
-
+  const [Logoimage, setLogoImage] = useState<string | null>(null);
+  const [image, setImage] = useState<string | null>(null);
   const [hospital, setHospital] = useState<Hospital>({
     name: '',
     hospital_code: '',
@@ -136,6 +138,14 @@ const HospitalAddPage: React.FC = () => {
     }
   };
 
+  const handleImageChange = (imageUrl: string | null) => {
+    setImage(imageUrl);
+  };
+
+  const handlelogoChange = (imageUrl: string | null) => {
+    setLogoImage(imageUrl);
+  };
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -159,48 +169,32 @@ const HospitalAddPage: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Logo Upload Section */}
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h2 className="text-xl font-semibold mb-4">Hospital Logo</h2>
-            <div className="flex items-center space-x-6">
-              <div className="relative">
-                {logoPreview && (
-                  <img
-                    src={logoPreview}
-                    alt="Hospital Logo"
-                    className="w-32 h-32 object-contain rounded-lg border border-gray-200 bg-gray-50"
-                  />
-                )}
-                {logoFile && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setLogoFile(null);
-                      setLogoPreview('');
-                    }}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Upload Logo
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoChange}
-                  className="hidden"
-                  id="logo-upload"
-                />
-                <label
-                  htmlFor="logo-upload"
-                  className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Choose Logo
-                </label>
-              </div>
+            <h2 className="text-xl font-semibold mb-4">Hospital's image and Logo</h2>
+            <div className="flex justify-center items-start space-x-10">
+              {/* Main Image Upload */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Main Hospital Image
+                    </label>
+                    <SingleImageUpload
+                      image={image}
+                      onImageChange={handleImageChange}
+                      disabled={saving}
+                      placeholder="Click to upload main package image or drag and drop"
+                    />
+                  </div>
+              {/* Logo Image Upload */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Logo Image
+                    </label>
+                    <SingleImageUpload
+                      image={Logoimage}
+                      onImageChange={handlelogoChange}
+                      disabled={saving}
+                      placeholder="Click to upload main package image or drag and drop"
+                    />
+                  </div>
             </div>
           </div>
 

@@ -8,8 +8,7 @@ import SingleImageUpload from '@/components/admin_component/ui/SingleImageUpload
 import ImageUpload from '@/components/admin_component/ui/ImageUpload';
 
 interface Description {
-  title: string;
-  details: string;
+  text: string;
 }
 
 interface PackageImage {
@@ -41,7 +40,6 @@ const AddPackagePage: React.FC = () => {
     package_type: 'Medical_Tourism',
     hospital_id: '',
     detail: '',
-    duration: '',
     expired_date: '',
     status: 'Active',
   });
@@ -88,7 +86,7 @@ const AddPackagePage: React.FC = () => {
   };
 
   const addDescription = () => {
-    setDescriptions([...descriptions, { title: '', details: '' }]);
+    setDescriptions([...descriptions, { text: '' }]);
   };
 
   const removeDescription = (index: number) => {
@@ -131,15 +129,15 @@ const AddPackagePage: React.FC = () => {
       }
 
       // Validate: all feature rows must have a title
-      if (descriptions.some(desc => (desc.title || '').trim() === '')) {
-        showError('Missing feature titles', 'Please fill Title for all package features');
+      if (descriptions.some(desc => (desc.text || '').trim() === '')) {
+        showError('Missing feature Texts', 'Please fill Text for all package features');
         setSaving(false);
         return;
       }
 
       // Clean and filter data
       const cleanedDescriptions = descriptions.filter(desc => 
-        desc.title && desc.title.trim() !== ''
+        desc.text && desc.text.trim() !== ''
       );
       const selectedTourId = routes[0]?.tour_id;
 
@@ -150,7 +148,6 @@ const AddPackagePage: React.FC = () => {
         image: image,
         status: formData.status,
         detail: formData.detail,
-        duration: formData.duration,
         expired_date: formData.expired_date,
         tour_id: selectedTourId,
         descriptions: cleanedDescriptions,
@@ -276,18 +273,6 @@ const AddPackagePage: React.FC = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Duration
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.duration}
-                      onChange={(e) => handleInputChange('duration', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                      placeholder="e.g., 5 days"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       Expired Date *
                     </label>
                     <input
@@ -368,26 +353,14 @@ const AddPackagePage: React.FC = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Title
+                            Text
                           </label>
                           <input
                             type="text"
-                            value={description.title}
-                            onChange={(e) => handleDescriptionChange(index, 'title', e.target.value)}
+                            value={description.text}
+                            onChange={(e) => handleDescriptionChange(index, 'text', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm text-gray-900"
                             placeholder="e.g., Medical Consultation"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Details
-                          </label>
-                          <input
-                            type="text"
-                            value={description.details}
-                            onChange={(e) => handleDescriptionChange(index, 'details', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm text-gray-900"
-                            placeholder="e.g., Comprehensive health check-up with specialist"
                           />
                         </div>
                       </div>
@@ -472,7 +445,6 @@ const AddPackagePage: React.FC = () => {
                     <Package className="h-8 w-8 mx-auto text-blue-600 mb-2" />
                   </div>
                   <h4 className="font-semibold text-gray-900">{formData.package_name || 'Package Name'}</h4>
-                  <p className="text-sm text-blue-600 font-medium">{formData.duration || 'Duration'} Days</p>
                   <p className="text-sm text-gray-800 mt-2">{formData.status}</p>
                 </div>
               </div>

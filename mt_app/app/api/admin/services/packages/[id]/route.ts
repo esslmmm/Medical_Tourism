@@ -42,7 +42,7 @@ export async function PUT(request: Request, { params }: Params) {
       const package_id = resolvedParams.id;
 
       const body = await request.json();
-      const { images} = body as { images: { id?: number; url: string }[] };
+      const { images} = body as { images: { id?: number; url: string; alt: string }[] };
 
       // Validate that package exists
       const existingPackage = await prisma.packages.findUnique({
@@ -110,7 +110,6 @@ export async function PUT(request: Request, { params }: Params) {
               image: body.image,
               status: body.status,
               detail: body.detail.trim(),
-              duration: body.duration,
               expired_date: expiredDate,
               tour_id: body.tour_id,
           },
@@ -146,7 +145,7 @@ export async function PUT(request: Request, { params }: Params) {
       // Add new images
       if (images.length > 0) {
         await prisma.package_image.createMany({
-          data: images.map(img => ({ package_id: package_id, image: img.url })),
+          data: images.map(img => ({ package_id: package_id, url: img.url, alt: img.alt || null })),
         });
       }
     }
@@ -160,16 +159,14 @@ export async function PUT(request: Request, { params }: Params) {
                   await prisma.description.update({
                       where: { description_id: desc.id },
                       data: { 
-                          details: desc.text.trim(), 
-                          title: desc.title.trim() 
+                          text: desc.text.trim(), 
                       },
                   });
               } else {
                   await prisma.description.create({
                       data: { 
                           package_id, 
-                          details: desc.text.trim(), 
-                          title: desc.title.trim() 
+                          text: desc.text.trim(), 
                       },
                   });
               }

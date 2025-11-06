@@ -30,7 +30,6 @@ export async function GET() {
             hospital_id,
             image,
             detail,
-            duration,
             status,
             expired_date,
             tour_id,
@@ -95,7 +94,6 @@ export async function GET() {
                 image,
                 status,
                 detail: detail.trim(),
-                duration,
                 expired_date: expiredDate,
                 tour_id,
             },
@@ -104,33 +102,33 @@ export async function GET() {
 
         // Step 2: Create descriptions if provided
         if (Array.isArray(descriptions) && descriptions.length > 0) {
-            const validDescriptions = descriptions.filter(desc => 
-                desc.title && desc.title.trim() && desc.details && desc.details.trim()
-            );
-            
-            if (validDescriptions.length > 0) {
-                await prisma.description.createMany({
-                    data: validDescriptions.map((desc: { title: string; details: string }) => ({
-                        package_id: newPackage.package_id,
-                        title: desc.title.trim(),
-                        details: desc.details.trim(),
-                    })),
-                });
-            }
+        const validDescriptions = descriptions.filter(desc => 
+            desc.text && desc.text.trim()
+        );
+
+        if (validDescriptions.length > 0) {
+            await prisma.description.createMany({
+            data: validDescriptions.map((desc: { text: string }) => ({
+                package_id: newPackage.package_id,
+                text: desc.text.trim(),
+            })),
+            });
         }
-          
+        }
+
         // Step 3: Create package images if provided
         if (Array.isArray(images) && images.length > 0) {
-            const validImages = images.filter(img => img.images && img.images.trim());
-            
-            if (validImages.length > 0) {
-                await prisma.package_image.createMany({
-                    data: validImages.map((img: { images: string }) => ({
-                        package_id: newPackage.package_id,
-                        image: img.images.trim(),
-                    })),
-                });
-            }
+        const validImages = images.filter(img => img.url && img.url.trim());
+
+        if (validImages.length > 0) {
+            await prisma.package_image.createMany({
+            data: validImages.map((img: { url: string, alt?: string }) => ({
+                package_id: newPackage.package_id,
+                url: img.url.trim(),
+                alt: img.alt?.trim() || null,
+            })),
+            });
+        }
         }
 
         return NextResponse.json({ 

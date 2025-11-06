@@ -12,7 +12,6 @@ export async function GET() {
         packages: {
           select:{
             package_id: true,
-            duration: true,
             package_name: true
           }
         },

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import StatsCard from '@/components/admin_component/Common/StatsCard';
-import { Package, TrendingUp, Star, Search, Filter, Edit, Eye, ToggleLeft, Plus } from 'lucide-react';
+import { Package, Search, Edit, Eye, ToggleLeft, Plus } from 'lucide-react';
 import { Package as PackageType } from '@/types/admin';
 import '@/app/admin/styles/globals.css';
 import { useRouter } from 'next/navigation';
@@ -128,7 +128,6 @@ const PackageManagement: React.FC = () => {
                 <tr className="border-b border-gray-200">
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Package</th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Hospital</th>
-                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Duration</th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
                 </tr>
@@ -156,7 +155,6 @@ const PackageManagement: React.FC = () => {
                   </td>
 
                   <td className="py-4 px-4 text-gray-900">{pkg.hospitals.name}</td>
-                  <td className="py-4 px-4 text-gray-900">{pkg.duration} days</td>
                   <td className="py-4 px-4">
                     <span
                       className={`px-2 py-1 text-xs font-semibold rounded-full ${

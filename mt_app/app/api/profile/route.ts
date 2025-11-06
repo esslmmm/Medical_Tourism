@@ -3,14 +3,12 @@ import { NextResponse } from 'next/server';
 import { auth } from '../auth/auth';
 
 
-
 /**
  * GET: Fetch a User by ID
  */
 export async function GET(request: Request) {
   try {
     const session = await auth()
-  
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }

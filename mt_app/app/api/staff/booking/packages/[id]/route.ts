@@ -12,7 +12,19 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     const packageBooking = await prisma.package_bookings.findUnique({
       where: { booking_id: packageBookingId },
       include: {
-        user: true,
+        user_contact_detail: {
+          select:{
+            firstname: true,
+            lastname: true,
+            phone: true,
+            country: true
+          }
+        },
+        user: {
+          select:{
+            name: true
+          }
+        },
         packages: {
           include:{
             hospitals:{
@@ -26,49 +38,59 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
           }
         },
         tourism_bookings: {
-          include: {
-            trips:{
-              include:{
-                package_places:{
-                  include: {
-                    places: true
+          select:{
+            tourism_id: true,
+            adult: true,
+            child: true,
+            start: true,
+            end: true,
+            status: true,
+            routes:{
+              select:{
+                title: true,
+                image: true,
+                duration: true,
+                child_price: true,
+                adult_price: true,
+                car_service_price: true,
+                guide_price: true,
+                attractions:{
+                  select:{
+                    attraction_id: true,
+                    places:{
+                      select:{
+                        description: true,
+                        image: true,
+                        name: true,
+                      }
+                    }
                   }
                 }
+              }
+            },
+            guide_bookings:{
+              select:{
+                booking_id: true,
+                language: true,
+                start: true,
+                end: true,
+                status: true,
               }
             }
           }
         },
         appointments: {
-          include: {
+          select: {
+            date: true,
+            timeslot: true,
+            status: true,
+            adult: true,
+            child: true,
             appointment_files: {
               include: {
                 files: true,
               }
             }
-          }
-        },
-        hotel_bookings: {
-          include: {
-            hotels:{
-              select: {
-                name: true,
-                image: true,
-                check_in_time: true,
-                contact_info: true,
-                hotel_code: true,
-              }
-            },
-            room_aggregate: {
-              include: {
-                hotel_rooms: true
-              }
-            }
-          }
-        },
-        user_contact_detail: true,
-        guide_bookings: {
-          include: {
-            guides: true
           }
         },
         payment: true,

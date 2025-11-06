@@ -4,10 +4,11 @@ import React, { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import { useParams, useRouter } from 'next/navigation';
 import { Save, ArrowLeft, Trash2 } from 'lucide-react';
+import SingleImageUpload from '@/components/admin_component/ui/SingleImageUpload';
 
 interface Place {
   place_id: string;
-  place_name: string | null;
+  name: string | null;
   city?: string | null;
 }
 
@@ -18,12 +19,16 @@ const EditRoutePage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [places, setPlaces] = useState<Place[]>([]);
+  const [image, setImage] = useState<string | null>(null);
   const [selectedPlaceIds, setSelectedPlaceIds] = useState<string[]>([]);
   const [formData, setFormData] = useState({
-    route_name: '',
+    title: '',
     description: '',
     duration: '',
-    total_price: '',
+    adult_price: '',
+    child_price: '',
+    guide_price: '',
+    car_service_price: '',
   });
 
   useEffect(() => {
@@ -36,12 +41,16 @@ const EditRoutePage: React.FC = () => {
         if (!routeRes.ok) throw new Error('Failed to fetch route');
         const route = await routeRes.json();
         setFormData({
-          route_name: route.route_name || '',
+          title: route.title || '',
           description: route.description || '',
           duration: route.duration ?? '',
-          total_price: route.total_price ?? '',
+          adult_price: route.adult_price ?? '',
+          child_price: route.child_price ?? '',
+          guide_price: route.guide_price ?? '',
+          car_service_price: route.car_service_price ?? '',
         });
-        setSelectedPlaceIds((route.package_places || []).map((pp: any) => pp.place_id).filter((x: any) => !!x));
+        setImage(route.image);
+        setSelectedPlaceIds((route.attractions || []).map((pp: any) => pp.place_id).filter((x: any) => !!x));
         if (placesRes.ok) setPlaces(await placesRes.json());
       } catch (e) {
         console.error(e);
@@ -52,15 +61,23 @@ const EditRoutePage: React.FC = () => {
     if (id) loadAll();
   }, [id]);
 
+  const handleImageChange = (imageUrl: string | null) => {
+    setImage(imageUrl);
+  };
+
   const handleSave = async () => {
     if (saving) return;
     setSaving(true);
     try {
       const payload = {
-        route_name: formData.route_name || null,
+        title: formData.title || null,
+        image: image,
         description: formData.description || null,
         duration: formData.duration ? Number(formData.duration) : null,
-        total_price: formData.total_price ? Number(formData.total_price) : null,
+        adult_price: formData.adult_price ? Number(formData.adult_price) : null,
+        child_price: formData.child_price ? Number(formData.child_price) : null,
+        guide_price: formData.guide_price ? Number(formData.guide_price) : null,
+        car_service_price: formData.car_service_price ? Number(formData.car_service_price) : null,
         place_ids: selectedPlaceIds,
       };
       const res = await fetch(`/api/admin/services/trips/routes/${id}`, {
@@ -112,15 +129,38 @@ const EditRoutePage: React.FC = () => {
           <div className="lg:col-span-2 space-y-6">
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h2 className="text-xl font-semibold mb-6 text-gray-900">Route Details</h2>
+              {/* Main Image Upload */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Main Package Image
+                    </label>
+                    <SingleImageUpload
+                      image={image}
+                      onImageChange={handleImageChange}
+                      disabled={saving}
+                      placeholder="Click to upload main package image or drag and drop"
+                    />
+                  </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Route Name</label>
                   <input
                     type="text"
-                    value={formData.route_name}
-                    onChange={(e) => setFormData({ ...formData, route_name: e.target.value })}
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     placeholder="e.g., Bangkok City Tour"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Duration (days)</label>
+                  <input
+                    type="number"
+                    value={formData.duration}
+                    onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    placeholder="e.g., 3"
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -134,23 +174,46 @@ const EditRoutePage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Duration (days)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Child Price</label>
                   <input
                     type="number"
-                    value={formData.duration}
-                    onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                    value={formData.child_price}
+                    onChange={(e) => setFormData({ ...formData, child_price: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                    placeholder="e.g., 3"
+                    placeholder="e.g., 500THB"
                   />
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Total Price</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Adult Price</label>
                   <input
                     type="number"
-                    value={formData.total_price}
-                    onChange={(e) => setFormData({ ...formData, total_price: e.target.value })}
+                    value={formData.adult_price}
+                    onChange={(e) => setFormData({ ...formData, adult_price: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                    placeholder="e.g., 500"
+                    placeholder="e.g., 500THB"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Car Service Price</label>
+                  <input
+                    type="number"
+                    value={formData.car_service_price}
+                    onChange={(e) => setFormData({ ...formData, car_service_price: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    placeholder="e.g., 500THB"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Guide Service Price</label>
+                  <input
+                    type="number"
+                    value={formData.guide_price}
+                    onChange={(e) => setFormData({ ...formData, guide_price: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    placeholder="e.g., 500THB"
                   />
                 </div>
               </div>
@@ -174,7 +237,7 @@ const EditRoutePage: React.FC = () => {
                     .filter(p => p.place_id && !selectedPlaceIds.includes(p.place_id))
                     .map((p) => (
                       <option key={p.place_id} value={p.place_id}>
-                        {p.place_name || 'Unnamed Place'}
+                        {p.name || 'Unnamed Place'}
                         {p.city ? `, ${p.city}` : ''}
                       </option>
                     ))}
@@ -185,7 +248,7 @@ const EditRoutePage: React.FC = () => {
                   const p = places.find(x => x.place_id === pid);
                   return (
                     <div key={pid} className="flex items-center justify-between bg-purple-50 border border-purple-200 rounded-lg px-3 py-2">
-                      <span className="text-sm text-gray-900">{p?.place_name || pid}</span>
+                      <span className="text-sm text-gray-900">{p?.name || pid}</span>
                       <button
                         onClick={() => setSelectedPlaceIds(selectedPlaceIds.filter(id => id !== pid))}
                         className="text-red-600 hover:text-red-800"
@@ -217,9 +280,24 @@ const EditRoutePage: React.FC = () => {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-800">Price</span>
+                  <span className="text-gray-800">Child Price</span>
                   <span className="font-medium text-gray-900">
-                    {formData.total_price ? `$${formData.total_price}` : 'Not set'}
+                    {formData.child_price ? `$${formData.child_price}` : 'Not set'}
+                  </span>
+                </div><div className="flex justify-between">
+                  <span className="text-gray-800">Adult Price</span>
+                  <span className="font-medium text-gray-900">
+                    {formData.child_price ? `$${formData.adult_price}` : 'Not set'}
+                  </span>
+                </div><div className="flex justify-between">
+                  <span className="text-gray-800">Car Service Price</span>
+                  <span className="font-medium text-gray-900">
+                    {formData.child_price ? `$${formData.car_service_price}` : 'Not set'}
+                  </span>
+                </div><div className="flex justify-between">
+                  <span className="text-gray-800">Guide Sercive Price</span>
+                  <span className="font-medium text-gray-900">
+                    {formData.child_price ? `$${formData.guide_price}` : 'Not set'}
                   </span>
                 </div>
               </div>

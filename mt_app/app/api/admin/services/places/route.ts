@@ -1,18 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/app/api/auth/auth';
 import { prisma } from '@/lib/prisma';
-
+import { auth } from '@/app/api/auth/auth';
 // GET - Fetch all places
 export async function GET() {
   try {
     const session = await auth();
-    
     if (!session || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-
     const places = await prisma.places.findMany({
       include: {
+        location:{
+          select: {
+            text: true,
+          }
+        },
         place_image: true,
       },
       orderBy: {
@@ -50,7 +52,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create the place
+
     const place = await prisma.places.create({
       data: {
         name,
@@ -58,16 +60,22 @@ export async function POST(request: NextRequest) {
         city: city || null,
         description: description || null,
         fee: fee || null,
-        // location_id: location || null,
         image: image || null,
         place_image: place_images && place_images.length > 0 ? {
-          create: place_images.map((img: string) => ({ image: img }))
+          create: place_images.map((url: string) => ({ url })),
+        } : undefined,
+        location: location ? {
+          create: {
+            text: location.text || '',
+            url: location.url || '',
+          },
         } : undefined,
       },
       include: {
         place_image: true,
       },
     });
+
 
     return NextResponse.json(place, { status: 201 });
   } catch (error) {

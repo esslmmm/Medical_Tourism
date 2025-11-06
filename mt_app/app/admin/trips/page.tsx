@@ -69,7 +69,7 @@ const TripsPage: React.FC = () => {
 
   const filteredRoutes = routes.filter(route => {
     const matchesSearch = route.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         route.route_name?.toLowerCase().includes(searchTerm.toLowerCase());
+                         route.title?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
 
@@ -205,7 +205,6 @@ const TripsPage: React.FC = () => {
                       <th className="text-left py-3 px-4 font-semibold text-gray-700">Route</th>
                       <th className="text-left py-3 px-4 font-semibold text-gray-700">Description</th>
                       <th className="text-left py-3 px-4 font-semibold text-gray-700">Duration</th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">Price</th>
                       <th className="text-left py-3 px-4 font-semibold text-gray-700">Places</th>
                       <th className="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
                     </>
@@ -298,28 +297,33 @@ const TripsPage: React.FC = () => {
                       >
                         <td className="py-4 px-4">
                           <div className="flex items-center">
-                            <div className="w-28 h-20 rounded-lg mr-3 bg-gray-200 flex items-center justify-center">
-                              <Route className="h-8 w-8 text-gray-400" />
+                            <div className="w-28 h-20 rounded-lg mr-3 bg-gray-200 flex items-center justify-center overflow-hidden">
+                              {route.image ? (
+                                <img 
+                                  src={route.image} 
+                                  alt={route.title || 'Place'} 
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <MapPin className="h-8 w-8 text-gray-400" />
+                              )}
                             </div>
                             <div>
                               <div className="font-medium text-gray-900">
-                                {route.route_name || `Route #${route.route_id}`}
+                                {route.title || `Route #${route.route_id}`}
                               </div>
                             </div>
                           </div>
                         </td>
                         
-                        <td className="py-4 px-4 text-gray-900">
+                        <td className="py-4 px-4 text-gray-900 max-w-xs truncate">
                           {route.description || 'No description available'}
                         </td>
                         <td className="py-4 px-4 text-gray-900">
-                          {route.duration ? `${route.duration} days` : 'Not specified'}
+                          {route.duration ? `${route.duration} day(s)` : 'Not specified'}
                         </td>
                         <td className="py-4 px-4 text-gray-900">
-                          {route.total_price ? `$${route.total_price}` : 'Not specified'}
-                        </td>
-                        <td className="py-4 px-4 text-gray-900">
-                          {route.package_places.length} places
+                          {route.attractions.length} place(s)
                         </td>
                         
                         <td className="py-4 px-4">

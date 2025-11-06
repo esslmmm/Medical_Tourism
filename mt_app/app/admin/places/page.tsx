@@ -9,13 +9,17 @@ import { useRouter } from 'next/navigation';
 
 interface Place {
   place_id: string;
-  place_name: string;
+  name: string;
   contact_info?: string;
-  location?: string;
   city?: string;
   image?: string;
   description?: string;
   fee?: number;
+  location: location;
+}
+
+interface location {
+  text: string;
 }
 
 const PlacesPage: React.FC = () => {
@@ -60,9 +64,9 @@ const PlacesPage: React.FC = () => {
   };
 
   const filteredPlaces = places.filter(place => {
-    const matchesSearch = place.place_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = place.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          place.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         place.location?.toLowerCase().includes(searchTerm.toLowerCase());
+                         place.location?.text.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCity = filterCity === 'all' || place.city === filterCity;
     return matchesSearch && matchesCity;
   });
@@ -173,7 +177,7 @@ const PlacesPage: React.FC = () => {
                             {place.image ? (
                               <img 
                                 src={place.image} 
-                                alt={place.place_name || 'Place'} 
+                                alt={place.name || 'Place'} 
                                 className="w-full h-full object-cover"
                               />
                             ) : (
@@ -182,7 +186,7 @@ const PlacesPage: React.FC = () => {
                           </div>
                           <div>
                             <div className="font-medium text-gray-900">
-                              {place.place_name || 'Unnamed Place'}
+                              {place.name || 'Unnamed Place'}
                             </div>
                             <div className="text-sm text-gray-500">
                               {place.description ? 
@@ -197,7 +201,7 @@ const PlacesPage: React.FC = () => {
                       </td>
                       
                       <td className="py-4 px-4 text-gray-900">
-                        {place.location || 'Not specified'}
+                        {place.location?.text || 'Not specified'}
                       </td>
                       <td className="py-4 px-4 text-gray-900">
                         {place.city || 'Not specified'}
