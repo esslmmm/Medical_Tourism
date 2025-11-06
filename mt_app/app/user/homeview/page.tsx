@@ -37,6 +37,7 @@ export default function MedicalTourismHome() {
     if (container) container.scrollBy({ left: 300, behavior: "smooth" });
   };
 
+  const backgroundImageUrl = "https://shawellness.com/shamagazine/wp-content/uploads/2017/06/wellness.jpg";
   // 🔹 Tab Data
   const tabs = [
     { id: "medical-service", label: "Medical Service" },
@@ -280,77 +281,91 @@ export default function MedicalTourismHome() {
         </div>
       </nav>
 
-      {/* Hero Section with Search */}
-<div className="relative bg-black py-12">
-  {/* Search Card */}
-  <div className="max-w-5xl mx-auto px-4">
-    <div className="bg-white rounded-3xl shadow-xl p-8">
-      {/* Tabs */}
-      <div className="flex gap-3 mb-8">
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-6 py-3 rounded-full text-sm font-medium transition-colors ${
-              activeTab === tab.id
-                ? 'bg-teal-400 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+       {/* Hero Section with Search */}
+<div className="relative h-[600px]">
+  {/* Background Image */}
+  <div 
+    className="absolute inset-0 bg-cover bg-center"
+    style={{
+      backgroundImage: `url(${backgroundImageUrl})`,
+    }}
+  >
+    {/* Dark Overlay */}
+    <div className="absolute inset-0 bg-black/40"></div>
+  </div>
 
-      {/* Search Bar */}
-      <div className="mb-8">
-        <div className="relative">
-          <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-teal-400 w-6 h-6" />
-          <input
-            type="text"
-            placeholder="Search a destination or package"
-            className="w-full pl-16 pr-6 py-4 bg-gray-50 border-0 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
-          />
+  {/* Content */}
+  <div className="relative z-10 py-20">
+    {/* Search Card */}
+    <div className="max-w-5xl mx-auto px-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-8">
+        {/* Tabs */}
+        <div className="flex gap-3 mb-8">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-6 py-3 rounded-full text-sm font-medium transition-colors ${
+                activeTab === tab.id
+                  ? 'bg-teal-400 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
-      </div>
 
-      {/* Appointment Section */}
-      <div className="mb-6">
-        <h3 className="text-lg font-bold mb-4 text-gray-900">Appointment</h3>
-        <div className="grid grid-cols-3 gap-4">
-          {/* Date */}
-          <div className="flex items-center gap-4 p-4 bg-white border-2 border-gray-100 rounded-xl cursor-pointer hover:border-teal-400 transition-colors">
-            <Calendar className="text-teal-400 w-10 h-10 flex-shrink-0" />
-            <div>
-              <div className="text-teal-400 font-bold text-base">{appointmentDate}</div>
-              <div className="text-sm text-gray-500">Monday</div>
-            </div>
-          </div>
-          
-          {/* Time */}
-          <div className="flex items-center gap-4 p-4 bg-white border-2 border-gray-100 rounded-xl cursor-pointer hover:border-teal-400 transition-colors">
-            <Clock className="text-gray-400 w-10 h-10 flex-shrink-0" />
-            <div>
-              <div className="text-sm text-gray-500">Time:</div>
-              <div className="font-bold text-gray-900 text-base">{appointmentTime}</div>
-            </div>
-          </div>
-
-          {/* Guests */}
-          <div className="flex items-center justify-between p-4 bg-white border-2 border-gray-100 rounded-xl cursor-pointer hover:border-teal-400 transition-colors">
-            <div className="flex items-center gap-4">
-              <Users className="text-teal-400 w-10 h-10 flex-shrink-0" />
-              <div className="font-bold text-gray-900 text-base">{guests}</div>
-            </div>
-            <ChevronDown className="text-gray-400 w-5 h-5 flex-shrink-0" />
+        {/* Search Bar */}
+        <div className="mb-8">
+          <div className="relative">
+            <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-teal-400 w-6 h-6" />
+            <input
+              type="text"
+              placeholder="Search a destination or package"
+              className="w-full pl-16 pr-6 py-4 bg-gray-50 border-0 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
+            />
           </div>
         </div>
-      </div>
 
-      {/* Search Button */}
-      <button className="w-full bg-teal-400 text-white py-4 rounded-xl font-bold text-base hover:bg-teal-500 transition-colors shadow-lg">
-        Search
-      </button>
+        {/* Appointment Section */}
+        <div className="mb-6">
+          <h3 className="text-lg font-bold mb-4 text-gray-900">Appointment</h3>
+          <div className="grid grid-cols-3 gap-4">
+            {/* Date */}
+            <div className="flex items-center gap-4 p-4 bg-white border-2 border-gray-100 rounded-xl cursor-pointer hover:border-teal-400 transition-colors">
+              <Calendar className="text-teal-400 w-10 h-10 flex-shrink-0" />
+              <div>
+                <div className="text-teal-400 font-bold text-base">{appointmentDate}</div>
+                <div className="text-sm text-gray-500">Monday</div>
+              </div>
+            </div>
+            
+            {/* Time */}
+            <div className="flex items-center gap-4 p-4 bg-white border-2 border-gray-100 rounded-xl cursor-pointer hover:border-teal-400 transition-colors">
+              <Clock className="text-gray-400 w-10 h-10 flex-shrink-0" />
+              <div>
+                <div className="text-sm text-gray-500">Time:</div>
+                <div className="font-bold text-gray-900 text-base">{appointmentTime}</div>
+              </div>
+            </div>
+
+            {/* Guests */}
+            <div className="flex items-center justify-between p-4 bg-white border-2 border-gray-100 rounded-xl cursor-pointer hover:border-teal-400 transition-colors">
+              <div className="flex items-center gap-4">
+                <Users className="text-teal-400 w-10 h-10 flex-shrink-0" />
+                <div className="font-bold text-gray-900 text-base">{guests}</div>
+              </div>
+              <ChevronDown className="text-gray-400 w-5 h-5 flex-shrink-0" />
+            </div>
+          </div>
+        </div>
+
+        {/* Search Button */}
+        <button className="w-full bg-teal-400 text-white py-4 rounded-xl font-bold text-base hover:bg-teal-500 transition-colors shadow-lg">
+          Search
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -386,7 +401,7 @@ export default function MedicalTourismHome() {
     {packages.map((pkg, idx) => (
       <div
         key={idx}
-        className="min-w-[280px] bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow cursor-pointer flex-shrink-0"
+        className="min-w-[280px] border border-gray-300 bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow cursor-pointer flex-shrink-0"
       >
         <div className="relative">
           <img src={pkg.image} alt={pkg.name} className="w-full h-48 object-cover" />
@@ -428,7 +443,7 @@ export default function MedicalTourismHome() {
         </div>
         <div className="grid grid-cols-5 gap-4">
           {treatments.map((treatment, idx) => (
-            <div key={idx} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col items-center gap-3">
+            <div key={idx} className="bg-white border border-gray-300 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col items-center gap-3">
               <treatment.icon className={`w-12 h-12 ${treatment.color}`} />
               <span className="font-medium text-center">{treatment.name}</span>
             </div>
@@ -465,39 +480,6 @@ export default function MedicalTourismHome() {
       </section>
 
       {/* Reviews */}
-      {/* <section className="max-w-7xl mx-auto px-6 py-7">
-        <h2 className="text-3xl font-bold mb-8">Review</h2>
-        <div className="grid grid-cols-3 gap-6">
-          {reviews.map((review, idx) => (
-            <div key={idx} className="bg-white rounded-2xl p-6 shadow-sm">
-              <div className="flex items-start gap-4 mb-4">
-                <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 font-bold text-xl">
-                  {review.name.charAt(0)}
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-bold">{review.name}</h4>
-                  <p className="text-sm text-gray-500">Reviewed on {review.date}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-lg">{review.countryCode}</span>
-                    <span className="text-sm text-gray-600">{review.country}</span>
-                  </div>
-                </div>
-              </div>
-              <p className="text-gray-600 text-sm mb-4">{review.text}</p>
-              <div className="flex gap-1 mb-3">
-                {[...Array(review.rating)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-              <p className="text-sm text-gray-500 mb-3">5 out of 5 rating</p>
-              <a href="#" className="text-teal-500 hover:text-teal-600 font-medium flex items-center gap-1">
-                View Package <ChevronRight className="w-4 h-4" />
-              </a>
-            </div>
-          ))}
-        </div>
-      </section> */}
-      {/* Reviews */}
 <section className="max-w-7xl mx-auto px-6 py-7 relative">
   <h2 className="text-3xl font-bold mb-8">Review</h2>
 
@@ -523,7 +505,7 @@ export default function MedicalTourismHome() {
     {reviews.map((review, idx) => (
       <div
         key={idx}
-        className="min-w-[370px] w-64 bg-white rounded-2xl p-6 shadow-sm flex-shrink-0"
+        className="min-w-[370px] w-64 bg-white rounded-2xl p-6 shadow-sm flex-shrink-0 border border-gray-300"
       >
         <div className="flex items-start gap-4 mb-4">
           <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 font-bold text-xl">
