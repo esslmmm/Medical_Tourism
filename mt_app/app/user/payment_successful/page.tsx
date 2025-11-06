@@ -97,8 +97,8 @@ export default function PaymentSuccessful() {
 
           {/* Reference */}
           <div className="space-y-1">
-            <p className="text-xs text-gray-500 uppercase tracking-wide">Reference Number</p>
-            <p className="text-sm text-gray-700 font-mono break-all">{paymentData.transaction_id}</p>
+            <p className="text-xs text-gray-500 uppercase tracking-wide">Payment ID</p>
+            <p className="text-sm text-gray-700 font-mono break-all">{paymentData.payment_id}</p>
           </div>
         </motion.div>
 
