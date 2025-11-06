@@ -1,4 +1,3 @@
-// app/api/payment-success/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
@@ -48,7 +47,7 @@ export async function GET(req: NextRequest) {
     // return NextResponse.json({ success: true, payment });
 
     // Redirect to user profile with success message
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/user/profile/approval-status?status=success`);
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/user/payment/successful/${payment.payment_id}`);
 
   } catch (error: any) {
     console.error("Payment Success Error:", error);

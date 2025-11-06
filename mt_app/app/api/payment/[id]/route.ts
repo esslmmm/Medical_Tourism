@@ -1,3 +1,29 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const payment = await prisma.payment.findUnique({
+      where: { payment_id: params.id },
+      include: {
+        user: {
+          select: { name: true, email: true },
+        },
+      },
+    });
+
+    if (!payment) {
+      return NextResponse.json({ success: false, error: "Payment not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, payment });
+  } catch (error: any) {
+    console.error("GET /api/payment/[id] error:", error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
+
+
 // import { NextResponse } from "next/server";
 // import { prisma } from '@/lib/prisma';
 
