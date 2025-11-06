@@ -137,7 +137,7 @@ import { HiOutlineArrowRight } from "react-icons/hi";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import ImageWithFallback from "../shared/ImageWithFallback";
 import { Lato } from "next/font/google";
 import "@/app/globals.css";
 
@@ -314,14 +314,14 @@ const Hospitaltap: React.FC = () => {
             >
               {/* Image Section */}
               <div className="relative h-56 overflow-hidden">
-                {hospital.image && (
-                  <Image
-                    src={hospital.image}
-                    fill
-                    alt={hospital.name}
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                )}
+                <ImageWithFallback
+                  src={hospital.image || "https://placehold.co/600x400/e2e8f0/64748b?text=Hospital"}
+                  fill
+                  alt={hospital.name}
+                  fallbackSrc="https://placehold.co/600x400/e2e8f0/64748b?text=Hospital"
+                  style={{ objectFit: 'cover' }}
+                  className="group-hover:scale-105 transition-transform duration-500"
+                />
                 <div className="absolute inset-0 bg-black/20"></div>
                 
                 {/* Floating Badge */}

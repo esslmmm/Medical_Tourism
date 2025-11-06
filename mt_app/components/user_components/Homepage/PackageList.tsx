@@ -161,7 +161,7 @@ import { MapPin } from "lucide-react";
 import { Poppins } from "next/font/google";
 import { useRouter } from "next/navigation";
 import PackagesSkeleton from "../skeleton-screen/DoctorProfile/PackageSkeleton";
-import Image from "next/image";
+import ImageWithFallback from "../shared/ImageWithFallback";
 import "@/app/globals.css";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500"] });
@@ -305,11 +305,12 @@ const PackageList: React.FC = () => {
             whileTap={{ scale: 0.98 }}
           >
             <div className="relative w-full h-48 mb-6">
-              <Image
+              <ImageWithFallback
                 src={pkg.image}
                 alt={pkg.package_name}
-                layout="fill"
-                objectFit="cover"
+                fill
+                style={{ objectFit: 'cover' }}
+                fallbackSrc="https://placehold.co/600x400/e2e8f0/64748b?text=Package"
                 className="rounded-lg group-hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute top-4 right-4">

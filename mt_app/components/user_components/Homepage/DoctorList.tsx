@@ -140,7 +140,7 @@
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import ImageWithFallback from "../shared/ImageWithFallback";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Users } from "lucide-react";
 import { Poppins } from "next/font/google";
@@ -273,11 +273,12 @@ const DoctorList: React.FC = () => {
           >
             <div className="relative w-32 h-32 mx-auto mb-6">
               <div className="absolute inset-0 bg-slate-100 rounded-full"></div>
-              <Image
+              <ImageWithFallback
                 src={doctor.image}
                 alt={doctor.name}
                 width={128}
                 height={128}
+                fallbackSrc="https://placehold.co/128x128/e2e8f0/64748b?text=Doctor"
                 className="relative rounded-full object-cover border-4 border-white shadow-lg group-hover:scale-105 transition-transform duration-300"
               />
               <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-slate-500 rounded-full border-2 border-white flex items-center justify-center">
