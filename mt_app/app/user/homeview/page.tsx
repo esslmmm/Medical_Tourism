@@ -18,17 +18,22 @@ export default function MedicalTourismHome() {
       {/* Navbar */}
       <Navbar />
 
+
        {/* Hero Section with Search */}
        <HeroSection />
+
 
       {/* Recommended Packages */}
       <RecommendedPackage />
 
+
       {/* Treatment & Wellness Service */}
       <Service />
 
+
       {/* Hospital & Clinic */}
       <Provider />
+
 
       {/* Reviews */}
       <Reviews />
