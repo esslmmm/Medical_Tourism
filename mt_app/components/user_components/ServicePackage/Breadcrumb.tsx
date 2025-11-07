@@ -10,11 +10,11 @@ const Breadcrumb = () => {
         {/* Breadcrumb */}
           <div className="flex items-center gap-2 p-4 text-sm text-gray-600">
           <HomeIcon className="w-4 h-4" />
-          <span className="text-black">home</span>
-           <span>{'>'}</span>
-           <span className="text-black">Medical Tourism Package</span>
-           <span>{'>'}</span>
-           <span className="text-teal-500">Package Detail</span>
+          <span className="text-gray-600">home</span>
+            <span className="text-gray-400">›</span>
+            <span className="text-gray-600">Medical Tourism Package</span>
+            <span className="text-gray-400">›</span>
+            <span className="text-teal-400">Package Details</span>
            <div className="ml-auto flex gap-4">
           <button className="flex items-center gap-2 text-teal-500">
             <ChatBubbleLeftIcon className="w-5 h-5" />

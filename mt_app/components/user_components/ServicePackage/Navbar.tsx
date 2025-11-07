@@ -4,7 +4,7 @@ import {
 
 const Navbar = () => {
   return (
-    <div className='bg-teal-600'>
+    <div className='bg-teal-500'>
         <div className='max-w-7xl mx-auto px-4 '>
         {/* Profile Section */}
             <div className="p-6">
