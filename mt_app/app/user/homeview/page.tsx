@@ -19,6 +19,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import Footer from "@/components/user_components/Main/Footer";
+import Navbar from "@/components/user_components/Homeview/Navbar";
+import HeroSection from "@/components/user_components/Homeview/HeroSection";
 
 export default function MedicalTourismHome() {
   const [activeTab, setActiveTab] = useState("medical-service");
@@ -255,120 +257,10 @@ export default function MedicalTourismHome() {
   return (
     <div className="min-h-screen bg-white text-black">
       {/* Navbar */}
-      <nav className="bg-teal-400 text-white px-8 py-4 flex justify-between items-center">
-        <div className="text-lg font-bold leading-tight">
-          <div>SENIOR</div>
-          <div>PROJECT</div>
-        </div>
-        <div className="flex items-center gap-6">
-          <span className="text-sm font-medium cursor-pointer hover:opacity-80">Contact US</span>
-          <span className="text-sm font-medium cursor-pointer hover:opacity-80">THB</span>
-          <div className="w-8 h-6 rounded overflow-hidden flex items-center justify-center">
-            <svg className="w-8 h-6" viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg">
-              <rect width="60" height="30" fill="#012169"/>
-              <path d="M0,0 L60,30 M60,0 L0,30" stroke="#FFF" strokeWidth="6"/>
-              <path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" strokeWidth="4"/>
-              <path d="M30,0 L30,30 M0,15 L60,15" stroke="#FFF" strokeWidth="10"/>
-              <path d="M30,0 L30,30 M0,15 L60,15" stroke="#C8102E" strokeWidth="6"/>
-            </svg>
-          </div>
-          <button className="px-5 py-2 bg-white text-teal-400 rounded-full text-sm font-semibold hover:bg-gray-50 transition-colors">
-            Register
-          </button>
-          <button className="px-5 py-2 bg-white text-teal-400 rounded-full text-sm font-semibold hover:bg-gray-50 transition-colors">
-            Sign in
-          </button>
-        </div>
-      </nav>
+      <Navbar />
 
        {/* Hero Section with Search */}
-<div className="relative h-[600px]">
-  {/* Background Image */}
-  <div 
-    className="absolute inset-0 bg-cover bg-center"
-    style={{
-      backgroundImage: `url(${backgroundImageUrl})`,
-    }}
-  >
-    {/* Dark Overlay */}
-    <div className="absolute inset-0 bg-black/40"></div>
-  </div>
-
-  {/* Content */}
-  <div className="relative z-10 py-20">
-    {/* Search Card */}
-    <div className="max-w-5xl mx-auto px-4">
-      <div className="bg-white rounded-3xl shadow-2xl p-8">
-        {/* Tabs */}
-        <div className="flex gap-3 mb-8">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-3 rounded-full text-sm font-medium transition-colors ${
-                activeTab === tab.id
-                  ? 'bg-teal-400 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Search Bar */}
-        <div className="mb-8">
-          <div className="relative">
-            <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-teal-400 w-6 h-6" />
-            <input
-              type="text"
-              placeholder="Search a destination or package"
-              className="w-full pl-16 pr-6 py-4 bg-gray-50 border-0 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
-            />
-          </div>
-        </div>
-
-        {/* Appointment Section */}
-        <div className="mb-6">
-          <h3 className="text-lg font-bold mb-4 text-gray-900">Appointment</h3>
-          <div className="grid grid-cols-3 gap-4">
-            {/* Date */}
-            <div className="flex items-center gap-4 p-4 bg-white border-2 border-gray-100 rounded-xl cursor-pointer hover:border-teal-400 transition-colors">
-              <Calendar className="text-teal-400 w-10 h-10 flex-shrink-0" />
-              <div>
-                <div className="text-teal-400 font-bold text-base">{appointmentDate}</div>
-                <div className="text-sm text-gray-500">Monday</div>
-              </div>
-            </div>
-            
-            {/* Time */}
-            <div className="flex items-center gap-4 p-4 bg-white border-2 border-gray-100 rounded-xl cursor-pointer hover:border-teal-400 transition-colors">
-              <Clock className="text-gray-400 w-10 h-10 flex-shrink-0" />
-              <div>
-                <div className="text-sm text-gray-500">Time:</div>
-                <div className="font-bold text-gray-900 text-base">{appointmentTime}</div>
-              </div>
-            </div>
-
-            {/* Guests */}
-            <div className="flex items-center justify-between p-4 bg-white border-2 border-gray-100 rounded-xl cursor-pointer hover:border-teal-400 transition-colors">
-              <div className="flex items-center gap-4">
-                <Users className="text-teal-400 w-10 h-10 flex-shrink-0" />
-                <div className="font-bold text-gray-900 text-base">{guests}</div>
-              </div>
-              <ChevronDown className="text-gray-400 w-5 h-5 flex-shrink-0" />
-            </div>
-          </div>
-        </div>
-
-        {/* Search Button */}
-        <button className="w-full bg-teal-400 text-white py-4 rounded-xl font-bold text-base hover:bg-teal-500 transition-colors shadow-lg">
-          Search
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+       <HeroSection />
 
       {/* Recommended Packages */}
       <section className="max-w-7xl mx-auto px-6 py-10 pb-5 relative">
