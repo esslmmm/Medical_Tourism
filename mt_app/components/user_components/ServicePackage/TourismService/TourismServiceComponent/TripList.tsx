@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { X, MapPin } from 'lucide-react';
 import { Attraction, Include, InfoItem, Route, Highlight } from '@/types/Package';
 
@@ -334,7 +334,7 @@ const TripList: React.FC<TripListProps> = ({ onTripSelect, trips }) => {
                     onClick={(e) => handleSeeDetails(trip, e)}
                     className="cursor-pointer text-teal-400 hover:text-teal-500 text-sm font-medium flex items-center gap-1"
                   >
-                    See details
+                    View details
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
