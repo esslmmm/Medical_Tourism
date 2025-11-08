@@ -142,25 +142,25 @@ const Navbarpro: React.FC = () => {
                   </div>
                   <ul className="py-2">
                     <li>
-                      <Link href="/user/profile/UserProfile" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                      <Link href="/user/general/profile" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                         <User className="w-4 h-4 mr-3" />
                         My Profile
                       </Link>
                     </li>
                     <li>
-                      <Link href={`/user/profile/UserReviews`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                      <Link href={`/user/general/reviews`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                         <FaRegStar  className="w-4 h-4 mr-3" />
                           Reviews
                       </Link>
                     </li>
                     <li>
-                      <Link href={`/user/profile/approval-status`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                      <Link href={`/user/general/booking-status`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                         <FaCalendarAlt className="w-4 h-4 mr-3" />
                         My Bookings
                       </Link>
                     </li>
                     <li>
-                      <Link href={`/user/profile/UserChat`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                      <Link href={`/user/general/chat`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                         <FaCommentDots className="w-4 h-4 mr-3" />
                         Chat
                       </Link>

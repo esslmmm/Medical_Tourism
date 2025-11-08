@@ -9,10 +9,10 @@ const Sidebar = () => {
   const pathname = usePathname();
 
   const sidebarItems = [
-    { path: `/user/profile/approval-status`, icon: <FaCalendarAlt />, label: "My Bookings" },
-    { path: `/user/profile/UserReviews`, icon: <FaRegStar />, label: "Reviews" },
-    { path: `/profile`, icon: <FaUser />, label: "Profile" },
-    { path: `/user/profile/UserChat`, icon: <FaCommentDots />, label: "Chat" },
+    { path: `/user/general/booking-status`, icon: <FaCalendarAlt />, label: "My Bookings" },
+    { path: `/user/general/reviews`, icon: <FaRegStar />, label: "Reviews" },
+    { path: `/user/general/profile`, icon: <FaUser />, label: "Profile" },
+    { path: `/user/general/chat`, icon: <FaCommentDots />, label: "Chat" },
   ];
 
   return (
