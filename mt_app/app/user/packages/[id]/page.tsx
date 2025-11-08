@@ -77,30 +77,40 @@ if (error) {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <Breadcrumb />
 
-        {/* Service Toggle */}
-        <div className="p-6">
-          <div className="flex items-center gap-8 mb-4">
+        {/* Service Tabs */}
+        <div className="pt-3 border-b border-gray-300">
+          <div className="flex items-center gap-8 ">
+            <div>
             <button
               onClick={() => setSelectedService("medical")}
               className={`cursor-pointer text-base font-bold px-4 py-2 rounded ${
                 selectedService === "medical"
                   ? "text-white bg-teal-500"
-                  : "text-gray-500 bg-gray-100"
+                  : "text-gray-500 bg-gray-100 border border-gray-300 hover:bg-gray-200 hover:border-gray-400"
               }`}
             >
               Medical Service
             </button>
+            <div className={`${selectedService === "medical"
+                  ? "border-t-2 border-teal-500 transition-all duration-300 mt-3"
+                  : "mt-3"}`}></div>
+            </div>
 
-            <button
+            <div>
+              <button
               onClick={() => setSelectedService("tourism")}
               className={`cursor-pointer text-base font-bold px-4 py-2 rounded ${
                 selectedService === "tourism"
                   ? "text-white bg-teal-500"
-                  : "text-gray-500 bg-gray-100"
+                  : "text-gray-500 bg-gray-100 border border-gray-300 hover:bg-gray-200 hover:border-gray-400"
               }`}
             >
               Tourism Service
             </button>
+            <div className={`${selectedService === "tourism"
+                  ? "border-t-2 border-teal-500 transition-all duration-300 mt-3"
+                  : "mt-3"}`}></div>
+            </div>
           </div>
         </div>
 
