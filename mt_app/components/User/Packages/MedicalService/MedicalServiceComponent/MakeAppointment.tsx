@@ -287,7 +287,7 @@ const MakeAppointment: React.FC<MakeAppointmentProps> = ({ onNextStep }) => {
       )}
 
       {/* Patient Count */}
-      <div className="max-w-md mx-auto bg-white rounded-3xl shadow-lg p-6 space-y-6 border-2 border-gray-200">
+      <div className="max-w-md mx-auto bg-white rounded-3xl shadow-lg p-6 space-y-6 border-2 border-gray-200 mb-5">
         <div className="flex items-center justify-between mb-6">
           <span className="text-lg font-semibold text-gray-900">How Many Patients?</span>
           <ChevronDown 
@@ -344,7 +344,7 @@ const MakeAppointment: React.FC<MakeAppointmentProps> = ({ onNextStep }) => {
         <button
           onClick={handleNextStep}
           disabled={!isPolicyChecked}
-          className={`w-full bg-emerald-500 text-white font-semibold py-4 rounded-2xl transition-colors 
+          className={`w-full bg-teal-500 text-white font-semibold py-4 rounded-2xl transition-colors 
             ${!isPolicyChecked ? 'opacity-50 cursor-not-allowed' : 'hover:bg-emerald-600'}`}
         >
           Next Step

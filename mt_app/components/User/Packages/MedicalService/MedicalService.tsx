@@ -183,7 +183,7 @@ const MedicalPackage: React.FC<MedicalPackageProps> = ({ data, onNextStep }) => 
         </div>
 
         <div className="lg:col-span-1">
-          <div className="sticky top-10">
+          <div className="sticky top-10 max-h-[calc(100vh-2.5rem)] overflow-y-auto scrollbar-hide">
             <MakeAppointment onNextStep={onNextStep} />
           </div>
         </div>

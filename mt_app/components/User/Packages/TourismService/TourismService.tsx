@@ -14,10 +14,11 @@ import Warning from './TourismServiceComponent/Warning';
 interface TourismServiceProps {
   appointmentDate: Date | null;
   TripData: Packages | null;
+  onGoBack: () => void;
 }
 
 
-const TourismService: React.FC<TourismServiceProps> = ({ TripData, appointmentDate }) => {
+const TourismService: React.FC<TourismServiceProps> = ({ TripData, appointmentDate, onGoBack }) => {
   const [selectedTrip, setSelectedTrip] = useState<any | null>(null);
     const [activeTab, setActiveTab] = useState('Description');
     const [showLeftArrow, setShowLeftArrow] = useState(false);
@@ -154,7 +155,7 @@ const TourismService: React.FC<TourismServiceProps> = ({ TripData, appointmentDa
 
           {/* Booking Sidebar */}
           <div className='lg:col-span-1'>
-            <div className='sticky top-10'>
+            <div className='sticky top-10 max-h-[calc(100vh-2.5rem)] overflow-y-auto scrollbar-hide'>
               {appointmentDate ? (
                 <MakeBooking 
                   selectedTrip={selectedTrip} 
@@ -162,7 +163,7 @@ const TourismService: React.FC<TourismServiceProps> = ({ TripData, appointmentDa
                   appointmentDate={appointmentDate} 
                 />
               ) : (
-                <Warning />
+                <Warning onGoBack={onGoBack} />
               )}
             </div>
           </div>

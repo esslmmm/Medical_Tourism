@@ -445,7 +445,7 @@ export default function BookingCard({ selectedTrip, appointmentDate, TripData }:
       </div>
 
       {/* === Price Section === */}
-      <div className="max-w-md mx-auto bg-white rounded-3xl shadow-lg p-6 border-2 border-gray-200 mt-5 mb-10">
+      <div className="max-w-md mx-auto bg-white rounded-3xl shadow-lg p-6 border-2 border-gray-200 mt-5 mb-5">
         <div className="flex items-center justify-between ">
           <span className="text-3xl font-bold text-gray-900">Price</span>
           <ChevronDown
@@ -499,10 +499,6 @@ export default function BookingCard({ selectedTrip, appointmentDate, TripData }:
     </div>
   </div>
 )}
-              {/* <div className="flex items-center justify-between">
-                <div className="font-semibold text-gray-900">Car Service</div>
-                <div className="text-gray-900 font-medium">฿ {selectedTrip?.car_service_price ?? 0}</div>
-              </div> */}
               {selectedTrip?.car_service_price != null && (
   <div className="flex items-center justify-between">
     <div className="font-semibold text-gray-900">Car Service</div>
@@ -523,7 +519,7 @@ export default function BookingCard({ selectedTrip, appointmentDate, TripData }:
             <div>
       {/* Book Now Button */}
       <button
-        className={`w-full bg-emerald-500 text-white font-semibold py-4 rounded-2xl transition-colors mt-6
+        className={`w-full bg-teal-500 text-white font-semibold py-4 rounded-2xl transition-colors mt-6
           ${!isPolicyChecked ? 'opacity-50 cursor-not-allowed' : 'hover:bg-emerald-600'}`}
         disabled={!isPolicyChecked}
         onClick={() => {handleBooking();}}

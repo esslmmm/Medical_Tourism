@@ -67,6 +67,10 @@ if (error) {
   );
 }
 
+  const handleGoBack = () => {
+    setSelectedService("medical");
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -104,7 +108,7 @@ if (error) {
         {selectedService === "medical" ? (
           <MedicalPackage data={data} onNextStep={handleNextStep} />
         ) : (
-          <TourismPackage TripData={data} appointmentDate={appointmentDate} />
+          <TourismPackage TripData={data} appointmentDate={appointmentDate} onGoBack={handleGoBack}/>
         )}
       </div>
       <Footer />
