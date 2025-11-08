@@ -2,11 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { AppointmentFormData } from "./form";
-import Navbarprogress from "@/components/user_components/medical_appointment/Navbarprogress";
-import MedicalService from "@/components/user_components/SidebarDetails/MedicalService";
-import Accommodation from "@/components/user_components/SidebarDetails/Accommodation";
-import PlaceToVisit from "@/components/user_components/SidebarDetails/PlaceToVisit";
-import GuideDetail from "@/components/user_components/SidebarDetails/Guide";
+import Navbarprogress from "@/components/User/medical_appointment/Navbarprogress";
+import MedicalService from "@/components/User/SidebarDetails/MedicalService";
+import Accommodation from "@/components/User/SidebarDetails/Accommodation";
+import PlaceToVisit from "@/components/User/SidebarDetails/PlaceToVisit";
+import GuideDetail from "@/components/User/SidebarDetails/Guide";
 
 
 interface Booking {

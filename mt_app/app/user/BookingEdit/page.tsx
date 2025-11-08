@@ -1,12 +1,12 @@
 'use client';
 
-import ContactDetails from '@/components/user_components/BookingEdit/ContactDetails';
-import PatientDetails from '@/components/user_components/BookingEdit/PatientDetails';
-import MedicalService from '@/components/user_components/BookingEdit/MedicalService';
-import PlaceToVisit from '@/components/user_components/BookingEdit/PlaceToVisit';
-import Accommodation from '@/components/user_components/BookingEdit/Accommodation';
-import CarService from '@/components/user_components/BookingEdit/CarService';
-import Guide from '@/components/user_components/BookingEdit/Guide';
+import ContactDetails from '@/components/User/BookingEdit/ContactDetails';
+import PatientDetails from '@/components/User/BookingEdit/PatientDetails';
+import MedicalService from '@/components/User/BookingEdit/MedicalService';
+import PlaceToVisit from '@/components/User/BookingEdit/PlaceToVisit';
+import Accommodation from '@/components/User/BookingEdit/Accommodation';
+import CarService from '@/components/User/BookingEdit/CarService';
+import Guide from '@/components/User/BookingEdit/Guide';
 
 
 export default function AppointmentForm() {

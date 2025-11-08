@@ -1,14 +1,14 @@
 "use client";
-import Footer from "@/components/user_components/Main/Footer";
-import HeroSection from "@/components/user_components/Homeview/HeroSection";
-import RecommendedPackage from "@/components/user_components/Homeview/RecommendedPackage";
-import Navbar from "@/components/user_components/Homeview/Navbar";
-import Reviews from "@/components/user_components/Homeview/Reviews";
-import FAQ from "@/components/user_components/Homeview/FAQ";
-import Blogs from "@/components/user_components/Homeview/Blogs";
-import Destinations from "@/components/user_components/Homeview/Destinations";
-import Provider from "@/components/user_components/Homeview/Provider";
-import Service from "@/components/user_components/Homeview/Service";
+import Footer from "@/components/User/Main/Footer";
+import HeroSection from "@/components/User/Homeview/HeroSection";
+import RecommendedPackage from "@/components/User/Homeview/RecommendedPackage";
+import Navbar from "@/components/User/Homeview/Navbar";
+import Reviews from "@/components/User/Homeview/Reviews";
+import FAQ from "@/components/User/Homeview/FAQ";
+import Blogs from "@/components/User/Homeview/Blogs";
+import Destinations from "@/components/User/Homeview/Destinations";
+import Provider from "@/components/User/Homeview/Provider";
+import Service from "@/components/User/Homeview/Service";
 
 export default function MedicalTourismHome() {
 

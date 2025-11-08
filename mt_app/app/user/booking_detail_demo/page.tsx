@@ -28,8 +28,8 @@ import {
   ChevronRight,
   ChevronDown
 } from 'lucide-react';
-import Navbarpro from "@/components/user_components/Main/Navbarpro";
-import Footer from "@/components/user_components/Main/Footer";
+import Navbarpro from "@/components/User/Main/Navbarpro";
+import Footer from "@/components/User/Main/Footer";
 
 // Sample data based on the Prisma schema
 const sampleBookingData = {

@@ -1,12 +1,12 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import NavigationIcons from "@/components/user_components/BookingDetail/NavigationIcons";
-import Navbarpro from "@/components/user_components/Main/Navbarpro";
-import Footer from "@/components/user_components/Main/Footer";
-import MedicalServiceCard from "@/components/user_components/BookingDetail/MedicalService";
-import AccommodationCard from "@/components/user_components/BookingDetail/AccommodationCard";
-import PlacesToVisit from "@/components/user_components/BookingDetail/PlacesToVisit";
-import Guide from "@/components/user_components/BookingDetail/Guide";
+import NavigationIcons from "@/components/User/BookingDetail/NavigationIcons";
+import Navbarpro from "@/components/User/Main/Navbarpro";
+import Footer from "@/components/User/Main/Footer";
+import MedicalServiceCard from "@/components/User/BookingDetail/MedicalService";
+import AccommodationCard from "@/components/User/BookingDetail/AccommodationCard";
+import PlacesToVisit from "@/components/User/BookingDetail/PlacesToVisit";
+import Guide from "@/components/User/BookingDetail/Guide";
 import { useParams } from "next/navigation";
 
 interface PackageBooking {

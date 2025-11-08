@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from 'react';
-import Footer from '@/components/user_components/Main/Footer';
-import GuideList from '@/components/user_components/Guide/GuideList';
+import Footer from '@/components/User/Main/Footer';
+import GuideList from '@/components/User/Guide/GuideList';
 import { useStepNavigator } from '../../package_landing_page/goToNextStep';
 import { updatePackageBooking } from '../../../api/booking/packages/updatePackageBooking';
-import Navbarpro from '@/components/user_components/Main/Navbarpro';
-import GuideDetails from '@/components/user_components/Guide/GuideDetails';
+import Navbarpro from '@/components/User/Main/Navbarpro';
+import GuideDetails from '@/components/User/Guide/GuideDetails';
 import { submitGuideBooking } from '@/app/api/booking/guides/submitGuideBooking';
 
 

@@ -1,16 +1,16 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Navbar from "@/components/user_components/Main/Navbarpro"
-import Breadcrumb from "@/components/user_components/ServicePackage/Breadcrumb"
-import MedicalPackage from "@/components/user_components/ServicePackage/MedicalService/MedicalService"
-import TourismPackage from "@/components/user_components/ServicePackage/TourismService/TourismService"
-import Footer from "@/components/user_components/Main/Footer"
+import Navbar from "@/components/User/Main/Navbarpro"
+import Breadcrumb from "@/components/User/Packages/Breadcrumb"
+import MedicalPackage from "@/components/User/Packages/MedicalService/MedicalService"
+import TourismPackage from "@/components/User/Packages/TourismService/TourismService"
+import Footer from "@/components/User/Main/Footer"
 import { useParams } from "next/navigation"
-import Navbarpro from "@/components/user_components/Main/Navbarpro"
+import Navbarpro from "@/components/User/Main/Navbarpro"
 import { Packages } from "@/types/Package"
 
-const ServicePackage = () => {
+const PackageDetail = () => {
   const [selectedService, setSelectedService] = useState<"medical" | "tourism">("medical")
   const [appointmentDate, setAppointmentDate] = useState<Date | null>(null)
   const params = useParams<{ id: string }>();
@@ -112,4 +112,4 @@ if (error) {
   )
 }
 
-export default ServicePackage
+export default PackageDetail

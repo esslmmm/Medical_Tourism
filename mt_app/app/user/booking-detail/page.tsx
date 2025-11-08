@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { MapPin, Briefcase } from 'lucide-react';
-import Footer from '@/components/user_components/Main/Footer';
-import Navbar from '@/components/user_components/Main/Navbar';
-import MedicalServiceBooking from '@/components/user_components/BookingDetail2/MedicalServiceBooking';
-import TourismServiceBooking from '@/components/user_components/BookingDetail2/TourismServiceBooking';
+import Footer from '@/components/User/Main/Footer';
+import Navbar from '@/components/User/Main/Navbar';
+import MedicalServiceBooking from '@/components/User/BookingDetail2/MedicalServiceBooking';
+import TourismServiceBooking from '@/components/User/BookingDetail2/TourismServiceBooking';
 
 // mockData.js (or top of the same file)
 

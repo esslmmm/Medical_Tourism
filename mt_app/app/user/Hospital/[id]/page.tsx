@@ -1,12 +1,12 @@
 "use client";
 import { useParams } from "next/navigation";
-import Navbarpro from "@/components/user_components/Main/Navbarpro";
-import HospitalProfile from "@/components/user_components/Hospital/HospitalProfile";
-import DoctorHos from "@/components/user_components/Hospital/DoctorHos";
-import MedicalPackage from "@/components/user_components/Hospital/MedicalPackage";
-import ReviewsSection from "@/components/user_components/Hospital/ReviewsSection";
-import Footer from "@/components/user_components/Main/Footer";
-import HospitalSkeleton from "@/components/user_components/skeleton-screen/HospitalProfile/HospitalSkeleton";
+import Navbarpro from "@/components/User/Main/Navbarpro";
+import HospitalProfile from "@/components/User/Hospital/HospitalProfile";
+import DoctorHos from "@/components/User/Hospital/DoctorHos";
+import MedicalPackage from "@/components/User/Hospital/MedicalPackage";
+import ReviewsSection from "@/components/User/Hospital/ReviewsSection";
+import Footer from "@/components/User/Main/Footer";
+import HospitalSkeleton from "@/components/User/skeleton-screen/HospitalProfile/HospitalSkeleton";
 import { useEffect, useState } from "react";
 import "@/app/globals.css";
 

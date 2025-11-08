@@ -1,11 +1,11 @@
 "use client";
-import DoctorCardSkeleton from "@/components/user_components/skeleton-screen/DoctorProfile/DoctorCardSkeleton";
-import Navbarpro from "@/components/user_components/Main/Navbarpro";
-import DoctorProfile from "@/components/user_components/Doctorprofile/DoctorPro"
-import EducationSection from "@/components/user_components/Doctorprofile/Education"
-import CertificateSection from "@/components/user_components/Doctorprofile/Certificate"
-import DoctorPackage from "@/components/user_components/Doctorprofile/DoctorPackage";
-import Footer from "@/components/user_components/Main/Footer";
+import DoctorCardSkeleton from "@/components/User/skeleton-screen/DoctorProfile/DoctorCardSkeleton";
+import Navbarpro from "@/components/User/Main/Navbarpro";
+import DoctorProfile from "@/components/User/Doctorprofile/DoctorPro"
+import EducationSection from "@/components/User/Doctorprofile/Education"
+import CertificateSection from "@/components/User/Doctorprofile/Certificate"
+import DoctorPackage from "@/components/User/Doctorprofile/DoctorPackage";
+import Footer from "@/components/User/Main/Footer";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import "@/app/globals.css";

@@ -1,6 +1,6 @@
-import Footer from "@/components/user_components/Main/Footer"
-import Navbar from "@/components/user_components/Main/Navbar"
-import SelectPayment from "@/components/user_components/payment/SelectPayment"
+import Footer from "@/components/User/Main/Footer"
+import Navbar from "@/components/User/Main/Navbar"
+import SelectPayment from "@/components/User/payment/SelectPayment"
 
 const Payment = () => {
   return (
