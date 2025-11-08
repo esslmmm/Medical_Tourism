@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Navbar from "@/components/user_components/ServicePackage/Navbar"
+import Navbar from "@/components/user_components/Main/Navbarpro"
 import Breadcrumb from "@/components/user_components/ServicePackage/Breadcrumb"
 import MedicalPackage from "@/components/user_components/ServicePackage/MedicalService/MedicalService"
 import TourismPackage from "@/components/user_components/ServicePackage/TourismService/TourismService"
