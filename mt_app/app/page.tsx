@@ -1,14 +1,14 @@
 "use client";
 
-import PackageList from "../components/user_components/Homepage/PackageList";
-import DoctorList from "../components/user_components/Homepage/DoctorList";
-import Hospitaltap from "../components/user_components/Homepage/Hospitaltap";
-import Footer from "../components/user_components/Main/Footer";
-import AuthenticatedNavbar from "../components/user_components/Main/AuthenticatedNavbar";
+import PackageList from "../components/User/Homepage/PackageList";
+import DoctorList from "../components/User/Homepage/DoctorList";
+import Hospitaltap from "../components/User/Homepage/Hospitaltap";
+import Footer from "../components/User/Main/Footer";
+import AuthenticatedNavbar from "../components/User/Main/AuthenticatedNavbar";
 import { useSearchParams } from 'next/navigation';
 import "./globals.css";
 import { useEffect, useState } from 'react';
-import MedicalList from "@/components/user_components/Homepage/MedicalList";
+import MedicalList from "@/components/User/Homepage/MedicalList";
 import { 
   UserCheck, 
   Globe, 

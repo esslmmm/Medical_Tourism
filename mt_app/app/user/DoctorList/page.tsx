@@ -1,6 +1,6 @@
-import Navbarpro from "@/components/user_components/Main/Navbarpro";
-import DoctorList from "@/components/user_components/DoctorList/DoctorList";
-import Footer from "@/components/user_components/Main/Footer";
+import Navbarpro from "@/components/User/Main/Navbarpro";
+import DoctorList from "@/components/User/DoctorList/DoctorList";
+import Footer from "@/components/User/Main/Footer";
 import "@/app/globals.css";
 
 

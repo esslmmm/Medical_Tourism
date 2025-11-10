@@ -138,7 +138,7 @@ export default function PaymentSuccessful() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
           onClick={() => router.push("/user/profile/approval-status")}
-          className="w-full bg-blue-600 text-white py-3.5 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+          className="w-full bg-emerald-500 text-white py-3.5 rounded-lg font-medium hover:bg-emerald-600 transition-colors"
         >
           Return to My Bookings
         </motion.button>

@@ -1,7 +1,7 @@
 "use client";
 
-import FirstInputs from '../../../components/user_components/ContactUs/FirstInputs';
-import SecondInputs from '../../../components/user_components/ContactUs/SecondInputs';
+import FirstInputs from '../../../components/User/ContactUs/FirstInputs';
+import SecondInputs from '../../../components/User/ContactUs/SecondInputs';
 // import NavbarContactUs from "../../../components/user_components/ContactUs/NavbarContactUs";
 // import Footer from "../../../components/user_components/ContactUs/Footer";
 

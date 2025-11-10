@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
-import HospitalReview from '@/components/user_components/ReviewPopUp/hospitalReview';
-import HotelReview from '@/components/user_components/ReviewPopUp/hotelReview';
-import GuideReview from '@/components/user_components/ReviewPopUp/guideReview';
+import HospitalReview from '@/components/User/ReviewPopUp/hospitalReview';
+import HotelReview from '@/components/User/ReviewPopUp/hotelReview';
+import GuideReview from '@/components/User/ReviewPopUp/guideReview';
 
 interface MultiStepReviewModalProps {
   isOpen: boolean;
