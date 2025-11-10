@@ -39,7 +39,6 @@ const AddDoctorPage: React.FC = () => {
     hospital_id: '',
     experience: '',
     description: '',
-    image: '',
   });
 
   const [docEducation, setDocEducation] = useState<DocEducation[]>([]);
@@ -127,12 +126,13 @@ const AddDoctorPage: React.FC = () => {
 
       const payload = {
         ...formData,
+        image: image,
         doc_education: cleanedEducation,
         doc_certificate: cleanedCertificates,
         doc_language: cleanedLanguages,
       };
 
-      const response = await fetch('/api/admin/services/doctors/', {
+      const response = await fetch('/api/admin/services/doctors', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -484,13 +484,6 @@ const AddDoctorPage: React.FC = () => {
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-lg font-semibold mb-4 text-gray-900">Doctor Preview</h3>
               <div className="text-center">
-                {formData.image && (
-                  <img
-                    src={formData.image}
-                    alt={formData.name}
-                    className="w-20 h-20 object-cover rounded-full mx-auto mb-3 border border-gray-200"
-                  />
-                )}
                 <h4 className="font-semibold text-gray-900">{formData.name || 'Doctor Name'}</h4>
                 <p className="text-sm text-blue-600 font-medium">{formData.specialization || 'Specialization'}</p>
                 <p className="text-sm text-gray-800 mt-2">{formData.experience || 'Experience'}</p>

@@ -19,7 +19,7 @@ export type Patient = {
 export type AppointmentFormData = {
   selectedDate?: Date | null
   selectedTime?: string | null
-  file?: File | null
+  file?: File[] | null
   child?: number;
   adult?: number;
   details: string

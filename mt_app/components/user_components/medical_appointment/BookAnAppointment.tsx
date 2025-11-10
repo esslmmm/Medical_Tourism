@@ -124,14 +124,21 @@ export default function MedicalAppointment() {
     patient: []
   };
 
-  // File validation
-  if (form.file) {
-    if (!validateFileType(form.file)) {
-      newErrors.file = 'File must be PDF, JPEG, JPG, or PNG';
-    } else if (!validateFileSize(form.file)) {
-      newErrors.file = 'File size must be less than 10MB';
+  // File validation (for multiple files)
+if (form.file && Array.isArray(form.file) && form.file.length > 0) {
+  const invalidFile = form.file.find(
+    (file) => !validateFileType(file) || !validateFileSize(file)
+  );
+
+  if (invalidFile) {
+    if (!validateFileType(invalidFile)) {
+      newErrors.file = 'All files must be PDF, JPEG, JPG, or PNG';
+    } else if (!validateFileSize(invalidFile)) {
+      newErrors.file = 'Each file must be less than 10MB';
     }
   }
+}
+
 
   // Details validation
   if (form.details && form.details.length > 1000) {
@@ -267,47 +274,49 @@ export default function MedicalAppointment() {
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      const selectedFile = event.target.files[0];
-      
-      // Clear previous file error
-      setErrors(prev => ({ ...prev, file: undefined }));
-      
-      // Validate file immediately
-      if (!validateFileType(selectedFile)) {
-        setErrors(prev => ({ ...prev, file: 'File must be PDF, JPEG, JPG, or PNG' }));
-        return;
-      }
-      
-      if (!validateFileSize(selectedFile)) {
-        setErrors(prev => ({ ...prev, file: 'File size must be less than 10MB' }));
-        return;
-      }
-      
-      // Convert file to base64 for storage
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const base64String = e.target?.result as string;
-        setFileDataUrl(base64String);
-        
-        // Store file data in localStorage
-        const fileData = {
-          name: selectedFile.name,
-          size: selectedFile.size,
-          type: selectedFile.type,
-          lastModified: selectedFile.lastModified,
-          base64: base64String
+      const selectedFiles = Array.from(event.target.files);
+      const validFiles: any[] = [];
+
+      selectedFiles.forEach((file) => {
+        // Validate type
+        if (!validateFileType(file)) {
+          setErrors(prev => ({ ...prev, file: 'File must be PDF, JPEG, JPG, or PNG' }));
+          return;
+        }
+
+        // Validate size
+        if (!validateFileSize(file)) {
+          setErrors(prev => ({ ...prev, file: 'File size must be less than 10MB' }));
+          return;
+        }
+
+        // Convert to base64
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const base64String = e.target?.result as string;
+
+          validFiles.push({
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            lastModified: file.lastModified,
+            base64: base64String
+          });
+
+          // When all files processed, store them
+          if (validFiles.length === selectedFiles.length) {
+            localStorage.setItem('selectedFiles', JSON.stringify(validFiles));
+            setForm(prev => ({
+              ...prev,
+              file: validFiles // now file can be an array
+            }));
+          }
         };
-        
-        localStorage.setItem('selectedFile', JSON.stringify(fileData));
-      };
-      reader.readAsDataURL(selectedFile);
-      
-      setForm(prev => ({
-        ...prev,
-        file: selectedFile
-      }));
+        reader.readAsDataURL(file);
+      });
     }
   };
+
 
   // Clear specific error when user starts typing
   const clearError = (field: string, section?: 'contact' | 'patient') => {
