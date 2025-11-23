@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo, useEffect } from 'react';
-import { Search, ChevronLeft, ChevronRight, Filter, Eye, Users, CheckCircle, Clock } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, Filter, Users, CheckCircle, Clock, ChartPie, Wallet } from 'lucide-react';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 
 interface Payment {
@@ -13,21 +13,6 @@ interface Payment {
   status: 'waiting' | 'successful';
 }
 
-// const mockPayments: Payment[] = [
-//   { id: '1', amount: '900THB', method: 'Card', dateTime: '12 Feb 2025 10:30 AM', name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'successful' },
-//   { id: '2', amount: '2000THB', method: 'Card', dateTime: '12 Feb 2025 10:30 AM', name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'successful' },
-//   { id: '3', amount: '2000THB', method: 'Card', dateTime: '12 Feb 2025 10:30 AM', name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'successful' },
-//   { id: '4', amount: '2000THB', method: 'Card', dateTime: '12 Feb 2025 10:30 AM', name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'successful' },
-//   { id: '5', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
-//   { id: '6', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
-//   { id: '7', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
-//   { id: '8', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
-//   { id: '9', amount: '2000THB',  name: 'Ekkarat Singkhala', email: '6531501137@lamduan.mfu.ac.th', status: 'waiting' },
-//   { id: '10', amount: '1500THB', method: 'Bank Transfer', dateTime: '11 Feb 2025 09:15 AM', name: 'Sarah Johnson', email: 'sarah.j@example.com', status: 'successful' },
-//   { id: '11', amount: '3500THB', name: 'Michael Chen', email: 'michael.c@example.com', status: 'waiting' },
-//   { id: '12', amount: '1200THB', method: 'E-Wallet', dateTime: '10 Feb 2025 04:20 PM', name: 'Emma Wilson', email: 'emma.w@example.com', status: 'successful' },
-// ];
-
 const PaymentDashboard: React.FC = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,6 +23,10 @@ const PaymentDashboard: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const itemsPerPage = 5;
+
+  const [statsFilter, setStatsFilter] = useState<'day' | 'week' | 'month' | 'year' | 'custom'>('month');
+const [customStart, setCustomStart] = useState<string>('');
+const [customEnd, setCustomEnd] = useState<string>('');
 
   // ✅ Fetch payment data
   useEffect(() => {
@@ -79,22 +68,90 @@ const PaymentDashboard: React.FC = () => {
     fetchPayments();
   }, []);
 
-  // ✅ Stats summary
-  // ✅ Stats summary
-const stats = useMemo(() => {
-  const waiting = payments.filter((p) => p.status === 'waiting').length;
-  const successful = payments.filter((p) => p.status === 'successful').length;
+  const stats = useMemo(() => {
+  const now = new Date();
 
-  // Calculate total payment count
-  const totalPayments = payments.length;
+  const filteredByDate = payments.filter((p) => {
+    if (!p.dateTime) return false;
 
-  // Calculate total income (only from successful payments)
-  const totalIncome = payments
-    .filter((p) => p.status === 'successful')
-    .reduce((sum, p) => sum + parseFloat(p.amount.replace(/[^\d.-]/g, '')), 0);
+    const date = new Date(p.dateTime);
 
-  return { waiting, successful, totalPayments, totalIncome };
-}, [payments]);
+    switch (statsFilter) {
+      case 'day':
+        return (
+          date.getDate() === now.getDate() &&
+          date.getMonth() === now.getMonth() &&
+          date.getFullYear() === now.getFullYear()
+        );
+
+      case 'week': {
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - now.getDay());
+
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 7);
+
+        return date >= startOfWeek && date < endOfWeek;
+      }
+
+      case 'month':
+        return (
+          date.getMonth() === now.getMonth() &&
+          date.getFullYear() === now.getFullYear()
+        );
+
+      case 'year':
+        return date.getFullYear() === now.getFullYear();
+
+      case 'custom':
+        if (!customStart || !customEnd) return true;
+        const s = new Date(customStart);
+        const e = new Date(customEnd);
+        return date >= s && date <= e;
+
+      default:
+        return true;
+    }
+  });
+
+  const successfulPayments = filteredByDate.filter((p) => p.status === 'successful');
+
+  // Total transactions
+  const totalPayments = filteredByDate.length;
+
+  // Total income (gross, before fees)
+  const totalIncome = successfulPayments.reduce(
+    (sum, p) => sum + parseFloat(p.amount.replace(/[^\d.-]/g, '')),
+    0
+  );
+
+  // Stripe fee per transaction
+  const STRIPE_PERCENT = 0.0475; // 4.75% for international cards
+  const STRIPE_FIXED = 10; // 10 THB per transaction
+
+  // Net income (after fee)
+  const netIncome = successfulPayments.reduce((sum, p) => {
+    const amount = parseFloat(p.amount.replace(/[^\d.-]/g, ''));
+    const fee = amount * STRIPE_PERCENT + STRIPE_FIXED;
+    return sum + (amount - fee);
+  }, 0);
+
+  // Average order value
+  const averageOrderValue =
+    successfulPayments.length > 0
+      ? totalIncome / successfulPayments.length
+      : 0;
+
+  return {
+    totalPayments,
+    totalIncome,
+    netIncome,
+    averageOrderValue,
+    successful: successfulPayments.length,
+    waiting: filteredByDate.filter((p) => p.status === 'waiting').length,
+  };
+}, [payments, statsFilter, customStart, customEnd]);
+
 
 
   // ✅ Filtering & searching
@@ -147,24 +204,49 @@ const stats = useMemo(() => {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
+          <div className="mb-8 flex justify-between">
+            <div>
+
             <h1 className="text-4xl font-bold text-gray-900 mb-2">Payment Dashboard</h1>
             <p className="text-gray-600">Monitor and manage all payment transactions</p>
+            </div>
+            {/* Stats Filter Controls */}
+<div className="flex flex-wrap items-center gap-4 mb-6">
+
+  <select
+    value={statsFilter}
+    onChange={(e) => setStatsFilter(e.target.value as any)}
+    className="px-4 py-2 border-2 border-gray-300 rounded-xl bg-white text-gray-800"
+  >
+    <option value="day">Today</option>
+    <option value="week">This Week</option>
+    <option value="month">This Month</option>
+    <option value="year">This Year</option>
+    <option value="custom">Custom Range</option>
+  </select>
+
+  {statsFilter === 'custom' && (
+    <div className="flex items-center gap-3">
+      <input
+        type="date"
+        value={customStart}
+        onChange={(e) => setCustomStart(e.target.value)}
+        className="px-3 py-2 border-2 border-gray-300 rounded-xl"
+      />
+      <span className="font-semibold">to</span>
+      <input
+        type="date"
+        value={customEnd}
+        onChange={(e) => setCustomEnd(e.target.value)}
+        className="px-3 py-2 border-2 border-gray-300 rounded-xl"
+      />
+    </div>
+  )}
+</div>
           </div>
 
           {/* Stats Cards */}
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-
-  {/* Total Payments */}
-  <div className="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
-    <div className="flex items-center gap-3 mb-2">
-      <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
-        <Users className="w-6 h-6" />
-      </div>
-      <h3 className="text-lg font-semibold">Total Payments</h3>
-    </div>
-    <p className="text-5xl font-bold mt-4">{stats.totalPayments}</p>
-  </div>
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 
   {/* Total Income */}
   <div className="bg-gradient-to-br from-amber-500 to-yellow-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
@@ -177,28 +259,45 @@ const stats = useMemo(() => {
     <p className="text-4xl font-bold mt-4">{stats.totalIncome.toLocaleString()} THB</p>
   </div>
 
-  {/* Waiting */}
+  {/* Net Income */}
   <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
     <div className="flex items-center gap-3 mb-2">
       <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
-        <Clock className="w-6 h-6" />
+        <Wallet className="w-6 h-6" />
       </div>
-      <h3 className="text-lg font-semibold">Waiting for Payment</h3>
+      <h3 className="text-lg font-semibold">Net Income</h3>
     </div>
-    <p className="text-5xl font-bold mt-4">{stats.waiting}</p>
+    <p className="text-4xl font-bold mt-4">
+  {stats.netIncome.toLocaleString(undefined, { maximumFractionDigits: 2 })} THB
+</p>
+
   </div>
 
-  {/* Successful */}
+  {/* Average Order Value */}
   <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
     <div className="flex items-center gap-3 mb-2">
       <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
-        <CheckCircle className="w-6 h-6" />
+        <ChartPie className="w-6 h-6" />
       </div>
-      <h3 className="text-lg font-semibold">Payment Successful</h3>
+      <h3 className="text-lg font-semibold">Average Order Value</h3>
     </div>
-    <p className="text-5xl font-bold mt-4">{stats.successful}</p>
+    <p className="text-4xl font-bold mt-4">
+  {stats.averageOrderValue.toLocaleString(undefined, { maximumFractionDigits: 2 })} THB
+</p>
+
   </div>
-</div>
+
+  {/* Total Transaction */}
+  <div className="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
+    <div className="flex items-center gap-3 mb-2">
+      <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+        <Users className="w-6 h-6" />
+      </div>
+      <h3 className="text-lg font-semibold">Total Transactions</h3>
+    </div>
+    <p className="text-5xl font-bold mt-4">{stats.totalPayments}</p>
+  </div>
+            </div>
 
 
           {/* Table */}
@@ -262,7 +361,6 @@ const stats = useMemo(() => {
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Name</th>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Email</th>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -292,11 +390,6 @@ const stats = useMemo(() => {
                             Waiting
                           </span>
                         )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors group">
-                          <Eye className="w-5 h-5 text-gray-400 group-hover:text-blue-600" />
-                        </button>
                       </td>
                     </tr>
                   ))}
