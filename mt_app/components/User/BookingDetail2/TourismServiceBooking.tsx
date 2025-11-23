@@ -29,20 +29,21 @@ const TourismServiceBooking = () => {
   ];
 
   return (
-    <div><div className="flex-1">
+    <div>
+      <div className="flex-1">
     {tripBookings.map((trip) => (
       <div key={trip.id}>
         {/* Trip Details */}
-        <div className="bg-white rounded-lg shadow-sm mb-6 border border-gray-300">
-          <div className="bg-emerald-500 text-white px-6 py-4 rounded-t-lg">
+        <div className="bg-white rounded-2xl shadow-md mb-8 border border-gray-300">
+          <div className="bg-emerald-500 text-white px-6 py-4 rounded-t-2xl">
             <h2 className="text-xl font-semibold">Trip Details</h2>
           </div>
           <div className="p-6 flex items-start gap-4">
             <img src={trip.image} alt={trip.tripName} className="w-32 h-48 object-cover rounded-2xl" />
             <div className="flex-1">
                 <div className='flex justify-between items-start'>
-              <h3 className="text-lg font-semibold">{trip.tripName} <span className="text-yellow-500 text-sm font-semibold">({trip.duration})</span></h3>
-              <button className="cursor-pointer text-teal-400 hover:text-teal-500 text-sm font-medium flex items-center gap-1">
+              <h3 className="text-lg font-semibold">{trip.tripName} <span className="text-yellow-500 ml-2 text-sm font-semibold">({trip.duration})</span></h3>
+              <button className="cursor-pointer text-teal-400 hover:text-teal-500 font-medium flex items-center gap-1">
                     View details
                     <svg
                       className="w-4 h-4"
@@ -59,8 +60,8 @@ const TourismServiceBooking = () => {
                     </svg>
                   </button>
                 </div>
-              <p className="text-sm font-semibold mb-2 mt-2">Including :</p>
-              <ul className="text-sm text-gray-600 space-y-1 mb-3">
+              <p className=" font-semibold mb-3 mt-2">Including :</p>
+              <ul className=" text-gray-600 space-y-3 mb-5">
                 {trip.includes.map((item, i) => (
                   <li key={i}>• {item}</li>
                 ))}
@@ -75,21 +76,21 @@ const TourismServiceBooking = () => {
         </div>
 
         {/* Booking Details */}
-        <div className="bg-white rounded-lg shadow-sm mb-6 border border-gray-300">
-          <div className="bg-emerald-500 text-white px-6 py-4 rounded-t-lg">
+        <div className="bg-white rounded-2xl shadow-md mb-8 border border-gray-300">
+          <div className="bg-emerald-500 text-white px-6 py-4 rounded-t-2xl">
             <h2 className="text-xl font-semibold">Booking Details</h2>
           </div>
           <div className="p-6">
-            <p className="text-sm font-semibold mb-2">Trip Booking Date</p>
+            <p className=" font-semibold mb-2">Trip Booking Date</p>
             <p className="text-gray-700">{trip.bookingDate}</p>
           </div>
         </div>
 
         {/* Contact Details */}
-        <div className="bg-white rounded-lg shadow-sm mb-6 border border-gray-300">
+        <div className="bg-white rounded-2xl shadow-md mb-8 border border-gray-300">
           <div className="p-6">
             <h3 className="text-lg font-semibold mb-4 pb-4 border-b border-gray-300">Contact details</h3>
-            <p className="font-semibold mb-3">{trip.contact.name}</p>
+            <p className="font-semibold  text-lg mb-4">{trip.contact.name}</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-gray-700">
                 <Phone size={16} />
@@ -104,7 +105,7 @@ const TourismServiceBooking = () => {
         </div>
 
         {/* Payment Details */}
-        <div className="bg-white rounded-lg shadow-sm mb-6 border border-gray-300">
+        <div className="bg-white rounded-2xl shadow-md mb-8 border border-gray-300">
           <div className="p-6">
             <h3 className="text-lg font-semibold mb-4 pb-4 border-b border-gray-300">Payment details</h3>
             {trip.payments.map((pay, i) => (
@@ -121,7 +122,7 @@ const TourismServiceBooking = () => {
         </div>
 
         {/* Booking Policies */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-300">
+        <div className="bg-white rounded-2xl shadow-md mb-8 border border-gray-300">
               <div className="p-6">
                 <h3 className="text-lg font-semibold pb-4">
                   Booking policies
@@ -149,7 +150,8 @@ const TourismServiceBooking = () => {
             </div>
       </div>
     ))}
-  </div></div>
+  </div>
+  </div>
   )
 }
 export default TourismServiceBooking
