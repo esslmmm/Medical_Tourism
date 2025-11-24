@@ -25,6 +25,15 @@ type ValidationErrors = {
   }[];
 };
 
+type ContactField =
+  | "firstname"
+  | "lastname"
+  | "email"
+  | "country"
+  | "dialCode"
+  | "phoneNumber";
+
+
 
 // Validation functions
 const validateEmail = (email: string): boolean => {
@@ -340,69 +349,15 @@ export default function MedicalAppointment() {
   ];
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6">
-      {/* Appointment Booking Section */}
-      <div className="text-center text-green-700 py-4">
-        <h1 className="text-4xl font-bold">An appointment form</h1>
-      </div>
-      
-
-      {/* Symptoms Details Section */}
-      <div className="p-6 bg-white shadow-lg rounded-xl">
-        <h2 className="text-xl text-green-600 font-bold text-center mb-4">Symptoms Details</h2>
-        
-        {/* File Upload */}
-        <div className="mb-4">
-          <label className="block font-medium mb-2">Medical Report</label>
-          <input
-            type="file"
-            accept=".pdf,.jpeg,.jpg,.png"
-            onChange={handleFileSelect}
-            className={`block w-full text-sm text-gray-500 border border-gray-300 rounded-lg p-3 bg-gray-50
-                      file:mr-4 file:py-2 file:px-4
-                      file:rounded-full file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-blue-50 file:text-blue-700
-                      hover:file:bg-blue-100 ${
-                        errors.file ? 'border-red-500' : ''
-                      }`}
-          />
-          {errors.file && (
-            <p className="text-red-500 text-sm mt-1">{errors.file}</p>
-          )}
-          <p className="text-xs text-gray-500 mt-1">
-            Accepted formats: PDF, JPEG, JPG, PNG (Max size: 10MB)
-          </p>
-        </div>
-        
-        {/* Textarea for Symptoms Details */}
-        <div className="mb-4">
-          <label className="block font-medium mb-2">
-            More details about symptoms 
-            <span className="text-sm text-gray-500">({form.details.length}/1000)</span>
-          </label>
-          <textarea
-            className={`w-full p-3 border bg-gray-50 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.details ? 'border-red-500' : ''
-            }`}
-            rows={4}
-            placeholder="Fill details"
-            value={form.details}
-            maxLength={1000}
-            onChange={(e) => {
-              setForm((prev) => ({ ...prev, details: e.target.value }));
-              clearError('details');
-            }}
-          />
-          {errors.details && (
-            <p className="text-red-500 text-sm mt-1">{errors.details}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="bg-white border border-gray-200 shadow-md rounded-2xl p-4 sm:p-6 space-y-6 w-full max-w-5xl mx-auto">
+    <div className="space-y-6">
+      <div className="bg-white border-2 border-gray-200 rounded-2xl p-4 shadow-md sm:p-6">
         {/* Contact Details */}
+        <div className="mb-4">
+        <p className="text-slate-500 text-xs">For all booking</p>
         <h2 className="text-lg font-semibold text-black">Contact Details</h2>
+        <p className="text-red-500 text-xs mt-2">*Required field</p>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* First Name, Last Name, Email */}
           {[ 
@@ -416,7 +371,7 @@ export default function MedicalAppointment() {
                 errors.contact[key as keyof typeof errors.contact] ? 'border-red-500' : ''
               }`}
             >
-              <span className="font-medium text-sm text-black">{label} *</span>
+              <span className="font-medium text-sm text-black">{label}<span className="text-red-600">*</span></span>
               <input
                 type="text"
                 value={value}
@@ -444,7 +399,7 @@ export default function MedicalAppointment() {
           <label className={`flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition ${
             errors.contact.country ? 'border-red-500' : ''
           }`}>
-            <span className="font-medium text-sm text-black">Country *</span>
+            <span className="font-medium text-sm text-black">Country<span className="text-red-600">*</span></span>
             <select
               value={form.contact.country}
               onChange={(e) => {
@@ -476,7 +431,7 @@ export default function MedicalAppointment() {
             <label className={`flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition sm:col-span-1 ${
               errors.contact.dialCode ? 'border-red-500' : ''
             }`}>
-              <span className="font-medium text-sm text-black">Dial Code *</span>
+              <span className="font-medium text-sm text-black">Dial Code<span className="text-red-600">*</span></span>
               <select
                 value={form.contact.dialCode}
                 onChange={(e) => {
@@ -506,7 +461,7 @@ export default function MedicalAppointment() {
             <label className={`flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition sm:col-span-2 ${
               errors.contact.phoneNumber ? 'border-red-500' : ''
             }`}>
-              <span className="font-medium text-sm text-black">Phone Number *</span>
+              <span className="font-medium text-sm text-black">Phone Number<span className="text-red-600">*</span></span>
               <input
                 type="text"
                 value={form.contact.phoneNumber}
@@ -537,16 +492,43 @@ export default function MedicalAppointment() {
       {form.patient.map((patient, index) => (
         <div
           key={index}
-          className="bg-white border border-gray-200 shadow-md rounded-2xl p-4 sm:p-6 space-y-6 w-full max-w-5xl mx-auto"
+          className="bg-white border-2 border-gray-200 rounded-2xl p-4 sm:p-6 shadow-md space-y-6 w-full max-w-5xl mx-auto"
         >
           <h2 className="text-lg font-semibold text-black">
-            Patient {index + 1} Details
+            Patient Details ({index + 1})
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Gender */}
+            {[
+              { label: "First name", key: "firstname" },
+              { label: "Last name", key: "lastname" },
+              { label: "Date of Birth", key: "dob", type: "date" },
+              { label: "Passport ID", key: "passportId" },
+            ].map(({ label, key, type = "text" }) => (
+              <label
+                key={key}
+                className="col-span-2 flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
+              >
+                <span className="font-medium text-sm text-black">{label}<span className="text-red-600">*</span></span>
+                <input
+                  type={type}
+                  value={patient[key as keyof typeof patient]}
+                  max={type === "date" ? new Date().toISOString().split('T')[0] : undefined}
+                  onChange={(e) => {
+                    setForm((prev) => {
+                      const updatedPatients = [...prev.patient];
+                      updatedPatients[index][key as keyof typeof patient] = e.target.value;
+                      return { ...prev, patient: updatedPatients };
+                    });
+                  }}
+                  className="bg-transparent outline-none text-black"
+                />
+              </label>
+            ))}
+          </div>
+          {/* Gender */}
             <div className="col-span-1 sm:col-span-2">
-              <span className="font-medium text-sm text-black">Gender *</span>
+              <span className=" text-black required font-bold">Gender<span className="text-red-600">*</span></span>
               <div className="flex items-center gap-6 mt-2">
                 {["Male", "Female"].map((g) => (
                   <label
@@ -571,43 +553,69 @@ export default function MedicalAppointment() {
                 ))}
               </div>
             </div>
+          {/* Symptoms Details Section */}
+          <div>
+        <h2 className="text-black required font-bold mb-3">Symptoms Details</h2>
+        
+        {/* File Upload */}
+        <div className="mb-4 text-black">
+          <label className="block font-medium mb-2">Medical Report</label>
+          <input
+            type="file"
+            accept=".pdf,.jpeg,.jpg,.png"
+            onChange={handleFileSelect}
+            className={`block w-full text-sm text-gray-500 border border-gray-300 rounded-lg p-3 bg-gray-50
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded-full file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-blue-50 file:text-blue-700
+                      hover:file:bg-blue-100 ${
+                        errors.file ? 'border-red-500' : ''
+                      }`}
+          />
+          {errors.file && (
+            <p className="text-red-500 text-sm mt-1">{errors.file}</p>
+          )}
+          <p className="text-xs text-gray-500 mt-1">
+            Accepted formats: PDF, JPEG, JPG, PNG (Max size: 10MB)
+          </p>
+        </div>
+        
+        {/* Textarea for Symptoms Details */}
+        <div className="mb-4 text-black">
+          <label className="block font-medium mb-2">
+            More details about symptoms 
+            <span className="text-sm text-gray-500">({form.details.length}/1000)</span>
+          </label>
+          <textarea
+            className={`w-full p-3 border bg-gray-50 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.details ? 'border-red-500' : ''
+            }`}
+            rows={4}
+            placeholder="Fill details"
+            value={form.details}
+            maxLength={1000}
+            onChange={(e) => {
+              setForm((prev) => ({ ...prev, details: e.target.value }));
+              clearError('details');
+            }}
+          />
+          {errors.details && (
+            <p className="text-red-500 text-sm mt-1">{errors.details}</p>
+          )}
+        </div>
+        </div>
 
-            {[
-              { label: "First name", key: "firstname" },
-              { label: "Last name", key: "lastname" },
-              { label: "Date of Birth", key: "dob", type: "date" },
-              { label: "Passport ID", key: "passportId" },
-            ].map(({ label, key, type = "text" }) => (
-              <label
-                key={key}
-                className="col-span-2 flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
-              >
-                <span className="font-medium text-sm text-black">{label} *</span>
-                <input
-                  type={type}
-                  value={patient[key as keyof typeof patient]}
-                  max={type === "date" ? new Date().toISOString().split('T')[0] : undefined}
-                  onChange={(e) => {
-                    setForm((prev) => {
-                      const updatedPatients = [...prev.patient];
-                      updatedPatients[index][key as keyof typeof patient] = e.target.value;
-                      return { ...prev, patient: updatedPatients };
-                    });
-                  }}
-                  className="bg-transparent outline-none text-black"
-                />
-              </label>
-            ))}
-          </div>
         </div>
       ))}
+      
 
       {/* Continue Button */}
       <button 
-        className={`w-full py-3 text-white rounded-lg transition ${
+        className={`w-full py-3 text-white font-bold rounded-xl transition ${
           isSubmitting 
             ? 'bg-gray-400 cursor-not-allowed' 
-            : 'bg-[#2196F3] hover:bg-blue-600'
+            : 'bg-teal-500 text-white'
         }`}
         onClick={handleFormSubmit}
         disabled={isSubmitting}
