@@ -7,7 +7,7 @@ import ConfirmButton from '@/components/User/BookingConfirm/ConfirmButton';
 
 export default function ConfirmBody() {
     return (
-                    <div className="col-span-2 w-2/3">
+                    <div className="space-y-6">
                         <ContactDetails />
                         <PatientDetails />
                         <ConfirmButton />

@@ -248,17 +248,17 @@ const ConfirmButton = () => {
   }
 
   return (
-      <div className='max-w-2xl mx-auto p-6 '>
+      <div className=''>
         <button
         onClick={handleConfirm}
         disabled={uploading}
-        className={`w-full py-3 px-4 rounded-xl font-medium cursor-pointer ${
+        className={`w-full py-3 px-4 rounded-xl font-bold ${
           uploading
-            ? 'bg-green-400 text-white cursor-not-allowed'
-            : 'bg-green-600 text-white hover:bg-green-700'
+            ? ' text-white bg-gray-400 cursor-not-allowed'
+            : 'bg-teal-500 text-white cursor-pointer'
         }`}
       >
-        {uploading ? 'Uploading File and Confirming...' : 'Confirm Appointment'}
+        {uploading ? 'Uploading File and Confirming...' : 'Confirm'}
       </button>
       </div>
   )
