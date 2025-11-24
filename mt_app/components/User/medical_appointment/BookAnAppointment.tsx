@@ -25,14 +25,6 @@ type ValidationErrors = {
   }[];
 };
 
-type ContactField =
-  | "firstname"
-  | "lastname"
-  | "email"
-  | "country"
-  | "dialCode"
-  | "phoneNumber";
-
 
 
 // Validation functions
