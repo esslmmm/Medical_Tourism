@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo, useEffect } from 'react';
-import { Search, ChevronLeft, ChevronRight, Filter, Users, CheckCircle, Clock, ChartPie, Wallet } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, Filter, Users, CheckCircle, Clock, ChartPie, Wallet, CalendarRange } from 'lucide-react';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 
 interface Payment {
@@ -25,6 +25,7 @@ const PaymentDashboard: React.FC = () => {
   const itemsPerPage = 5;
 
   const [statsFilter, setStatsFilter] = useState<'day' | 'week' | 'month' | 'year' | 'custom'>('month');
+  const [showStatsMenu, setShowStatsMenu] = useState(false);
 const [customStart, setCustomStart] = useState<string>('');
 const [customEnd, setCustomEnd] = useState<string>('');
 
@@ -54,7 +55,7 @@ const [customEnd, setCustomEnd] = useState<string>('');
           status:
             p.payment_status.toLowerCase() === 'successful'
               ? 'successful'
-              : 'waiting',
+              : 'refund',
         }));
 
         setPayments(formatted);
@@ -201,8 +202,10 @@ const [customEnd, setCustomEnd] = useState<string>('');
   // ✅ Render UI
   return (
     <AdminLayout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 md:p-8">
+      <div className="min-h-screen bg-gradient-to-br p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
+          <div className='bg-white rounded-2xl shadow-md overflow-hidden border border-gray-300 p-6 mb-8'>
+
           {/* Header */}
           <div className="mb-8 flex justify-between">
             <div>
@@ -213,40 +216,81 @@ const [customEnd, setCustomEnd] = useState<string>('');
             {/* Stats Filter Controls */}
 <div className="flex flex-wrap items-center gap-4 mb-6">
 
-  <select
-    value={statsFilter}
-    onChange={(e) => setStatsFilter(e.target.value as any)}
-    className="px-4 py-2 border-2 border-gray-300 rounded-xl bg-white text-gray-800"
-  >
-    <option value="day">Today</option>
-    <option value="week">This Week</option>
-    <option value="month">This Month</option>
-    <option value="year">This Year</option>
-    <option value="custom">Custom Range</option>
-  </select>
+  {/* Stats Filter Dropdown */}
+  <div className="relative">
+    <button
+      onClick={() => setShowStatsMenu(!showStatsMenu)}
+      className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-200 rounded-xl 
+                 hover:border-blue-500 hover:bg-blue-50 transition-all font-medium text-gray-700"
+    >
+      <CalendarRange className="w-5 h-5" /> {statsFilter === 'custom' ? 'Custom Range' : statsFilter.charAt(0).toUpperCase() + statsFilter.slice(1)}
+    </button>
 
+    {showStatsMenu && (
+      <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-200 z-10 overflow-hidden">
+
+        {[
+          { value: 'day', label: 'Today' },
+          { value: 'week', label: 'This Week' },
+          { value: 'month', label: 'This Month' },
+          { value: 'year', label: 'This Year' },
+          { value: 'custom', label: 'Custom Range' }
+        ].map((item) => (
+          <button
+            key={item.value}
+            onClick={() => {
+              setStatsFilter(item.value as any);
+              setShowStatsMenu(false);
+            }}
+            className={`w-full text-left px-4 py-2 hover:bg-blue-50 transition-colors ${
+              statsFilter === item.value
+                ? 'bg-blue-50 text-blue-600 font-semibold'
+                : 'text-gray-700'
+            }`}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+
+  {/* Custom Range Inputs */}
   {statsFilter === 'custom' && (
-    <div className="flex items-center gap-3">
+   <div className="flex items-center gap-3 text-black">
+    <div className="relative">
       <input
         type="date"
         value={customStart}
         onChange={(e) => setCustomStart(e.target.value)}
-        className="px-3 py-2 border-2 border-gray-300 rounded-xl"
+        className="px-6 py-3 bg-white border-2 border-gray-200 rounded-xl 
+                   hover:border-blue-500 hover:bg-blue-50 transition-all 
+                   font-medium text-gray-700 focus:border-blue-500 focus:ring-0"
       />
-      <span className="font-semibold">to</span>
+    </div>
+
+    <span className="font-semibold">to</span>
+
+    <div className="relative">
       <input
         type="date"
         value={customEnd}
         onChange={(e) => setCustomEnd(e.target.value)}
-        className="px-3 py-2 border-2 border-gray-300 rounded-xl"
+        className="px-6 py-3 bg-white border-2 border-gray-200 rounded-xl 
+                   hover:border-blue-500 hover:bg-blue-50 transition-all 
+                   font-medium text-gray-700 focus:border-blue-500 focus:ring-0"
       />
     </div>
-  )}
-</div>
+    </div>
+    )}
+
+
+ </div>
+
           </div>
 
           {/* Stats Cards */}
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ">
 
   {/* Total Income */}
   <div className="bg-gradient-to-br from-amber-500 to-yellow-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
@@ -256,7 +300,7 @@ const [customEnd, setCustomEnd] = useState<string>('');
       </div>
       <h3 className="text-lg font-semibold">Total Income</h3>
     </div>
-    <p className="text-4xl font-bold mt-4">{stats.totalIncome.toLocaleString()} THB</p>
+    <p className="text-3xl font-bold mt-4">{stats.totalIncome.toLocaleString()} THB</p>
   </div>
 
   {/* Net Income */}
@@ -267,7 +311,7 @@ const [customEnd, setCustomEnd] = useState<string>('');
       </div>
       <h3 className="text-lg font-semibold">Net Income</h3>
     </div>
-    <p className="text-4xl font-bold mt-4">
+    <p className="text-3xl font-bold mt-4">
   {stats.netIncome.toLocaleString(undefined, { maximumFractionDigits: 2 })} THB
 </p>
 
@@ -279,9 +323,9 @@ const [customEnd, setCustomEnd] = useState<string>('');
       <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
         <ChartPie className="w-6 h-6" />
       </div>
-      <h3 className="text-lg font-semibold">Average Order Value</h3>
+      <h3 className="text-md font-semibold">Average Order Value</h3>
     </div>
-    <p className="text-4xl font-bold mt-4">
+    <p className="text-3xl font-bold mt-4">
   {stats.averageOrderValue.toLocaleString(undefined, { maximumFractionDigits: 2 })} THB
 </p>
 
@@ -295,13 +339,15 @@ const [customEnd, setCustomEnd] = useState<string>('');
       </div>
       <h3 className="text-lg font-semibold">Total Transactions</h3>
     </div>
-    <p className="text-5xl font-bold mt-4">{stats.totalPayments}</p>
+    <p className="text-4xl font-bold mt-4">{stats.totalPayments}</p>
   </div>
+            </div>
+
             </div>
 
 
           {/* Table */}
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 text-black">
+          <div className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-300 text-black ">
             {/* Search + Filter */}
             <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-white to-gray-50">
               <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
@@ -328,7 +374,7 @@ const [customEnd, setCustomEnd] = useState<string>('');
 
                   {showFilterMenu && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-200 z-10 overflow-hidden">
-                      {['all', 'successful', 'waiting'].map((status) => (
+                      {['all', 'successful', 'refund'].map((status) => (
                         <button
                           key={status}
                           onClick={() => {
