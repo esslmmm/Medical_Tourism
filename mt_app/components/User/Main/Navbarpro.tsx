@@ -51,21 +51,8 @@ const Navbarpro: React.FC = () => {
         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      <div
-        className={`
-          md:flex md:items-center md:gap-10 md:ml-10
-          ${isMobileMenuOpen ? "flex flex-col absolute top-14 left-0 w-full bg-[#F5F7FA] p-4 shadow-md z-10" : "hidden"}
-        `}
-      >
-        {["Doctor", "Hospital", "Medical", "Medical & Tourism"].map((item, index) => (
-          <Link key={index} href={`/${item.toLowerCase().replace(/\s+/g, "-")}`} className="text-gray-700 hover:text-green-600 text-base">
-            {item}
-          </Link>
-        ))}
-      </div>
-
       <div className="flex items-center gap-4">
-        <div className="cursor-pointer p-2 rounded-md hover:bg-gray-200" onClick={toggleCurrency}>
+        <div className="cursor-pointer p-2 rounded-md hover:bg-gray-200 text-black" onClick={toggleCurrency}>
           <span className="text-black-700 font-bold">{currency}</span>
         </div>
 

@@ -87,7 +87,7 @@ const countryPhoneCodes = [
                         <p className="text-gray-600 text-lg">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-gray-100">
+                    <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-gray-300">
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
