@@ -11,68 +11,82 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
     const packageBooking = await prisma.package_bookings.findUnique({
       where: { booking_id: packageBookingId },
-      include: {
-        user: true,
-        packages: {
-          include:{
-            hospitals:{
-              select:{
-                name: true,
-                contact_info: true,
-                image: true,
-                hospital_code: true,
-              }
-            }
-          }
-        },
-        tourism_bookings: {
-          include: {
-            trips:{
-              include:{
-                package_places:{
-                  include: {
-                    places: true
-                  }
+      select: {
+          price: true,
+          user_id: true,
+          user: true,
+          packages: {
+            select:{
+              image: true,
+              package_name: true,
+              package_type: true,
+              hospitals:{
+                select:{
+                  name: true,
+                  image: true,
+                  logo: true,
                 }
               }
             }
-          }
-        },
-        appointments: {
-          include: {
-            appointment_files: {
-              include: {
-                files: true,
-              }
-            }
-          }
-        },
-        hotel_bookings: {
-          include: {
-            hotels:{
-              select: {
-                name: true,
-                image: true,
-                check_in_time: true,
-                contact_info: true,
-                hotel_code: true,
+          },
+          tourism_bookings:{
+            select: {
+                child: true,
+                adult: true,
+                start: true,
+                end: true,
+                guide_bookings: true,
+                routes:{
+                  select:{
+                    title: true,
+                    adult_price: true,
+                    child_price: true,
+                    guide_price: true,
+                    car_service_price: true,
+                    description: true,
+                    image: true,
+                    tags: true,
+                    attractions:{
+                      select:{
+                        places:{
+                          select:{
+                            name: true,
+                            description: true,
+                            location: true,
+                            image: true,
+                        }
+                      }
+                    }
+                  }
+                }
               }
             },
-            room_aggregate: {
-              include: {
-                hotel_rooms: true
+          },
+          appointments: {
+            select: {
+              child: true,
+              adult: true,
+              date: true,
+              timeslot: true,
+              description: true,
+              appointment_files: {
+                select: {
+                  files: true,
+                }
               }
             }
-          }
+          },
+          user_contact_detail: {
+            select: {
+              phone: true,
+              firstname: true,
+              lastname: true,
+              email: true,
+              country: true,
+            }
+          },
+          payment: true,
         },
-        user_contact_detail: true,
-        guide_bookings: {
-          include: {
-            guides: true
-          }
-        },
-        payment: true,
-      },
     });
 
     if (!packageBooking) {
