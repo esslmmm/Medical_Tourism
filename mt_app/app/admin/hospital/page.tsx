@@ -16,7 +16,10 @@ interface Hospital {
   contact_info: string;
   image: string;
   logo: string;
-  create_at: string;
+  Thai: boolean;
+  Arabic: boolean;
+  Myanmar: boolean;
+  English: boolean;
 }
 
 const HospitalManagement: React.FC = () => {

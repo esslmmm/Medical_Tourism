@@ -133,8 +133,8 @@ const PackageDetailPage: React.FC = () => {
                       onClick={() => handleImageClick(index)}
                     >
                       <img
-                        src={image.image}
-                        alt={`Trip image ${index + 1}`}
+                        src={image.url}
+                        alt={image.name || `Trip image ${index + 1}`}
                         className="w-full h-32 object-cover rounded-lg border border-gray-200 hover:shadow-lg transition-shadow"
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-opacity-20 transition-all rounded-lg flex items-center justify-center">

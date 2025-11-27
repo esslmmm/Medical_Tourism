@@ -27,6 +27,15 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
                   logo: true,
                 }
               }
+            },
+            guide_bookings:{
+              select:{
+                booking_id: true,
+                language: true,
+                start: true,
+                end: true,
+                status: true,
+              }
             }
           },
           tourism_bookings:{

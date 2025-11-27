@@ -1,42 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Inter } from "next/font/google";
-import { useParams } from "next/navigation";
-import { tourism_bookings_status } from "@prisma/client";
+import { Clock, MapPin } from "lucide-react";
+import { tourism_bookings } from "@/types/Booking";
 
 const inter = Inter({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-
-
-interface tourism_bookings {
-  tourism_id: number;
-  status: string;
-  trips: trips;
-}
-
-interface trips {
-  tour_id: number;
-  package_places: PackagePlaces[];
-};
-
-interface PackagePlaces {
-  packplace_id: number;
-  place_id: number;
-  tour_id: number;
-  date: string;
-  start: string;
-  end: string;
-  places: Places;
-}
-
-interface Places {
-  place_id: number;
-  place_name: string;
-  image: string;
-  fee: number;
-}
 
 interface TripProps {  
   tripBooking: tourism_bookings | null;
@@ -45,33 +16,6 @@ interface TripProps {
 
 const PlacesToVisit = ({tripBooking, setPackageBooking}: TripProps) => {
   if(!tripBooking) return null;
-  const addDaysToDate = (baseDate: string, daysToAdd: number) => {
-    if (!baseDate) return "Invalid Date";
-    const date = new Date(baseDate);
-    if (isNaN(date.getTime())) return "Invalid Date";
-  
-    date.setDate(date.getDate() + (daysToAdd - 1)); // Offset correctly
-    return ` ${date.toLocaleDateString("en-GB", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })}`;
-  };
-  
-
-  const formatTime = (timeString: string) => {
-    if (!timeString) return "Invalid Time";
-  
-    const [hours, minutes] = timeString.split(":").map(Number);
-    if (isNaN(hours) || isNaN(minutes)) return "Invalid Time";
-  
-    const isPM = hours >= 12;
-    const formattedHours = hours % 12 || 12; // Convert 0 to 12
-    const formattedMinutes = minutes.toString().padStart(2, "0");
-    const period = isPM ? "PM" : "AM";
-  
-    return `${formattedHours}:${formattedMinutes} ${period}`;
-  };
 
 const handleStatusChange = async (newStatus: string) => {
   if (!tripBooking) return;
@@ -90,8 +34,6 @@ const handleStatusChange = async (newStatus: string) => {
     if (!response.ok) {
       throw new Error("Failed to update status");
     }
-
-    const updated = await response.json();
 
     // Update local state
     setPackageBooking((prev: any) =>
@@ -114,47 +56,89 @@ const handleStatusChange = async (newStatus: string) => {
 
 
 return (
-  <div className={`${inter.className} mb-8`}>
-  <h2 className="ml-2 text-lg font-bold mb-2" style={{ fontSize: "25px" }}>Places to Visit</h2>
-  <div className="border border-[#C5D1E0] w-[850px] p-4 rounded-xl shadow-md bg-white relative">
-    {tripBooking.trips?.package_places.map((place, index) => (
-      <div
-        key={place.packplace_id}
-        className={`flex items-center gap-6 p-4 ${
-          index !== tripBooking.trips.package_places.length - 1 ? "border-b border-[#C5D1E0]" : ""
-        }`}
-      >
-        {/* Status Dropdown - Top Right */}
-      <div className="absolute top-4 right-4">
-        <select
-          id="status"
-          value={tripBooking?.status}
-          onChange={(e) => handleStatusChange(e.target.value)}
-          className={`border rounded-[18px] px-2 py-1 text-sm focus:outline-none focus:ring-2
-            ${tripBooking?.status === 'Pending' ? 'text-white bg-[#FFCC00] border-[#C5D1E0] focus:ring-yellow-300' : ''}
-            ${tripBooking?.status === 'Approved' ? 'text-white bg-[#28A83D] border-[#C5D1E0] focus:ring-green-300' : ''}
-            ${tripBooking?.status === 'Rejected' ? 'text-white bg-[#FB5626] border-[#C5D1E0] focus:ring-red-300' : ''}
-          `}
-        >
-          <option value="Pending">Pending</option>
-          <option value="Approved">Approved</option>
-          <option value="Rejected">Rejected</option>
-        </select>
-      </div>
-        <img src={place.places.image} alt={place.places.place_name} className="w-50 h-30 rounded-[15px] object-cover" />
+  <div className={`${inter.className} mb-10 mt-5`}>
+      {/* Section Title */}
+      <h2 className="ml-2 text-2xl font-bold mb-4 text-gray-800">Tourism Booking</h2>
 
-        <div className="flex-1 space-y-2">
-          <p className="text-md font-bold">
-            Name: <span className="font-normal">{place.places.place_name}</span>
-          </p>
-          <p className="text-md font-bold">
-            Fee: <span className="font-normal">{place.places.fee}</span>
-          </p>
+      <div className="border border-[#C5D1E0] w-full max-w-[850px] p-6 rounded-2xl shadow-md bg-white relative hover:shadow-lg transition-all">
+        {/* Status Dropdown - Top Right */}
+        <div className="absolute top-6 right-6">
+          <select
+            id="status"
+            value={tripBooking?.status}
+            onChange={(e) => handleStatusChange(e.target.value)}
+            className={`border rounded-full px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 transition
+              ${
+                tripBooking?.status === "Pending"
+                  ? "text-white bg-[#FFCC00] border-[#E0C050] focus:ring-yellow-300"
+                  : ""
+              }
+              ${
+                tripBooking?.status === "Approved"
+                  ? "text-white bg-[#28A83D] border-[#1E7A2E] focus:ring-green-300"
+                  : ""
+              }
+              ${
+                tripBooking?.status === "Rejected"
+                  ? "text-white bg-[#FB5626] border-[#C9441F] focus:ring-red-300"
+                  : ""
+              }
+            `}
+          >
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+
+        {/* Route Information */}
+        <div className="flex flex-col md:flex-row gap-6 mb-6">
+          <img
+            src={tripBooking.routes?.image}
+            alt={tripBooking.routes?.title}
+            className="w-full md:w-[280px] h-[180px] object-cover rounded-xl border border-gray-200"
+          />
+          <div className="flex-1 space-y-2">
+            <h3 className="text-xl font-bold text-gray-800">{tripBooking.routes?.title ?? "Unknown Route"}</h3>
+            <div className="flex items-center gap-2 text-gray-600">
+              <Clock className="w-5 h-5 text-blue-500" />
+              <span className="font-medium">{tripBooking.routes?.duration ?? "N/A"} Day(s)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Attractions List */}
+        <div>
+          <h3 className="text-xl font-bold mb-2 text-gray-800">Place To Visit</h3>
+        <div className="space-y-5">
+          {tripBooking.routes?.attractions?.map((place, index) => (
+            <div
+              key={place.attraction_id}
+              className={`flex flex-col md:flex-row gap-6 pb-4 ${
+                index !== tripBooking.routes.attractions.length - 1 ? "border-b border-[#E2E8F0]" : ""
+              }`}
+            >
+              <img
+                src={place.places.image}
+                alt={place.places.name}
+                className="w-full md:w-[200px] h-[140px] object-cover rounded-lg border border-gray-200"
+              />
+
+              <div className="flex-1 space-y-2">
+                <h4 className="text-lg font-semibold text-gray-800">
+                  <MapPin className="inline-block w-4 h-4 text-blue-500 mr-1" />
+                  {place.places.name}
+                </h4>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  {place.places.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
         </div>
       </div>
-    ))}
-  </div>
-</div>
+    </div>
 );
 };
 

@@ -5,7 +5,7 @@ import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { useFileUpload } from '@/hooks/useFileUpload';
 
 interface SingleImageUploadProps {
-  image?: string | null;
+  image: string | null;
   onImageChange: (imageUrl: string | null) => void;
   disabled?: boolean;
   placeholder?: string;

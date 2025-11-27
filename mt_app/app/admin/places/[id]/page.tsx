@@ -10,7 +10,7 @@ interface Place {
   place_id: string;
   place_name: string;
   contact_info?: string;
-  location?: string;
+  location?: location;
   city?: string;
   image?: string;
   description?: string;
@@ -19,6 +19,9 @@ interface Place {
     image_id: number;
     image: string;
   }>;
+}
+interface location {
+  text: string;
 }
 
 const PlaceDetailPage: React.FC = () => {
@@ -153,7 +156,7 @@ const PlaceDetailPage: React.FC = () => {
                   <div>
                     <p className="text-sm text-gray-500">Location</p>
                     <p className="font-medium text-gray-900">
-                      {place.location || 'Not specified'}
+                      {place.location?.text || 'Not specified'}
                     </p>
                   </div>
                 </div>

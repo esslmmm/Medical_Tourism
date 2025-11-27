@@ -2,13 +2,10 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
-import { ArrowLeft, Save, Upload, X, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Save, Upload, X, Plus, Trash2, Image as ImageIcon, Languages, Globe2 } from 'lucide-react';
 import '@/app/admin/styles/globals.css';
-
-interface HospitalImage {
-  image_id?: number;
-  image: string;
-}
+import SingleImageUpload from '@/components/admin_component/ui/SingleImageUpload';
+import ImageUpload from '@/components/admin_component/ui/ImageUpload';
 
 interface MedicalService {
   service_id?: number;
@@ -23,9 +20,10 @@ interface Hospital {
   city: string;
   description: string;
   contact_info: string;
-  image: string;
-  logo: string;
-  hospital_images: HospitalImage[];
+  Thai: boolean;
+  Arabic: boolean;
+  Myanmar: boolean;
+  English: boolean;
   medical_services: MedicalService[];
 }
 
@@ -36,9 +34,18 @@ const THAILAND_CITIES = [
   'Bang Na', 'Lat Krabang', 'Don Mueang', 'Suvarnabhumi', 'Other'
 ];
 
+const languages = [
+  { key: 'Thai', label: 'Thai 🇹🇭', color: 'bg-blue-100 border-blue-300' },
+  { key: 'Arabic', label: 'Arabic 🇸🇦', color: 'bg-green-100 border-green-300' },
+  { key: 'Myanmar', label: 'Myanmar 🇲🇲', color: 'bg-yellow-100 border-yellow-300' },
+  { key: 'English', label: 'English 🇬🇧', color: 'bg-purple-100 border-purple-300' },
+] as const;
+
 const HospitalAddPage: React.FC = () => {
   const router = useRouter();
-
+  const [Logoimage, setLogoImage] = useState<string | null>(null);
+  const [image, setImage] = useState<string | null>(null);
+  const [placeImages, setPlaceImages] = useState<Array<{ id: string; url: string; name: string; publicId?: string }>>([]);
   const [hospital, setHospital] = useState<Hospital>({
     name: '',
     hospital_code: '',
@@ -46,45 +53,14 @@ const HospitalAddPage: React.FC = () => {
     city: '',
     description: '',
     contact_info: '',
-    image: '',
-    logo: '',
-    hospital_images: [],
+    Thai: false,
+    Arabic: false,
+    Myanmar: false,
+    English: false,
     medical_services: [],
   });
 
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string>('');
   const [saving, setSaving] = useState(false);
-
-  // Handle logo change
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setLogoFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => setLogoPreview(e.target?.result as string);
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Handle hospital image upload (preview only)
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      const newImages: HospitalImage[] = Array.from(files).map(file => ({
-        image: URL.createObjectURL(file)
-      }));
-      setHospital({
-        ...hospital,
-        hospital_images: [...hospital.hospital_images, ...newImages]
-      });
-    }
-  };
-
-  const removeHospitalImage = (index: number) => {
-    const newImages = hospital.hospital_images.filter((_, i) => i !== index);
-    setHospital({ ...hospital, hospital_images: newImages });
-  };
 
   const handleMedicalServiceChange = (index: number, field: keyof MedicalService, value: string) => {
     const newServices = [...hospital.medical_services];
@@ -112,8 +88,9 @@ const HospitalAddPage: React.FC = () => {
     try {
       const payload = {
         ...hospital,
-        logo: logoFile ? logoPreview : '',
-        hospital_images: hospital.hospital_images.map(img => img.image),
+        image: image,
+        logo: Logoimage,
+        hospital_images: placeImages.map(img => img.url),
       };
 
       const res = await fetch('/api/services/hospitals', {
@@ -136,6 +113,21 @@ const HospitalAddPage: React.FC = () => {
     }
   };
 
+  const handleImageChange = (imageUrl: string | null) => {
+    setImage(imageUrl);
+  };
+
+  const handlelogoChange = (imageUrl: string | null) => {
+    setLogoImage(imageUrl);
+  };
+
+  const handleCheckboxChange = (language: keyof Hospital) => {
+    setHospital(prev => ({
+      ...prev,
+      [language]: !prev[language],
+    }));
+  };
+  
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -159,48 +151,32 @@ const HospitalAddPage: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Logo Upload Section */}
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h2 className="text-xl font-semibold mb-4">Hospital Logo</h2>
-            <div className="flex items-center space-x-6">
-              <div className="relative">
-                {logoPreview && (
-                  <img
-                    src={logoPreview}
-                    alt="Hospital Logo"
-                    className="w-32 h-32 object-contain rounded-lg border border-gray-200 bg-gray-50"
-                  />
-                )}
-                {logoFile && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setLogoFile(null);
-                      setLogoPreview('');
-                    }}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Upload Logo
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoChange}
-                  className="hidden"
-                  id="logo-upload"
-                />
-                <label
-                  htmlFor="logo-upload"
-                  className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Choose Logo
-                </label>
-              </div>
+            <h2 className="text-xl font-semibold mb-4">Hospital's image and Logo</h2>
+            <div className="flex justify-center items-start space-x-10">
+              {/* Main Image Upload */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Main Hospital Image
+                    </label>
+                    <SingleImageUpload
+                      image={image}
+                      onImageChange={handleImageChange}
+                      disabled={saving}
+                      placeholder="Click to upload main package image or drag and drop"
+                    />
+                  </div>
+              {/* Logo Image Upload */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Logo Image
+                    </label>
+                    <SingleImageUpload
+                      image={Logoimage}
+                      onImageChange={handlelogoChange}
+                      disabled={saving}
+                      placeholder="Click to upload main package image or drag and drop"
+                    />
+                  </div>
             </div>
           </div>
 
@@ -291,6 +267,35 @@ const HospitalAddPage: React.FC = () => {
             />
           </div>
 
+
+          <div className="p-6 bg-white rounded-2xl shadow-md border border-gray-200">
+            <div className="flex items-center gap-2 mb-4">
+              <Languages className="w-6 h-6 text-blue-600" />
+              <h3 className="text-xl font-semibold text-gray-800">Supported Languages</h3>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {languages.map(lang => (
+                <button
+                  key={lang.key}
+                  onClick={() => handleCheckboxChange(lang.key)}
+                  type="button"
+                  className={`flex flex-col items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200
+                    ${
+                      hospital[lang.key]
+                        ? `${lang.color} scale-105 shadow-md`
+                        : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'
+                    }`}
+                >
+                  <Globe2 className={`w-6 h-6 ${hospital[lang.key] ? 'text-blue-700' : 'text-gray-500'}`} />
+                  <span className={`font-medium ${hospital[lang.key] ? 'text-blue-800' : 'text-gray-700'}`}>
+                    {lang.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Medical Services */}
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <h2 className="text-xl font-semibold mb-4">Medical Services</h2>
@@ -337,43 +342,18 @@ const HospitalAddPage: React.FC = () => {
           </div>
 
           {/* Hospital Images */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h2 className="text-xl font-semibold mb-4">Hospital Images</h2>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageUpload}
-              className="hidden"
-              id="images-upload"
-            />
-            <label
-              htmlFor="images-upload"
-              className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-            >
-              <ImageIcon className="h-4 w-4 mr-2" />
-              Choose Images
-            </label>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-              {hospital.hospital_images.map((img, index) => (
-                <div key={index} className="relative group">
-                  <img
-                    src={img.image}
-                    alt={`Hospital image ${index + 1}`}
-                    className="w-full h-32 object-cover rounded-lg border border-gray-200"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeHospitalImage(index)}
-                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </div>
-              ))}
+          {/* Additional Images Upload */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Additional Images
+              </label>
+              <ImageUpload
+                images={placeImages}
+                onImagesChange={setPlaceImages}
+                maxImages={10}
+                disabled={saving}
+              />
             </div>
-          </div>
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-4">

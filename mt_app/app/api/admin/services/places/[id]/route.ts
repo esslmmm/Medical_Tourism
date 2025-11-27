@@ -18,6 +18,12 @@ export async function GET(
     const place = await prisma.places.findUnique({
       where: { place_id: resolvedParams.id },
       include: {
+        location:{
+          select: {
+            text: true,
+            url: true,
+          }
+        },
         place_image: true,
       },
     });
@@ -52,11 +58,11 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { place_name, contact_info, location, city, description, fee, image, place_images } = body;
-
+    const { name, contact_info, location, city, description, fee, image, place_images } = body;
+    const resolvedParams = await params;
     // Check if place exists
     const existingPlace = await prisma.places.findUnique({
-      where: { place_id: params.id },
+      where: { place_id: resolvedParams.id },
     });
 
     if (!existingPlace) {
@@ -68,11 +74,10 @@ export async function PUT(
 
     // Update the place
     const updatedPlace = await prisma.places.update({
-      where: { place_id: params.id },
+      where: { place_id: resolvedParams.id },
       data: {
-        place_name: place_name || existingPlace.place_name,
+        name: name || existingPlace.name,
         contact_info: contact_info !== undefined ? contact_info : existingPlace.contact_info,
-        location: location !== undefined ? location : existingPlace.location,
         city: city !== undefined ? city : existingPlace.city,
         description: description !== undefined ? description : existingPlace.description,
         fee: fee !== undefined ? fee : existingPlace.fee,
@@ -80,27 +85,48 @@ export async function PUT(
       },
     });
 
-    // Update place_images if provided
-    if (place_images !== undefined) {
-      // Delete existing place_images
-      await prisma.place_image.deleteMany({
-        where: { place_id: params.id },
+    //Update location if provided
+    if (location !== undefined) {
+      const existingLocation = await prisma.location.findUnique({
+        where: { place_id: resolvedParams.id },
       });
 
-      // Create new place_images
-      if (place_images.length > 0) {
-        await prisma.place_image.createMany({
-          data: place_images.map((img: string) => ({
-            place_id: params.id,
-            image: img,
-          })),
+      if (existingLocation) {
+        await prisma.location.update({
+          where: { place_id: resolvedParams.id },
+          data: {
+            text: location.text,
+            url: location.url,
+          },
+        });
+      } else {
+        await prisma.location.create({
+          data: {
+            place_id: resolvedParams.id,
+            text: location.text,
+            url: location.url,
+          },
         });
       }
     }
 
+
+    // Update place_images if provided
+    if (place_images && place_images.length > 0) {
+      await prisma.place_image.deleteMany({
+        where: { place_id: resolvedParams.id },
+      });
+      await prisma.place_image.createMany({
+        data: place_images.map((url: string | null) => ({
+          place_id: resolvedParams.id,
+          url,
+        })),
+      });
+    }
+
     // Fetch the updated place with place_images
     const finalPlace = await prisma.places.findUnique({
-      where: { place_id: params.id },
+      where: { place_id: resolvedParams.id },
       include: {
         place_image: true,
       },

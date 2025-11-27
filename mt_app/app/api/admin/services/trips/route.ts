@@ -10,16 +10,30 @@ export async function GET() {
             routes: {
               select: {
                 route_id: true,
-                route_name: true,
+                title: true,
                 duration: true,
                 description: true,
-                total_price: true,
+                adult_price: true,
+                child_price: true,
+                car_service_price: true,
+                guide_price: true,
                 created_at: true
               }
             }
           }
         },
-        trip_images: true
+        images: {
+          select: {
+            url: true,
+            alt: true,
+          }
+        },
+        languages:{
+          select: {
+            name: true,
+            flag: true,
+          }
+        }
       }
     });
     return NextResponse.json(trips);
@@ -33,10 +47,12 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { city, route_ids, images } = body as { 
+    const { description, city, route_ids, images, languages } = body as { 
+      description: string;
       city?: string; 
       route_ids?: number[]; 
-      images?: Array<{ url: string; publicId?: string }> 
+      images?: Array<{ url: string; publicId?: string; alt?: string }>;
+      languages?: Array<{ name: string; flag: string }>;
     };
 
     if (!city) {
@@ -44,27 +60,35 @@ export async function POST(request: Request) {
     }
 
     const routeIdsArray = Array.isArray(route_ids) ? route_ids.filter((r) => Number.isFinite(r)) : [];
+    const LanguagesArray = Array.isArray(languages) ? languages.filter((l) => typeof l?.name === 'string') : [];
     const imagesArray = Array.isArray(images) ? images : [];
 
     const created = await prisma.trips.create({
       data: {
+        description,
         city,
         Trip_Routes: routeIdsArray.length
           ? {
-              create: routeIdsArray.map((rid, idx) => ({ route_id: rid as number, sequence_order: idx + 1 }))
+              create: routeIdsArray.map((rid) => ({ route_id: rid as number }))
             }
           : undefined,
-        trip_images: imagesArray.length
+        images: imagesArray.length
           ? {
-              create: imagesArray.map(img => ({ image: img.url }))
+              create: imagesArray.map(img => ({ url: img.url, alt: img.alt || null }))
             }
-          : undefined
+          : undefined,
+        languages: LanguagesArray.length 
+          ? {
+              create: LanguagesArray.map(lang => ({ name: lang.name, flag: lang.flag }))
+            }
+          : undefined,
       },
       include: {
         Trip_Routes: {
           include: { routes: true }
         },
-        trip_images: true
+        images: true,
+        languages: true,
       }
     });
 

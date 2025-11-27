@@ -28,9 +28,12 @@ export async function GET() {
             city,
             description,
             contact_info,
-            rating,
             image,
             logo,
+            Thai,
+            Arabic,
+            Myanmar,
+            English,
             medical_services,
             hospital_images,
         } = await request.json();
@@ -44,9 +47,12 @@ export async function GET() {
                 city,
                 description,
                 contact_info,
-                rating,
                 image,
-                logo
+                logo,
+                Thai,
+                Arabic,
+                Myanmar,
+                English,
             },
             select: { hospital_id: true }
         });
@@ -82,26 +88,3 @@ export async function GET() {
         return NextResponse.json({ error: "Failed to create hospital" }, { status: 500 });
     }
 }
-
-  /**
- * POST: TEST CASE
- */
-// {
-//   "name": "Tokyo General Hospital",
-//   "hospital_code": "TG123",
-//   "location": "Tokyo, Japan",
-//   "city": "Tokyo",
-//   "description": "A leading hospital in Tokyo",
-//   "contact_info": "+81 123-456-7890",
-//   "rating": 4.8,
-//   "image": "/img/Hospital/Mfu3.jpg",
-//   "logo": "/img/Hospital/Mfu3.jpg",
-//   "medical_services": [
-//       { "service_name": "Cardiology", "description": "Heart and vascular treatments" },
-//       { "service_name": "Neurology", "description": "Brain and nervous system care" }
-//   ],
-//   "hospital_images": [
-//       "https://example.com/image1.jpg",
-//       "https://example.com/image2.jpg"
-//   ]
-// }

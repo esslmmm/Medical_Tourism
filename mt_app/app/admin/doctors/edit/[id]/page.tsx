@@ -5,6 +5,7 @@ import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import { ArrowLeft, Save, Upload, X, Plus, Trash2, User } from 'lucide-react';
 import { useToast, ToastContainer } from '@/components/admin_component/ui/Toast';
 import '@/app/admin/styles/globals.css';
+import SingleImageUpload from '@/components/admin_component/ui/SingleImageUpload';
 
 // Define interfaces based on existing Prisma schema
 interface DocEducation {
@@ -34,7 +35,6 @@ interface Doctor {
   experience: string;
   description: string;
   image: string;
-  create_at: string;
   doc_education: DocEducation[];
   doc_certificate: DocCertificate[];
   doc_language: DocLanguage[];
@@ -45,7 +45,7 @@ const DoctorEditPage: React.FC = () => {
   const params = useParams();
   const doctorId = params?.id as string;
   const { toasts, removeToast, showSuccess, showError } = useToast();
-
+  const [image, setImage] = useState<string | null>(null);
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -62,6 +62,7 @@ const DoctorEditPage: React.FC = () => {
         if (doctorResponse.ok) {
           const doctorData = await doctorResponse.json();
           setDoctor(doctorData);
+          setImage(doctorData.image);
         }
         
         // Fetch hospitals for dropdown
@@ -165,16 +166,20 @@ const DoctorEditPage: React.FC = () => {
 
     setSaving(true);
     try {
+      const payload = {
+        ...doctor,
+        image: image
+      };
       const response = await fetch(`/api/admin/services/doctors/${doctorId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(doctor),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
-        showSuccess('Doctor updated successfully', `Dr. ${formData.name} has been updated`);
+        showSuccess('Doctor updated successfully', `Dr. ${doctor.name} has been updated`);
         setTimeout(() => {
           router.push(`/admin/doctors/${doctorId}`);
         }, 1500);
@@ -188,6 +193,10 @@ const DoctorEditPage: React.FC = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleImageChange = (imageUrl: string | null) => {
+    setImage(imageUrl);
   };
 
   if (loading) {
@@ -256,6 +265,18 @@ const DoctorEditPage: React.FC = () => {
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h2 className="text-xl font-semibold mb-6 text-gray-900">Basic Information</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Main Image Upload */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Main Place Image
+                    </label>
+                    <SingleImageUpload
+                      image={image}
+                      onImageChange={handleImageChange}
+                      disabled={saving}
+                      placeholder="Click to upload main package image or drag and drop"
+                    />
+                  </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Doctor Name *
@@ -307,18 +328,6 @@ const DoctorEditPage: React.FC = () => {
                     onChange={(e) => handleInputChange('experience', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     placeholder="e.g., 10 years"
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Image URL
-                  </label>
-                  <input
-                    type="text"
-                    value={doctor.image}
-                    onChange={(e) => handleInputChange('image', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                    placeholder="https://example.com/doctor-photo.jpg"
                   />
                 </div>
                 <div className="md:col-span-2">

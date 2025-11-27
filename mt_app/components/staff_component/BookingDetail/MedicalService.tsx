@@ -1,73 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Inter } from "next/font/google";
-import { useParams } from "next/navigation";
 import { FileText, Loader2, X } from "lucide-react";
+import { PackageBooking, File } from "@/types/Booking";
 
 const inter = Inter({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
-// Interface Definitions
-interface PackageBooking {
-  booking_id: number;
-  appointment_id: number;
-  status: string;
-  create_at: string;
-  appointments: appointments;
-  packages: packages;
-  hotel_bookings: hotel_bookings;
-}
-
-interface hotel_bookings{
-  check_in_date: string;
-}
-
-interface appointments {
-  appointment_id: number;
-  date: string;
-  timeslot: string;
-  description: string;
-  status: string;
-  appointment_files?: AppointmentFile[];
-}
-
-interface AppointmentFile {
-  id: number;
-  appointmentId: number;
-  fileId: number;
-  createdAt: string;
-  files: File;
-}
-
-interface File {
-  id: number;
-  userId: number;
-  originalName: string;
-  fileName: string;
-  fileType: string;
-  fileSize: number;
-  cloudinaryId: string;
-  url: string;
-  uploadedAt: string;
-  category: string;
-  description: string | null;
-}
-
-
-interface packages {
-  image: string;
-  package_name: string;
-  hospitals: hospitals;
-}
-
-interface hospitals {
-  hospital_id: number;
-  name: string;
-  hospital_code: string;
-  contact_info: string;
-  image: string;
-}
 
 interface MedicalServiceCardProps {
   packageBooking: PackageBooking | null;
@@ -127,7 +67,6 @@ const MedicalServiceCard = ({packageBooking, setPackageBooking}: MedicalServiceC
         throw new Error("Failed to update status");
       }
   
-      const updated = await response.json();
       setPackageBooking((prev: any) =>
         prev
           ? {
@@ -194,14 +133,6 @@ const MedicalServiceCard = ({packageBooking, setPackageBooking}: MedicalServiceC
     });
   };
 
-
-  // ✅ Convert `check_in_date` and `appointments.date` into Date objects
-  const checkInDate = new Date(packageBooking.hotel_bookings?.check_in_date);
-  const appointmentDate = new Date(packageBooking.appointments?.date);
-
-  if (isNaN(checkInDate.getTime()) || isNaN(appointmentDate.getTime())) return null; // Prevents errors
-  // ✅ Calculate expected date based on check-in date and selectedDay
-
   return (
     <div className={`${inter.className}`}>
       <h2 className="ml-2 text-lg font-bold mb-2" style={{ fontSize: "25px" }}>
@@ -246,9 +177,11 @@ const MedicalServiceCard = ({packageBooking, setPackageBooking}: MedicalServiceC
                 {formatDate(packageBooking?.appointments.date)}, {packageBooking?.appointments.timeslot}
               </span>
             </p>
+            <p className="text-md font-bold">
+              Adult:<span className="font-normal"> {packageBooking?.appointments.adult} Person</span > / Child: <span className="font-normal">{packageBooking?.appointments.child} Person</span>
+            </p>
             {files && files.length > 0 && (
             <div className="text-md font-bold">
-              Attached File:{" "}
               <div className="space-y-3 mt-2">
                 {files.map((file) => (
                   <div key={file.id} className="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"

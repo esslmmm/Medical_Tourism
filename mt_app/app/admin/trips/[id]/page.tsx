@@ -4,6 +4,7 @@ import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Pencil, MapPin, Clock, DollarSign, Image as ImageIcon, Route, Calendar, Users, Edit, Eye } from 'lucide-react';
 import ImageModal from '@/components/admin_component/ui/ImageModal';
+import { Trip } from '@/types/admin';
 
 const TripDetailPage: React.FC = () => {
   const router = useRouter();
@@ -11,7 +12,7 @@ const TripDetailPage: React.FC = () => {
   const id = params?.id as string;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [trip, setTrip] = useState<any>(null);
+  const [trip, setTrip] = useState<Trip | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -94,15 +95,27 @@ const TripDetailPage: React.FC = () => {
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">{trip.trip_images?.length || 0}</div>
+                    <div className="text-2xl font-bold text-blue-600">{trip.images?.length || 0}</div>
                     <div className="text-sm text-gray-600">Images</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">{Array.isArray(trip.Trip_Routes) ? trip.Trip_Routes.length : (trip.routes ? 1 : 0)}</div>
+                    <div className="text-2xl font-bold text-blue-600">{trip.languages?.length || 0}</div>
+                    <div className="text-sm text-gray-600">Languages</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">{Array.isArray(trip.Trip_Routes) ? trip.Trip_Routes.length : (trip.Trip_Routes ? 1 : 0)}</div>
                     <div className="text-sm text-gray-600">Routes</div>
                   </div>
                 </div>
               </div>
+              {trip.description && (
+                <div className="mt-6">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Description</h3>
+                  <p className="text-gray-700 bg-gray-50 p-4 rounded-lg">
+                    {trip.description}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Routes Section */}
@@ -117,7 +130,7 @@ const TripDetailPage: React.FC = () => {
                     <div key={tr.trip_route_id} className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-4">
                       <div>
                         <div className="font-medium text-blue-900">{tr.routes?.route_name || `Route #${tr.routes?.route_id}`}</div>
-                        <div className="text-sm text-blue-700">{tr.routes?.description || 'No description'}</div>
+                        <div className="text-sm text-blue-700 max-w-xs truncate">{tr.routes?.description || 'No description'}</div>
                       </div>
                       <div className="text-sm text-gray-700 justify-between">
                         <div>
@@ -162,16 +175,16 @@ const TripDetailPage: React.FC = () => {
                 <ImageIcon className="h-6 w-6 text-purple-600 mr-2" />
                 <h2 className="text-xl font-semibold text-gray-900">Trip Images</h2>
               </div>
-              {trip.trip_images && trip.trip_images.length > 0 ? (
+              {trip.images && trip.images.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {trip.trip_images.map((image: any, index: number) => (
+                  {trip.images.map((image: any, index: number) => (
                     <div 
                       key={image.image_id} 
                       className="relative group cursor-pointer"
                       onClick={() => handleImageClick(index)}
                     >
                       <img
-                        src={image.image}
+                        src={image.url}
                         alt={`Trip image ${index + 1}`}
                         className="w-full h-32 object-cover rounded-lg border border-gray-200 hover:shadow-lg transition-shadow"
                       />
@@ -201,7 +214,7 @@ const TripDetailPage: React.FC = () => {
       <ImageModal
         isOpen={isImageModalOpen}
         onClose={() => setIsImageModalOpen(false)}
-        images={trip?.trip_images || []}
+        images={trip?.images || []}
         currentIndex={currentImageIndex}
         onIndexChange={setCurrentImageIndex}
       />

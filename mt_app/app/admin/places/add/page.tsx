@@ -7,30 +7,47 @@ import { useRouter } from 'next/navigation';
 import SingleImageUpload from '@/components/admin_component/ui/SingleImageUpload';
 import ImageUpload from '@/components/admin_component/ui/ImageUpload';
 import '@/app/admin/styles/globals.css';
+import { ToastContainer, useToast } from '@/components/admin_component/ui/Toast';
 
 const AddPlacePage: React.FC = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { toasts, removeToast, showSuccess, showError } = useToast();
   const [success, setSuccess] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [placeImages, setPlaceImages] = useState<Array<{ id: string; url: string; name: string; publicId?: string }>>([]);
   
   const [formData, setFormData] = useState({
-    place_name: '',
-    contact_info: '',
-    location: '',
-    city: '',
-    description: '',
-    fee: '',
-  });
+      name: '',
+      contact_info: '',
+      location: {
+        text: '',
+        url: '',
+      },
+      city: '',
+      description: '',
+      fee: '',
+    });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+
+    // Handle nested location fields separately
+    if (name === 'text' || name === 'url') {
+      setFormData((prev) => ({
+        ...prev,
+        location: {
+          ...prev.location,
+          [name]: value,
+        },
+      }));
+    } else {
+      // Handle all other top-level fields
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleImageChange = (imageUrl: string | null) => {
@@ -40,7 +57,6 @@ const AddPlacePage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
 
     try {
       const response = await fetch('/api/admin/services/places', {
@@ -61,19 +77,21 @@ const AddPlacePage: React.FC = () => {
         throw new Error(errorData.message || 'Failed to create place');
       }
 
-      setSuccess(true);
+      showSuccess('Place updated', 'The place has been saved successfully');
       setTimeout(() => {
         router.push('/admin/places');
       }, 2000);
     } catch (error) {
       console.error('Error creating place:', error);
-      setError(error instanceof Error ? error.message : 'Failed to create place');
+      showError('Create failed', 'Please check the form and try again');
     } finally {
       setLoading(false);
     }
   };
 
   return (
+    <>
+    <ToastContainer toasts={toasts} onRemove={removeToast} />
     <AdminLayout>
       <div className="space-y-6">
         <div className="flex items-center gap-4">
@@ -89,18 +107,6 @@ const AddPlacePage: React.FC = () => {
             <p className="text-gray-600">Create a new tourist destination</p>
           </div>
         </div>
-
-        {success && (
-          <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
-            Place created successfully! Redirecting...
-          </div>
-        )}
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
-            {error}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           {/* Main Image Upload */}
@@ -119,14 +125,14 @@ const AddPlacePage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Place Name */}
             <div className="md:col-span-2">
-              <label htmlFor="place_name" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
                 Place Name *
               </label>
               <input
                 type="text"
-                id="place_name"
-                name="place_name"
-                value={formData.place_name}
+                id="name"
+                name="name"
+                value={formData.name}
                 onChange={handleInputChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -139,14 +145,25 @@ const AddPlacePage: React.FC = () => {
               <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
                 Location
               </label>
+
               <input
                 type="text"
-                id="location"
-                name="location"
-                value={formData.location}
+                id="text"
+                name="text"
+                value={formData.location?.text}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
+                placeholder="Enter location name"
+              />
+
+              <input
+                type="text"
+                id="url"
+                name="url"
+                value={formData.location?.url}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter location"
+                placeholder="Enter location URL"
               />
             </div>
 
@@ -250,6 +267,7 @@ const AddPlacePage: React.FC = () => {
         </form>
       </div>
     </AdminLayout>
+    </>
   );
 };
 
