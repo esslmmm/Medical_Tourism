@@ -7,7 +7,6 @@ import { useState } from 'react';
 
 const Breadcrumb = () => {
   const [copied, setCopied] = useState(false);
-  const [hovered, setHovered] = useState(false);
 
   const handleShareClick = () => {
     const pageUrl = window.location.href; // Get current page URL

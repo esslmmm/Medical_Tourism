@@ -208,7 +208,7 @@ const BookingTabs: React.FC = () => {
                </div>
 
               {/* Move package_type here */}
-<div className="mt-4 flex gap-2 border text-xs border-gray-300 bg-teal-200 rounded-lg px-3 py-2 w-max text-green-700 font-semibold">
+<div className="mt-5 flex gap-2 text-xs bg-teal-200 rounded-lg px-3 py-2 w-max text-green-700 font-semibold">
   <span className="font-bold">{booking.packages.package_type}</span>
 </div>
            </div>

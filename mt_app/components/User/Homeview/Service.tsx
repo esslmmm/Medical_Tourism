@@ -15,16 +15,16 @@ import {
 const Service = () => {
   // 🔹 Treatment List
   const treatments = [
-    { icon: Heart, name: "Heart", color: "text-blue-500" },
-    { icon: Activity, name: "Cancer", color: "text-blue-500" },
-    { icon: Bone, name: "Bone & Spine", color: "text-blue-500" },
-    { icon: ClipboardCheck, name: "Check-up", color: "text-blue-500" },
-    { icon: Scissors, name: "Surgery", color: "text-blue-500" },
-    { icon: Smile, name: "Dental", color: "text-blue-500" },
-    { icon: Eye, name: "Eye & Ent", color: "text-blue-500" },
-    { icon: Baby, name: "Mother & Child", color: "text-blue-500" },
-    { icon: Smile, name: "Aesthetic", color: "text-blue-500" },
-    { icon: Brain, name: "Brain", color: "text-blue-500" },
+    { icon: Heart, name: "Heart", color: "text-teal-500" },
+    { icon: Activity, name: "Cancer", color: "text-teal-500" },
+    { icon: Bone, name: "Bone & Spine", color: "text-teal-500" },
+    { icon: ClipboardCheck, name: "Check-up", color: "text-teal-500" },
+    { icon: Scissors, name: "Surgery", color: "text-teal-500" },
+    { icon: Smile, name: "Dental", color: "text-teal-500" },
+    { icon: Eye, name: "Eye & Ent", color: "text-teal-500" },
+    { icon: Baby, name: "Mother & Child", color: "text-teal-500" },
+    { icon: Smile, name: "Aesthetic", color: "text-teal-500" },
+    { icon: Brain, name: "Brain", color: "text-teal-500" },
   ];
 
   return (
