@@ -155,7 +155,7 @@ const BookingTabs: React.FC = () => {
                 {/* View More Button */}
                 <motion.button
                   className="bg-blue-500 text-white px-5 py-2 rounded-lg font-medium shadow-md hover:bg-blue-600 transition-all duration-300 ease-in-out transform hover:scale-105"
-                  onClick={() => router.push(`/user/BookingDetail/${booking.booking_id}`)}
+                  onClick={() => router.push(`/user/booking-detail/${booking.booking_id}`)}
                   whileTap={{ scale: 0.95 }}
                 >
                   View More

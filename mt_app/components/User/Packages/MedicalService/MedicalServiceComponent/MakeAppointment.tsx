@@ -2,6 +2,8 @@
 
 import React, { useState, useRef } from 'react';
 import { ChevronLeft, ChevronRight, ChevronDown, X, Plus, Minus } from 'lucide-react';
+import { useUserId } from '@/hooks/useUserId';
+import LoginModal from '@/components/User/Homepage/LoginModal';
 
 interface AppointmentData {
   selectedDate: Date;
@@ -15,6 +17,9 @@ interface MakeAppointmentProps {
 }
 
 const MakeAppointment: React.FC<MakeAppointmentProps> = ({ onNextStep }) => {
+  const { isAuthenticated } = useUserId();
+  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
+  
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [calendarMonth, setCalendarMonth] = useState<Date>(new Date());
   const [showTimeModal, setShowTimeModal] = useState<boolean>(false);
@@ -115,6 +120,9 @@ const MakeAppointment: React.FC<MakeAppointmentProps> = ({ onNextStep }) => {
   const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   
   const handleNextStep = async () => {
+    if (!isAuthenticated) {
+      return setIsLoginOpen(true);
+    }
     if (!isPolicyChecked) return;
     
     try {
@@ -147,6 +155,11 @@ const MakeAppointment: React.FC<MakeAppointmentProps> = ({ onNextStep }) => {
   return (
     <div className="space-y-5">
       <h1 className="my-5 text-2xl font-bold text-gray-900 text-center">Make an Appointment</h1>
+
+      <LoginModal 
+        isOpen={isLoginOpen} 
+        onClose={() => setIsLoginOpen(false)}
+      />
 
       {/* Date Selection */}
       <div className="max-w-md mx-auto bg-white rounded-3xl shadow-lg p-6 space-y-6 border-2 border-gray-200">

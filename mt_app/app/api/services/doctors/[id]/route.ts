@@ -11,30 +11,37 @@ export async function GET(request: Request, { params }: { params: { id: string }
         const resolvedParams = await params;
       const doctor_id = (resolvedParams.id);
   
-      if (isNaN(Number(doctor_id))) {
-        return NextResponse.json({ error: "Invalid doctor ID" }, { status: 400 });
-      }
-  
       const doctor = await prisma.doctors.findUnique({
         where: { doctor_id },
-        include: {
-          hospitals: true,
-          doc_certificate: true,
-          doc_education: true,
-          doc_language: true,
-          package_doc: {
-            include: {
-                packages: {
-                    select: {
-                        package_id: true,
-                        package_name: true,
-                        expired_date: true,
-                        image: true,
-                        detail: true
-                  }
-                }
+        select: {
+            name: true,
+            specialization: true,
+            image: true,
+            experience: true,
+            description: true,
+          hospitals: {
+            select: {
+                logo: true,
+            },
+          },
+          doc_certificate: {
+            select: {
+                field_of_study: true,
+                institution: true,
+                year: true,}
+          },
+          doc_education: {
+            select: {
+                field_of_study: true,
+                institution: true,
+                year: true,
             }
-          }
+          },
+          doc_language:{
+            select: {
+                languages: true,
+            }
+          },
         },
       });
   

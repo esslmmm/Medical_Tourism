@@ -27,7 +27,7 @@ interface Doctor {
   description: string;
   image: string;
   doc_language: Language[];
-  hospital: Hospital[];
+  hospitals: Hospital[];
   doc_education: Education[];
   doc_certificate: Certificate[];
   package_doc: PackageDoc[];
@@ -64,7 +64,6 @@ const HomePage: React.FC = () => {
     const params = useParams<{ id: string }>();
   const id = params?.id;
   const [doctor, setDoctor] = useState<Doctor | null>(null);
-  const [hospital, setHospital] = useState<Hospital | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -76,15 +75,6 @@ const HomePage: React.FC = () => {
 
         const doctorData = await response.json();
         setDoctor(doctorData);
-
-        // Fetch hospital details using doctor.hospital_id
-        if (doctorData.hospital_id) {
-          const hospitalResponse = await fetch(`/api/services/hospitals/${doctorData.hospital_id}`);
-          if (!hospitalResponse.ok) throw new Error("Failed to fetch hospital details");
-
-          const hospitalData = await hospitalResponse.json();
-          setHospital(hospitalData);
-        }
       } catch (error) {
         setError("Error fetching details.");
         console.error(error);
@@ -124,10 +114,9 @@ const HomePage: React.FC = () => {
     <div>
       <Navbarpro />
       <div className="bg-white min-h-screen">
-        <DoctorProfile doctor={doctor} hospital={hospital} />
+        <DoctorProfile doctor={doctor} />
         <EducationSection doctor={doctor} />
         <CertificateSection doctor={doctor} />
-        <DoctorPackage doctor={doctor} />
       </div>
       <Footer />
     </div>

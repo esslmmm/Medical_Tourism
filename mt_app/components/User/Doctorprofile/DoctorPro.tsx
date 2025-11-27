@@ -3,9 +3,6 @@ import { Poppins } from "next/font/google";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500", "700"] });
 
-interface Hospital {
-  logo: string;
-}
 
 interface Language {
   language_id: number;
@@ -20,15 +17,19 @@ interface Doctor {
   description: string;
   image: string;
   doc_language: Language[];
-  hospital: Hospital[];
+  hospitals: Hospital[];
 }
+
+interface Hospital {
+  logo: string;
+}
+
 
 interface DoctorProfileProps {
   doctor: Doctor | null;
-  hospital: Hospital | null;
 }
 
-const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctor, hospital }) => {
+const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctor }) => {
   if (!doctor) return null;
   
   return (
@@ -75,12 +76,21 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctor, hospital }) => {
 
         {/* Second Part (Logo Centered) */}
         <div className="flex-1 flex justify-center">
-          {hospital ? (
-            <Image src={hospital.logo} alt="Hospital Logo" width={130} height={20} />
+          {doctor ? (
+            <div className="w-[130px] h-[60px] flex justify-center items-center">
+              <Image
+                src={doctor.hospitals.logo}
+                alt="Hospital Logo"
+                width={130}
+                height={60}
+                className="object-contain w-full h-full"
+              />
+            </div>
           ) : (
             <p className="text-gray-400">No Logo Available</p>
           )}
         </div>
+
 
         {/* Vertical Line */}
         <div className="h-15 w-[2px] bg-gray-200"></div>

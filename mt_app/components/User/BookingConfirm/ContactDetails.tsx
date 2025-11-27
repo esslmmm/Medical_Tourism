@@ -20,30 +20,30 @@ const ContactDetails = () => {
 
 
   return (
-      <div className='max-w-2xl mx-auto p-6'>
+      <div className=''>
         {/* Contact Detail */}
         {form ? (
-          <div className="bg-white p-6 rounded-lg shadow border border-[#C5D1E0]">
+          <div className="bg-white border-2 border-gray-200 rounded-2xl p-4 sm:p-6 shadow-md space-y-6 w-full max-w-5xl mx-auto">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Contact Detail</h2>
               <div className="grid grid-cols-2 gap-4 text-gray-600">
                   <div>
-                      <p className="font-medium">First Name</p>
+                      <p className="font-bold">First Name :</p>
                       <p>{form.contact.firstname}</p>
                   </div>
                   <div>
-                      <p className="font-medium">Last Name</p>
+                      <p className="font-bold">Last Name :</p>
                       <p>{form.contact.lastname}</p>
                   </div>
                   <div>
-                      <p className="font-medium">Country</p>
+                      <p className="font-bold">Country :</p>
                       <p>{form.contact.country}</p>
                   </div>
                   <div>
-                      <p className="font-medium">Phone</p>
+                      <p className="font-bold">Phone :</p>
                       <p>{form.contact.dialCode} {form.contact.phoneNumber}</p>
                   </div>
                   <div className="col-span-2">
-                      <p className="font-medium">Email</p>
+                      <p className="font-bold">Email :</p>
                       <p>{form.contact.email}</p>
                   </div>
               </div>

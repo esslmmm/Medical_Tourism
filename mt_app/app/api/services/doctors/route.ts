@@ -6,7 +6,16 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
     try {
-      const doctors = await prisma.doctors.findMany();
+      const doctors = await prisma.doctors.findMany(
+        {
+            select: {
+                doctor_id: true,
+                name:  true,
+                specialization: true,
+                image: true,
+            }
+        }
+      );
       return NextResponse.json(doctors);
     } catch (error) {
       console.error("Error fetching doctors:", error);

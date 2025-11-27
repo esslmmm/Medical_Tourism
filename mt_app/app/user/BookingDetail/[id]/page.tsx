@@ -14,7 +14,6 @@ interface PackageBooking {
   status: string;
   create_at: string;
   guide_bookings: guide_bookings;
-  hotel_bookings: hotel_bookings
   tourism_bookings: tourism_bookings;
   appointments: appointments;
   packages: packages;
@@ -83,39 +82,6 @@ interface Places {
   fee: number;
 }
 
-interface hotel_bookings {
-  booking_id: number;
-  hotel_id: number;
-  check_in_date: string;
-  check_out_date: string;
-  total_price: number;
-  guest_adult: string | null;
-  guest_children: string | null;
-  hotels: Hotels;
-  room_aggregate: RoomAggregate[];
-}
-
-interface Hotels {
-  hotel_id: number;
-  name: string;
-  contact_info: string;
-  check_in_time: string;
-  image: string;
-}
-
-interface RoomAggregate {
-  aggregate_id: number;
-  room_id: number;
-  booking_id: number;
-  amount: number;
-  hotel_rooms: HotelRooms;
-}
-
-interface HotelRooms {
-  room_id: number;
-  hotel_id: number;
-  room_type: string;
-}
 
 interface guide_bookings {
   booking_id: number;
@@ -149,42 +115,16 @@ const UserTimeline = () => {
     car: useRef<HTMLDivElement>(null),
   };
 
-  useEffect(() => {
-    const fetchPackageBooking = async () => {
-      try {
-        const response = await fetch(`/api/booking/packages/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch package booking data");
-        const packageData = await response.json();
-        setPackageBooking(packageData);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPackageBooking();
-  }, [id]);
-
-
-  if (loading) return <p className="text-center text-gray-500">Loading details...</p>;
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
+  
   
   
   return (
     <div>
       <Navbarpro />
       <div className="p-6 max-w-4xl mx-auto font-sans">
-        {/* <BookingDetailPage /> */}
-        {/* Navigation Bar */}
-        <NavigationIcons sections={sections} />
 
         <div ref={sections?.medical}>
           <MedicalServiceCard packageBooking={packageBooking}/>
-        </div>
-
-        <div ref={sections?.accommodation}>
-          <AccommodationCard hotelBooking={packageBooking?.hotel_bookings ?? null} />
         </div>
 
         <div ref={sections?.place}>

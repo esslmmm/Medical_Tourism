@@ -147,7 +147,7 @@ const PackageList: React.FC = () => {
             key={pkg.package_id}
             className="flex-shrink-0 w-[340px] bg-white shadow-lg rounded-xl p-6 text-left border border-slate-200 snap-center cursor-pointer overflow-hidden group hover:shadow-xl transition-all duration-300"
             whileHover={{ y: -4, transition: { duration: 0.3 } }}
-            onClick={() => router.push(`/user/package_landing_page/${pkg.package_id}`)}
+            onClick={() => router.push(`/user/packages/${pkg.package_id}`)}
             whileTap={{ scale: 0.98 }}
           >
             <div className="relative w-full h-48 mb-6">

@@ -65,8 +65,8 @@ const MedicalPackage: React.FC<HospitalDetailProps> = ({ hospital }) => {
     }
   };
 
-  const navigateToPackage = (hospitalId: string) => {
-    router.push(`/user/package_landing_page/${hospitalId}`);
+  const navigateToPackage = (packageId: string) => {
+    router.push(`/user/packages/${packageId}`);
   };
 
   const formatDate = (dateString: string | number | Date) => {

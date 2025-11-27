@@ -128,11 +128,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
     
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen bg-zinc-50">
         <Navbarprogress />
       {/* Main content area */}
-      <main className="flex bg-green-100">{children}
-        <div className="w-1/3 bg-white border-l border-[#E0E0E0]">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+      <main className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-5">
+        <div className="lg:col-span-2 space-y-8">
+          {children}
+          </div>
+        <div className="lg:col-span-1">
           <MedicalService date={date} form={form}/>
           {/* {data?.tourism_bookings && <PlaceToVisit data={data} />}
           {data?.hotel_bookings && <Accommodation data={data} />}
@@ -142,6 +146,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </div>
         </div>
       </main>
+          </div>
     </div>
   );
 };

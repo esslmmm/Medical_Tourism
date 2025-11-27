@@ -1,12 +1,12 @@
 
-export async function createAppointmentFile(appointmentId: string, fileId: string) {
+export async function createAppointmentFile(patient_id: string, fileId: string) {
   try {
     const response = await fetch('/api/files', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ appointmentId, fileId }),
+      body: JSON.stringify({ patient_id, fileId }),
     });
 
     if (!response.ok) {

@@ -7,7 +7,6 @@ import { AppointmentFormData } from "../../../app/user/Form/form";
 
 type ValidationErrors = {
   file?: string;
-  details?: string;
   contact: {
     firstname?: string;
     lastname?: string;
@@ -22,9 +21,9 @@ type ValidationErrors = {
     lastname?: string;
     dob?: string;
     passportId?: string;
+    symptoms?: string;
   }[];
 };
-
 
 // Validation functions
 const validateEmail = (email: string): boolean => {
@@ -65,17 +64,16 @@ const validateAge = (dob: string): boolean => {
   const today = new Date();
   const age = today.getFullYear() - birthDate.getFullYear();
   const monthDiff = today.getMonth() - birthDate.getMonth();
-  
-  const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()) 
+
+  const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())
     ? age - 1 : age;
-  
+
   return actualAge >= 0 && actualAge <= 150; // Reasonable age range
 };
 
 export default function MedicalAppointment() {
   const params = useParams<{ id: string }>();
   const id = params?.id;
-  const [fileDataUrl, setFileDataUrl] = useState<string | null>(null);
   const [errors, setErrors] = useState<ValidationErrors>({
     contact: {},
     patient: [],
@@ -83,8 +81,6 @@ export default function MedicalAppointment() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const [form, setForm] = useState<AppointmentFormData>({
-    file: null,
-    details: '',
     contact: {
       firstname: '', lastname: '', email: '', country: '', dialCode: '', phoneNumber: ''
     },
@@ -107,6 +103,8 @@ export default function MedicalAppointment() {
         lastname: '',
         dob: '',
         passportId: '',
+        symptoms: '',
+        file: null,
       }));
 
       setForm((prev) => ({
@@ -119,126 +117,104 @@ export default function MedicalAppointment() {
 
   // Validation function
   const validateForm = (): boolean => {
-  const newErrors: ValidationErrors = {
-    contact: {},
-    patient: []
+    const newErrors: ValidationErrors = {
+      contact: {},
+      patient: []
+    };
+
+    // -------------------------------
+    // Contact validation
+    // -------------------------------
+    if (!form.contact.firstname.trim()) {
+      newErrors.contact.firstname = 'First name is required';
+    } else if (!validateName(form.contact.firstname)) {
+      newErrors.contact.firstname = 'First name must be 2-50 characters and contain only letters';
+    }
+
+    if (!form.contact.lastname.trim()) {
+      newErrors.contact.lastname = 'Last name is required';
+    } else if (!validateName(form.contact.lastname)) {
+      newErrors.contact.lastname = 'Last name must be 2-50 characters and contain only letters';
+    }
+
+    if (!form.contact.email.trim()) {
+      newErrors.contact.email = 'Email is required';
+    } else if (!validateEmail(form.contact.email)) {
+      newErrors.contact.email = 'Please enter a valid email address';
+    }
+
+    if (!form.contact.country) {
+      newErrors.contact.country = 'Please select a country';
+    }
+
+    if (!form.contact.dialCode) {
+      newErrors.contact.dialCode = 'Please select a dial code';
+    }
+
+    if (!form.contact.phoneNumber.trim()) {
+      newErrors.contact.phoneNumber = 'Phone number is required';
+    } else if (!validatePhoneNumber(form.contact.phoneNumber)) {
+      newErrors.contact.phoneNumber = 'Please enter a valid phone number (7–15 digits)';
+    }
+
+    // -------------------------------
+    // Patients validation
+    // -------------------------------
+    newErrors.patient = form.patient.map((patient) => {
+      const patientErrors: Record<string, string> = {};
+
+      if (!patient.gender) {
+        patientErrors.gender = 'Please select a gender';
+      }
+
+      if (!patient.firstname.trim()) {
+        patientErrors.firstname = 'Patient first name is required';
+      } else if (!validateName(patient.firstname)) {
+        patientErrors.firstname = 'First name must be 2–50 characters and contain only letters';
+      }
+
+      if (!patient.lastname.trim()) {
+        patientErrors.lastname = 'Patient last name is required';
+      } else if (!validateName(patient.lastname)) {
+        patientErrors.lastname = 'Last name must be 2–50 characters and contain only letters';
+      }
+
+      if (!patient.dob) {
+        patientErrors.dob = 'Date of birth is required';
+      } else if (!validateAge(patient.dob)) {
+        patientErrors.dob = 'Please enter a valid date of birth';
+      }
+
+      if (!patient.passportId.trim()) {
+        patientErrors.passportId = 'Passport ID is required';
+      } else if (!validatePassportId(patient.passportId)) {
+        patientErrors.passportId = 'Passport ID must be 6–12 alphanumeric characters';
+      }
+
+      return patientErrors;
+    });
+
+    // Save errors in state
+    setErrors(newErrors);
+
+
+
+    // -------------------------------
+    // Check if any errors exist
+    // -------------------------------
+    const hasErrors =
+      newErrors.file ||
+      Object.values(newErrors.contact).some((e) => e) ||
+      newErrors.patient.some((p) => Object.values(p).some((e) => e));
+
+    return !hasErrors;
   };
-
-  // File validation (for multiple files)
-if (form.file && Array.isArray(form.file) && form.file.length > 0) {
-  const invalidFile = form.file.find(
-    (file) => !validateFileType(file) || !validateFileSize(file)
-  );
-
-  if (invalidFile) {
-    if (!validateFileType(invalidFile)) {
-      newErrors.file = 'All files must be PDF, JPEG, JPG, or PNG';
-    } else if (!validateFileSize(invalidFile)) {
-      newErrors.file = 'Each file must be less than 10MB';
-    }
-  }
-}
-
-
-  // Details validation
-  if (form.details && form.details.length > 1000) {
-    newErrors.details = 'Details must be less than 1000 characters';
-  }
-
-  // -------------------------------
-  // Contact validation
-  // -------------------------------
-  if (!form.contact.firstname.trim()) {
-    newErrors.contact.firstname = 'First name is required';
-  } else if (!validateName(form.contact.firstname)) {
-    newErrors.contact.firstname = 'First name must be 2-50 characters and contain only letters';
-  }
-
-  if (!form.contact.lastname.trim()) {
-    newErrors.contact.lastname = 'Last name is required';
-  } else if (!validateName(form.contact.lastname)) {
-    newErrors.contact.lastname = 'Last name must be 2-50 characters and contain only letters';
-  }
-
-  if (!form.contact.email.trim()) {
-    newErrors.contact.email = 'Email is required';
-  } else if (!validateEmail(form.contact.email)) {
-    newErrors.contact.email = 'Please enter a valid email address';
-  }
-
-  if (!form.contact.country) {
-    newErrors.contact.country = 'Please select a country';
-  }
-
-  if (!form.contact.dialCode) {
-    newErrors.contact.dialCode = 'Please select a dial code';
-  }
-
-  if (!form.contact.phoneNumber.trim()) {
-    newErrors.contact.phoneNumber = 'Phone number is required';
-  } else if (!validatePhoneNumber(form.contact.phoneNumber)) {
-    newErrors.contact.phoneNumber = 'Please enter a valid phone number (7–15 digits)';
-  }
-
-  // -------------------------------
-  // Patients validation
-  // -------------------------------
-  newErrors.patient = form.patient.map((patient) => {
-    const patientErrors: Record<string, string> = {};
-
-    if (!patient.gender) {
-      patientErrors.gender = 'Please select a gender';
-    }
-
-    if (!patient.firstname.trim()) {
-      patientErrors.firstname = 'Patient first name is required';
-    } else if (!validateName(patient.firstname)) {
-      patientErrors.firstname = 'First name must be 2–50 characters and contain only letters';
-    }
-
-    if (!patient.lastname.trim()) {
-      patientErrors.lastname = 'Patient last name is required';
-    } else if (!validateName(patient.lastname)) {
-      patientErrors.lastname = 'Last name must be 2–50 characters and contain only letters';
-    }
-
-    if (!patient.dob) {
-      patientErrors.dob = 'Date of birth is required';
-    } else if (!validateAge(patient.dob)) {
-      patientErrors.dob = 'Please enter a valid date of birth';
-    }
-
-    if (!patient.passportId.trim()) {
-      patientErrors.passportId = 'Passport ID is required';
-    } else if (!validatePassportId(patient.passportId)) {
-      patientErrors.passportId = 'Passport ID must be 6–12 alphanumeric characters';
-    }
-
-    return patientErrors;
-  });
-
-  // Save errors in state
-  setErrors(newErrors);
-
-  
-
-  // -------------------------------
-  // Check if any errors exist
-  // -------------------------------
-  const hasErrors =
-    newErrors.file ||
-    newErrors.details ||
-    Object.values(newErrors.contact).some((e) => e) ||
-    newErrors.patient.some((p) => Object.values(p).some((e) => e));
-
-  return !hasErrors;
-};
 
 
   const handleFormSubmit = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
-    
+
     if (!validateForm()) {
       setIsSubmitting(false);
       // Scroll to first invalid field
@@ -250,17 +226,16 @@ if (form.file && Array.isArray(form.file) && form.file.length > 0) {
       }, 100);
       return;
     }
-    
+
     try {
       if (!form || !id) throw new Error("Form or ID missing");
-      
+
       // Save form data to localStorage
       const formDataForStorage = {
         ...form,
-        file: null // Don't store file object directly
       };
       localStorage.setItem('appointmentFormData', JSON.stringify(formDataForStorage));
-      
+
       // FIX: Add opening parenthesis here
       router.push(`/user/Form/BookingConfirm/${id}`);
     } catch (error) {
@@ -272,48 +247,42 @@ if (form.file && Array.isArray(form.file) && form.file.length > 0) {
   };
 
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>, patientIndex: number) => {
     if (event.target.files && event.target.files.length > 0) {
-      const selectedFiles = Array.from(event.target.files);
-      const validFiles: any[] = [];
+      const file = event.target.files[0];
 
-      selectedFiles.forEach((file) => {
-        // Validate type
-        if (!validateFileType(file)) {
-          setErrors(prev => ({ ...prev, file: 'File must be PDF, JPEG, JPG, or PNG' }));
-          return;
-        }
+      // Validate type
+      if (!validateFileType(file)) {
+        setErrors(prev => ({ ...prev, file: 'File must be PDF, JPEG, JPG, or PNG' }));
+        return;
+      }
 
-        // Validate size
-        if (!validateFileSize(file)) {
-          setErrors(prev => ({ ...prev, file: 'File size must be less than 10MB' }));
-          return;
-        }
+      // Validate size
+      if (!validateFileSize(file)) {
+        setErrors(prev => ({ ...prev, file: 'File size must be less than 10MB' }));
+        return;
+      }
 
-        // Convert to base64
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const base64String = e.target?.result as string;
-
-          validFiles.push({
-            name: file.name,
-            size: file.size,
-            type: file.type,
-            lastModified: file.lastModified,
-            base64: base64String
-          });
-
-          // When all files processed, store them
-          if (validFiles.length === selectedFiles.length) {
-            localStorage.setItem('selectedFiles', JSON.stringify(validFiles));
-            setForm(prev => ({
-              ...prev,
-              file: validFiles // now file can be an array
-            }));
-          }
+      // Convert to base64
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64String = e.target?.result as string;
+        const fileData = {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          lastModified: file.lastModified,
+          base64: base64String
         };
-        reader.readAsDataURL(file);
-      });
+
+        // Update the specific patient's file
+        setForm(prev => {
+          const updatedPatients = [...prev.patient];
+          updatedPatients[patientIndex].file = fileData;
+          return { ...prev, patient: updatedPatients };
+        });
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -349,81 +318,26 @@ if (form.file && Array.isArray(form.file) && form.file.length > 0) {
   ];
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6">
-      {/* Appointment Booking Section */}
-      <div className="text-center text-green-700 py-4">
-        <h1 className="text-4xl font-bold">An appointment form</h1>
-      </div>
-      
-
-      {/* Symptoms Details Section */}
-      <div className="p-6 bg-white shadow-lg rounded-xl">
-        <h2 className="text-xl text-green-600 font-bold text-center mb-4">Symptoms Details</h2>
-        
-        {/* File Upload */}
-        <div className="mb-4">
-          <label className="block font-medium mb-2">Medical Report</label>
-          <input
-            type="file"
-            accept=".pdf,.jpeg,.jpg,.png"
-            onChange={handleFileSelect}
-            className={`block w-full text-sm text-gray-500 border border-gray-300 rounded-lg p-3 bg-gray-50
-                      file:mr-4 file:py-2 file:px-4
-                      file:rounded-full file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-blue-50 file:text-blue-700
-                      hover:file:bg-blue-100 ${
-                        errors.file ? 'border-red-500' : ''
-                      }`}
-          />
-          {errors.file && (
-            <p className="text-red-500 text-sm mt-1">{errors.file}</p>
-          )}
-          <p className="text-xs text-gray-500 mt-1">
-            Accepted formats: PDF, JPEG, JPG, PNG (Max size: 10MB)
-          </p>
-        </div>
-        
-        {/* Textarea for Symptoms Details */}
-        <div className="mb-4">
-          <label className="block font-medium mb-2">
-            More details about symptoms 
-            <span className="text-sm text-gray-500">({form.details.length}/1000)</span>
-          </label>
-          <textarea
-            className={`w-full p-3 border bg-gray-50 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.details ? 'border-red-500' : ''
-            }`}
-            rows={4}
-            placeholder="Fill details"
-            value={form.details}
-            maxLength={1000}
-            onChange={(e) => {
-              setForm((prev) => ({ ...prev, details: e.target.value }));
-              clearError('details');
-            }}
-          />
-          {errors.details && (
-            <p className="text-red-500 text-sm mt-1">{errors.details}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="bg-white border border-gray-200 shadow-md rounded-2xl p-4 sm:p-6 space-y-6 w-full max-w-5xl mx-auto">
+    <div className="space-y-6">
+      <div className="bg-white border-2 border-gray-200 rounded-2xl p-4 shadow-md sm:p-6">
         {/* Contact Details */}
-        <h2 className="text-lg font-semibold text-black">Contact Details</h2>
+        <div className="mb-4">
+          <p className="text-slate-500 text-xs">For all booking</p>
+          <h2 className="text-lg font-semibold text-black">Contact Details</h2>
+          <p className="text-red-500 text-xs mt-2">*Required field</p>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* First Name, Last Name, Email */}
-          {[ 
+          {[
             { label: "First name", value: form.contact.firstname, key: "firstname" },
             { label: "Last name", value: form.contact.lastname, key: "lastname" },
             { label: "Email", value: form.contact.email, key: "email" },
           ].map(({ label, value, key }) => (
             <label
               key={key}
-              className={`flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition ${
-                errors.contact[key as keyof typeof errors.contact] ? 'border-red-500' : ''
-              }`}
+              className={`flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition ${errors.contact[key as keyof typeof errors.contact] ? 'border-red-500' : ''
+                }`}
             >
               <span className="font-medium text-sm text-black">{label} *</span>
               <input
@@ -450,9 +364,8 @@ if (form.file && Array.isArray(form.file) && form.file.length > 0) {
           ))}
 
           {/* Country Dropdown */}
-          <label className={`flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition ${
-            errors.contact.country ? 'border-red-500' : ''
-          }`}>
+          <label className={`flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition ${errors.contact.country ? 'border-red-500' : ''
+            }`}>
             <span className="font-medium text-sm text-black">Country *</span>
             <select
               value={form.contact.country}
@@ -482,9 +395,8 @@ if (form.file && Array.isArray(form.file) && form.file.length > 0) {
 
           {/* Dial Code + Phone Number */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:col-span-2">
-            <label className={`flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition sm:col-span-1 ${
-              errors.contact.dialCode ? 'border-red-500' : ''
-            }`}>
+            <label className={`flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition sm:col-span-1 ${errors.contact.dialCode ? 'border-red-500' : ''
+              }`}>
               <span className="font-medium text-sm text-black">Dial Code *</span>
               <select
                 value={form.contact.dialCode}
@@ -512,9 +424,8 @@ if (form.file && Array.isArray(form.file) && form.file.length > 0) {
               )}
             </label>
 
-            <label className={`flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition sm:col-span-2 ${
-              errors.contact.phoneNumber ? 'border-red-500' : ''
-            }`}>
+            <label className={`flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition sm:col-span-2 ${errors.contact.phoneNumber ? 'border-red-500' : ''
+              }`}>
               <span className="font-medium text-sm text-black">Phone Number *</span>
               <input
                 type="text"
@@ -542,7 +453,7 @@ if (form.file && Array.isArray(form.file) && form.file.length > 0) {
         </div>
       </div>
 
-        {/* Patient Details */}
+      {/* Patient Details */}
       {form.patient.map((patient, index) => (
         <div
           key={index}
@@ -553,6 +464,34 @@ if (form.file && Array.isArray(form.file) && form.file.length > 0) {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            {[
+              { label: "First name", key: "firstname" },
+              { label: "Last name", key: "lastname" },
+              { label: "Date of Birth", key: "dob", type: "date" },
+              { label: "Passport ID", key: "passportId" },
+            ].map(({ label, key, type = "text" }) => (
+              <label
+                key={key}
+                className="col-span-2 flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
+              >
+                <span className="font-medium text-sm text-black">{label} *</span>
+                <input
+                  type={type}
+                  value={(patient[key as keyof typeof patient] as string) || ''}
+                  max={type === "date" ? new Date().toISOString().split('T')[0] : undefined}
+                  onChange={(e) => {
+                    setForm((prev) => {
+                      const updatedPatients = [...prev.patient];
+                      (updatedPatients[index] as any)[key] = e.target.value;
+                      return { ...prev, patient: updatedPatients };
+                    });
+                  }}
+                  className="bg-transparent outline-none text-black"
+                />
+              </label>
+            ))}
+
             {/* Gender */}
             <div className="col-span-1 sm:col-span-2">
               <span className="font-medium text-sm text-black">Gender *</span>
@@ -581,43 +520,73 @@ if (form.file && Array.isArray(form.file) && form.file.length > 0) {
               </div>
             </div>
 
-            {[
-              { label: "First name", key: "firstname" },
-              { label: "Last name", key: "lastname" },
-              { label: "Date of Birth", key: "dob", type: "date" },
-              { label: "Passport ID", key: "passportId" },
-            ].map(({ label, key, type = "text" }) => (
-              <label
-                key={key}
-                className="col-span-2 flex flex-col gap-1 p-3 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
-              >
-                <span className="font-medium text-sm text-black">{label} *</span>
-                <input
-                  type={type}
-                  value={patient[key as keyof typeof patient]}
-                  max={type === "date" ? new Date().toISOString().split('T')[0] : undefined}
-                  onChange={(e) => {
-                    setForm((prev) => {
-                      const updatedPatients = [...prev.patient];
-                      updatedPatients[index][key as keyof typeof patient] = e.target.value;
-                      return { ...prev, patient: updatedPatients };
-                    });
-                  }}
-                  className="bg-transparent outline-none text-black"
-                />
+            <h2 className="text-black required font-bold mb-3">Symptoms Details</h2>
+            {/* File Upload - moved inside the map function */}
+            <div className="col-span-2 mb-4">
+              <label className="block font-medium mb-2">Medical Report</label>
+              <input
+                type="file"
+                accept=".pdf,.jpeg,.jpg,.png"
+                onChange={(e) => handleFileSelect(e, index)} // Pass the patient index
+                className={`block w-full text-sm text-gray-500 border border-gray-300 rounded-lg p-3 bg-gray-50
+                              file:mr-4 file:py-2 file:px-4
+                              file:rounded-full file:border-0
+                              file:text-sm file:font-semibold
+                              file:bg-blue-50 file:text-blue-700
+                              hover:file:bg-blue-100 ${errors.file ? 'border-red-500' : ''
+                  }`}
+              />
+              {errors.file && (
+                <p className="text-red-500 text-sm mt-1">{errors.file}</p>
+              )}
+              {patient.file && (
+                <p className="text-green-600 text-sm mt-1">
+                  ✓ {patient.file.name} uploaded
+                </p>
+              )}
+              <p className="text-xs text-gray-500 mt-1">
+                Accepted formats: PDF, JPEG, JPG, PNG (Max size: 10MB)
+              </p>
+            </div>
+
+            {/* Textarea for Symptoms Details */}
+            <div className="mb-4 text-black w-full sm:col-span-2">
+              <label className="block font-medium mb-2">
+                More details about symptoms
+                <span className="text-sm text-gray-500">({form.patient.length}/1000)</span>
               </label>
-            ))}
+              <textarea
+                className={`w-full p-3 border bg-gray-50 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.patient ? 'border-red-500' : ''
+                  }`}
+                rows={4}
+                placeholder="Fill details"
+                value={form.patient[index].symptoms || ''}
+                maxLength={1000}
+                onChange={(e) => {
+                  setForm((prev) => {
+                    const updatedPatients = [...prev.patient];
+                    updatedPatients[index].symptoms = e.target.value;
+                    return { ...prev, patient: updatedPatients };
+                  });
+                }}
+              />
+              {errors.patient[index] && errors.patient[index].symptoms && (
+                <span className="text-red-500 text-xs">
+                  {errors.patient[index].symptoms}
+                </span>
+              )}
+            </div>
+
           </div>
         </div>
       ))}
 
       {/* Continue Button */}
-      <button 
-        className={`w-full py-3 text-white rounded-lg transition ${
-          isSubmitting 
-            ? 'bg-gray-400 cursor-not-allowed' 
-            : 'bg-[#2196F3] hover:bg-blue-600'
-        }`}
+      <button
+        className={`w-full py-3 text-white font-bold rounded-xl transition ${isSubmitting
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-teal-500 text-white'
+          }`}
         onClick={handleFormSubmit}
         disabled={isSubmitting}
       >

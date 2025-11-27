@@ -81,16 +81,44 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         },
         appointments: {
           select: {
+            child: true,
+            adult: true,
             date: true,
             timeslot: true,
-            status: true,
-            adult: true,
-            child: true,
-            appointment_files: {
-              include: {
-                files: true,
-              }
-            }
+            patient_details: {
+               select: {
+                 patient_id: true,
+                 firstname: true,
+                 lastname: true,
+                 gender: true,
+                 dateofbirth: true,
+                 nationality: true,
+                 passport_number: true,
+                 symptoms: true,
+                 appointment_files: {
+                   select: {
+                     id: true,
+                     fileId: true,
+                     createdAt: true,
+                     files: {
+                       select: {
+                         id: true,
+                         userId: true,
+                         originalName: true,
+                         fileName: true,
+                         fileType: true,
+                         fileSize: true,
+                         cloudinaryId: true,
+                         url: true,
+                         uploadedAt: true,
+                         category: true,
+                         description: true,
+                       }
+                     },
+                   }
+                 },
+               }
+             }
           }
         },
         payment: true,

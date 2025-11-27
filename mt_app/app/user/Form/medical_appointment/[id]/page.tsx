@@ -3,7 +3,7 @@ import BookAnAppointment from "@/components/User/medical_appointment/BookAnAppoi
 
 const MedicalAppointment = () => {
   return (
-      <div className="w-2/3">
+      <div>
         <BookAnAppointment/>
       </div>
   )

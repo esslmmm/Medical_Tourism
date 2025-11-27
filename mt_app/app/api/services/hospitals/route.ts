@@ -7,7 +7,14 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
     try {
-      const hospitals = await prisma.hospitals.findMany();
+      const hospitals = await prisma.hospitals.findMany({
+        select: {
+          hospital_id: true,
+          name: true,
+          image: true,
+          location: true,
+        }
+      });
       return NextResponse.json(hospitals);
     } catch (error) {
       console.error("Error fetching hospitals:", error);

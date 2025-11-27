@@ -18,11 +18,40 @@ export async function GET(request: Request, { params }: { params: { id: string }
     // Fetch hospital along with associated doctors
     const hospital = await prisma.hospitals.findUnique({
       where: { hospital_id },
-      include: {
-        doctors: true,
+      select: {
+        description: true,
+        hospital_code: true,
+        name: true,
+        location: true,
+        image: true,
+        Thai: true,
+        Arabic: true,
+        Myanmar: true,
+        English: true,
+        rating: true,
+        doctors: {
+          select: {
+            doctor_id: true,
+            name: true,
+            image: true,
+            specialization: true,
+          }
+        },
         hospital_images: true,
-        medical_services: true,
-        packages: true,
+        medical_services: {
+          select: {
+            service_name: true,
+          }
+        },
+        packages: {
+          select: {
+            package_id: true,
+            package_name: true,
+            image: true,
+            description: true,
+            expired_date: true,
+          }
+        },
         review_hospital: {
           include: {
             user: {

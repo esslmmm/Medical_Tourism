@@ -63,6 +63,58 @@ const ConfirmButton = () => {
 
 
 
+	const uploadPatientFiles = async (patients: any[]) => {
+		const fileIds: Record<number, string> = {};
+
+		for (let i = 0; i < patients.length; i++) {
+			const patient = patients[i];
+			if (!patient.file) continue;
+
+			try {
+				// Convert base64 back to File object
+				const file = base64ToFile(patient.file.base64, patient.file.name, patient.file.type);
+				console.log(`File ${i + 1} converted successfully:`, file.name);
+
+				// Upload file to Cloudinary
+				const cloudinaryResult = await uploadToCloudinary(file);
+
+				// Save metadata
+				const metadataResponse = await fetch("/api/upload/save-metadata", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						userId: userId,
+						fileName: cloudinaryResult.original_filename || cloudinaryResult.public_id,
+						originalName: cloudinaryResult.original_filename || patient.file.name,
+						fileType: cloudinaryResult.format,
+						fileSize: cloudinaryResult.bytes,
+						category: "MEDICAL_REPORT",
+						cloudinaryId: cloudinaryResult.public_id,
+						url: cloudinaryResult.secure_url,
+					}),
+				});
+
+				if (!metadataResponse.ok) {
+					const errorText = await metadataResponse.text();
+					console.error(`Metadata save failed for patient ${i + 1}:`, errorText);
+					throw new Error(
+						`Failed to save file metadata for patient ${i + 1}: ${metadataResponse.status} - ${errorText}`
+					);
+				}
+
+				const metadataData = await metadataResponse.json();
+				fileIds[i] = metadataData.fileId;
+			} catch (error) {
+				console.error(`Failed to upload file for patient ${i + 1}:`, error);
+				throw error;
+			}
+		}
+
+		return fileIds;
+	};
+
 	const handleConfirm = async () => {
 		if (!form) {
 		  alert("No form data found");
@@ -72,46 +124,10 @@ const ConfirmButton = () => {
 		setUploading(true);
 	  
 		try {
-		  let file_id: string | null = null;
+		  let fileIds: Record<number, string> = {};
 	  
-		  // ✅ Only handle file upload if user provided one
-		  if (fileData) {
-			// Convert base64 back to File object
-			const file = base64ToFile(fileData.base64, fileData.name, fileData.type);
-			console.log("File converted successfully:", file.name);
-	  
-			// Upload file to Cloudinary
-			const cloudinaryResult = await uploadToCloudinary(file);
-	  
-			// Save metadata
-			const metadataResponse = await fetch("/api/upload/save-metadata", {
-			  method: "POST",
-			  headers: {
-				"Content-Type": "application/json",
-			  },
-			  body: JSON.stringify({
-				userId: userId,
-				fileName: cloudinaryResult.original_filename || cloudinaryResult.public_id,
-				originalName: cloudinaryResult.original_filename || fileData.name,
-				fileType: cloudinaryResult.format,
-				fileSize: cloudinaryResult.bytes,
-				category: "MEDICAL_REPORT",
-				cloudinaryId: cloudinaryResult.public_id,
-				url: cloudinaryResult.secure_url,
-			  }),
-			});
-	  
-			if (!metadataResponse.ok) {
-			  const errorText = await metadataResponse.text();
-			  console.error("Metadata save failed:", errorText);
-			  throw new Error(
-				`Failed to save file metadata: ${metadataResponse.status} - ${errorText}`
-			  );
-			}
-
-		  const metadataData = await metadataResponse.json();
-			file_id = metadataData.fileId;
-		  }
+		  // ✅ Upload all patient files
+		  fileIds = await uploadPatientFiles(form.patient);
 
 			const appointment_id = localStorage.getItem("appointment_id");
 		  console.log("Using appointment_id:", appointment_id);
@@ -128,6 +144,7 @@ const ConfirmButton = () => {
 			dateofbirth: new Date(patient.dob),
 			nationality: form.contact.country,
 			passport_number: patient.passportId,
+			symptoms: patient.symptoms,
 		  }));
 	  
 		  const patientResponse = await createPatient(patientsData);
@@ -138,24 +155,28 @@ const ConfirmButton = () => {
 			);
 		  }
 
-		  const updateAppResponse = await updateAppointment(String(appointment_id), {
+		  // ✅ Update appointments
+			const updateAppResponse = await updateAppointment(String(appointment_id), {
 			   description: form.details,
-		  });
+			});
 
-		  if (updateAppResponse && updateAppResponse.error) {
-			throw new Error(`Failed to update appointment booking: ${updateAppResponse.error}`);
-		  }
+			if (updateAppResponse && updateAppResponse.error) {
+			  throw new Error(`Failed to update appointment: ${updateAppResponse.error}`);
+			}
 
-		  // ✅ If file uploaded, link it with appointment
-		  if (file_id) {
+		  // ✅ Link uploaded files with appointments
+		  for (let i = 0; i < patientResponse.length; i++) {
+			const fileId = fileIds[i];
+			if (!fileId) continue;
+
 			const appointmentFileResponse = await createAppointmentFile(
-			  appointment_id,
-			  file_id
+			  patientResponse[i].patient_id,
+			  fileId
 			);
 	  
 			if (appointmentFileResponse && appointmentFileResponse.error) {
 			  throw new Error(
-				`Failed to create appointment file association: ${appointmentFileResponse.error}`
+				`Failed to create appointment file association for patient ${i + 1}: ${appointmentFileResponse.error}`
 			  );
 			}
 		  }
@@ -215,10 +236,9 @@ const ConfirmButton = () => {
 		  localStorage.removeItem("appointment_id");
 		  localStorage.removeItem("tourism_id");
 		  localStorage.removeItem("TotalPrice");
-		  localStorage.removeItem("selectedFile");
 	  
 		  // Navigate to success page
-		  router.push(`/user/profile/approval-status`);
+		  router.push(`/user/general/booking-status`);
 		} catch (err) {
 		  console.error("Failed to confirm booking:", err);
 	  
@@ -248,17 +268,17 @@ const ConfirmButton = () => {
   }
 
   return (
-      <div className='max-w-2xl mx-auto p-6 '>
+      <div className=''>
         <button
         onClick={handleConfirm}
         disabled={uploading}
-        className={`w-full py-3 px-4 rounded-xl font-medium cursor-pointer ${
+        className={`w-full py-3 px-4 rounded-xl font-bold ${
           uploading
-            ? 'bg-green-400 text-white cursor-not-allowed'
-            : 'bg-green-600 text-white hover:bg-green-700'
+            ? ' text-white bg-gray-400 cursor-not-allowed'
+            : 'bg-teal-500 text-white cursor-pointer'
         }`}
       >
-        {uploading ? 'Uploading File and Confirming...' : 'Confirm Appointment'}
+        {uploading ? 'Uploading File and Confirming...' : 'Confirm'}
       </button>
       </div>
   )
