@@ -187,10 +187,6 @@ const PackageManagement: React.FC = () => {
                         <Edit className="h-4 w-4" />
                       </button>
 
-                      {/* Toggle Button (you can add logic here later) */}
-                      <button className="text-orange-600 hover:text-orange-800 cursor-pointer">
-                        <ToggleLeft className="h-4 w-4" />
-                      </button>
                     </div>
                   </td>
                 </tr>

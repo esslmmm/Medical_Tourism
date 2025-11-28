@@ -162,7 +162,7 @@ const HospitalManagement: React.FC = () => {
                     <div className="border-t pt-3 mt-3 flex justify-between items-center text-sm">
                       <div className="flex items-center text-gray-500">
                         <Phone className="h-4 w-4 mr-2" />
-                        <span className="truncate max-w-36">{hospital.contact_info.split('|')[0].trim()}</span>
+                        <span className="truncate max-w-36">{hospital.contact_info}</span>
                       </div>
                       <span className="px-3 py-1 rounded-full text-xs bg-blue-100 text-blue-700 font-medium">
                         {hospital.city}

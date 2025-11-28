@@ -208,7 +208,7 @@ const Hospitaltap: React.FC = () => {
   };
 
   const navigateToHospitalPage = (hospitalId: number) => {
-    router.push(`/user/Hospital/${hospitalId}`);
+    router.push(`/user/hospital-detail/${hospitalId}`);
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {

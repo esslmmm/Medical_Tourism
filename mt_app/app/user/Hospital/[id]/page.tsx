@@ -66,7 +66,7 @@ interface Doctor {
 }
 
 const HomePage: React.FC = () => {
-    const params = useParams<{ id: string }>();
+  const params = useParams<{ id: string }>();
   const id = params?.id;
   const [hospital, setHospital] = useState<Hospital | null>(null);
   const [loading, setLoading] = useState(true);

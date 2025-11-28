@@ -13,6 +13,8 @@ export async function GET() {
           name: true,
           image: true,
           location: true,
+          city: true,
+          contact_info: true,
         }
       });
       return NextResponse.json(hospitals);

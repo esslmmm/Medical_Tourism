@@ -5,6 +5,7 @@ import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 import { ArrowLeft, Edit, MapPin, Phone, Mail, DollarSign, Calendar } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import '@/app/admin/styles/globals.css';
+import ImageModal from '@/components/admin_component/ui/ImageModal';
 
 interface Place {
   place_id: string;
@@ -17,7 +18,7 @@ interface Place {
   fee?: number;
   place_image?: Array<{
     image_id: number;
-    image: string;
+    url: string;
   }>;
 }
 interface location {
@@ -31,6 +32,8 @@ const PlaceDetailPage: React.FC = () => {
   const [place, setPlace] = useState<Place | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     async function fetchPlace() {
@@ -51,6 +54,11 @@ const PlaceDetailPage: React.FC = () => {
 
     fetchPlace();
   }, [placeId]);
+
+  const handleImageClick = (index: number) => {
+    setCurrentImageIndex(index);
+    setIsImageModalOpen(true);
+  };
 
   const handleEdit = () => {
     router.push(`/admin/places/edit/${placeId}`);
@@ -132,14 +140,29 @@ const PlaceDetailPage: React.FC = () => {
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Additional Images</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {place.place_image.map((img) => (
-                    <img
-                      key={img.image_id}
-                      src={img.image}
-                      alt={`${place.place_name} image`}
-                      className="w-full h-32 object-cover rounded-lg"
-                    />
+                  
+
+                  {place.place_image.map((image: any, index: number) => (
+                    <div 
+                      key={image.image_id} 
+                      className="relative group cursor-pointer"
+                      onClick={() => handleImageClick(index)}
+                    >
+                      <img
+                        src={image.url}
+                        alt={`Trip image ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg border border-gray-200 hover:shadow-lg transition-shadow"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-opacity-20 transition-all rounded-lg flex items-center justify-center">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button className="bg-white bg-opacity-90 text-gray-800 px-3 py-1 rounded-full text-xs font-medium">
+                            View Full
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   ))}
+
                 </div>
               </div>
             )}
@@ -216,6 +239,14 @@ const PlaceDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+      {/* Image Modal */}
+      <ImageModal
+        isOpen={isImageModalOpen}
+        onClose={() => setIsImageModalOpen(false)}
+        images={place.place_image || []}
+        currentIndex={currentImageIndex}
+        onIndexChange={setCurrentImageIndex}
+      />
     </AdminLayout>
   );
 };
