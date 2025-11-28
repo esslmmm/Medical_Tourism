@@ -218,7 +218,7 @@ const ConfirmButton = () => {
 		  localStorage.removeItem("selectedFile");
 	  
 		  // Navigate to success page
-		  router.push(`/user/profile/approval-status`);
+		  router.push(`/user/general/booking-status`);
 		} catch (err) {
 		  console.error("Failed to confirm booking:", err);
 	  
