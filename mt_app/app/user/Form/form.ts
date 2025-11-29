@@ -8,21 +8,29 @@ export type Contact = {
 }
 
 export type Patient = {
-  appointment_id: string
-  gender: string
-  firstname: string
-  lastname: string
-  dob: string
-  passportId: string
+   appointment_id?: string
+   gender: string
+   firstname: string
+   lastname: string
+   dob: string
+   passportId: string
+   symptoms?: string
+   file?: File | null
+ }
+
+export type File = {
+  name: string
+  size: number
+  type: string
+  lastModified: number
+  base64: string
 }
 
 export type AppointmentFormData = {
   selectedDate?: Date | null
   selectedTime?: string | null
-  file?: File[] | null
   child?: number;
   adult?: number;
-  details: string
   contact: Contact
   patient: Patient[]
 }
