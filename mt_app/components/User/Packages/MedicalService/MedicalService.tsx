@@ -37,6 +37,7 @@ interface MedicalPackageProps {
   data : Packages | null;
 }
 
+
 const MedicalPackage: React.FC<MedicalPackageProps> = ({ data, onNextStep }) => {
   const [activeTab, setActiveTab] = useState('Description');
   const [showLeftArrow, setShowLeftArrow] = useState(false);

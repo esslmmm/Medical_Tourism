@@ -34,8 +34,8 @@ const DoctorList: React.FC<{ doctors: Doctor[] }> = ({ doctors }) => {
     if (page > 0) setPage((p) => p - 1);
   };
 
-  const navigateTodoctor = (DoctorId: string) => {
-    router.push(`/user/Doctorprofile/${DoctorId}`);
+  const navigateTodoctor = (pkg: string) => {
+    router.push(`/user/doctor/${pkg}`);
   };
   
   return (

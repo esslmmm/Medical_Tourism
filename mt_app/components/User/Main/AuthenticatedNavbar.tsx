@@ -67,7 +67,7 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
         <img src="/img/Footer&Navbar/Medical Tourism.png" alt="Logo" className="w-30 h-auto ml-5" />
       </Link>
 
-      <button className="md:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+      {/* <button className="md:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
@@ -77,25 +77,14 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
           ${isMobileMenuOpen ? "flex flex-col absolute top-14 left-0 w-full bg-[#F5F7FA] p-4 shadow-md z-10" : "hidden"}
         `}
       >
-        {["Doctor", "Hospital", "Package"].map((item, index) => (
-          <Link key={index} href={`/user/${item.replace(/\s+/g, "-")}`} className="text-gray-700 hover:text-green-600 text-base">
-            {item}
-          </Link>
-        ))}
+      </div> */}
 
+      <div className="flex items-center gap-4 text-black">
         <div className="relative dropdown-container group">
-          <Link href="/user/contact-us" className="text-gray-700 hover:text-green-600 text-base">
+          <Link href="/user/contact-us" className="text-gray-700 font-bold hover:text-green-600 text-base">
             Contact Us
           </Link>
         </div>
-
-        <div className="relative bg-white rounded-xl w-full md:w-auto mt-4 md:mt-0">
-          <input type="text" placeholder="Search..." className="w-full px-10 py-2 pr-20 border rounded-xl focus:ring focus:ring-blue-100" />
-          <img src="/img/Footer&Navbar/Vector.png" alt="search" className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
-        </div>
-      </div>
-
-      <div className="flex items-center gap-4">
         <div className="cursor-pointer p-2 rounded-md hover:bg-gray-200" onClick={toggleCurrency}>
           <span className="text-black-700 font-bold">{currency}</span>
         </div>

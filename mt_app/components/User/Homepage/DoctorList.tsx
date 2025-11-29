@@ -266,7 +266,7 @@ const DoctorList: React.FC = () => {
         {doctors.map((doctor) => (
           <motion.button
             key={doctor.doctor_id}
-            onClick={() => router.push(`/user/Doctorprofile/${doctor.doctor_id}`)}
+            onClick={() => router.push(`/user/doctor/${doctor.doctor_id}`)}
             className="flex-shrink-0 w-[380px] bg-white shadow-lg rounded-xl p-8 text-center cursor-pointer focus:outline-none border border-slate-200 group hover:shadow-xl transition-all duration-300"
             whileHover={{ y: -4, transition: { duration: 0.3 } }}
             whileTap={{ scale: 0.98 }}

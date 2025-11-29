@@ -9,7 +9,7 @@ interface ImagesProps {
 
 const Images: React.FC<ImagesProps> = ({ images }) => {
 
-const previewImages = images.slice(0, 3);
+  const previewImages = images.slice(0, 3);
   const [showAll, setShowAll] = useState(false);
   const [selectedImage, setSelectedImage] = useState(
     images.length > 0 ? images[0] : null
@@ -17,45 +17,44 @@ const previewImages = images.slice(0, 3);
   const remainingImages = images.slice(3);
   return (
     <div>
-        <div className="mt-5">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 relative">
-                  <div className="lg:col-span-2 relative">
-                  <Image
-                  src={previewImages[0]?.url}
-                  alt={previewImages[0]?.alt || ''}
-                  width={800}
-                  height={400}
-                  className="w-full h-full object-cover rounded-l-2xl"
-                  />
-                  </div>
-        
-                  <div className="flex flex-col gap-4 relative">
-                    {previewImages.slice(1, 3).map((img, i) => (
-                      <div key={i} className="relative">
-                        <Image
-                        src={img.url}
-                        alt={img.alt || ''}
-                        width={400}
-                        height={200}
-                        className={`w-full h-full object-cover ${
-                        i === 0 ? "rounded-tr-2xl" : "rounded-br-2xl"
-                        }`}
-                        />
-                        {i === 1 && remainingImages.length > 0 && (
-                          <button
-                            onClick={() => setShowAll(true)}
-                            className="absolute bottom-4 right-4 bg-white bg-opacity-50 text-teal-500 px-3 py-1 rounded border-teal-500 border text-sm font-bold hover:bg-opacity-70 hover:text-white hover:bg-teal-500 transition"
-                          >
-                            See all photos
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-        
-                {/* Modal */}
-                {showAll && (
+      <div className="mt-5">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 relative">
+          <div className="lg:col-span-2 relative h-[580px]">
+            <Image
+              src={previewImages[0]?.url}
+              alt={previewImages[0]?.alt || ''}
+              fill
+              className="object-cover rounded-l-2xl"
+            />
+          </div>
+
+
+          <div className="flex flex-col gap-4 relative">
+            {previewImages.slice(1, 3).map((img, i) => (
+              <div key={i} className="relative">
+                <Image
+                  src={img.url}
+                  alt={img.alt || ''}
+                  width={400}
+                  height={200}
+                  className={`w-full h-full object-cover ${i === 0 ? "rounded-tr-2xl" : "rounded-br-2xl"
+                    }`}
+                />
+                {i === 1 && remainingImages.length > 0 && (
+                  <button
+                    onClick={() => setShowAll(true)}
+                    className="absolute bottom-4 right-4 bg-white bg-opacity-50 text-teal-500 px-3 py-1 rounded border-teal-500 border text-sm font-bold hover:bg-opacity-70 hover:text-white hover:bg-teal-500 transition"
+                  >
+                    See all photos
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Modal */}
+        {showAll && (
                   <div className="fixed inset-0 backdrop-blur-xs bg-opacity-70 flex items-center justify-center z-50">
                     <div className="bg-white rounded-2xl p-6 max-w-5xl w-full relative overflow-y-auto max-h-[90vh] border border-gray-300">
                       <button
@@ -69,41 +68,40 @@ const previewImages = images.slice(0, 3);
         
                       {selectedImage && (
                         <div className="mb-4 w-full flex justify-center">
-                        <Image
-                        src={selectedImage.url}
-                        alt={selectedImage.alt || ''}
-                        width={600}
-                        height={400}
-                        className="w-full max-w-3xl h-auto object-cover rounded-lg"
-                        />
+                          <Image
+                            src={selectedImage.url}
+                            alt={selectedImage.alt || ''}
+                            width={600}
+                            height={400}
+                            className="w-full max-w-4xl h-auto object-cover rounded-lg"
+                          />
                         </div>
                       )}
         
                       <div className="flex gap-4 overflow-x-auto py-2">
-                      {images.map((img, i) => (
-                      <button
-                      key={i}
-                      onClick={() => setSelectedImage(img)}
-                      className={`flex-shrink-0 border-2 rounded-lg overflow-hidden ${
-                      selectedImage!.url === img.url
-                      ? "border-teal-500"
-                      : "border-transparent"
-                      }`}
-                      >
-                      <Image
-                      src={img.url}
-                      alt={img.alt || ''}
-                      width={150}
-                      height={100}
-                      className="w-[150px] h-auto object-cover"
-                      />
-                      </button>
-                      ))}
+                        {images.map((img, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setSelectedImage(img)}
+                            className={`flex-shrink-0 border-2 rounded-lg overflow-hidden ${selectedImage!.url === img.url
+                                ? "border-teal-500"
+                                : "border-transparent"
+                              }`}
+                          >
+                            <Image
+                              src={img.url}
+                              alt={img.alt || ''}
+                              width={150}
+                              height={100}
+                              className="w-[150px] h-auto object-cover"
+                            />
+                          </button>
+                        ))}
                       </div>
                     </div>
                   </div>
                 )}
-              </div>
+      </div>
     </div>
   )
 }
