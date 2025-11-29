@@ -28,14 +28,14 @@ const MedicalServiceCard = ({packageBooking, setPackageBooking}: MedicalServiceC
       try {
         let validFiles: File[] = [];
   
-        if (
-          packageBooking?.appointments?.appointment_files &&
-          Array.isArray(packageBooking.appointments.appointment_files)
-        ) {
-          validFiles = packageBooking.appointments.appointment_files
-            .filter((appointmentFile: any) => appointmentFile.files)
-            .flatMap((appointmentFile: any) => appointmentFile.files); // flatten
-        }
+        // if (
+        //   packageBooking?.appointments?.appointment_files &&
+        //   Array.isArray(packageBooking.appointments.appointment_files)
+        // ) {
+        //   validFiles = packageBooking.appointments.appointment_files
+        //     .filter((appointmentFile: any) => appointmentFile.files)
+        //     .flatMap((appointmentFile: any) => appointmentFile.files); // flatten
+        // }
   
         setFiles(validFiles);
       } catch (err: any) {
@@ -205,7 +205,7 @@ const MedicalServiceCard = ({packageBooking, setPackageBooking}: MedicalServiceC
             </div>
           )}
             <p className="text-md font-bold">
-              Description: <span className="font-normal">{packageBooking?.appointments.description}.</span>
+              Description: <span className="font-normal">{packageBooking?.appointments.date}.</span>
             </p>
           </div>
         </div>
