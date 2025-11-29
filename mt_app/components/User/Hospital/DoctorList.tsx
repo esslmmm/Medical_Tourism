@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Award, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Doctor {
   doctor_id: string;
@@ -14,98 +15,9 @@ interface Doctor {
 
 const PAGE_SIZE = 8; // 4 columns x 2 rows
 
-const DoctorList = () => {
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
+const DoctorList: React.FC<{ doctors: Doctor[] }> = ({ doctors }) => {
   const [page, setPage] = useState(0); // for paging
-
-  // Mock Data
-  useEffect(() => {
-    setTimeout(() => {
-      setDoctors([
-        {
-          doctor_id: "1",
-          name: "Dr. Sarah Johnson",
-          specialization: "Cardiology",
-          experience: 15,
-          description: "Board-certified cardiologist specializing in interventional procedures",
-          image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200",
-        },
-        {
-          doctor_id: "2",
-          name: "Dr. Michael Chen",
-          specialization: "Orthopedic Surgery",
-          experience: 12,
-          description: "Expert in joint replacement and sports medicine",
-          image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200",
-        },
-        {
-          doctor_id: "3",
-          name: "Dr. Priya Patel",
-          specialization: "Neurology",
-          experience: 10,
-          description: "Specialized in stroke care and neurological disorders",
-          image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200",
-        },
-        {
-          doctor_id: "4",
-          name: "Dr. Sarah Johnson",
-          specialization: "Cardiology",
-          experience: 15,
-          description: "Board-certified cardiologist specializing in interventional procedures",
-          image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200",
-        },
-        {
-          doctor_id: "5",
-          name: "Dr. Michael Chen",
-          specialization: "Orthopedic Surgery",
-          experience: 12,
-          description: "Expert in joint replacement and sports medicine",
-          image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200",
-        },
-        {
-          doctor_id: "6",
-          name: "Dr. Sarah Johnson",
-          specialization: "Cardiology",
-          experience: 15,
-          description: "Board-certified cardiologist specializing in interventional procedures",
-          image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200",
-        },
-        {
-          doctor_id: "7",
-          name: "Dr. Michael Chen",
-          specialization: "Orthopedic Surgery",
-          experience: 12,
-          description: "Expert in joint replacement and sports medicine",
-          image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200",
-        },
-        {
-          doctor_id: "8",
-          name: "Dr. Priya Patel",
-          specialization: "Neurology",
-          experience: 10,
-          description: "Specialized in stroke care and neurological disorders",
-          image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200",
-        },
-        // MORE THAN 8
-        {
-          doctor_id: "9",
-          name: "Dr. Test 9",
-          specialization: "Dentist",
-          experience: 8,
-          description: "Board-certified cardiologist specializing in interventional procedures",
-          image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200",
-        },
-        {
-          doctor_id: "10",
-          name: "Dr. Test 10",
-          specialization: "Surgeon",
-          experience: 11,
-          description: "Board-certified cardiologist specializing in interventional procedures",
-          image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200",
-        },
-      ]);
-    }, 1000);
-  }, []);
+  const router = useRouter();
 
   const totalPages = Math.ceil(doctors.length / PAGE_SIZE);
 
@@ -122,6 +34,10 @@ const DoctorList = () => {
     if (page > 0) setPage((p) => p - 1);
   };
 
+  const navigateTodoctor = (DoctorId: string) => {
+    router.push(`/user/Doctorprofile/${DoctorId}`);
+  };
+  
   return (
     <div className="max-w-7xl mx-auto py-10 pb-5 relative">
       <h4 className="text-3xl font-bold text-gray-900 mb-8">Doctors</h4>
@@ -166,28 +82,28 @@ const DoctorList = () => {
             </div>
 
             <div className="p-6 flex flex-col h-full">
-  <h3 className="text-2xl font-semibold text-gray-900 tracking-tight">
-    {doctor.name}
-  </h3>
+              <h3 className="text-lg font-semibold text-gray-900 tracking-tight">
+                {doctor.name}
+              </h3>
 
-  <p className="text-gray-600 text-sm mt-2 leading-relaxed line-clamp-3">
-    {doctor.description}
-  </p>
+              <p className="text-gray-600 text-sm mt-2 leading-relaxed line-clamp-3">
+                {doctor.description}
+              </p>
 
-  {/* Pushes experience + button to bottom evenly */}
-  <div className="mt-auto">
-    <div className="flex items-center gap-2 mt-3 mb-3 text-gray-500">
-      <Award className="w-4 h-4 text-teal-500" />
-      <span className="text-sm font-medium">
-        {doctor.experience} years experience
-      </span>
-    </div>
+              {/* Pushes experience + button to bottom evenly */}
+              <div className="mt-auto">
+                <div className="flex items-center gap-2 mt-3 mb-3 text-gray-500">
+                  <Award className="w-4 h-4 text-teal-500" />
+                  <span className="text-sm font-medium">
+                    {doctor.experience} years experience
+                  </span>
+                </div>
 
-    <button className="w-full font-bold bg-teal-500 text-white py-2.5 rounded-xl hover:bg-teal-600 active:scale-95 transition-all shadow-sm">
-      View Details
-    </button>
-  </div>
-</div>
+                <button className="w-full font-bold bg-teal-500 text-white py-2.5 rounded-xl hover:bg-teal-600 active:scale-95 transition-all shadow-sm" onClick={() => navigateTodoctor(doctor.doctor_id )}>
+                  View Details
+                </button>
+              </div>
+            </div>
 
           </div>
         ))}
