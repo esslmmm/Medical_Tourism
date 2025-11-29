@@ -34,7 +34,7 @@ const Services: React.FC<servicesProps> = ({ services }) => {
     { icon: ClipboardCheck, name: "Check-up", color: "text-teal-500" },
     { icon: Scissors, name: "Surgery", color: "text-teal-500" },
     { icon: Smile, name: "Dental", color: "text-teal-500" },
-    { icon: Eye, name: "Eye & Ent", color: "text-teal-500" },
+    { icon: Eye, name: "Eye & Ears", color: "text-teal-500" },
     { icon: Baby, name: "Mother & Child", color: "text-teal-500" },
     { icon: Smile, name: "Aesthetic", color: "text-teal-500" },
     { icon: Brain, name: "Brain", color: "text-teal-500" },
