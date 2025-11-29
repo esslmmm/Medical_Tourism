@@ -1212,7 +1212,7 @@ export default function MedicalAppointment() {
 
       {/* Continue Button */}
       <button
-        className={`w-full py-3 text-white font-bold rounded-xl transition ${isSubmitting
+        className={`w-full py-3 text-white font-bold rounded-xl cursor-pointer transition ${isSubmitting
             ? 'bg-gray-400 cursor-not-allowed'
             : 'bg-teal-500 text-white'
           }`}

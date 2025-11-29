@@ -153,7 +153,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     }
     const { user_id, ...safeData } = packageBooking;
 
-    return NextResponse.json(safeData, { status: 200 })
+    return NextResponse.json(packageBooking, { status: 200 })
   } catch (error) {
     console.error('Error fetching package booking:', error)
     return NextResponse.json({ error: 'Failed to fetch package booking' }, { status: 500 })

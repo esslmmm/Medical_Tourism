@@ -97,21 +97,13 @@ interface BookingDetail {
   user_id: number;
 }
 
-export const checkoutAction = async (bookingDetail: BookingDetail, bookingId : number): Promise<void> => {
+export const checkoutAction = async (bookingDetail: BookingDetail, bookingId : number, user_id : string): Promise<void> => {
+
   const {
     child,
     adult,
     routes: { child_price, adult_price, guide_price, car_service_price },
   } = bookingDetail.tourism_bookings;
-
-  // console.log("Amount Child:", child);
-  // console.log("Amount Adult:", adult);
-  // console.log("Price Child:", child_price);
-  // console.log("Price Adult:", adult_price);
-  // console.log("Price Guide:", guide_price);
-  // console.log("Price Car Service:", car_service_price);
-  // console.log('user_id:', bookingDetail.user_id);
-  // console.log('bookingId:', bookingId);
 
   // ✅ Build Stripe line_items dynamically
   const line_items = [];
@@ -169,9 +161,9 @@ export const checkoutAction = async (bookingDetail: BookingDetail, bookingId : n
     line_items,
     mode: "payment",
     success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/user/profile/approval-status`,
+    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/user/general/booking-status`,
     metadata: {
-    user_id: bookingDetail.user_id.toString(),
+    user_id: user_id,
     booking_id: bookingId,
   },
   });

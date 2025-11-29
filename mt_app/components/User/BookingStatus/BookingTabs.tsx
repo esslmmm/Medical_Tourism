@@ -5,6 +5,7 @@ import { CreditCard, Hourglass, CircleCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import BookingSkeleton from "../skeleton-screen/profile/BookingSkeleton";
 import { checkoutAction } from "@/app/checkout/checkout-action";
+import { useUserId } from "@/hooks/useUserId";
 
 interface Booking {
   booking_id: number;
@@ -35,6 +36,7 @@ const BookingTabs: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState<number | null>(null);
   const router = useRouter();
+  const { userId } = useUserId();
 
   useEffect(() => {
     async function fetchUser() {
@@ -72,7 +74,10 @@ const BookingTabs: React.FC = () => {
       if (!res.ok) throw new Error("Failed to fetch booking details");
       const bookingData = await res.json();
       console.log("Fetched booking data for checkout:", bookingData);
-      await checkoutAction(bookingData, bookingId);
+      if(!userId) {
+        return null;
+      }
+      await checkoutAction(bookingData, bookingId, userId);
     } catch (err) {
       console.error("Checkout failed:", err);
       alert("Failed to proceed with payment. Please try again.");

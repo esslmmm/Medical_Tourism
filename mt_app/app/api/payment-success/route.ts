@@ -3,9 +3,13 @@ import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
+  
+
   try {
     const url = new URL(req.url);
     const session_id = url.searchParams.get("session_id");
+
+    
 
     if (!session_id) {
       return NextResponse.json({ success: false, error: "No session ID provided" }, { status: 400 });
@@ -16,12 +20,14 @@ export async function GET(req: NextRequest) {
     if (session.payment_status !== "paid") {
       return NextResponse.json({ success: false, error: "Payment not completed" }, { status: 400 });
     }
+    
 
     // Extract payment and booking details
     const amount = session.amount_total ? session.amount_total / 100 : 0;
     const transaction_id = session.payment_intent as string;
     const user_id = parseInt(session.metadata?.user_id || "0");
     const booking_id = session.metadata?.booking_id || "";
+    
 
     // Create payment record
     const payment = await prisma.payment.create({
@@ -43,6 +49,7 @@ export async function GET(req: NextRequest) {
         status: "Completed",
       },
     });
+    
 
     // return NextResponse.json({ success: true, payment });
 
