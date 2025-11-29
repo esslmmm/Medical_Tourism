@@ -11,82 +11,118 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
     const packageBooking = await prisma.package_bookings.findUnique({
       where: { booking_id: packageBookingId },
-      select: {
-          price: true,
-          user_id: true,
-          user: true,
-          packages: {
-            select:{
-              image: true,
-              package_name: true,
-              package_type: true,
-              hospitals:{
-                select:{
-                  name: true,
-                  image: true,
-                  logo: true,
-                }
+      include: {
+        user_contact_detail: {
+          select:{
+            firstname: true,
+            lastname: true,
+            phone: true,
+            country: true
+          }
+        },
+        user: {
+          select:{
+            name: true
+          }
+        },
+        packages: {
+          include:{
+            hospitals:{
+              select:{
+                name: true,
+                contact_info: true,
+                image: true,
+                hospital_code: true,
               }
-            },
-          },
-          tourism_bookings:{
-            select: {
-                child: true,
-                adult: true,
-                start: true,
-                end: true,
-                guide_bookings: true,
-                routes:{
+            }
+          }
+        },
+        tourism_bookings: {
+          select:{
+            tourism_id: true,
+            adult: true,
+            child: true,
+            start: true,
+            end: true,
+            status: true,
+            routes:{
+              select:{
+                title: true,
+                image: true,
+                duration: true,
+                child_price: true,
+                adult_price: true,
+                car_service_price: true,
+                guide_price: true,
+                attractions:{
                   select:{
-                    title: true,
-                    adult_price: true,
-                    child_price: true,
-                    guide_price: true,
-                    car_service_price: true,
-                    description: true,
-                    image: true,
-                    tags: true,
-                    attractions:{
+                    attraction_id: true,
+                    places:{
                       select:{
-                        places:{
-                          select:{
-                            name: true,
-                            description: true,
-                            location: true,
-                            image: true,
-                        }
+                        description: true,
+                        image: true,
+                        name: true,
                       }
                     }
                   }
                 }
               }
             },
-          },
-          appointments: {
-            select: {
-              child: true,
-              adult: true,
-              date: true,
-              timeslot: true,
-              description: true,
-              appointment_files: {
-                select: {
-                  files: true,
-                }
+            guide_bookings:{
+              select:{
+                booking_id: true,
+                language: true,
+                start: true,
+                end: true,
+                status: true,
               }
             }
-          },
-          user_contact_detail: {
-            select: {
-              phone: true,
-              firstname: true,
-              lastname: true,
-              email: true,
-              country: true,
-            }
-          },
-          payment: true,
+          }
         },
+        appointments: {
+          select: {
+            child: true,
+            adult: true,
+            date: true,
+            timeslot: true,
+            patient_details: {
+               select: {
+                 patient_id: true,
+                 firstname: true,
+                 lastname: true,
+                 gender: true,
+                 dateofbirth: true,
+                 nationality: true,
+                 passport_number: true,
+                 symptoms: true,
+                 appointment_files: {
+                   select: {
+                     id: true,
+                     fileId: true,
+                     createdAt: true,
+                     files: {
+                       select: {
+                         id: true,
+                         userId: true,
+                         originalName: true,
+                         fileName: true,
+                         fileType: true,
+                         fileSize: true,
+                         cloudinaryId: true,
+                         url: true,
+                         uploadedAt: true,
+                         category: true,
+                         description: true,
+                       }
+                     },
+                   }
+                 },
+               }
+             }
+          }
+        },
+        payment: true,
+      },
     });
 
     if (!packageBooking) {
