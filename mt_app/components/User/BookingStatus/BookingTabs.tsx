@@ -67,9 +67,11 @@ const BookingTabs: React.FC = () => {
   const handleCheckout = async (bookingId: number) => {
     setProcessing(bookingId);
     try {
+      console.log("Initiating checkout for booking ID:", bookingId);
       const res = await fetch(`http://localhost:3000/api/booking/packages/${bookingId}`);
       if (!res.ok) throw new Error("Failed to fetch booking details");
       const bookingData = await res.json();
+      console.log("Fetched booking data for checkout:", bookingData);
       await checkoutAction(bookingData, bookingId);
     } catch (err) {
       console.error("Checkout failed:", err);
