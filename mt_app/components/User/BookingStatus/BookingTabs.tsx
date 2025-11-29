@@ -229,7 +229,7 @@ const BookingTabs: React.FC = () => {
                   <div className="flex gap-3 flex-wrap justify-center items-start md:justify-end">
                     <motion.button
                       className="px-6 py-3 bg-teal-500 text-white cursor-pointer rounded-xl font-semibold shadow-md hover:shadow-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex items-center gap-2"
-                      onClick={() => router.push(`/user/booking-detail/${booking.booking_id}`)}
+                      onClick={() => router.push(`/user/booking/${booking.booking_id}`)}
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
                     >
