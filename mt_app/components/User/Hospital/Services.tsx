@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState } from "react";
 import {
   Heart,
@@ -15,9 +13,17 @@ import {
   ChevronRight,
 } from "lucide-react";
 
+interface servicesProps {
+  services: Service[] | null;
+}
+
+interface Service {
+  service_name: string;
+}
+
 const PAGE_SIZE = 10; // 5 columns × 2 rows
 
-const Services = () => {
+const Services: React.FC<servicesProps> = ({ services }) => {
   const [page, setPage] = useState(0);
 
   // 🔹 Treatment List
@@ -36,9 +42,18 @@ const Services = () => {
     { icon: Star, name: "Rehabilitation", color: "text-teal-500" },
   ];
 
-  const totalPages = Math.ceil(treatments.length / PAGE_SIZE);
+  // 🔹 Filter treatments to match services from API
+  const filteredTreatments = services && services.length > 0
+    ? treatments.filter((treatment) =>
+        services.some((service) =>
+          service.service_name.toLowerCase().includes(treatment.name.toLowerCase())
+        )
+      )
+    : [];
 
-  const visibleTreatments = treatments.slice(
+  const totalPages = Math.ceil(filteredTreatments.length / PAGE_SIZE);
+
+  const visibleTreatments = filteredTreatments.slice(
     page * PAGE_SIZE,
     page * PAGE_SIZE + PAGE_SIZE
   );
