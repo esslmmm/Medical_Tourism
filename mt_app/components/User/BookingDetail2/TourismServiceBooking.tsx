@@ -1,8 +1,13 @@
-import { useState } from 'react';
 import { Phone, Mail, MapPin, Briefcase } from 'lucide-react';
+import { PackageBooking } from '@/types/Booking';
+import { formatDate } from '@/components/Reuseable-Function/FormateDate';
 
-const TourismServiceBooking = () => {
-  const [activeTab, setActiveTab] = useState('medical');
+interface MedicalServiceBookingProps {
+  bookingData: PackageBooking | null;
+}
+
+const TourismServiceBooking: React.FC<MedicalServiceBookingProps> = ({ bookingData }) => {
+  if(!bookingData) return;
     const tripBookings = [
     {
       id: 1,
@@ -31,18 +36,17 @@ const TourismServiceBooking = () => {
   return (
     <div>
       <div className="flex-1">
-    {tripBookings.map((trip) => (
-      <div key={trip.id}>
+      <div key={bookingData.tourism_bookings.routes.route_id}>
         {/* Trip Details */}
         <div className="bg-white rounded-2xl shadow-md mb-8 border border-gray-300">
           <div className="bg-emerald-500 text-white px-6 py-4 rounded-t-2xl">
             <h2 className="text-xl font-semibold">Trip Details</h2>
           </div>
           <div className="p-6 flex items-start gap-4">
-            <img src={trip.image} alt={trip.tripName} className="w-32 h-48 object-cover rounded-2xl" />
+            <img src={bookingData.tourism_bookings.routes.image} alt={bookingData.tourism_bookings.routes.title} className="w-32 h-48 object-cover rounded-2xl" />
             <div className="flex-1">
                 <div className='flex justify-between items-start'>
-              <h3 className="text-lg font-semibold">{trip.tripName} <span className="text-yellow-500 ml-2 text-sm font-semibold">({trip.duration})</span></h3>
+              <h3 className="text-lg font-semibold">{bookingData.tourism_bookings.routes.title} <span className="text-yellow-500 ml-2 text-sm font-semibold">{bookingData.tourism_bookings.routes.duration} Day(s)</span></h3>
               <button className="cursor-pointer text-teal-400 hover:text-teal-500 font-medium flex items-center gap-1">
                     View details
                     <svg
@@ -62,13 +66,13 @@ const TourismServiceBooking = () => {
                 </div>
               <p className=" font-semibold mb-3 mt-2">Including :</p>
               <ul className=" text-gray-600 space-y-3 mb-5">
-                {trip.includes.map((item, i) => (
-                  <li key={i}>• {item}</li>
+                {bookingData.tourism_bookings.routes.attractions.map((item, i) => (
+                  <li key={i}>• {item.places.name}</li>
                 ))}
               </ul>
               <div className="flex gap-2">
-                {trip.tags.map((tag, i) => (
-                  <span key={i} className="px-3 py-1 bg-emerald-200 text-emerald-700 text-xs rounded-full">{tag}</span>
+                {bookingData.tourism_bookings.routes.tags.map((tag, i) => (
+                  <span key={i} className="px-3 py-1 bg-emerald-200 text-emerald-700 text-xs rounded-full">{tag.tag}</span>
                 ))}
               </div>
             </div>
@@ -82,7 +86,7 @@ const TourismServiceBooking = () => {
           </div>
           <div className="p-6">
             <p className=" font-semibold mb-2">Trip Booking Date</p>
-            <p className="text-gray-700">{trip.bookingDate}</p>
+            <p className="text-gray-700">{formatDate(bookingData.tourism_bookings.start)} - {formatDate(bookingData.tourism_bookings.end)}</p>
           </div>
         </div>
 
@@ -90,15 +94,15 @@ const TourismServiceBooking = () => {
         <div className="bg-white rounded-2xl shadow-md mb-8 border border-gray-300">
           <div className="p-6">
             <h3 className="text-lg font-semibold mb-4 pb-4 border-b border-gray-300">Contact details</h3>
-            <p className="font-semibold  text-lg mb-4">{trip.contact.name}</p>
+            <p className="font-semibold  text-lg mb-4">{bookingData.user_contact_detail.firstname} {bookingData.user_contact_detail.firstname}</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-gray-700">
                 <Phone size={16} />
-                <span>{trip.contact.phone}</span>
+                <span>{bookingData.user_contact_detail.phone}</span>
               </div>
               <div className="flex items-center gap-2 text-gray-700">
                 <Mail size={16} />
-                <span>{trip.contact.email}</span>
+                <span>{bookingData.user_contact_detail.email}</span>
               </div>
             </div>
           </div>
@@ -108,15 +112,25 @@ const TourismServiceBooking = () => {
         <div className="bg-white rounded-2xl shadow-md mb-8 border border-gray-300">
           <div className="p-6">
             <h3 className="text-lg font-semibold mb-4 pb-4 border-b border-gray-300">Payment details</h3>
-            {trip.payments.map((pay, i) => (
-              <div key={i} className="flex justify-between py-2 border-b border-gray-100 last:border-0">
-                <span className="text-gray-700">{pay.label}</span>
-                <span className="font-semibold">{pay.price}</span>
+              <div className="flex justify-between py-2 border-b border-gray-100 last:border-0">
+                <span className="text-gray-700">Adult (age 16 - 80)</span>
+                <span className="font-semibold">฿ {bookingData.tourism_bookings.routes.adult_price} x {bookingData.tourism_bookings.adult}</span>
               </div>
-            ))}
+              <div className="flex justify-between py-2 border-b border-gray-100 last:border-0">
+                <span className="text-gray-700">Child (age 4 - 15)</span>
+                <span className="font-semibold">฿ {bookingData.tourism_bookings.routes.child_price} x {bookingData.tourism_bookings.child}</span>
+              </div>
+              <div className="flex justify-between py-2 border-b border-gray-100 last:border-0">
+                <span className="text-gray-700">Guide ({bookingData.tourism_bookings.guide_bookings.language})</span>
+                <span className="font-semibold">฿ {bookingData.tourism_bookings.routes.guide_price}</span>
+              </div>
+              <div className="flex justify-between py-2 border-b border-gray-100 last:border-0">
+                <span className="text-gray-700">Car Service</span>
+                <span className="font-semibold">฿ {bookingData.tourism_bookings.routes.car_service_price}</span>
+              </div>
             <div className="flex justify-between pt-3 mt-2 border-t border-gray-300">
               <span className="text-lg font-semibold">Total</span>
-              <span className="text-lg font-semibold">{trip.total}</span>
+              <span className="text-lg font-semibold">฿ {bookingData.price}</span>
             </div>
           </div>
         </div>
@@ -149,7 +163,6 @@ const TourismServiceBooking = () => {
               </div>
             </div>
       </div>
-    ))}
   </div>
   </div>
   )
