@@ -22,6 +22,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
           hospitals: {
             select: {
                 logo: true,
+                name: true,
+                location: true,
+                city: true,
             },
           },
           doc_certificate: {
