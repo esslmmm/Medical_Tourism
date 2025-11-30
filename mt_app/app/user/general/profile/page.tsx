@@ -100,12 +100,12 @@ const Profile: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen from-teal-50 via-white to-purple-50 bg-gradient-to-br">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Profile Card */}
         <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-300">
           {/* Header */}
-          <div className="border-b-2 border-gray-200 px-8 py-6">
+          <div className=" px-8 py-6 rounded-t-2xl  bg-gradient-to-r from-teal-900 to-slate-800 p-8 text-white relative overflow-hidden">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6">
                 {/* Profile Picture */}
@@ -131,8 +131,8 @@ const Profile: React.FC = () => {
 
                 {/* Name + Email */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">{profile.name || 'User Name'}</h2>
-                  <p className="text-gray-500 mt-1">{profile.email || 'Not set'}</p>
+                  <h2 className="text-2xl font-bold text-white">{profile.name || 'User Name'}</h2>
+                  <p className="text-white mt-1">{profile.email || 'Not set'}</p>
                 </div>
               </div>
 
@@ -140,7 +140,7 @@ const Profile: React.FC = () => {
               {!isEditing && (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="px-6 py-2.5 text-white rounded-lg hover:opacity-90 transition-opacity bg-green-600 font-bold flex items-center space-x-2"
+                  className="px-6 py-2.5 text-white rounded-lg hover:opacity-90 transition-opacity bg-teal-500 hover:bg-teal-700 font-bold flex items-center space-x-2"
                 >
                   Edit Profile
                 </button>
@@ -210,16 +210,6 @@ const Profile: React.FC = () => {
   </div>
 </div>
 
-              {/* Role */}
-              {profile.role !== 'user' && (
-  <div className="grid grid-cols-3 gap-4 items-start">
-    <label className="text-md font-bold text-gray-700 pt-2">Role :</label>
-    <div className="col-span-2">
-      <p className="text-gray-500 py-2.5">{profile.role || 'Not set'}</p>
-    </div>
-  </div>
-)}
-
             </div>
 
             {/* Buttons */}
@@ -235,7 +225,7 @@ const Profile: React.FC = () => {
                 <button
                   onClick={handleSave}
                   disabled={loading}
-                  className="px-6 py-2.5 text-white rounded-lg font-bold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center space-x-2 bg-green-600"
+                  className="px-6 py-2.5 text-white rounded-lg font-bold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center space-x-2 bg-teal-500 hover:bg-teal-700"
                 >
                   {loading && (
                     <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">

@@ -84,7 +84,7 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
         ))}
 
         <div className="relative dropdown-container group">
-          <Link href="/user/ContactUs" className="text-gray-700 hover:text-green-600 text-base">
+          <Link href="/user/Contact-us" className="text-gray-700 hover:text-green-600 text-base">
             Contact Us
           </Link>
         </div>
