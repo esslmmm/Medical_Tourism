@@ -4,12 +4,12 @@ import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
   try {
-    const { appointmentId, fileId } = await req.json()
+    const { patient_id, fileId } = await req.json()
 
     const newAppointment = await prisma.appointmentFile.create({
       data: {
-        appointments: {
-          connect: { appointment_id: appointmentId }
+        patient_details: {
+          connect: { patient_id: patient_id }
         },
         files: {
           connect: { id: fileId }
