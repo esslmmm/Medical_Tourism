@@ -212,21 +212,20 @@ export default function MedicalAppointment() {
 
 
   const handleFormSubmit = async () => {
-
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    // if (!validateForm()) {
-    //   setIsSubmitting(false);
-    //   // Scroll to first invalid field
-    //   setTimeout(() => {
-    //     const firstError = document.querySelector('.border-red-500');
-    //     if (firstError) {
-    //       firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    //     }
-    //   }, 100);
-    //   return;
-    // }
+    if (!validateForm()) {
+      setIsSubmitting(false);
+      // Scroll to first invalid field
+      setTimeout(() => {
+        const firstError = document.querySelector('.border-red-500');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+      return;
+    }
 
     try {
       if (!form || !id) throw new Error("Form or ID missing");
@@ -584,8 +583,8 @@ export default function MedicalAppointment() {
 
       {/* Continue Button */}
       <button
-        className={`w-full py-3 text-white font-bold rounded-xl cursor-pointer transition ${isSubmitting
-            ? 'bg-gray-400 '
+        className={`w-full py-3 text-white font-bold rounded-xl transition ${isSubmitting
+            ? 'bg-gray-400 cursor-not-allowed'
             : 'bg-teal-500 text-white'
           }`}
         onClick={handleFormSubmit}
