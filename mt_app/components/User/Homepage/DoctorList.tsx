@@ -299,9 +299,9 @@ const DoctorList: React.FC = () => {
               </div>
 
               <div className="pt-4">
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 group-hover:bg-slate-100 transition-all duration-300">
+                <div className="bg-teal-500 border border-slate-200 rounded-lg p-4 group-hover:bg-teal-700 transition-all duration-300">
                   <div className="flex items-center justify-center space-x-2">
-                    <span className="text-slate-700 font-semibold text-sm">View Profile</span>
+                    <span className="text-white font-semibold text-sm">View Profile</span>
                     <ChevronRightIcon className="w-4 h-4 text-slate-600 group-hover:translate-x-1 transition-transform duration-300" />
                   </div>
                 </div>

@@ -85,11 +85,14 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
             Contact Us
           </Link>
         </div>
-        <div className="cursor-pointer p-2 rounded-md hover:bg-gray-200" onClick={toggleCurrency}>
-          <span className="text-black-700 font-bold">{currency}</span>
-        </div>
 
-        <div className="relative language-selector">
+        {/* Currency */}
+        {/* <div className="cursor-pointer p-2 rounded-md hover:bg-gray-200" onClick={toggleCurrency}>
+          <span className="text-black-700 font-bold">{currency}</span>
+        </div> */}
+
+        {/* Language */}
+        {/* <div className="relative language-selector">
           <div className="flex items-center cursor-pointer p-2 rounded-md hover:bg-gray-200" onClick={() => setIsOpen(!isOpen)}>
             <img src="/img/Footer&Navbar/engflag.png" alt="Flag" className="w-8 h-auto" />
           </div>
@@ -109,7 +112,7 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
               </ul>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Show loading state while checking authentication */}
         {status === 'loading' ? (
@@ -128,9 +131,9 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
             <button onClick={() => setIsLoginOpen(true)} className="px-4 py-2 text-green-600 hover:bg-gray-200 rounded-lg transition">
               Login
             </button>
-            <Link href="/signup" className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+            <button onClick={() => setIsLoginOpen(true)} className="px-4 py-2 text-green-600 hover:bg-gray-200 rounded-lg transition">
               Sign Up
-            </Link>
+            </button>
           </>
         ) : (
           // Show when logged in

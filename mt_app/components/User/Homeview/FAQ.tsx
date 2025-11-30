@@ -28,7 +28,7 @@ const FAQ = () => {
 
 
   return (
-    <div> <section className="max-w-7xl mx-auto px-6 py-7 relative">
+    <div> <section className="max-w-7xl mx-auto px-6 py-7 relative text-black">
   <h2 className="text-3xl font-bold mb-8">Frequently Asked Questions</h2>
 
   <button

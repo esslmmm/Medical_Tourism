@@ -339,9 +339,9 @@ const PackageList: React.FC = () => {
               </div>
 
               <div className="pt-2">
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 group-hover:bg-slate-100 transition-all duration-300">
+                <div className="bg-teal-500 border border-slate-200 rounded-lg p-3 group-hover:bg-teal-700 transition-all duration-300">
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-700 font-semibold text-sm">View Details</span>
+                    <span className="text-white font-semibold text-sm">View Details</span>
                     <ChevronRightIcon className="w-4 h-4 text-slate-600 group-hover:translate-x-1 transition-transform duration-300" />
                   </div>
                 </div>

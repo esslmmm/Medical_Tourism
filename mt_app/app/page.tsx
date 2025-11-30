@@ -69,23 +69,6 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
               Your health, our priority.
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-              <button 
-                onClick={() => scrollToSection('Medical-&-Tourism')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                Explore Medical Packages
-                <ArrowRight className="inline-block w-5 h-5 ml-2" />
-              </button>
-              <button 
-                onClick={() => scrollToSection('features-section')}
-                className="border-2 border-slate-300 hover:border-blue-600 text-slate-700 hover:text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300"
-              >
-                Learn More
-              </button>
-            </div>
-
             {/* Key Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-4xl mx-auto">
               <div className="text-center">

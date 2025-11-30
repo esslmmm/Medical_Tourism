@@ -235,7 +235,7 @@ const Hospitaltap: React.FC = () => {
 
                 {/* Action Button */}
                 <motion.button
-                  className="w-full bg-slate-600 text-white py-3 rounded-lg font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 group hover:bg-slate-700"
+                  className="w-full bg-teal-500 text-white py-3 rounded-lg font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 group hover:bg-teal-700"
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
                   onClick={(e) => {

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { MapPin, Briefcase } from 'lucide-react';
 import Footer from '@/components/User/Main/Footer';
-import Navbar from '@/components/User/Main/Navbar';
+import Navbarpro from '@/components/User/Main/Navbarpro';
 import MedicalServiceBooking from '@/components/User/BookingDetail2/MedicalServiceBooking';
 import TourismServiceBooking from '@/components/User/BookingDetail2/TourismServiceBooking';
 import { useParams, useRouter } from 'next/navigation';
@@ -41,7 +41,7 @@ const BookingApp = () => {
 
   return (
     <div className="bg-white min-h-screen">
-      <Navbar />
+      <Navbarpro />
 
       <div className="max-w-7xl mx-auto px-4 py-8 text-black">
 
