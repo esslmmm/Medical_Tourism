@@ -287,7 +287,7 @@ const DoctorList: React.FC = () => {
 
             <div className="space-y-4">
               <h3 className={`${poppins.className} text-slate-800 font-bold text-xl group-hover:text-slate-600 transition-colors duration-300`}>
-                Dr. {doctor.name}
+                {doctor.name}
               </h3>
               
               <div className="w-16 h-0.5 bg-slate-300 mx-auto rounded-full"></div>

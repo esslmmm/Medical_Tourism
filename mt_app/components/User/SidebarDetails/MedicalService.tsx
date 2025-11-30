@@ -25,7 +25,7 @@ const formattedDate =
 
 
   return (
-    <div className="bg-white border-2 border-gray-200 rounded-2xl p-4 shadow-md sm:p-6">
+    <div>
     {/* Header */}
     <h3 className="text-xl font-bold text-black-800 mb-4 text-black">Medical Service</h3>
 

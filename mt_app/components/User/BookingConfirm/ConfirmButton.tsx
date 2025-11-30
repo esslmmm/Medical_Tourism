@@ -5,7 +5,6 @@ import { createContactDetails } from '@/app/api/booking/user_contact_details/cre
 import { createAppointmentFile } from '@/app/api/files/createAppointmentFile';
 import { useUserId } from '@/hooks/useUserId';
 import { createPatient } from '@/app/api/booking/patients/createPatient';
-import { updateAppointment } from '@/app/api/booking/appointments/updateAppointment';
 import { createPackageBooking } from '@/app/api/booking/packages/createPackageBooking';
 
 const ConfirmButton = () => {
@@ -154,15 +153,6 @@ const ConfirmButton = () => {
 			  patientResponse?.error || "Failed to create patients"
 			);
 		  }
-
-		  // ✅ Update appointments
-			const updateAppResponse = await updateAppointment(String(appointment_id), {
-			   description: form.details,
-			});
-
-			if (updateAppResponse && updateAppResponse.error) {
-			  throw new Error(`Failed to update appointment: ${updateAppResponse.error}`);
-			}
 
 		  // ✅ Link uploaded files with appointments
 		  for (let i = 0; i < patientResponse.length; i++) {

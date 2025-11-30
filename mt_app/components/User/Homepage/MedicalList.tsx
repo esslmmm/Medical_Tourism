@@ -84,25 +84,6 @@ const PackageList: React.FC = () => {
         : "Contact for details";
   };
 
-  const getPackageTypeColor = (type: string) => {
-    if (!type) return 'bg-slate-200 text-slate-700';
-    
-    switch (type.toLowerCase()) {
-      case 'medical_service_only':
-        return 'bg-blue-100 text-blue-700';
-      case 'medical_tourism':
-        return 'bg-green-100 text-green-700';
-      case 'premium':
-        return 'bg-slate-200 text-slate-700';
-      case 'basic':
-        return 'bg-slate-200 text-slate-700';
-      case 'specialized':
-        return 'bg-slate-200 text-slate-700';
-      default:
-        return 'bg-slate-200 text-slate-700';
-    }
-  };
-
   if (loading) {
     return <PackagesSkeleton />;
   }

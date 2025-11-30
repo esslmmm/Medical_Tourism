@@ -58,7 +58,7 @@ const MedicalServiceBooking: React.FC<MedicalServiceBookingProps> = ({ bookingDa
                 <img
                   src={booking.packages.image}
                   alt={booking.packages.package_name}
-                  className="w-32 h-48 object-cover rounded-2xl"
+                  className="w-max h-48 object-cover rounded-2xl"
                 />
                 <div className="flex-1">
                   <div className="flex justify-between items-start">

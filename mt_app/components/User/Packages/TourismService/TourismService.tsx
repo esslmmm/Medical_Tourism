@@ -7,9 +7,9 @@ import TripList from './TourismServiceComponent/TripList';
 import FAQ from './TourismServiceComponent/FAQ';
 import Facilities from './TourismServiceComponent/Facilities';
 import Reviews from './TourismServiceComponent/Reviews';
-import Images from './TourismServiceComponent/Images';
 import { Packages } from '@/types/Package';
 import Warning from './TourismServiceComponent/Warning';
+import Images from '../MedicalService/MedicalServiceComponent/Images';
 
 interface TourismServiceProps {
   appointmentDate: Date | null;

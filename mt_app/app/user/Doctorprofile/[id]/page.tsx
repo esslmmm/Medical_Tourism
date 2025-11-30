@@ -10,10 +10,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import "@/app/globals.css";
 
-interface Hospital {
-  logo: string;
-}
-
 interface Language {
   language_id: number;
   languages: string;
@@ -27,7 +23,7 @@ interface Doctor {
   description: string;
   image: string;
   doc_language: Language[];
-  hospitals: Hospital[];
+  hospitals: Hospital;
   doc_education: Education[];
   doc_certificate: Certificate[];
   package_doc: PackageDoc[];
@@ -51,6 +47,11 @@ interface Certificate {
   field_of_study: string;
   institution: string;
   year: number;
+}
+
+interface Hospital {
+  hospital_id: number;
+  logo: string;
 }
 
 interface Education {

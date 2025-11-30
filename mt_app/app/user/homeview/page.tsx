@@ -20,7 +20,7 @@ export default function MedicalTourismHome() {
 
 
        {/* Hero Section with Search */}
-       <HeroSection />
+       {/* <HeroSection /> */}
 
 
       {/* Recommended Packages */}
@@ -40,15 +40,15 @@ export default function MedicalTourismHome() {
 
 
       {/* FAQs */}
-     <FAQ />
+      <FAQ />
 
 
       {/* Blogs */}
-      <Blogs />
+      {/* <Blogs /> */}
 
 
       {/* Popular Destinations */}
-      <Destinations />
+      {/* <Destinations /> */}
 
 
       <Footer />

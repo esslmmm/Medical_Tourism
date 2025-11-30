@@ -120,7 +120,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${account.access_token}`
           );
           const googleUser = await response.json();
-          console.log("Google user info:", googleUser);
+          // console.log("Google user info:", googleUser);
           
           token.picture = googleUser.picture;
           token.name = googleUser.name;
@@ -132,12 +132,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           if (existingUser) {
             token.id = String(existingUser.id);
             token.role = existingUser.role || 'customer';
-            console.log('🔐 Google login - existing user:', { 
-              id: existingUser.id, 
-              email: existingUser.email, 
-              role: existingUser.role,
-              timestamp: new Date().toISOString()
-            });
+            // console.log('🔐 Google login - existing user:', { 
+            //   id: existingUser.id, 
+            //   email: existingUser.email, 
+            //   role: existingUser.role,
+            //   timestamp: new Date().toISOString()
+            // });
             if (!existingUser.name || !existingUser.image) {
               await updateUserProfile({
                 email: googleUser.email,
@@ -158,12 +158,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             });
             token.id = String(newUser?.id);
             token.role = newUser?.role || 'customer';
-            console.log('🔐 Google login - new user:', { 
-              id: newUser?.id, 
-              email: newUser?.email, 
-              role: newUser?.role,
-              timestamp: new Date().toISOString()
-            });
+            // console.log('🔐 Google login - new user:', { 
+            //   id: newUser?.id, 
+            //   email: newUser?.email, 
+            //   role: newUser?.role,
+            //   timestamp: new Date().toISOString()
+            // });
           }
 
           // Set session expiry for Google login (1 hour)
@@ -191,22 +191,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.exp = currentTimeSeconds + (60 * 60); // 1 hour
         token.authMethod = "otp";
         
-        console.log('🔑 OTP login expiry set:', {
-          currentTimeSeconds,
-          exp: token.exp,
-          expDate: new Date(token.exp * 1000)
-        });
+        // console.log('🔑 OTP login expiry set:', {
+        //   currentTimeSeconds,
+        //   exp: token.exp,
+        //   expDate: new Date(token.exp * 1000)
+        // });
       }
 
       // Ensure exp is always set with current time
       if (!token.exp) {
         const currentTimeSeconds = Math.floor(Date.now() / 1000);
         token.exp = currentTimeSeconds + (60 * 60); // Default 1 hour
-        console.log('🔑 Default expiry set:', {
-          currentTimeSeconds,
-          exp: token.exp,
-          expDate: new Date(token.exp * 1000)
-        });
+        // console.log('🔑 Default expiry set:', {
+        //   currentTimeSeconds,
+        //   exp: token.exp,
+        //   expDate: new Date(token.exp * 1000)
+        // });
       }
 
       // Check if token needs refresh with proper threshold

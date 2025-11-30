@@ -28,17 +28,17 @@ const FAQ = () => {
 
 
   return (
-    <div> <section className="max-w-7xl mx-auto px-6 py-7 relative">
+    <div> <section className="container mx-auto p-12 relative bg-slate-50 rounded-2xl">
   <h2 className="text-3xl font-bold mb-8">Frequently Asked Questions</h2>
 
   <button
-    className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-2 z-10 hover:bg-gray-100"
+    className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full mt-6 p-2 z-10 hover:bg-gray-100"
     onClick={() => scrollLeft("faqs-scroll")}
   >
     <ChevronRight className="w-6 h-6 rotate-180 text-teal-500" />
   </button>
   <button
-    className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-2 z-10 hover:bg-gray-100"
+    className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full mt-6 p-2 z-10 hover:bg-gray-100"
     onClick={() => scrollRight("faqs-scroll")}
   >
     <ChevronRight className="w-6 h-6 text-teal-500" />
@@ -46,7 +46,7 @@ const FAQ = () => {
 
   <div
     id="faqs-scroll"
-    className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar pb-4"
+    className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar pb-4 scrollbar-hide"
   >
     {faqs.map((faq, idx) => (
       <div

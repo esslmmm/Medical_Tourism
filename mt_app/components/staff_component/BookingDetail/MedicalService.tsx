@@ -23,31 +23,6 @@ const MedicalServiceCard = ({packageBooking, setPackageBooking}: MedicalServiceC
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchPackageBooking = async () => {
-      try {
-        let validFiles: File[] = [];
-  
-        if (
-          packageBooking?.appointments?.appointment_files &&
-          Array.isArray(packageBooking.appointments.appointment_files)
-        ) {
-          validFiles = packageBooking.appointments.appointment_files
-            .filter((appointmentFile: any) => appointmentFile.files)
-            .flatMap((appointmentFile: any) => appointmentFile.files); // flatten
-        }
-  
-        setFiles(validFiles);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchPackageBooking();
-  }, []);
-
   const handleStatusChange = async (newStatus: string) => {
     if (!packageBooking) return;
   
@@ -204,9 +179,6 @@ const MedicalServiceCard = ({packageBooking, setPackageBooking}: MedicalServiceC
               </div>
             </div>
           )}
-            <p className="text-md font-bold">
-              Description: <span className="font-normal">{packageBooking?.appointments.description}.</span>
-            </p>
           </div>
         </div>
 

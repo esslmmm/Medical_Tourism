@@ -51,7 +51,7 @@ const BookingApp = () => {
             <div className="flex items-center gap-2 text-sm">
               <span
                 className="text-gray-600 cursor-pointer"
-                onClick={() => router.push("/user/general/booking/status")}
+                onClick={() => router.push("/user/general/booking-status")}
               >My Booking</span>
               <span className="text-gray-400">›</span>
               <span className="text-teal-400">Booking details</span>

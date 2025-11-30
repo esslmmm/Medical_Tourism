@@ -61,7 +61,6 @@ export async function GET(request: NextRequest) {
             package_id: true,
             package_name: true,
             image: true,
-            duration: true,
             hospitals: {
               select: {
                 name: true,
@@ -85,14 +84,6 @@ export async function GET(request: NextRequest) {
             tourism_id: true,
             status: true,
             routes: true,
-          }
-        },
-        guide_bookings: {
-          select: {
-            booking_id: true,
-            start: true,
-            end: true,
-            status: true,
           }
         },
         user_contact_detail: {
@@ -130,7 +121,6 @@ export async function GET(request: NextRequest) {
       packageId: booking.package_id,
       packageTitle: booking.packages.package_name,
       packageImage: booking.packages.image,
-      packageDuration: booking.packages.duration,
       hospitalName: booking.packages.hospitals.name,
       hospitalCode: booking.packages.hospitals.hospital_code,
       hospitalImage: booking.packages.hospitals.image,

@@ -1,5 +1,3 @@
-import { tags } from "@prisma/client";
-
 export interface Packages {
     package_name: string;
     package_type: string;

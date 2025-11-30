@@ -1,4 +1,3 @@
-"use client";
 import {
   ChevronRight,
 } from "lucide-react";
@@ -32,13 +31,13 @@ const FAQ = () => {
   <h2 className="text-3xl font-bold mb-8">Frequently Asked Questions</h2>
 
   <button
-    className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-2 z-10 hover:bg-gray-100"
+    className="absolute left-0 mt-6 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-2 z-10 hover:bg-gray-100"
     onClick={() => scrollLeft("faqs-scroll")}
   >
     <ChevronRight className="w-6 h-6 rotate-180 text-teal-500" />
   </button>
   <button
-    className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-2 z-10 hover:bg-gray-100"
+    className="absolute right-0 mt-6 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-2 z-10 hover:bg-gray-100"
     onClick={() => scrollRight("faqs-scroll")}
   >
     <ChevronRight className="w-6 h-6 text-teal-500" />

@@ -9,6 +9,19 @@ import ImageUpload from '@/components/admin_component/ui/ImageUpload';
 import '@/app/admin/styles/globals.css';
 import { ToastContainer, useToast } from '@/components/admin_component/ui/Toast';
 
+const thaiCities = [
+    "Bangkok",
+    "Chiang mai",
+    "Phuket",
+    "Pattaya",
+    "Krabi",
+    "Chiang rai",
+    "Hua Hin",
+    "Ayutthaya",
+    "Nakhon Ratchasima",
+    "Surat Thani",
+  ];
+
 const AddPlacePage: React.FC = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -172,15 +185,20 @@ const AddPlacePage: React.FC = () => {
               <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-2">
                 City
               </label>
-              <input
-                type="text"
+              <select
                 id="city"
                 name="city"
                 value={formData.city}
-                onChange={handleInputChange}
+                onChange={handleInputChange as any}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter city"
-              />
+              >
+                <option value="">Select a city</option>
+                {thaiCities.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Contact Info */}

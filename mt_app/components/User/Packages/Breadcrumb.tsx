@@ -3,11 +3,12 @@ import {
   ChatBubbleLeftIcon,
   HomeIcon,
 } from '@heroicons/react/24/solid';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const Breadcrumb = () => {
   const [copied, setCopied] = useState(false);
-  const [hovered, setHovered] = useState(false);
+  const router = useRouter();
 
   const handleShareClick = () => {
     const pageUrl = window.location.href; // Get current page URL
@@ -26,11 +27,11 @@ const Breadcrumb = () => {
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 p-4 text-sm text-gray-600">
         <HomeIcon className="w-4 h-4" />
-        <span className="text-gray-600">home</span>
+        <span className="text-gray-600 cursor-pointer" onClick={() => router.push('/')}>home</span>
         <span className="text-gray-400">›</span>
-        <span className="text-gray-600">Medical Tourism Package</span>
+        <span className="text-gray-600 cursor-pointer">Medical Tourism Package</span>
         <span className="text-gray-400">›</span>
-        <span className="text-teal-400">Package Details</span>
+        <span className="text-teal-400 cursor-pointer">Package Details</span>
 
         <div className="ml-auto flex gap-4 relative">
           <button className="flex items-center gap-2 text-teal-500">

@@ -71,7 +71,8 @@ const DoctorList: React.FC<{ doctors: Doctor[] }> = ({ doctors }) => {
         {visibleDoctors.map((doctor) => (
           <div
             key={doctor.doctor_id}
-            className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+            className="bg-white rounded-2xl cursor-pointer shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col" 
+            onClick={() => navigateTodoctor(doctor.doctor_id )}
           >
             <div className="relative">
               <img src={doctor.image} alt={doctor.name} className="w-full h-56 object-cover" />
@@ -99,7 +100,7 @@ const DoctorList: React.FC<{ doctors: Doctor[] }> = ({ doctors }) => {
                   </span>
                 </div>
 
-                <button className="w-full font-bold bg-teal-500 text-white py-2.5 rounded-xl hover:bg-teal-600 active:scale-95 transition-all shadow-sm" onClick={() => navigateTodoctor(doctor.doctor_id )}>
+                <button className="w-full font-bold bg-teal-500 text-white py-2.5 rounded-xl hover:bg-teal-600 active:scale-95 transition-all shadow-sm">
                   View Details
                 </button>
               </div>

@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { Search, Filter, MapPin, Clock, Star, Users, Heart, Eye, Scissors, Baby, Calendar, Building2, FileText, Bed } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import Navbarpro from '@/components/User/Main/Navbarpro';
 
 // Types based on Prisma schema
 interface Package {
   package_id: string;
   package_name: string;
+  package_type: string;
   hospital_id: string;
   image: string;
   detail: string;
@@ -14,7 +17,7 @@ interface Package {
   expired_date: string; // use string from API
   create_at: string; // use string from API
   hospitals?: {
-    hospital_name: string;
+    name: string;
     location: string;
     rating?: number;
   };
@@ -50,6 +53,7 @@ interface FilterState {
 
 const PackagesPage = () => {
   const [packages, setPackages] = useState<Package[]>([]);
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -96,7 +100,7 @@ const PackagesPage = () => {
     const matchesSearch =
       pkg.package_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       pkg.hospitals?.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pkg.hospitals?.hospital_name.toLowerCase().includes(searchTerm.toLowerCase());
+      pkg.hospitals?.name.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesCategory = filters.category === 'all' || pkg.category === filters.category;
 
@@ -145,7 +149,9 @@ const PackagesPage = () => {
     );
   }
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 via-pink-50 to-teal-50">
+    <div>
+      <Navbarpro />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-teal-50">
       {/* Header */}
       <div className="bg-white shadow-lg border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -177,7 +183,7 @@ const PackagesPage = () => {
                   className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm"
                 />
               </div>
-              
+
               {/* Filter Toggle */}
               <button
                 onClick={() => setShowFilters(!showFilters)}
@@ -199,29 +205,12 @@ const PackagesPage = () => {
                     </label>
                     <select
                       value={filters.category}
-                      onChange={(e) => setFilters({...filters, category: e.target.value})}
+                      onChange={(e) => setFilters({ ...filters, category: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 bg-white"
                     >
                       {categories.map(cat => (
                         <option key={cat.value} value={cat.value}>{cat.label}</option>
                       ))}
-                    </select>
-                  </div>
-
-                  {/* Duration Filter */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Duration (days)
-                    </label>
-                    <select
-                      value={filters.duration}
-                      onChange={(e) => setFilters({...filters, duration: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 bg-white"
-                    >
-                      <option value="all">Any Duration</option>
-                      <option value="short">1-7 days</option>
-                      <option value="medium">8-14 days</option>
-                      <option value="long">15+ days</option>
                     </select>
                   </div>
 
@@ -232,11 +221,11 @@ const PackagesPage = () => {
                     </label>
                     <select
                       value={filters.hospital}
-                      onChange={(e) => setFilters({...filters, hospital: e.target.value})}
+                      onChange={(e) => setFilters({ ...filters, hospital: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 bg-white"
                     >
                       <option value="all">All Hospitals</option>
-                      {Array.from(new Set(packages.map(p => p.hospitals?.hospital_name))).map(hospital => (
+                      {Array.from(new Set(packages.map(p => p.hospitals?.name))).map(hospital => (
                         <option key={hospital} value={hospital || ''}>{hospital}</option>
                       ))}
                     </select>
@@ -254,10 +243,6 @@ const PackagesPage = () => {
           <h2 className="text-2xl font-semibold text-gray-900">
             {filteredPackages.length} Medical Packages Available
           </h2>
-          <div className="text-sm text-gray-600 flex items-center gap-2">
-            <Clock className="w-4 h-4" />
-            Last updated: {new Date().toLocaleDateString()}
-          </div>
         </div>
 
         {/* Package Grid */}
@@ -268,7 +253,8 @@ const PackagesPage = () => {
             return (
               <div
                 key={pkg.package_id}
-                className="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden group border border-gray-100"
+                onClick={() => router.push(`/user/packages/${pkg.package_id}`)}
+                className="bg-white rounded-3xl shadow-xl cursor-pointer hover:shadow-2xl transition-all duration-500 overflow-hidden group border border-gray-100"
               >
                 {/* Image */}
                 <div className="relative">
@@ -277,12 +263,12 @@ const PackagesPage = () => {
                     alt={pkg.package_name}
                     className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  
+
                   {/* Badges */}
-                  <div className="absolute top-4 left-4 flex flex-col gap-2">
-                    {pkg.badge && (
+                  <div className="absolute top-4 right-4 flex flex-col gap-2">
+                    {pkg.package_type && (
                       <div className={`bg-gradient-to-r ${categoryData.color} text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg`}>
-                        {pkg.badge}
+                        {pkg.package_type}
                       </div>
                     )}
                     {isExpiringSoon(pkg.expired_date) && (
@@ -290,10 +276,6 @@ const PackagesPage = () => {
                         Limited Time
                       </div>
                     )}
-                  </div>
-                  
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg">
-                    <IconComponent className={`w-5 h-5 bg-gradient-to-r ${categoryData.color} bg-clip-text text-transparent`} />
                   </div>
                 </div>
 
@@ -316,21 +298,13 @@ const PackagesPage = () => {
                   {/* Hospital Info */}
                   <div className="flex items-center gap-2 mb-3 p-2 bg-gray-50 rounded-lg">
                     <Building2 className="w-4 h-4 text-blue-600" />
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">{pkg.hospitals?.hospital_name}</div>
-                      <div className="text-xs text-gray-600 flex items-center gap-1">
-                        <MapPin className="w-3 h-3" />
-                        {pkg.hospitals?.location}
-                      </div>
+                    <div className="text-sm font-medium text-gray-900 truncate max-w-[190px]">
+                      {pkg.hospitals?.name}
                     </div>
                   </div>
 
                   {/* Package Details */}
                   <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Clock className="w-4 h-4 text-green-600" />
-                      <span>{pkg.duration} days</span>
-                    </div>
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Calendar className="w-4 h-4 text-orange-600" />
                       <span>Until {formatDate(pkg.expired_date)}</span>
@@ -397,39 +371,8 @@ const PackagesPage = () => {
           </div>
         )}
       </div>
-
-      {/* Trust Indicators */}
-      <div className="bg-gradient-to-r from-gray-900 via-purple-900 to-pink-900 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-            <div className="group">
-              <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform duration-300">
-                500+
-              </div>
-              <div className="text-gray-300">Successful Treatments</div>
-            </div>
-            <div className="group">
-              <div className="text-3xl font-bold bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform duration-300">
-                50+
-              </div>
-              <div className="text-gray-300">Partner Hospitals</div>
-            </div>
-            <div className="group">
-              <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform duration-300">
-                25+
-              </div>
-              <div className="text-gray-300">Countries Served</div>
-            </div>
-            <div className="group">
-              <div className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform duration-300">
-                4.8★
-              </div>
-              <div className="text-gray-300">Average Rating</div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
+  </div>
   );
 };
 

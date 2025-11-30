@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Poppins } from "next/font/google";
+import { useRouter } from "next/navigation";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "500", "700"] });
 
@@ -17,13 +18,13 @@ interface Doctor {
   description: string;
   image: string;
   doc_language: Language[];
-  hospitals: Hospital[];
+  hospitals: Hospital;
 }
 
 interface Hospital {
+  hospital_id: number;
   logo: string;
 }
-
 
 interface DoctorProfileProps {
   doctor: Doctor | null;
@@ -31,6 +32,7 @@ interface DoctorProfileProps {
 
 const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctor }) => {
   if (!doctor) return null;
+  const router = useRouter();
   
   return (
     <div>
@@ -83,7 +85,8 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctor }) => {
                 alt="Hospital Logo"
                 width={130}
                 height={60}
-                className="object-contain w-full h-full"
+                onClick={() => router.push(`/user/hospital-detail/${doctor.hospitals.hospital_id}`)}
+                className="object-contain cursor-pointer w-full h-full"
               />
             </div>
           ) : (

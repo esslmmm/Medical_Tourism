@@ -85,6 +85,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
             adult: true,
             date: true,
             timeslot: true,
+            status: true,
             patient_details: {
                select: {
                  patient_id: true,

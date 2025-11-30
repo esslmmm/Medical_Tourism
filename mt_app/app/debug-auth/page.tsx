@@ -7,8 +7,6 @@ export default function DebugAuth() {
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    console.log('Debug Auth - Session:', session);
-    console.log('Debug Auth - Status:', status);
     if (session?.user) {
       console.log('Debug Auth - User Role:', session.user.role);
     }

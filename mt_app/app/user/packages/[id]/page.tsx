@@ -9,6 +9,7 @@ import Footer from "@/components/User/Main/Footer"
 import { useParams } from "next/navigation"
 import Navbarpro from "@/components/User/Main/Navbarpro"
 import { Packages } from "@/types/Package"
+import PackageDetailSkeleton from "@/components/User/skeleton-screen/packages/Medical_package"
 
 const PackageDetail = () => {
   const [selectedService, setSelectedService] = useState<"medical" | "tourism">("medical")
@@ -46,26 +47,29 @@ const PackageDetail = () => {
   }, [id]);
 
 
-// Show loading state
-if (loading) {
-  return (
-    <div>
-      <Navbarpro />
-    </div>
-  );
-}
-
-// Show error state
-if (error) {
-  return (
-    <div>
-      <Navbarpro />
-      <div className="bg-white min-h-screen flex items-center justify-center">
-        <div className="text-red-500">{error}</div>
+  // Show loading state
+  if (loading) {
+    return (
+      <div>
+        <Navbarpro />
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <PackageDetailSkeleton />
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div>
+        <Navbarpro />
+        <div className="bg-white min-h-screen flex items-center justify-center">
+          <div className="text-red-500">{error}</div>
+        </div>
+      </div>
+    );
+  }
 
   const handleGoBack = () => {
     setSelectedService("medical");
@@ -81,35 +85,33 @@ if (error) {
         <div className="pt-3 border-b border-gray-300">
           <div className="flex items-center gap-8 ">
             <div>
-            <button
-              onClick={() => setSelectedService("medical")}
-              className={`cursor-pointer text-base font-bold px-4 py-2 rounded ${
-                selectedService === "medical"
+              <button
+                onClick={() => setSelectedService("medical")}
+                className={`cursor-pointer text-base font-bold px-4 py-2 rounded ${selectedService === "medical"
                   ? "text-white bg-teal-500"
                   : "text-gray-500 bg-gray-100 border border-gray-300 hover:bg-gray-200 hover:border-gray-400"
-              }`}
-            >
-              Medical Service
-            </button>
-            <div className={`${selectedService === "medical"
-                  ? "border-t-2 border-teal-500 transition-all duration-300 mt-3"
-                  : "mt-3"}`}></div>
+                  }`}
+              >
+                Medical Service
+              </button>
+              <div className={`${selectedService === "medical"
+                ? "border-t-2 border-teal-500 transition-all duration-300 mt-3"
+                : "mt-3"}`}></div>
             </div>
 
             <div>
               <button
-              onClick={() => setSelectedService("tourism")}
-              className={`cursor-pointer text-base font-bold px-4 py-2 rounded ${
-                selectedService === "tourism"
+                onClick={() => setSelectedService("tourism")}
+                className={`cursor-pointer text-base font-bold px-4 py-2 rounded ${selectedService === "tourism"
                   ? "text-white bg-teal-500"
                   : "text-gray-500 bg-gray-100 border border-gray-300 hover:bg-gray-200 hover:border-gray-400"
-              }`}
-            >
-              Tourism Service
-            </button>
-            <div className={`${selectedService === "tourism"
-                  ? "border-t-2 border-teal-500 transition-all duration-300 mt-3"
-                  : "mt-3"}`}></div>
+                  }`}
+              >
+                Tourism Service
+              </button>
+              <div className={`${selectedService === "tourism"
+                ? "border-t-2 border-teal-500 transition-all duration-300 mt-3"
+                : "mt-3"}`}></div>
             </div>
           </div>
         </div>
@@ -118,7 +120,7 @@ if (error) {
         {selectedService === "medical" ? (
           <MedicalPackage data={data} onNextStep={handleNextStep} />
         ) : (
-          <TourismPackage TripData={data} appointmentDate={appointmentDate} onGoBack={handleGoBack}/>
+          <TourismPackage TripData={data} appointmentDate={appointmentDate} onGoBack={handleGoBack} />
         )}
       </div>
       <Footer />

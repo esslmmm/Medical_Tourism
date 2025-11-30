@@ -8,30 +8,6 @@ interface MedicalServiceBookingProps {
 
 const TourismServiceBooking: React.FC<MedicalServiceBookingProps> = ({ bookingData }) => {
   if(!bookingData) return;
-    const tripBookings = [
-    {
-      id: 1,
-      tripName: "Phuket Go Around",
-      duration: "3 days",
-      image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=200&h=150&fit=crop",
-      includes: ["Phi Phi Islands", "City Tour", "James Bond Island"],
-      tags: ["Summer", "Holiday", "Relax"],
-      bookingDate: "Monday, October 6 2025 → Tuesday, October 7 2025",
-      contact: {
-        name: "Ekkarat Thepthong",
-        phone: "+66 814739090",
-        email: "test@gmail.com",
-      },
-      payments: [
-        { label: "Adult (ages 16 - 80)", price: "฿ 1000 × 1" },
-        { label: "Child (ages 4 - 15)", price: "฿ 500 × 1" },
-        { label: "Guide (Arabic Language)", price: "฿ 1,000" },
-        { label: "Car Service", price: "฿ 1,000" },
-      ],
-      total: "฿ 3,500",
-      policy: "Cancellation and change policies",
-    },
-  ];
 
   return (
     <div>
@@ -43,7 +19,7 @@ const TourismServiceBooking: React.FC<MedicalServiceBookingProps> = ({ bookingDa
             <h2 className="text-xl font-semibold">Trip Details</h2>
           </div>
           <div className="p-6 flex items-start gap-4">
-            <img src={bookingData.tourism_bookings.routes.image} alt={bookingData.tourism_bookings.routes.title} className="w-32 h-48 object-cover rounded-2xl" />
+            <img src={bookingData.tourism_bookings.routes.image} alt={bookingData.tourism_bookings.routes.title} className="w-max h-58 object-cover rounded-2xl" />
             <div className="flex-1">
                 <div className='flex justify-between items-start'>
               <h3 className="text-lg font-semibold">{bookingData.tourism_bookings.routes.title} <span className="text-yellow-500 ml-2 text-sm font-semibold">{bookingData.tourism_bookings.routes.duration} Day(s)</span></h3>
@@ -112,19 +88,19 @@ const TourismServiceBooking: React.FC<MedicalServiceBookingProps> = ({ bookingDa
         <div className="bg-white rounded-2xl shadow-md mb-8 border border-gray-300">
           <div className="p-6">
             <h3 className="text-lg font-semibold mb-4 pb-4 border-b border-gray-300">Payment details</h3>
-              <div className="flex justify-between py-2 border-b border-gray-100 last:border-0">
+              <div className="flex justify-between py-2 border-gray-100 last:border-0">
                 <span className="text-gray-700">Adult (age 16 - 80)</span>
                 <span className="font-semibold">฿ {bookingData.tourism_bookings.routes.adult_price} x {bookingData.tourism_bookings.adult}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-gray-100 last:border-0">
+              <div className="flex justify-between py-2 border-gray-100 last:border-0">
                 <span className="text-gray-700">Child (age 4 - 15)</span>
                 <span className="font-semibold">฿ {bookingData.tourism_bookings.routes.child_price} x {bookingData.tourism_bookings.child}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-gray-100 last:border-0">
+              <div className="flex justify-between py-2 border-gray-100 last:border-0">
                 <span className="text-gray-700">Guide ({bookingData.tourism_bookings.guide_bookings.language})</span>
                 <span className="font-semibold">฿ {bookingData.tourism_bookings.routes.guide_price}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-gray-100 last:border-0">
+              <div className="flex justify-between py-2 border-gray-100 last:border-0">
                 <span className="text-gray-700">Car Service</span>
                 <span className="font-semibold">฿ {bookingData.tourism_bookings.routes.car_service_price}</span>
               </div>

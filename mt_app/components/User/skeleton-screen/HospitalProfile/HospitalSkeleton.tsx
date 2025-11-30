@@ -1,391 +1,273 @@
 import React from 'react';
+import { ChevronLeft, ChevronRight, MapPin, Share, Users, Award, BriefcaseMedical } from 'lucide-react';
 
-const HospitalSkeleton = () => {
+const HospitalDetailSkeleton = () => {
   return (
     <div>
-      {/* Profile Hospital Skeleton Screen */}
-      <div className="bg-white p-8">
-        <div className="grid grid-cols-2 gap-8 ml-10">
-          {/* Hospital Images Skeleton */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* Main image skeleton */}
-            <div className="w-85 h-100 bg-gray-200 rounded-lg animate-pulse"></div>
+      {/* Image Carousel Skeleton */}
+      <div className="relative h-96 bg-gray-300 animate-pulse">
+        {/* Navigation Buttons Skeleton */}
+        <button className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full opacity-50">
+          <ChevronLeft className="w-6 h-6 text-gray-400" />
+        </button>
+        <button className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full opacity-50">
+          <ChevronRight className="w-6 h-6 text-gray-400" />
+        </button>
+        
+        {/* Dots Indicator Skeleton */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+          {[1, 2, 3, 4].map((idx) => (
+            <div
+              key={idx}
+              className={`h-2 rounded-full bg-white/50 ${idx === 0 ? 'w-8' : 'w-2'}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Hospital Header Skeleton */}
+      <div className="bg-white shadow-sm sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between">
+          <div className="flex items-start gap-6 flex-1">
+            {/* Logo Skeleton */}
+            <div className="w-24 h-24 rounded-lg bg-gray-200 animate-pulse" />
             
-            {/* Side images skeleton */}
-            <div className="space-y-4">
-              <div className="w-full h-48 bg-gray-200 rounded-lg animate-pulse"></div>
-              <div className="relative">
-                <div className="w-full h-48 bg-gray-200 rounded-lg animate-pulse"></div>
-                {/* Overlay for "more images" */}
-                <div className="absolute inset-0 bg-gray-300/50 flex items-center justify-center rounded-lg">
-                  <div className="w-16 h-6 bg-gray-400 rounded animate-pulse"></div>
+            <div className="flex-1">
+              {/* Hospital Name Skeleton */}
+              <div className="h-9 bg-gray-200 rounded w-3/4 mb-4 animate-pulse" />
+              
+              {/* Location Skeleton */}
+              <div className="mt-4 space-y-2">
+                <div className="flex items-center gap-4">
+                  <div className="w-6 h-6 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-5 bg-gray-200 rounded w-64 animate-pulse" />
                 </div>
               </div>
             </div>
           </div>
-
-          {/* Hospital Info Skeleton */}
-          <div className="flex flex-col">
-            {/* Hospital name skeleton */}
-            <div className="h-8 bg-gray-200 rounded w-3/4 mb-5 mt-3 animate-pulse"></div>
-            
-            {/* Rating skeleton */}
-            <div className="flex items-center mt-2">
-              <div className="flex space-x-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="w-4 h-4 bg-gray-200 rounded animate-pulse"></div>
-                ))}
-              </div>
-              <div className="w-24 h-4 bg-gray-200 rounded ml-2 animate-pulse"></div>
-            </div>
-            
-            {/* Location skeleton */}
-            <div className="flex items-center text-gray-600 mt-2">
-              <div className="w-4 h-4 bg-gray-200 rounded mr-2 animate-pulse"></div>
-              <div className="w-48 h-4 bg-gray-200 rounded animate-pulse"></div>
-            </div>
-            
-            {/* Description skeleton */}
-            <div className="mt-4 space-y-2">
-              <div className="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
-              <div className="h-4 bg-gray-200 rounded w-5/6 animate-pulse"></div>
-              <div className="h-4 bg-gray-200 rounded w-4/5 animate-pulse"></div>
+          
+          {/* Share Button Skeleton */}
+          <div className="ml-auto flex gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-7 h-7 bg-gray-200 rounded animate-pulse" />
+              <div className="h-6 bg-gray-200 rounded w-16 animate-pulse" />
             </div>
           </div>
         </div>
 
-        {/* Services Skeleton */}
-        <div className="col-span-2">
-          {/* Services title skeleton */}
-          <div className="h-8 bg-gray-200 rounded w-32 mt-8 mb-4 animate-pulse"></div>
-          
-          {/* Services grid skeleton */}
-          <div className="grid grid-cols-6 gap-6 mt-4">
-            {Array.from({ length: 12 }).map((_, index) => (
-              <div key={index} className="flex flex-col items-center text-center">
-                {/* Service icon skeleton */}
-                <div className="w-12 h-12 bg-gray-200 rounded-full mb-2 animate-pulse"></div>
-                {/* Service name skeleton */}
-                <div className="w-16 h-4 bg-gray-200 rounded animate-pulse"></div>
+        {/* Tabs Skeleton */}
+        <div className="max-w-7xl mx-auto px-4 flex items-center">
+          <div className="flex gap-8">
+            {[1, 2, 3, 4, 5].map((idx) => (
+              <div
+                key={idx}
+                className={`py-4 px-2 ${
+                  idx === 1 ? 'border-b-2 border-gray-300' : ''
+                }`}
+              >
+                <div className="h-5 bg-gray-200 rounded w-20 animate-pulse" />
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Related Packages Skeleton */}
-      <div className="container mx-auto p-8 relative">
-          {/* Title Skeleton */}
-          <div className="pl-6 mb-6">
-            <div className="h-10 w-48 bg-gray-300 rounded animate-pulse"></div>
+      {/* Content Skeleton */}
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        {/* About Section Skeleton */}
+        <section className="mb-8">
+          {/* Section Title Skeleton */}
+          <div className="h-8 bg-gray-200 rounded w-64 mb-8 animate-pulse" />
+          
+          {/* Description Skeleton */}
+          <div className="space-y-3">
+            <div className="h-4 bg-gray-200 rounded w-full animate-pulse" />
+            <div className="h-4 bg-gray-200 rounded w-full animate-pulse" />
+            <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse" />
           </div>
-
-          {/* Packages Container */}
-          <div className="overflow-hidden flex space-x-6 pl-5 ml-5">
-            {/* Package Card 1 */}
-            <div className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200">
-              {/* Image Skeleton */}
-              <div className="relative w-full h-52">
-                <div className="w-full h-full bg-gray-300 rounded-lg animate-pulse"></div>
-              </div>
-              
-              {/* Package Name Skeleton */}
-              <div className="mt-4 mb-2">
-                <div className="h-5 w-3/4 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-              
-              {/* Package Detail Skeleton */}
-              <div className="mb-2">
-                <div className="h-4 w-full bg-gray-300 rounded animate-pulse mb-1"></div>
-                <div className="h-4 w-5/6 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-              
-              {/* Date Skeleton */}
-              <div className="mt-4">
-                <div className="h-4 w-24 bg-gray-300 rounded animate-pulse mx-auto"></div>
+          
+          {/* Stats Cards Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            {/* Doctors Card Skeleton */}
+            <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-lg">
+              <div className="w-8 h-8 bg-blue-200 rounded animate-pulse" />
+              <div className="flex-1">
+                <div className="h-8 bg-blue-200 rounded w-16 mb-2 animate-pulse" />
+                <div className="h-4 bg-blue-200 rounded w-28 animate-pulse" />
               </div>
             </div>
-
-            {/* Package Card 2 */}
-            <div className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200">
-              {/* Image Skeleton */}
-              <div className="relative w-full h-52">
-                <div className="w-full h-full bg-gray-300 rounded-lg animate-pulse"></div>
-              </div>
-              
-              {/* Package Name Skeleton */}
-              <div className="mt-4 mb-2">
-                <div className="h-5 w-4/5 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-              
-              {/* Package Detail Skeleton */}
-              <div className="mb-2">
-                <div className="h-4 w-full bg-gray-300 rounded animate-pulse mb-1"></div>
-                <div className="h-4 w-3/4 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-              
-              {/* Date Skeleton */}
-              <div className="mt-4">
-                <div className="h-4 w-24 bg-gray-300 rounded animate-pulse mx-auto"></div>
+            
+            {/* Services Card Skeleton */}
+            <div className="flex items-center gap-4 p-4 bg-green-50 rounded-lg">
+              <div className="w-8 h-8 bg-green-200 rounded animate-pulse" />
+              <div className="flex-1">
+                <div className="h-8 bg-green-200 rounded w-16 mb-2 animate-pulse" />
+                <div className="h-4 bg-green-200 rounded w-32 animate-pulse" />
               </div>
             </div>
-
-            {/* Package Card 3 */}
-            <div className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200">
-              {/* Image Skeleton */}
-              <div className="relative w-full h-52">
-                <div className="w-full h-full bg-gray-300 rounded-lg animate-pulse"></div>
-              </div>
-              
-              {/* Package Name Skeleton */}
-              <div className="mt-4 mb-2">
-                <div className="h-5 w-2/3 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-              
-              {/* Package Detail Skeleton */}
-              <div className="mb-2">
-                <div className="h-4 w-full bg-gray-300 rounded animate-pulse mb-1"></div>
-                <div className="h-4 w-4/5 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-              
-              {/* Date Skeleton */}
-              <div className="mt-4">
-                <div className="h-4 w-24 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-            </div>
-
-            {/* Package Card 4 */}
-            <div className="flex-shrink-0 w-[320px] bg-white shadow-lg rounded-lg p-4 text-center border border-gray-200">
-              {/* Image Skeleton */}
-              <div className="relative w-full h-52">
-                <div className="w-full h-full bg-gray-300 rounded-lg animate-pulse"></div>
-              </div>
-              
-              {/* Package Name Skeleton */}
-              <div className="mt-4 mb-2">
-                <div className="h-5 w-2/3 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-              
-              {/* Package Detail Skeleton */}
-              <div className="mb-2">
-                <div className="h-4 w-full bg-gray-300 rounded animate-pulse mb-1"></div>
-                <div className="h-4 w-4/5 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-              
-              {/* Date Skeleton */}
-              <div className="mt-4">
-                <div className="h-4 w-24 bg-gray-300 rounded animate-pulse mx-auto"></div>
+            
+            {/* Packages Card Skeleton */}
+            <div className="flex items-center gap-4 p-4 bg-purple-50 rounded-lg">
+              <div className="w-8 h-8 bg-purple-200 rounded animate-pulse" />
+              <div className="flex-1">
+                <div className="h-8 bg-purple-200 rounded w-16 mb-2 animate-pulse" />
+                <div className="h-4 bg-purple-200 rounded w-32 animate-pulse" />
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Right Arrow Skeleton */}
-          <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-            <div className="w-10 h-10 bg-gray-300 rounded-full animate-pulse"></div>
+        {/* Available Languages Section Skeleton */}
+        <div className="max-w-7xl mx-auto py-6 relative">
+          {/* Section Title Skeleton */}
+          <div className="h-8 bg-gray-200 rounded w-64 mb-8 animate-pulse" />
+          
+          {/* Language Badges Skeleton */}
+          <div className="flex gap-4">
+            {[1, 2, 3, 4].map((idx) => (
+              <div 
+                key={idx}
+                className="flex items-center gap-4 bg-white text-lg px-4 py-2 rounded-full border border-gray-200"
+              >
+                <div className="h-6 bg-gray-200 rounded w-24 animate-pulse" />
+              </div>
+            ))}
           </div>
         </div>
 
+        {/* Treatment & Wellness Services Section Skeleton */}
+        <section className="max-w-7xl mx-auto py-6 relative">
+          {/* Section Title Skeleton */}
+          <div className="h-8 bg-gray-200 rounded w-80 mb-8 animate-pulse" />
 
-        {/* Related Doctors Skeleton Screen */}
-        <div className="container mx-auto p-5 relative">
-          {/* Packages Container */}
-          <div className="overflow-hidden flex space-x-6 pl-5 ml-5">
-            {/* Package Card 1 */}
-            <div className="flex-shrink-0 w-[350px] border border-gray-200 bg-white shadow-lg rounded-lg p-8 text-center">
-              {/* Image Skeleton */}
-              <div className="relative w-32 h-32 mx-auto">
-                <div className="w-30 h-30 bg-gray-300 rounded-full mx-auto"></div>
-              </div>
+          {/* Navigation Buttons Skeleton */}
+          <button className="absolute left-0 top-1/2 -translate-y-1/4 bg-white shadow-lg rounded-full p-2 z-20 opacity-50">
+            <ChevronRight className="w-6 h-6 rotate-180 text-gray-300" />
+          </button>
+          <button className="absolute right-0 top-1/2 -translate-y-1/4 bg-white shadow-lg rounded-full p-2 z-20 opacity-50">
+            <ChevronRight className="w-6 h-6 text-gray-300" />
+          </button>
 
-              {/* Package Name Skeleton */}
-              <div className="mt-4 mb-2">
-                <div className="h-5 w-3/4 bg-gray-300 rounded animate-pulse mx-auto"></div>
+          {/* Services Grid Skeleton - 5 columns × 2 rows */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((idx) => (
+              <div
+                key={idx}
+                className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col items-center"
+              >
+                <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse" />
+                <div className="h-4 bg-gray-200 rounded w-20 mt-3 animate-pulse" />
               </div>
-              
-              {/* Package Detail Skeleton */}
-              <div className="mb-2">
-                <div className="h-[2px] w-1/3 bg-gray-300 rounded animate-pulse my-2 mx-auto"></div>
-              </div>
-              
-              {/* Date Skeleton */}
-              <div className="mt-4">
-                <div className="h-4 w-24 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-            </div>
-
-            {/* Package Card 2 */}
-            <div className="flex-shrink-0 w-[350px] border border-gray-200 bg-white shadow-lg rounded-lg p-8 text-center">
-              {/* Image Skeleton */}
-              <div className="relative w-32 h-32 mx-auto">
-                <div className="w-30 h-30 bg-gray-300 rounded-full mx-auto"></div>
-              </div>
-
-              {/* Package Name Skeleton */}
-              <div className="mt-4 mb-2">
-                <div className="h-5 w-3/4 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-              
-              {/* Package Detail Skeleton */}
-              <div className="mb-2">
-                <div className="h-[2px] w-1/3 bg-gray-300 rounded animate-pulse my-2 mx-auto"></div>
-              </div>
-              
-              {/* Date Skeleton */}
-              <div className="mt-4">
-                <div className="h-4 w-24 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-            </div>
-
-            {/* Package Card 3 */}
-            <div className="flex-shrink-0 w-[350px] border border-gray-200 bg-white shadow-lg rounded-lg p-8 text-center">
-              {/* Image Skeleton */}
-              <div className="relative w-32 h-32 mx-auto">
-                <div className="w-30 h-30 bg-gray-300 rounded-full mx-auto"></div>
-              </div>
-
-              {/* Package Name Skeleton */}
-              <div className="mt-4 mb-2">
-                <div className="h-5 w-3/4 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-              
-              {/* Package Detail Skeleton */}
-              <div className="mb-2">
-                <div className="h-[2px] w-1/3 bg-gray-300 rounded animate-pulse my-2 mx-auto"></div>
-              </div>
-              
-              {/* Date Skeleton */}
-              <div className="mt-4">
-                <div className="h-4 w-24 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-            </div>
-
-            {/* Package Card 4 */}
-            <div className="flex-shrink-0 w-[350px] border border-gray-200 bg-white shadow-lg rounded-lg p-8 text-center">
-              {/* Image Skeleton */}
-              <div className="relative w-32 h-32 mx-auto">
-                <div className="w-30 h-30 bg-gray-300 rounded-full mx-auto"></div>
-              </div>
-
-              {/* Package Name Skeleton */}
-              <div className="mt-4 mb-2">
-                <div className="h-5 w-3/4 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-              
-              {/* Package Detail Skeleton */}
-              <div className="mb-2">
-                <div className="h-[2px] w-1/3 bg-gray-300 rounded animate-pulse my-2 mx-auto"></div>
-              </div>
-              
-              {/* Date Skeleton */}
-              <div className="mt-4">
-                <div className="h-4 w-24 bg-gray-300 rounded animate-pulse mx-auto"></div>
-              </div>
-            </div>
+            ))}
           </div>
+        </section>
 
-          {/* Right Arrow Skeleton */}
-          <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-            <div className="w-10 h-10 bg-gray-300 rounded-full animate-pulse"></div>
+        {/* Doctors Section Skeleton */}
+        <div className="max-w-7xl mx-auto py-10 pb-5 relative">
+          {/* Section Title Skeleton */}
+          <div className="h-8 bg-gray-200 rounded w-40 mb-8 animate-pulse" />
+
+          {/* Navigation Buttons Skeleton */}
+          <button className="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full p-2 z-10 opacity-50">
+            <ChevronRight className="w-6 h-6 rotate-180 text-gray-300" />
+          </button>
+          <button className="absolute right-0 top-1/2 -translate-y-1/3 bg-white shadow-lg rounded-full p-2 z-10 opacity-50">
+            <ChevronRight className="w-6 h-6 text-gray-300" />
+          </button>
+
+          {/* Doctors Grid Skeleton - 4 columns */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[1, 2, 3, 4].map((idx) => (
+              <div
+                key={idx}
+                className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col"
+              >
+                {/* Image Skeleton */}
+                <div className="relative">
+                  <div className="w-full h-56 bg-gray-200 animate-pulse" />
+                  {/* Specialization Badge Skeleton */}
+                  <div className="absolute top-3 right-3 bg-white/80 backdrop-blur px-3 py-1 rounded-full">
+                    <div className="h-4 bg-gray-200 rounded w-20 animate-pulse" />
+                  </div>
+                </div>
+
+                {/* Content Skeleton */}
+                <div className="p-6 flex flex-col h-full">
+                  {/* Name Skeleton */}
+                  <div className="h-6 bg-gray-200 rounded w-3/4 mb-2 animate-pulse" />
+                  
+                  {/* Description Skeleton */}
+                  <div className="space-y-2 mt-2">
+                    <div className="h-4 bg-gray-200 rounded w-full animate-pulse" />
+                    <div className="h-4 bg-gray-200 rounded w-full animate-pulse" />
+                    <div className="h-4 bg-gray-200 rounded w-2/3 animate-pulse" />
+                  </div>
+
+                  {/* Experience + Button Skeleton */}
+                  <div className="mt-auto">
+                    <div className="flex items-center gap-2 mt-3 mb-3">
+                      <div className="w-4 h-4 bg-gray-200 rounded animate-pulse" />
+                      <div className="h-4 bg-gray-200 rounded w-32 animate-pulse" />
+                    </div>
+                    <div className="w-full h-10 bg-gray-200 rounded-xl animate-pulse" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-
-        {/* Review Skeleton Screen */}
-        <div className="mt-8 ml-5 mb-13">
-          <div className="mb-4 ml-10">
-            <div className="h-10 w-32 bg-gray-300 rounded animate-pulse"></div>
-          </div>
-
-          <div className="flex justify-center gap-10 flex-wrap">
-
-            {/* Item Card 1 */}
-              <div className="bg-white shadow-lg border border-gray-200 p-6 w-full max-w-sm rounded-2xl">
-              {/* User name skeleton */}
-              <div className="h-5 bg-gray-200 rounded w-24 mb-2 animate-pulse"></div>
-              
-              {/* Review title skeleton */}
-              <div className="h-4 bg-gray-200 rounded w-32 mb-2 animate-pulse"></div>
-              
-              {/* Rating stars skeleton */}
-              <div className="flex items-center mt-2 mb-2">
-                <div className="flex space-x-1">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <div key={i} className="w-4 h-4 bg-gray-200 rounded animate-pulse"></div>
-                  ))}
-                </div>
-              </div>
-              
-              {/* Comment skeleton */}
-              <div className="mt-2 space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-5/6 animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
-              </div>
-              
-              {/* Show More button skeleton */}
-              <div className="h-4 bg-gray-200 rounded w-20 mt-2 animate-pulse"></div>
-            </div>
-              
-            {/* Item Card 2 */}
-            <div className="bg-white shadow-lg border border-gray-200 p-6 w-full max-w-sm rounded-2xl">
-              {/* User name skeleton */}
-              <div className="h-5 bg-gray-200 rounded w-24 mb-2 animate-pulse"></div>
-              
-              {/* Review title skeleton */}
-              <div className="h-4 bg-gray-200 rounded w-32 mb-2 animate-pulse"></div>
-              
-              {/* Rating stars skeleton */}
-              <div className="flex items-center mt-2 mb-2">
-                <div className="flex space-x-1">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <div key={i} className="w-4 h-4 bg-gray-200 rounded animate-pulse"></div>
-                  ))}
-                </div>
-              </div>
-              
-              {/* Comment skeleton */}
-              <div className="mt-2 space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-5/6 animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
-              </div>
-              
-              {/* Show More button skeleton */}
-              <div className="h-4 bg-gray-200 rounded w-20 mt-2 animate-pulse"></div>
+        {/* Recommended Packages Section Skeleton */}
+        <div>
+          <section className="w-full mx-auto py-8 pb-5 relative">
+            <div className="flex justify-between items-center mb-8">
+              {/* Title Skeleton */}
+              <div className="h-8 bg-gray-200 rounded w-72 animate-pulse" />
+              {/* View All Link Skeleton */}
+              <div className="h-6 bg-gray-200 rounded w-24 animate-pulse" />
             </div>
 
-            {/* Item Card 3 */}
-            <div className="bg-white shadow-lg border border-gray-200 p-6 w-full max-w-sm rounded-2xl">
-              {/* User name skeleton */}
-              <div className="h-5 bg-gray-200 rounded w-24 mb-2 animate-pulse"></div>
-              
-              {/* Review title skeleton */}
-              <div className="h-4 bg-gray-200 rounded w-32 mb-2 animate-pulse"></div>
-              
-              {/* Rating stars skeleton */}
-              <div className="flex items-center mt-2 mb-2">
-                <div className="flex space-x-1">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <div key={i} className="w-4 h-4 bg-gray-200 rounded animate-pulse"></div>
-                  ))}
+            {/* Scroll Buttons Skeleton */}
+            <button className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-2 z-10 opacity-50">
+              <ChevronRight className="w-6 h-6 rotate-180 text-gray-300" />
+            </button>
+            <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-2 z-10 opacity-50">
+              <ChevronRight className="w-6 h-6 text-gray-300" />
+            </button>
+
+            {/* Scrollable Container with Package Cards Skeleton */}
+            <div className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar scrollbar-hide pb-4">
+              {[1, 2, 3, 4].map((idx) => (
+                <div
+                  key={idx}
+                  className="bg-white rounded-2xl w-[340px] shadow-sm border border-gray-100 overflow-hidden flex flex-col flex-shrink-0"
+                >
+                  {/* Image Skeleton */}
+                  <div className="w-full h-48 bg-gray-200 animate-pulse" />
+                  
+                  {/* Content Skeleton */}
+                  <div className="p-5">
+                    {/* Package Name Skeleton */}
+                    <div className="h-6 bg-gray-200 rounded w-3/4 mb-2 animate-pulse" />
+                    
+                    {/* Description Skeleton */}
+                    <div className="space-y-2 mt-2 mb-2">
+                      <div className="h-4 bg-gray-200 rounded w-full animate-pulse" />
+                      <div className="h-4 bg-gray-200 rounded w-full animate-pulse" />
+                      <div className="h-4 bg-gray-200 rounded w-2/3 animate-pulse" />
+                    </div>
+                    
+                    {/* Badge Skeleton */}
+                    <div className="h-6 bg-gray-200 rounded-full w-24 animate-pulse" />
+                  </div>
                 </div>
-              </div>
-              
-              {/* Comment skeleton */}
-              <div className="mt-2 space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-5/6 animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
-              </div>
-              
-              {/* Show More button skeleton */}
-              <div className="h-4 bg-gray-200 rounded w-20 mt-2 animate-pulse"></div>
+              ))}
             </div>
-          </div>
+          </section>
         </div>
-
+      </div>
     </div>
   );
 };
 
-export default HospitalSkeleton;
+export default HospitalDetailSkeleton;

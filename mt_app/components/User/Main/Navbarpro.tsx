@@ -6,9 +6,11 @@ import { LogOut, Menu, User, X } from "lucide-react";
 import LoginModal from "../Homepage/LoginModal";
 import { FaCalendarAlt, FaCommentDots, FaRegStar } from "react-icons/fa";
 import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from "next/navigation";
 
 
 const Navbarpro: React.FC = () => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [currency, setCurrency] = useState<string>("USD");
@@ -20,10 +22,10 @@ const Navbarpro: React.FC = () => {
   const user = session?.user;
 
   // Handle logout using NextAuth
-    const handleLogout = async () => {
-      await signOut({ redirect: true });
-      setIsProfileDropdownOpen(false);
-    };
+  const handleLogout = async () => {
+    await signOut({ redirect: true });
+    setIsProfileDropdownOpen(false);
+  };
 
 
   const toggleCurrency = () => setCurrency(currency === "USD" ? "THB" : "USD");
@@ -41,6 +43,10 @@ const Navbarpro: React.FC = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  const handleNavigates = (bookingId: string) => {
+    router.push(`/#${bookingId}`);
+  };
+
   return (
     <nav className="relative z-50 flex items-center justify-between p-3 bg-[#F5F7FA] shadow-md">
       <Link href="/">
@@ -57,11 +63,19 @@ const Navbarpro: React.FC = () => {
           ${isMobileMenuOpen ? "flex flex-col absolute top-14 left-0 w-full bg-[#F5F7FA] p-4 shadow-md z-10" : "hidden"}
         `}
       >
-        {["Doctor", "Hospital", "Medical", "Medical & Tourism"].map((item, index) => (
-          <Link key={index} href={`/${item.toLowerCase().replace(/\s+/g, "-")}`} className="text-gray-700 hover:text-green-600 text-base">
+        {["Doctor", "Hospital", "Medical & Tourism"].map((item, index) => (
+          <button
+            key={index}
+            onClick={() =>
+              handleNavigates(item.replace(/\s+/g, "-"))
+            }
+            className="text-gray-700 hover:text-green-600 text-base cursor-pointer bg-transparent border-none"
+          >
             {item}
-          </Link>
+          </button>
         ))}
+
+
       </div>
 
       <div className="flex items-center gap-4">
@@ -119,7 +133,7 @@ const Navbarpro: React.FC = () => {
 
             {/* Profile Dropdown */}
             <div className="relative profile-dropdown">
-              <div 
+              <div
                 className="flex items-center cursor-pointer p-2 rounded-md hover:bg-gray-200 transition"
                 onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
               >
@@ -149,8 +163,8 @@ const Navbarpro: React.FC = () => {
                     </li>
                     <li>
                       <Link href={`/user/general/reviews`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
-                        <FaRegStar  className="w-4 h-4 mr-3" />
-                          Reviews
+                        <FaRegStar className="w-4 h-4 mr-3" />
+                        Reviews
                       </Link>
                     </li>
                     <li>
@@ -166,7 +180,7 @@ const Navbarpro: React.FC = () => {
                       </Link>
                     </li>
                     <li className="border-t border-gray-200 mt-2 pt-2">
-                      <button 
+                      <button
                         onClick={handleLogout}
                         className="flex items-center w-full px-4 py-2 text-red-600 hover:bg-red-50 transition"
                       >
