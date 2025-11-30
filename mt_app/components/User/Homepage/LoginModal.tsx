@@ -94,7 +94,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, initialEmail }
   return (
     <form 
       onSubmit={handleSendOTP}
-      className="fixed inset-0 flex items-center justify-center bg-black/45 z-50"
+      className="fixed inset-0 flex items-center justify-center bg-black/45 z-50 text-black"
     >
       <motion.div
         ref={modalRef}

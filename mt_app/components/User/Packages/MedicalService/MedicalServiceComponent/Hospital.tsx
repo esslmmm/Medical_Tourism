@@ -53,10 +53,10 @@ width={773}
                 </div>
 
                 <Link
-                href={`/user/Hospital/${hospital.hospital_id}`}
-                className="inline-flex items-center gap-2 border border-teal-500 text-teal-500 font-semibold px-5 py-2.5 rounded-full shadow-md hover:text-white hover:bg-teal-600 transition-all duration-200"
+                href={`/user/hospital/${hospital.hospital_id}`}
+                className="inline-flex items-center gap-2 border border-teal-500 text-teal-500 font-semibold px-5 py-2.5 rounded-full hover:text-white hover:bg-teal-600 transition-all duration-200"
                 >
-                View More Details
+                View Details
                 </Link>
               </div>
             </div>

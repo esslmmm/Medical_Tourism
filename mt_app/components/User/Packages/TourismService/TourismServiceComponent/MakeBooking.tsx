@@ -22,12 +22,11 @@ export default function BookingCard({ selectedTrip, appointmentDate, TripData }:
   const [form, setForm] = useState<AppointmentFormData | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [calendarMonth, setCalendarMonth] = useState<Date>(new Date(2025, 9));
-  const [showDateSection, setShowDateSection] = useState(false);
+  const [showDateSection, setShowDateSection] = useState(true);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("English");
   const [customLanguage, setCustomLanguage] = useState<string>("");
   const [customLanguageFlag, setCustomLanguageFlag] = useState("🌐");
-  const [showOtherLanguageModal, setShowOtherLanguageModal] =
-  useState<boolean>(false);
+  const [showOtherLanguageModal, setShowOtherLanguageModal] = useState<boolean>(false);
   const [adults, setAdults] = useState<number>(1);
   const [children, setChildren] = useState<number>(0);
   const [showLanguageSection, setShowLanguageSection] = useState(true);

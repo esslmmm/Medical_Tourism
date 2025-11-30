@@ -115,6 +115,10 @@ const MakeAppointment: React.FC<MakeAppointmentProps> = ({ onNextStep }) => {
   const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   
   const handleNextStep = async () => {
+     window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
     if (!isPolicyChecked) return;
     
     try {
