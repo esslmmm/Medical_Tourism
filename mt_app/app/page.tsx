@@ -22,6 +22,7 @@ import {
   Phone,
   MessageCircle
 } from 'lucide-react';
+import FAQ from "@/components/User/Homeview/FAQ";
 
 interface HomePageProps {
   children: React.ReactNode;
@@ -71,7 +72,7 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
               <button 
-                onClick={() => scrollToSection('packages-section')}
+                onClick={() => scrollToSection('Medical-&-Tourism')}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 Explore Medical Packages
@@ -284,41 +285,19 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-blue-600">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-              Ready to Start Your Medical Journey?
-            </h2>
-            <p className="text-xl text-blue-100 mb-8">
-              Get a free consultation and let us help you plan your perfect medical tourism experience
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                onClick={() => scrollToSection('packages-section')}
-                className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-slate-50 transition-all duration-300 shadow-lg"
-              >
-                Browse Packages
-              </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300">
-                <Phone className="inline-block w-5 h-5 mr-2" />
-                Call Us Now
-              </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300">
-                <MessageCircle className="inline-block w-5 h-5 mr-2" />
-                Live Chat
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
       
-      <MedicalList />
-      <PackageList /> 
+      {/* <MedicalList /> */}
+      <section  id="Medical-&-Tourism">
+      <PackageList/> 
+      </section>
+      <section id="Doctor">
       <DoctorList />
+      </section>
+      <section id="Hospital">
       <Hospitaltap />
+      </section>
+      {/* FAQs */}
+      <FAQ />
       <Footer />
       {children}
     </div>
