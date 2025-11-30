@@ -24,7 +24,7 @@ const PatientDetails = () => {
           form.patient.map((patient, index) => (
             <div
               key={index}
-              className="bg-white border-2 border-gray-200 rounded-2xl p-4 sm:p-6 shadow-md space-y-6 w-full max-w-5xl mx-auto"
+              className="bg-white border-2 border-gray-200 rounded-2xl p-4 sm:p-6 shadow-md space-y-6 w-full max-w-5xl mb-2 mx-auto"
             >
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 Patient Detail ({index + 1})
