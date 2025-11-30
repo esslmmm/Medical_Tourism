@@ -9,7 +9,8 @@ import SingleImageUpload from '@/components/admin_component/ui/SingleImageUpload
 const thaiCities = [
     "All",
     "Bangkok",
-    "Chiang mai",
+    "Chaing Rai",
+    "Chiang Mai",
     "Phuket",
     "Pattaya",
     "Krabi",

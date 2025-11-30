@@ -212,20 +212,21 @@ export default function MedicalAppointment() {
 
 
   const handleFormSubmit = async () => {
+
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    if (!validateForm()) {
-      setIsSubmitting(false);
-      // Scroll to first invalid field
-      setTimeout(() => {
-        const firstError = document.querySelector('.border-red-500');
-        if (firstError) {
-          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 100);
-      return;
-    }
+    // if (!validateForm()) {
+    //   setIsSubmitting(false);
+    //   // Scroll to first invalid field
+    //   setTimeout(() => {
+    //     const firstError = document.querySelector('.border-red-500');
+    //     if (firstError) {
+    //       firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    //     }
+    //   }, 100);
+    //   return;
+    // }
 
     try {
       if (!form || !id) throw new Error("Form or ID missing");

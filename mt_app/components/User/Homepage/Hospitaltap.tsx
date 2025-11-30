@@ -194,12 +194,12 @@ const Hospitaltap: React.FC = () => {
                 <div className="absolute inset-0 bg-black/20"></div>
                 
                 {/* Floating Badge */}
-                <div className="absolute top-4 left-4">
+                {/* <div className="absolute top-4 left-4">
                   <div className="bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 flex items-center space-x-2">
                     <FaStar className="text-slate-600 text-sm" />
                     <span className="text-slate-800 font-semibold text-sm">4.8</span>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Status Indicators */}
                 <div className="absolute top-4 right-4 flex space-x-2">

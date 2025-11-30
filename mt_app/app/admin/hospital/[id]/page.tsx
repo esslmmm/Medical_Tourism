@@ -9,7 +9,7 @@ import SingleImageUpload from '@/components/admin_component/ui/SingleImageUpload
 import ImageModal from '@/components/admin_component/ui/ImageModal';
 
 const THAILAND_CITIES = [
-  'Bangkok', 'Chiang Mai', 'Phuket', 'Pattaya', 'Krabi',
+  'Bangkok','Chiang Rai', 'Chiang Mai', 'Phuket', 'Pattaya', 'Krabi',
   'Koh Samui', 'Hua Hin', 'Ayutthaya', 'Sukhumvit', 'Silom',
   'Chatuchak', 'Sathorn', 'Thonglor', 'Ekkamai', 'On Nut',
   'Bang Na', 'Lat Krabang', 'Don Mueang', 'Suvarnabhumi', 'Other'
