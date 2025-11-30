@@ -34,6 +34,7 @@ export async function POST(req: Request) {
               dateofbirth: new Date(patient.dateofbirth),
               nationality: patient.nationality,
               passport_number: patient.passport_number,
+              symptoms: patient.symptoms,
             }
           })
         )
@@ -51,6 +52,7 @@ export async function POST(req: Request) {
         dateofbirth,
         nationality,
         passport_number,
+        symptoms,
       } = body;
       
       console.log("Creating patient:", appointment_id);
@@ -71,6 +73,7 @@ export async function POST(req: Request) {
           dateofbirth: new Date(dateofbirth),
           nationality,
           passport_number,
+          symptoms,
         },
       });
 
