@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import BookingSkeleton from "../skeleton-screen/profile/BookingSkeleton";
 import { checkoutAction } from "@/app/checkout/checkout-action";
+import { useUserId } from "@/hooks/useUserId";
 
 interface Booking {
   booking_id: number;
@@ -30,6 +31,7 @@ const BookingTabs: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"Pending" | "Approved" | "Completed">("Pending");
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const userId = useUserId();
   const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState<number | null>(null); // Track which booking is being paid
   const router = useRouter();
@@ -74,7 +76,7 @@ const BookingTabs: React.FC = () => {
       const bookingData = await res.json();
 
       // Pass fetched booking data to checkoutAction
-      await checkoutAction(bookingData, bookingId);
+      await checkoutAction(bookingData, bookingId, String(userId));
     } catch (err) {
       console.error("Checkout failed:", err);
       alert("Failed to proceed with payment. Please try again.");

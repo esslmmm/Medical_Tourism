@@ -2,19 +2,12 @@ import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server'
 
 // GET request - Fetch a single guide booking by ID
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const resolvedParams = await params;
-    const guideBookingId = Number(resolvedParams.id)
+    const { id } = await params;
+    const guideBookingId = Number(id)
     const guideBooking = await prisma.guide_bookings.findUnique({
-      where: { booking_id: guideBookingId },
-      include: {
-        guides: {
-            include:{
-                languages:true
-            }
-        }
-      },
+      where: { booking_id: guideBookingId }
     })
 
     if (!guideBooking) {
@@ -29,15 +22,15 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 }
 
 // PUT request - Update an guide booking by ID
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { guide_id, start, end, status } = await req.json();
-    const guideBookingId = Number(params.id);
+    const { id } = await params;
+    const guideBookingId = Number(id);
 
     // Prepare the update data conditionally
     const dataToUpdate: any = {};
     if (status) dataToUpdate.status = status;
-    if (guide_id) dataToUpdate.guide_id = guide_id;
     if (start) dataToUpdate.start = new Date(start);
     if (end) dataToUpdate.end = new Date(end);
 
@@ -56,9 +49,10 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
 
 // DELETE request - Delete an guide booking by ID
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const guideBookingId = Number(params.id)
+    const { id } = await params;
+    const guideBookingId = Number(id)
     await prisma.guide_bookings.delete({
       where: { booking_id: guideBookingId },
     })

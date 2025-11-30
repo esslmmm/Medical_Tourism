@@ -8,11 +8,10 @@ const prisma = new PrismaClient();
  */
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const resolvedParams = await params;
-    const userId = resolvedParams.id;
+    const { id: userId } = await params;
 
     // Validate ID
     if (isNaN(Number(userId))) {
@@ -31,8 +30,6 @@ export async function GET(
         package_bookings: true,
         payment: true,
         review_hospital: true,
-        review_hotel: true,
-        review_guide: true,
         files: true,
         messages_messages_sender_idTouser: true,
         chat_chat_user1_idTouser: true,
@@ -60,12 +57,12 @@ export async function GET(
  */
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const userId = Number(params.id);
+    const { id } = await params;
+    const userId = Number(id);
 
-    // Validate ID
     if (isNaN(userId)) {
       return NextResponse.json(
         { error: "Invalid user ID" },
@@ -73,11 +70,17 @@ export async function PUT(
       );
     }
 
-    // Parse request body
     const body = await request.json();
-    const { name, email, nationality, password, image, role, is_email_verified } = body;
+    const {
+      name,
+      email,
+      nationality,
+      password,
+      image,
+      role,
+      is_email_verified,
+    } = body;
 
-    // Update user
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
@@ -86,6 +89,8 @@ export async function PUT(
         nationality,
         image,
         role,
+        // is_email_verified, ← add if needed
+        // password ← avoid updating password here unless hashed
       },
     });
 
@@ -94,7 +99,6 @@ export async function PUT(
     console.error("Error updating user:", error);
 
     if (error.code === "P2025") {
-      // Prisma error: record not found
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 

@@ -6,10 +6,10 @@ import { NextResponse } from 'next/server';
 /**
  * GET: Fetch a Action by ID
  */
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-        const resolvedParams = await params;
-        const action_id = parseInt(resolvedParams.id, 10);
+        const { id } = await params;
+        const action_id = parseInt(id, 10);
 
     if (isNaN(action_id)) {
       return NextResponse.json({ error: "Invalid action ID" }, { status: 400 });
@@ -37,9 +37,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
 /**
  * PUT: Update a action history by ID
  */
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const action_id = parseInt(params.id, 10);
+        const { id } = await params;
+        const action_id = parseInt(id, 10);
 
         if (isNaN(action_id)) {
             return NextResponse.json({ error: "Invalid action ID" }, { status: 400 });

@@ -6,10 +6,10 @@ import { prisma } from '@/lib/prisma';
  * Get a Chat_id to Retrieving messages in chat
  * When a user clicks on a chat, fetch all messages inside that chat.
  */
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const resolvedParams = await params;
-        const chatId = parseInt(resolvedParams.id, 10);
+        const { id } = await params;
+        const chatId = parseInt(id, 10);
 
         if (isNaN(chatId)) {
             return NextResponse.json({ error: "Invalid chat ID" }, { status: 400 });
@@ -33,9 +33,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
 /**
  * PUT: Change information after sent message
  */
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const message_id = parseInt(params.id, 10);
+        const { id } = await params;
+        const message_id = parseInt(id, 10);
         const { sender_id, message } = await request.json();
 
         if (isNaN(message_id) || !sender_id || !message) {
@@ -77,9 +78,10 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 /**
  * DELETE: Delete message after sent
  */
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const message_id = parseInt(params.id, 10);
+        const { id } = await params;
+        const message_id = parseInt(id, 10);
         const { sender_id } = await request.json();
 
         if (isNaN(message_id) || !sender_id) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
@@ -79,7 +79,9 @@ const countryPhoneCodes = [
 
     return (
         <div>
-            <Navbar />
+            <Suspense fallback={<div>Loading...</div>}>
+                <Navbar />
+            </Suspense>
             <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-16 px-4">
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center mb-12">

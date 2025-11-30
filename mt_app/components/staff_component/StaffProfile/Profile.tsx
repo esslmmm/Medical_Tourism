@@ -16,12 +16,12 @@ const Profile = () => {
 
     const handleEditClick = (field: any) => {
         setEditingField(field);
-        setTempValue(field === 'password' ? '' : user[field]);
+        // setTempValue(field === 'password' ? '' : user[field]);
     };
 
     const handleSave = () => {
         if (tempValue.trim()) {
-            setUser({ ...user, [editingField]: tempValue });
+            // setUser({ ...user, [editingField]: tempValue });
         }
         setEditingField(null);
         setTempValue("");
@@ -37,7 +37,7 @@ const Profile = () => {
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                setProfileImage(e.target.result);
+                // setProfileImage(e.target.result);
             };
             reader.readAsDataURL(file);
         }
@@ -192,7 +192,7 @@ const Profile = () => {
                                                     <div className="flex items-center justify-between">
                                                         <div className="flex-1">
                                                             <p className="text-gray-900 text-lg font-medium">
-                                                                {field === 'password' ? '••••••••••' : user[field]}
+                                                                {/* {field === 'password' ? '••••••••••' : user[field]} */}
                                                             </p>
                                                             {field === 'email' && (
                                                                 <p className="text-sm text-gray-500 mt-1">Used for notifications and account recovery</p>

@@ -53,9 +53,10 @@ export async function POST(request: Request) {
 /**
  * DELETE: Remove a action history by ID
  */
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request) {
     try {
-        const action_id = parseInt(params.id, 10);
+        const { id } = await request.json();
+        const action_id = parseInt(id, 10);
 
         if (isNaN(action_id)) {
             return NextResponse.json({ error: "Invalid action ID" }, { status: 400 });

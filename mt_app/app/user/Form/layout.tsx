@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { AppointmentFormData } from "./form";
 import Navbarprogress from "@/components/User/medical_appointment/Navbarprogress";
 import MedicalService from "@/components/User/SidebarDetails/MedicalService";
@@ -54,7 +54,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     
   return (
     <div className="min-h-screen bg-zinc-50">
-        <Navbarprogress />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Navbarprogress />
+        </Suspense>
       {/* Main content area */}
       <div className="max-w-7xl mx-auto px-4 py-8">
       <main className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-5">

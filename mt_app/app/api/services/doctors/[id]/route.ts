@@ -6,10 +6,9 @@ import { prisma } from '@/lib/prisma';
 /**
  * GET: Fetch a doctor by ID
  */
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const resolvedParams = await params;
-      const doctor_id = (resolvedParams.id);
+        const { id: doctor_id } = await params;
   
       const doctor = await prisma.doctors.findUnique({
         where: { doctor_id },
@@ -61,9 +60,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
 /**
  * PUT: Update a doctor by ID
 */
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const doctor_id = params.id;
+        const { id: doctor_id } = await params;
 
         if (isNaN(Number(doctor_id))) {
             return NextResponse.json({ error: "Invalid doctor ID" }, { status: 400 });
@@ -172,9 +171,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 /**
    * DELETE: Remove a doctor by ID
    */
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const doctor_id = params.id;
+        const { id: doctor_id } = await params;
 
         if (isNaN(Number(doctor_id))) {
             return NextResponse.json({ error: "Invalid doctor ID" }, { status: 400 });

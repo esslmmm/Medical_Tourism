@@ -127,10 +127,10 @@ export async function GET(request: NextRequest) {
       hospitalContact: booking.packages.hospitals.contact_info,
       status: booking.status.toLowerCase() as 'in_progress' | 'pending' | 'approved' | 'completed' | 'rejected' | 'cancelled',
       bookingDate: booking.create_at.toISOString().split('T')[0],
-      totalAmount: booking.payment?.[0]?.amount || 0,
+      totalAmount: booking.payment?.amount ? Number(booking.payment.amount) : 0,
       createdAt: booking.create_at.toISOString(),
       contactDetail: booking.user_contact_detail,
-      payments: booking.payment || []
+      payments: booking.payment ? [booking.payment] : []
     }));
 
     return NextResponse.json(transformedBookings);

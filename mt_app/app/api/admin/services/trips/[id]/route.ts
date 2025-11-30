@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 // GET - Fetch a specific place by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -13,10 +13,10 @@ export async function GET(
     if (!session || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const resolvedParams = await params;
+    const { id } = await params;
 
     const trip = await prisma.trips.findUnique({
-      where: { tour_id: Number(resolvedParams.id) },
+      where: { tour_id: Number(id) },
       include: {
         languages: true,
         images: true,
@@ -74,15 +74,15 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
     if (!session || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const resolvedParams = await params;
-    const tripId = Number(resolvedParams.id);
+    const { id } = await params;
+    const tripId = Number(id);
     const body = await request.json();
     const { city, route_ids, images, languages, description } = body as { 
       city: string; 

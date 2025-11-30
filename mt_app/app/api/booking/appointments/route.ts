@@ -24,7 +24,6 @@ export async function POST(req: Request) {
         timeslot,
         child,
         adult,
-        description,
         status,
         // patient_details: {
         //   create: {

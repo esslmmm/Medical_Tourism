@@ -3,10 +3,9 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const resolvedParams = await params;
-        const package_id = resolvedParams.id; // Convert ID to integer
+        const { id: package_id } = await params; // Convert ID to integer
   
   
       // Fetch package along with associated data

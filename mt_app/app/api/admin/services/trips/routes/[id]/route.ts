@@ -1,10 +1,10 @@
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const resolvedParams = await params;
-    const route_id = Number(resolvedParams.id);
+    const { id } = await params;
+    const route_id = Number(id);
     const route = await prisma.routes.findUnique({
       where: { route_id },
       select: {
@@ -46,10 +46,10 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
 
 
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const resolvedParams = await params;
-    const route_id = Number(resolvedParams.id);
+    const { id } = await params;
+    const route_id = Number(id);
     const body = await request.json();
     const { title, image, description, duration, adult_price, child_price, car_service_price, guide_price, place_ids } = body;
     console.log('Updating route with data:', title);

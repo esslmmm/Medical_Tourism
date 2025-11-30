@@ -6,9 +6,10 @@ const prisma = new PrismaClient();
 /**
  * GET: Fetch a contact message by ID
  */
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const contact_id = parseInt(params.id);
+        const { id } = await params;
+        const contact_id = parseInt(id);
 
         if (isNaN(contact_id)) {
             return NextResponse.json({ error: "Invalid contact ID" }, { status: 400 });
@@ -34,10 +35,11 @@ export async function GET(request: Request, { params }: { params: { id: string }
  */
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const contact_id = parseInt(params.id);
+    const { id } = await params;
+    const contact_id = parseInt(id);
 
     if (isNaN(contact_id)) {
       return NextResponse.json({ error: "Invalid contact ID" }, { status: 400 });
@@ -79,9 +81,10 @@ export async function PUT(
 /**
  * DELETE: Remove a contact message by ID
  */
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const contact_id = parseInt(params.id);
+        const { id } = await params;
+        const contact_id = parseInt(id);
 
         if (isNaN(contact_id)) {
             return NextResponse.json({ error: "Invalid contact ID" }, { status: 400 });

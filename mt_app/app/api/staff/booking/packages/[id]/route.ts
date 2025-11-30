@@ -4,10 +4,9 @@ import { NextResponse } from 'next/server'
 
 
 // GET request - Fetch a single package booking by ID
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const resolvedParams = await params;
-    const packageBookingId = resolvedParams.id;
+    const { id: packageBookingId } = await params;
 
     const packageBooking = await prisma.package_bookings.findUnique({
       where: { booking_id: packageBookingId },

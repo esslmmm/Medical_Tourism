@@ -5,10 +5,9 @@ import { prisma } from '@/lib/prisma';
 /**
  * GET: Fetch a hospital by ID
  */
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const resolvedParams = await params;
-    const hospital_id = resolvedParams.id;
+    const { id: hospital_id } = await params;
     
     // Basic validation - check if ID exists and is not empty
     if (!hospital_id || hospital_id.trim() === '') {

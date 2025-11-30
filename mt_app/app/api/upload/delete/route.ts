@@ -13,7 +13,7 @@ export async function DELETE(request: NextRequest) {
 
     // Get file from database
     const file = await prisma.file.findUnique({
-      where: { id: parseInt(fileId) }
+      where: { id: fileId }
     });
 
     if (!file) {
@@ -25,7 +25,7 @@ export async function DELETE(request: NextRequest) {
 
     // Delete from database
     await prisma.file.delete({
-      where: { id: parseInt(fileId) }
+      where: { id: fileId }
     });
 
     return NextResponse.json({ success: true });

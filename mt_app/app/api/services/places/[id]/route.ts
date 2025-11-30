@@ -7,16 +7,12 @@ import { prisma } from '@/lib/prisma';
 /**
  * GET: Fetch a Place by ID
  */
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const place_id = parseInt(params.id, 10);
-
-    if (isNaN(place_id)) {
-      return NextResponse.json({ error: "Invalid place ID" }, { status: 400 });
-    }
+    const { id } = await params;
 
     const place = await prisma.places.findUnique({
-      where: { place_id },
+      where: { place_id: id },
       include: {
         place_image: true,
       },
@@ -38,18 +34,15 @@ export async function GET(request: Request, { params }: { params: { id: string }
 /**
  * PUT: Update a Place by ID
 */
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const place_id = parseInt(params.id, 10);
-
-        if (isNaN(place_id)) {
-            return NextResponse.json({ error: "Invalid place ID" }, { status: 400 });
-        }
+        const { id } = await params;
+        const place_id = parseInt(id, 10);
 
         const body = await request.json();
 
         const existingPlace = await prisma.places.findUnique({
-            where: { place_id },
+            where: { place_id: id },
         });
 
         if (!existingPlace) {
@@ -57,9 +50,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         }
 
         const updatedPlace = await prisma.places.update({
-            where: { place_id },
+            where: { place_id: id },
             data: {
-                place_name: body.place_name,
+                name: body.place_name,
                 contact_info: body.contact_info,
                 location: body.location,
                 city: body.city,
@@ -74,11 +67,11 @@ export async function PUT(request: Request, { params }: { params: { id: string }
                 if (img.id) {
                     await prisma.place_image.update({
                         where: { image_id: img.id },
-                        data: { image: img.image },
+                        data: { url: img.image },
                     });
                 } else {
                     await prisma.place_image.create({
-                        data: { place_id, image: img.image },
+                        data: { place_id: id, url: img.image },
                     });
                 }
             }
@@ -100,16 +93,17 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 /**
    * DELETE: Remove a Place by ID
 */
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const place_id = parseInt(params.id, 10);
+        const { id } = await params;
+        const place_id = parseInt(id, 10);
 
         if (isNaN(place_id)) {
             return NextResponse.json({ error: "Invalid place ID" }, { status: 400 });
         }
 
         const existingPlace = await prisma.places.findUnique({
-            where: { place_id },
+            where: { place_id: id },
             include: {
                 place_image: true, 
             }
@@ -120,11 +114,11 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
         }
 
         await prisma.place_image.deleteMany({
-            where: { place_id }
+            where: { place_id: id }
         });
 
         await prisma.places.delete({
-            where: { place_id }
+            where: { place_id: id }
         });
 
         return NextResponse.json({ message: "Place and related images deleted successfully" }, { status: 200 });

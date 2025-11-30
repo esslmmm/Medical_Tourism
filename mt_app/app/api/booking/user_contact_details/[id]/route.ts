@@ -3,11 +3,11 @@ import { NextResponse } from 'next/server'
 
 
 // GET request - Fetch a single User_Contact_Detail by ID
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user_contact_detailId = Number(params.id)
+    const { id } = await params;
     const user_contact_detail = await prisma.user_contact_detail.findUnique({
-      where: { id: user_contact_detailId },
+      where: { id: id },
     })
 
     if (!user_contact_detail) {
@@ -23,13 +23,12 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
 
 // PUT request - Update an User_Contact_Detail by ID
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const { firstname, lastname, email, country, phone,} = await req.json()
-
-    const user_contact_detailId = Number(params.id)
     const updatedUser_Contact_Detail = await prisma.user_contact_detail.update({
-      where: { id: user_contact_detailId },
+      where: { id: id },
       data: {
         firstname,
         lastname,
@@ -48,13 +47,13 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
 
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-      const user_contact_detailId = Number(params.id);
+      const { id } = await params;
   
       // Fetch the patient_id related to the User_Contact_Detail
       const user_contact_detail = await prisma.user_contact_detail.findUnique({
-        where: { id: user_contact_detailId },
+        where: { id: id },
         select: { id: true },
       });
   
@@ -64,7 +63,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   
       // Delete the User_Contact_Detail first
       await prisma.user_contact_detail.delete({
-        where: { id: user_contact_detailId },
+        where: { id: id },
       });
   
       // If the User_Contact_Detail had a linked patient_id, delete the patient_details

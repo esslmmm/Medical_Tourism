@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 // GET - Fetch a specific place by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -13,10 +13,10 @@ export async function GET(
     if (!session || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const resolvedParams = await params;
+    const { id } = await params;
 
     const place = await prisma.places.findUnique({
-      where: { place_id: resolvedParams.id },
+      where: { place_id: id },
       include: {
         location:{
           select: {
@@ -48,7 +48,7 @@ export async function GET(
 // PUT - Update a specific place
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -59,10 +59,10 @@ export async function PUT(
 
     const body = await request.json();
     const { name, contact_info, location, city, description, fee, image, place_images } = body;
-    const resolvedParams = await params;
+    const { id } = await params;
     // Check if place exists
     const existingPlace = await prisma.places.findUnique({
-      where: { place_id: resolvedParams.id },
+      where: { place_id: id },
     });
 
     if (!existingPlace) {
@@ -74,7 +74,7 @@ export async function PUT(
 
     // Update the place
     const updatedPlace = await prisma.places.update({
-      where: { place_id: resolvedParams.id },
+      where: { place_id: id },
       data: {
         name: name || existingPlace.name,
         contact_info: contact_info !== undefined ? contact_info : existingPlace.contact_info,
@@ -88,12 +88,12 @@ export async function PUT(
     //Update location if provided
     if (location !== undefined) {
       const existingLocation = await prisma.location.findUnique({
-        where: { place_id: resolvedParams.id },
+        where: { place_id: id },
       });
 
       if (existingLocation) {
         await prisma.location.update({
-          where: { place_id: resolvedParams.id },
+          where: { place_id: id },
           data: {
             text: location.text,
             url: location.url,
@@ -102,7 +102,7 @@ export async function PUT(
       } else {
         await prisma.location.create({
           data: {
-            place_id: resolvedParams.id,
+            place_id: id,
             text: location.text,
             url: location.url,
           },
@@ -114,11 +114,11 @@ export async function PUT(
     // Update place_images if provided
     if (place_images && place_images.length > 0) {
       await prisma.place_image.deleteMany({
-        where: { place_id: resolvedParams.id },
+        where: { place_id: id },
       });
       await prisma.place_image.createMany({
         data: place_images.map((url: string | null) => ({
-          place_id: resolvedParams.id,
+          place_id: id,
           url,
         })),
       });
@@ -126,7 +126,7 @@ export async function PUT(
 
     // Fetch the updated place with place_images
     const finalPlace = await prisma.places.findUnique({
-      where: { place_id: resolvedParams.id },
+      where: { place_id: id },
       include: {
         place_image: true,
       },
@@ -145,7 +145,7 @@ export async function PUT(
 // DELETE - Delete a specific place
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -154,9 +154,10 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     // Check if place exists
     const existingPlace = await prisma.places.findUnique({
-      where: { place_id: params.id },
+      where: { place_id: id },
     });
 
     if (!existingPlace) {
@@ -168,12 +169,12 @@ export async function DELETE(
 
     // Delete place images first (due to foreign key constraint)
     await prisma.place_image.deleteMany({
-      where: { place_id: params.id },
+      where: { place_id: id },
     });
 
     // Delete the place
     await prisma.places.delete({
-      where: { place_id: params.id },
+      where: { place_id: id },
     });
 
     return NextResponse.json({ message: 'Place deleted successfully' });

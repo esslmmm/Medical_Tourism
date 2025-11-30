@@ -4,12 +4,12 @@ import { NextResponse } from 'next/server'
 
 
 // GET request - Fetch a single tourism booking by ID
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
     
-      const resolvedParams = await params;
+      const { id } = await params;
       const tourismBooking = await prisma.tourism_bookings.findUnique({
-        where: { tourism_id: resolvedParams.id },
+        where: { tourism_id: id },
         select: {
           child: true,
           adult: true,

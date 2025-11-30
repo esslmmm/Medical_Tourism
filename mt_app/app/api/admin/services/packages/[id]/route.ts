@@ -2,13 +2,12 @@ import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
 interface Params {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const resolvedParams = await params;
-        const package_id = resolvedParams.id;
+        const { id: package_id } = await params;
   
       const packageData = await prisma.packages.findUnique({
         where: { package_id },
@@ -38,8 +37,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
 export async function PUT(request: Request, { params }: Params) {
   try {
-      const resolvedParams = await params;
-      const package_id = resolvedParams.id;
+      const { id: package_id } = await params;
 
       const body = await request.json();
       const { images} = body as { images: { id?: number; url: string; alt: string }[] };
@@ -214,7 +212,7 @@ export async function PUT(request: Request, { params }: Params) {
    */
   export async function DELETE(request: Request, { params }: Params) {
       try {
-          const package_id = params.id; // Convert ID to integer
+          const { id: package_id } = await params; // Convert ID to integer
   
           // Check if the package exists before deleting
           const existingPackage = await prisma.packages.findUnique({

@@ -45,7 +45,7 @@ const EditTripPage: React.FC = () => {
   const [routes, setRoutes] = useState<RouteItem[]>([]);
   const [langs, setLangs] = useState<languageItem[]>([]);
   const [selectedRouteIds, setSelectedRouteIds] = useState<number[]>([]);
-  const [selectedLanguages, setSelectedLanguages] = useState<String[]>([]);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [formData, setFormData] = useState({ city: '', description: '' });
 

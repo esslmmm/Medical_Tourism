@@ -2,10 +2,9 @@ import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server'
 
 // GET request - Fetch a single appointment by ID
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const resolvedParams = await params;
-    const appointmentId = resolvedParams.id;
+    const { id: appointmentId } = await params;
     const appointment = await prisma.appointments.findUnique({
       where: { appointment_id: appointmentId },
       include: {
@@ -26,7 +25,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
 
 // PUT request - Update an appointment by ID
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const {
       date,
@@ -40,8 +39,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       patient,
     } = await req.json();
 
-    const resolvedParams = await params;
-    const appointmentId = resolvedParams.id;
+    const { id: appointmentId } = await params;
 
     const updateData: any = {
       date,

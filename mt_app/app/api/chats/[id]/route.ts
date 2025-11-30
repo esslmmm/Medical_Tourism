@@ -3,16 +3,17 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { chatId: string } }
+  { params }: { params: Promise<{ chatId: string }> }
 ) {
   try {
-    const chatId = parseInt(params.chatId);
+    const { chatId } = await params;
+    const chatId_num = parseInt(chatId);
     const searchParams = req.nextUrl.searchParams;
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '50');
 
     const messages = await prisma.messages.findMany({
-      where: { chat_id: chatId },
+      where: { chat_id: chatId_num },
       orderBy: { timestamp: 'desc' },
       skip: (page - 1) * limit,
       take: limit,

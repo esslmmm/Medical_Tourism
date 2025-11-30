@@ -5,7 +5,7 @@ import { auth } from '../../../auth/auth';
 
 
 // GET request - Fetch a single package booking by ID
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth();
 
@@ -15,8 +15,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
     const userId = Number(session.user.id);
 
-    const resolvedParams = await params;
-    const packageBookingId = resolvedParams.id;
+    const { id: packageBookingId } = await params;
     const packageBooking = await prisma.package_bookings.findUnique({
       where: { booking_id: packageBookingId },
       select: {
@@ -161,7 +160,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 }
 
 // PUT request - Update a package booking by ID
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const {
       user_id,
@@ -172,8 +171,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       status,
     } = await req.json();
 
-    const resolvedParams = await params;
-    const packageBookingId = resolvedParams.id
+    const { id: packageBookingId } = await params
     const updatedPackageBooking = await prisma.package_bookings.update({
       where: { booking_id: packageBookingId },
       data: {
@@ -194,9 +192,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 }
 
 // DELETE request - Delete a package booking by ID
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const packageBookingId = params.id;
+    const { id: packageBookingId } = await params;
     await prisma.package_bookings.delete({
       where: { booking_id: packageBookingId },
     })
