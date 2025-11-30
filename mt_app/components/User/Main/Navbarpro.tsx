@@ -52,11 +52,18 @@ const Navbarpro: React.FC = () => {
       </button>
 
       <div className="flex items-center gap-4">
-        <div className="cursor-pointer p-2 rounded-md hover:bg-gray-200 text-black" onClick={toggleCurrency}>
-          <span className="text-black-700 font-bold">{currency}</span>
+        <div className="relative dropdown-container group">
+          <Link href="/user/contact-us" className="text-gray-700 font-bold hover:text-green-600 text-base">
+            Contact Us
+          </Link>
         </div>
+        {/* Currency */}
+        {/* <div className="cursor-pointer p-2 rounded-md hover:bg-gray-200 text-black" onClick={toggleCurrency}>
+          <span className="text-black-700 font-bold">{currency}</span>
+        </div> */}
 
-        <div className="relative language-selector">
+{/* Language */}
+        {/* <div className="relative language-selector">
           <div className="flex items-center cursor-pointer p-2 rounded-md hover:bg-gray-200" onClick={() => setIsOpen(!isOpen)}>
             <img src="/img/Footer&Navbar/engflag.png" alt="Flag" className="w-8 h-auto" />
           </div>
@@ -76,7 +83,7 @@ const Navbarpro: React.FC = () => {
               </ul>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Show loading state while checking authentication */}
         {status === 'loading' ? (
@@ -89,9 +96,9 @@ const Navbarpro: React.FC = () => {
             <button onClick={() => setIsLoginOpen(true)} className="px-4 py-2 text-green-600 hover:bg-gray-200 rounded-lg transition">
               Login
             </button>
-            <Link href="/signup" className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+           <button onClick={() => setIsLoginOpen(true)} className="px-4 py-2 text-green-600 hover:bg-gray-200 rounded-lg transition">
               Sign Up
-            </Link>
+            </button>
           </>
         ) : (
           // Show when logged in

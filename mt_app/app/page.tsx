@@ -92,11 +92,9 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
         </div>
       </section>
 
-      {/* Key Features Section */}
-      <section id="features-section" className="py-20 bg-white">
+      {/* <section id="features-section" className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
-            {/* Section Header */}
             <div className="text-center mb-16">
               <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-6">
                 Why Choose Our Platform?
@@ -107,9 +105,7 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
               </p>
             </div>
 
-            {/* Features Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {/* Free Medical Coordinator */}
               <div className="bg-slate-50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 border border-slate-100">
                 <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
                   <UserCheck className="w-8 h-8 text-blue-600" />
@@ -125,7 +121,6 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
                 </div>
               </div>
 
-              {/* Multi-language Guides */}
               <div className="bg-slate-50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 border border-slate-100">
                 <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mb-6">
                   <Globe className="w-8 h-8 text-green-600" />
@@ -144,7 +139,6 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
                 </div>
               </div>
 
-              {/* Direct Hospital Network */}
               <div className="bg-slate-50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 border border-slate-100">
                 <div className="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
                   <Shield className="w-8 h-8 text-purple-600" />
@@ -160,7 +154,6 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
                 </div>
               </div>
 
-              {/* Comprehensive Medical Services */}
               <div className="bg-slate-50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 border border-slate-100">
                 <div className="w-16 h-16 bg-red-100 rounded-xl flex items-center justify-center mb-6">
                   <Heart className="w-8 h-8 text-red-600" />
@@ -175,7 +168,6 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
                 </div>
               </div>
 
-              {/* Tourism Integration */}
               <div className="bg-slate-50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 border border-slate-100">
                 <div className="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center mb-6">
                   <MapPin className="w-8 h-8 text-orange-600" />
@@ -190,8 +182,7 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
                   Flexible scheduling
           </div>
         </div>
-        
-              {/* End-to-End Support */}
+
               <div className="bg-slate-50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 border border-slate-100">
                 <div className="w-16 h-16 bg-cyan-100 rounded-xl flex items-center justify-center mb-6">
                   <Users className="w-8 h-8 text-cyan-600" />
@@ -209,10 +200,10 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* How It Works Section */}
-      <section className="py-20 bg-slate-50">
+      {/* <section className="py-20 bg-slate-50">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
@@ -267,7 +258,7 @@ const HomePage: React.FC<HomePageProps> = ({ children }) => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
       
       {/* <MedicalList /> */}
       <section  id="Medical-&-Tourism">
