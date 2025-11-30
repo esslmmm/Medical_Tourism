@@ -156,14 +156,6 @@ const PackagesPage = () => {
       <div className="bg-white shadow-lg border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-                <Heart className="w-6 h-6 text-white" />
-              </div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Medical Tourism Packages
-              </h1>
-            </div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Discover world-class medical treatments combined with exceptional care and premium tourism experiences
             </p>
@@ -184,55 +176,7 @@ const PackagesPage = () => {
                 />
               </div>
 
-              {/* Filter Toggle */}
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg"
-              >
-                <Filter className="w-5 h-5" />
-                Filters
-              </button>
             </div>
-
-            {/* Filter Options */}
-            {showFilters && (
-              <div className="mt-6 p-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  {/* Category Filter */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Medical Category
-                    </label>
-                    <select
-                      value={filters.category}
-                      onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 bg-white"
-                    >
-                      {categories.map(cat => (
-                        <option key={cat.value} value={cat.value}>{cat.label}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Hospital Filter */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Hospital
-                    </label>
-                    <select
-                      value={filters.hospital}
-                      onChange={(e) => setFilters({ ...filters, hospital: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 bg-white"
-                    >
-                      <option value="all">All Hospitals</option>
-                      {Array.from(new Set(packages.map(p => p.hospitals?.name))).map(hospital => (
-                        <option key={hospital} value={hospital || ''}>{hospital}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>

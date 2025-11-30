@@ -77,11 +77,21 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
           ${isMobileMenuOpen ? "flex flex-col absolute top-14 left-0 w-full bg-[#F5F7FA] p-4 shadow-md z-10" : "hidden"}
         `}
       >
-        {["Doctor", "Hospital", "Packages"].map((item, index) => (
-          <Link key={index} href={`/user/${item.toLowerCase().replace(/\s+/g, "-")}`} className="text-gray-700 hover:text-green-600 text-base">
-            {item}
+         <div>
+          <Link href="/#Doctor" className="text-gray-700 hover:text-green-600 text-base">
+            Doctor
           </Link>
-        ))}
+        </div>
+        <div>
+          <Link href="/#Hospital" className="text-gray-700 hover:text-green-600 text-base">
+            Hospital
+          </Link>
+        </div>
+        <div className="relative dropdown-container group">
+          <Link href="/user/packages" className="text-gray-700 hover:text-green-600 text-base">
+            Packages
+          </Link>
+        </div>
 
         <div className="relative dropdown-container group">
           <Link href="/user/Contact-us" className="text-gray-700 hover:text-green-600 text-base">
@@ -92,7 +102,7 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
       </div>
 
       <div className="flex items-center gap-4">
-        <div className="cursor-pointer p-2 rounded-md hover:bg-gray-200" onClick={toggleCurrency}>
+        {/* <div className="cursor-pointer p-2 rounded-md hover:bg-gray-200" onClick={toggleCurrency}>
           <span className="text-black-700 font-bold">{currency}</span>
         </div>
 
@@ -116,7 +126,7 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
               </ul>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Show loading state while checking authentication */}
         {status === 'loading' ? (
