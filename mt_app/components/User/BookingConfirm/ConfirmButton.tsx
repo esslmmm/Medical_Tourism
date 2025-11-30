@@ -5,7 +5,6 @@ import { createContactDetails } from '@/app/api/booking/user_contact_details/cre
 import { createAppointmentFile } from '@/app/api/files/createAppointmentFile';
 import { useUserId } from '@/hooks/useUserId';
 import { createPatient } from '@/app/api/booking/patients/createPatient';
-import { updateAppointment } from '@/app/api/booking/appointments/updateAppointment';
 import { createPackageBooking } from '@/app/api/booking/packages/createPackageBooking';
 
 const ConfirmButton = () => {
@@ -63,6 +62,58 @@ const ConfirmButton = () => {
 
 
 
+	const uploadPatientFiles = async (patients: any[]) => {
+		const fileIds: Record<number, string> = {};
+
+		for (let i = 0; i < patients.length; i++) {
+			const patient = patients[i];
+			if (!patient.file) continue;
+
+			try {
+				// Convert base64 back to File object
+				const file = base64ToFile(patient.file.base64, patient.file.name, patient.file.type);
+				console.log(`File ${i + 1} converted successfully:`, file.name);
+
+				// Upload file to Cloudinary
+				const cloudinaryResult = await uploadToCloudinary(file);
+
+				// Save metadata
+				const metadataResponse = await fetch("/api/upload/save-metadata", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						userId: userId,
+						fileName: cloudinaryResult.original_filename || cloudinaryResult.public_id,
+						originalName: cloudinaryResult.original_filename || patient.file.name,
+						fileType: cloudinaryResult.format,
+						fileSize: cloudinaryResult.bytes,
+						category: "MEDICAL_REPORT",
+						cloudinaryId: cloudinaryResult.public_id,
+						url: cloudinaryResult.secure_url,
+					}),
+				});
+
+				if (!metadataResponse.ok) {
+					const errorText = await metadataResponse.text();
+					console.error(`Metadata save failed for patient ${i + 1}:`, errorText);
+					throw new Error(
+						`Failed to save file metadata for patient ${i + 1}: ${metadataResponse.status} - ${errorText}`
+					);
+				}
+
+				const metadataData = await metadataResponse.json();
+				fileIds[i] = metadataData.fileId;
+			} catch (error) {
+				console.error(`Failed to upload file for patient ${i + 1}:`, error);
+				throw error;
+			}
+		}
+
+		return fileIds;
+	};
+
 	const handleConfirm = async () => {
 		if (!form) {
 		  alert("No form data found");
@@ -72,46 +123,10 @@ const ConfirmButton = () => {
 		setUploading(true);
 	  
 		try {
-		  let file_id: string | null = null;
+		  let fileIds: Record<number, string> = {};
 	  
-		  // ✅ Only handle file upload if user provided one
-		  if (fileData) {
-			// Convert base64 back to File object
-			const file = base64ToFile(fileData.base64, fileData.name, fileData.type);
-			console.log("File converted successfully:", file.name);
-	  
-			// Upload file to Cloudinary
-			const cloudinaryResult = await uploadToCloudinary(file);
-	  
-			// Save metadata
-			const metadataResponse = await fetch("/api/upload/save-metadata", {
-			  method: "POST",
-			  headers: {
-				"Content-Type": "application/json",
-			  },
-			  body: JSON.stringify({
-				userId: userId,
-				fileName: cloudinaryResult.original_filename || cloudinaryResult.public_id,
-				originalName: cloudinaryResult.original_filename || fileData.name,
-				fileType: cloudinaryResult.format,
-				fileSize: cloudinaryResult.bytes,
-				category: "MEDICAL_REPORT",
-				cloudinaryId: cloudinaryResult.public_id,
-				url: cloudinaryResult.secure_url,
-			  }),
-			});
-	  
-			if (!metadataResponse.ok) {
-			  const errorText = await metadataResponse.text();
-			  console.error("Metadata save failed:", errorText);
-			  throw new Error(
-				`Failed to save file metadata: ${metadataResponse.status} - ${errorText}`
-			  );
-			}
-
-		  const metadataData = await metadataResponse.json();
-			file_id = metadataData.fileId;
-		  }
+		  // ✅ Upload all patient files
+		  fileIds = await uploadPatientFiles(form.patient);
 
 			const appointment_id = localStorage.getItem("appointment_id");
 		  console.log("Using appointment_id:", appointment_id);
@@ -128,6 +143,7 @@ const ConfirmButton = () => {
 			dateofbirth: new Date(patient.dob),
 			nationality: form.contact.country,
 			passport_number: patient.passportId,
+			symptoms: patient.symptoms,
 		  }));
 	  
 		  const patientResponse = await createPatient(patientsData);
@@ -138,24 +154,19 @@ const ConfirmButton = () => {
 			);
 		  }
 
-		  const updateAppResponse = await updateAppointment(String(appointment_id), {
-			   description: form.details,
-		  });
+		  // ✅ Link uploaded files with appointments
+		  for (let i = 0; i < patientResponse.length; i++) {
+			const fileId = fileIds[i];
+			if (!fileId) continue;
 
-		  if (updateAppResponse && updateAppResponse.error) {
-			throw new Error(`Failed to update appointment booking: ${updateAppResponse.error}`);
-		  }
-
-		  // ✅ If file uploaded, link it with appointment
-		  if (file_id) {
 			const appointmentFileResponse = await createAppointmentFile(
-			  appointment_id,
-			  file_id
+			  patientResponse[i].patient_id,
+			  fileId
 			);
 	  
 			if (appointmentFileResponse && appointmentFileResponse.error) {
 			  throw new Error(
-				`Failed to create appointment file association: ${appointmentFileResponse.error}`
+				`Failed to create appointment file association for patient ${i + 1}: ${appointmentFileResponse.error}`
 			  );
 			}
 		  }
@@ -215,7 +226,6 @@ const ConfirmButton = () => {
 		  localStorage.removeItem("appointment_id");
 		  localStorage.removeItem("tourism_id");
 		  localStorage.removeItem("TotalPrice");
-		  localStorage.removeItem("selectedFile");
 	  
 		  // Navigate to success page
 		  router.push(`/user/general/booking-status`);
