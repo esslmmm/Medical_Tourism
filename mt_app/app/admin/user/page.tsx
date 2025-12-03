@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
-import StatsCard from '@/components/admin_component/Common/StatsCard';
 import { useRouter } from 'next/navigation';
 import { Users, UserPlus, UserCheck, Search, Filter, Eye } from 'lucide-react';
 import '@/app/admin/styles/globals.css';
@@ -74,14 +73,6 @@ const UserManagement: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
           <p className="text-gray-600">Manage all user accounts and their details</p>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatsCard title="New Users" value="312" icon={UserPlus} color="blue" />
-          <StatsCard title="Active Users" value="2,535" icon={UserCheck} color="green" />
-          <StatsCard title="Total Users" value={users.length.toString()} icon={Users} color="purple" />
-          <StatsCard title="This Month" value="+15%" icon={Users} color="yellow" />
         </div>
 
         {/* Filters and Search */}

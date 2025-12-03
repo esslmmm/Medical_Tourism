@@ -26,8 +26,8 @@ const PaymentDashboard: React.FC = () => {
 
   const [statsFilter, setStatsFilter] = useState<'all' | 'day' | 'week' | 'month' | 'year' | 'custom'>('all');
   const [showStatsMenu, setShowStatsMenu] = useState(false);
-const [customStart, setCustomStart] = useState<string>('');
-const [customEnd, setCustomEnd] = useState<string>('');
+  const [customStart, setCustomStart] = useState<string>('');
+  const [customEnd, setCustomEnd] = useState<string>('');
 
   // ✅ Fetch payment data
   useEffect(() => {
@@ -71,90 +71,90 @@ const [customEnd, setCustomEnd] = useState<string>('');
   }, []);
 
   const stats = useMemo(() => {
-  const now = new Date();
+    const now = new Date();
 
-  const filteredByDate = payments.filter((p) => {
-    if (!p.dateTime) return false;
+    const filteredByDate = payments.filter((p) => {
+      if (!p.dateTime) return false;
 
-    const date = new Date(p.dateTime);
+      const date = new Date(p.dateTime);
 
-    switch (statsFilter) {
-      case 'all':
-        return true; 
-      case 'day':
-        return (
-          date.getDate() === now.getDate() &&
-          date.getMonth() === now.getMonth() &&
-          date.getFullYear() === now.getFullYear()
-        );
+      switch (statsFilter) {
+        case 'all':
+          return true;
+        case 'day':
+          return (
+            date.getDate() === now.getDate() &&
+            date.getMonth() === now.getMonth() &&
+            date.getFullYear() === now.getFullYear()
+          );
 
-      case 'week': {
-        const startOfWeek = new Date(now);
-        startOfWeek.setDate(now.getDate() - now.getDay());
+        case 'week': {
+          const startOfWeek = new Date(now);
+          startOfWeek.setDate(now.getDate() - now.getDay());
 
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 7);
+          const endOfWeek = new Date(startOfWeek);
+          endOfWeek.setDate(startOfWeek.getDate() + 7);
 
-        return date >= startOfWeek && date < endOfWeek;
+          return date >= startOfWeek && date < endOfWeek;
+        }
+
+        case 'month':
+          return (
+            date.getMonth() === now.getMonth() &&
+            date.getFullYear() === now.getFullYear()
+          );
+
+        case 'year':
+          return date.getFullYear() === now.getFullYear();
+
+        case 'custom':
+          if (!customStart || !customEnd) return true;
+          const s = new Date(customStart);
+          const e = new Date(customEnd);
+          return date >= s && date <= e;
+
+        default:
+          return true;
       }
+    });
 
-      case 'month':
-        return (
-          date.getMonth() === now.getMonth() &&
-          date.getFullYear() === now.getFullYear()
-        );
+    const successfulPayments = filteredByDate.filter((p) => p.status === 'successful');
 
-      case 'year':
-        return date.getFullYear() === now.getFullYear();
+    // Total transactions
+    const totalPayments = filteredByDate.length;
 
-      case 'custom':
-        if (!customStart || !customEnd) return true;
-        const s = new Date(customStart);
-        const e = new Date(customEnd);
-        return date >= s && date <= e;
+    // Total income (gross, before fees)
+    const totalIncome = successfulPayments.reduce(
+      (sum, p) => sum + parseFloat(p.amount.replace(/[^\d.-]/g, '')),
+      0
+    );
 
-      default:
-        return true;
-    }
-  });
+    // Stripe fee per transaction
+    const STRIPE_PERCENT = 0.0475; // 4.75% for international cards
+    const STRIPE_FIXED = 10; // 10 THB per transaction
 
-  const successfulPayments = filteredByDate.filter((p) => p.status === 'successful');
+    // Net income (after fee)
+    const netIncome = successfulPayments.reduce((sum, p) => {
+      const amount = parseFloat(p.amount.replace(/[^\d.-]/g, ''));
+      const fee = amount * STRIPE_PERCENT + STRIPE_FIXED;
+      return sum + (amount - fee);
+    }, 0);
 
-  // Total transactions
-  const totalPayments = filteredByDate.length;
+    // Average order value
+    const averageOrderValue =
+      successfulPayments.length > 0
+        ? totalIncome / successfulPayments.length
+        : 0;
 
-  // Total income (gross, before fees)
-  const totalIncome = successfulPayments.reduce(
-    (sum, p) => sum + parseFloat(p.amount.replace(/[^\d.-]/g, '')),
-    0
-  );
-
-  // Stripe fee per transaction
-  const STRIPE_PERCENT = 0.0475; // 4.75% for international cards
-  const STRIPE_FIXED = 10; // 10 THB per transaction
-
-  // Net income (after fee)
-  const netIncome = successfulPayments.reduce((sum, p) => {
-    const amount = parseFloat(p.amount.replace(/[^\d.-]/g, ''));
-    const fee = amount * STRIPE_PERCENT + STRIPE_FIXED;
-    return sum + (amount - fee);
-  }, 0);
-
-  // Average order value
-  const averageOrderValue =
-    successfulPayments.length > 0
-      ? totalIncome / successfulPayments.length
-      : 0;
-
-  return {
-    totalPayments,
-    totalIncome,
-    netIncome,
-    averageOrderValue,
-    successful: successfulPayments.length,
-    waiting: filteredByDate.filter((p) => p.status === 'waiting').length,
-  };
-}, [payments, statsFilter, customStart, customEnd]);
+    return {
+      totalPayments,
+      totalIncome,
+      netIncome,
+      averageOrderValue,
+      successful: successfulPayments.length,
+      waiting: filteredByDate.filter((p) => p.status === 'waiting').length,
+    };
+  }, [payments, statsFilter, customStart, customEnd]);
 
 
 
@@ -209,145 +209,144 @@ const [customEnd, setCustomEnd] = useState<string>('');
         <div className="max-w-7xl mx-auto">
           <div className='bg-white rounded-2xl shadow-md overflow-hidden border border-gray-300 p-6 mb-8'>
 
-          {/* Header */}
-          <div className="mb-8 flex justify-between">
-            <div>
+            {/* Header */}
+            <div className="mb-8 flex justify-between">
+              <div>
 
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Payment Dashboard</h1>
-            <p className="text-gray-600">Monitor and manage all payment transactions</p>
-            </div>
-            {/* Stats Filter Controls */}
-<div className="flex flex-wrap items-center gap-4 mb-6">
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">Payment Dashboard</h1>
+                <p className="text-gray-600">Monitor and manage all payment transactions</p>
+              </div>
+              {/* Stats Filter Controls */}
+              <div className="flex flex-wrap items-center gap-4 mb-6">
 
-  {/* Stats Filter Dropdown */}
-  <div className="relative">
-    <button
-      onClick={() => setShowStatsMenu(!showStatsMenu)}
-      className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-200 rounded-xl 
+                {/* Stats Filter Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowStatsMenu(!showStatsMenu)}
+                    className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-200 rounded-xl 
                  hover:border-blue-500 hover:bg-blue-50 transition-all font-medium text-gray-700"
-    >
-      <CalendarRange className="w-5 h-5" /> {statsFilter === 'custom' ? 'Custom Range' : statsFilter.charAt(0).toUpperCase() + statsFilter.slice(1)}
-    </button>
+                  >
+                    <CalendarRange className="w-5 h-5" /> {statsFilter === 'custom' ? 'Custom Range' : statsFilter.charAt(0).toUpperCase() + statsFilter.slice(1)}
+                  </button>
 
-    {showStatsMenu && (
-      <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-200 z-10 overflow-hidden">
+                  {showStatsMenu && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-200 z-10 overflow-hidden">
 
-        {[
-          { value: 'all', label: 'All'},
-          { value: 'day', label: 'Today' },
-          { value: 'week', label: 'This Week' },
-          { value: 'month', label: 'This Month' },
-          { value: 'year', label: 'This Year' },
-          { value: 'custom', label: 'Custom Range' }
-        ].map((item) => (
-          <button
-            key={item.value}
-            onClick={() => {
-              setStatsFilter(item.value as any);
-              setShowStatsMenu(false);
-            }}
-            className={`w-full text-left px-4 py-2 hover:bg-blue-50 transition-colors ${
-              statsFilter === item.value
-                ? 'bg-blue-50 text-blue-600 font-semibold'
-                : 'text-gray-700'
-            }`}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
-    )}
-  </div>
+                      {[
+                        { value: 'all', label: 'All' },
+                        { value: 'day', label: 'Today' },
+                        { value: 'week', label: 'This Week' },
+                        { value: 'month', label: 'This Month' },
+                        { value: 'year', label: 'This Year' },
+                        { value: 'custom', label: 'Custom Range' }
+                      ].map((item) => (
+                        <button
+                          key={item.value}
+                          onClick={() => {
+                            setStatsFilter(item.value as any);
+                            setShowStatsMenu(false);
+                          }}
+                          className={`w-full text-left px-4 py-2 hover:bg-blue-50 transition-colors ${statsFilter === item.value
+                              ? 'bg-blue-50 text-blue-600 font-semibold'
+                              : 'text-gray-700'
+                            }`}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
-  {/* Custom Range Inputs */}
-  {statsFilter === 'custom' && (
-   <div className="flex items-center gap-3 text-black">
-    <div className="relative">
-      <input
-        type="date"
-        value={customStart}
-        onChange={(e) => setCustomStart(e.target.value)}
-        className="px-6 py-3 bg-white border-2 border-gray-200 rounded-xl 
+                {/* Custom Range Inputs */}
+                {statsFilter === 'custom' && (
+                  <div className="flex items-center gap-3 text-black">
+                    <div className="relative">
+                      <input
+                        type="date"
+                        value={customStart}
+                        onChange={(e) => setCustomStart(e.target.value)}
+                        className="px-6 py-3 bg-white border-2 border-gray-200 rounded-xl 
                    hover:border-blue-500 hover:bg-blue-50 transition-all 
                    font-medium text-gray-700 focus:border-blue-500 focus:ring-0"
-      />
-    </div>
+                      />
+                    </div>
 
-    <span className="font-semibold">to</span>
+                    <span className="font-semibold">to</span>
 
-    <div className="relative">
-      <input
-        type="date"
-        value={customEnd}
-        onChange={(e) => setCustomEnd(e.target.value)}
-        className="px-6 py-3 bg-white border-2 border-gray-200 rounded-xl 
+                    <div className="relative">
+                      <input
+                        type="date"
+                        value={customEnd}
+                        onChange={(e) => setCustomEnd(e.target.value)}
+                        className="px-6 py-3 bg-white border-2 border-gray-200 rounded-xl 
                    hover:border-blue-500 hover:bg-blue-50 transition-all 
                    font-medium text-gray-700 focus:border-blue-500 focus:ring-0"
-      />
-    </div>
-    </div>
-    )}
+                      />
+                    </div>
+                  </div>
+                )}
 
 
- </div>
+              </div>
+
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ">
+
+              {/* Total Income */}
+              <div className="bg-gradient-to-br from-amber-500 to-yellow-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                    <CheckCircle className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-semibold">Total Income</h3>
+                </div>
+                <p className="text-3xl font-bold mt-4">{stats.totalIncome.toLocaleString()} THB</p>
+              </div>
+
+              {/* Net Income */}
+              <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                    <Wallet className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-semibold">Net Income</h3>
+                </div>
+                <p className="text-3xl font-bold mt-4">
+                  {stats.netIncome.toLocaleString(undefined, { maximumFractionDigits: 2 })} THB
+                </p>
+
+              </div>
+
+              {/* Average Order Value */}
+              <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                    <ChartPie className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-md font-semibold">Average Order Value</h3>
+                </div>
+                <p className="text-3xl font-bold mt-4">
+                  {stats.averageOrderValue.toLocaleString(undefined, { maximumFractionDigits: 2 })} THB
+                </p>
+
+              </div>
+
+              {/* Total Transaction */}
+              <div className="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                    <Users className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-semibold">Total Transactions</h3>
+                </div>
+                <p className="text-4xl font-bold mt-4">{stats.totalPayments}</p>
+              </div>
+            </div>
 
           </div>
-
-          {/* Stats Cards */}
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ">
-
-  {/* Total Income */}
-  <div className="bg-gradient-to-br from-amber-500 to-yellow-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
-    <div className="flex items-center gap-3 mb-2">
-      <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
-        <CheckCircle className="w-6 h-6" />
-      </div>
-      <h3 className="text-lg font-semibold">Total Income</h3>
-    </div>
-    <p className="text-3xl font-bold mt-4">{stats.totalIncome.toLocaleString()} THB</p>
-  </div>
-
-  {/* Net Income */}
-  <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
-    <div className="flex items-center gap-3 mb-2">
-      <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
-        <Wallet className="w-6 h-6" />
-      </div>
-      <h3 className="text-lg font-semibold">Net Income</h3>
-    </div>
-    <p className="text-3xl font-bold mt-4">
-  {stats.netIncome.toLocaleString(undefined, { maximumFractionDigits: 2 })} THB
-</p>
-
-  </div>
-
-  {/* Average Order Value */}
-  <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
-    <div className="flex items-center gap-3 mb-2">
-      <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
-        <ChartPie className="w-6 h-6" />
-      </div>
-      <h3 className="text-md font-semibold">Average Order Value</h3>
-    </div>
-    <p className="text-3xl font-bold mt-4">
-  {stats.averageOrderValue.toLocaleString(undefined, { maximumFractionDigits: 2 })} THB
-</p>
-
-  </div>
-
-  {/* Total Transaction */}
-  <div className="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-200">
-    <div className="flex items-center gap-3 mb-2">
-      <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
-        <Users className="w-6 h-6" />
-      </div>
-      <h3 className="text-lg font-semibold">Total Transactions</h3>
-    </div>
-    <p className="text-4xl font-bold mt-4">{stats.totalPayments}</p>
-  </div>
-            </div>
-
-            </div>
 
 
           {/* Table */}
@@ -385,11 +384,10 @@ const [customEnd, setCustomEnd] = useState<string>('');
                             setFilterStatus(status as any);
                             setShowFilterMenu(false);
                           }}
-                          className={`w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors ${
-                            filterStatus === status
+                          className={`w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors ${filterStatus === status
                               ? 'bg-blue-50 text-blue-600 font-semibold'
                               : 'text-gray-700'
-                          }`}
+                            }`}
                         >
                           {status.charAt(0).toUpperCase() + status.slice(1)}
                         </button>
@@ -470,11 +468,10 @@ const [customEnd, setCustomEnd] = useState<string>('');
                       <button
                         key={i}
                         onClick={() => setCurrentPage(i + 1)}
-                        className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                          currentPage === i + 1
+                        className={`px-4 py-2 rounded-lg font-medium transition-all ${currentPage === i + 1
                             ? 'bg-blue-600 text-white shadow-lg'
                             : 'bg-white border-2 border-gray-200 text-gray-600 hover:border-blue-500 hover:bg-blue-50'
-                        }`}
+                          }`}
                       >
                         {i + 1}
                       </button>

@@ -295,9 +295,10 @@ const ContactUsManagement: React.FC = () => {
               </div>
             </div>
             
-
+          </div>
+          <div className='bg-white rounded-2xl shadow-md overflow-hidden border border-gray-300 mb-8 text-black'>
             {/* Search & Filter */}
-            <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-white to-gray-50 mb-4 flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div className="p-6 border-b border-gray-200  mb-4 flex flex-col md:flex-row gap-4 items-center justify-between">
               <div className="relative flex-1 w-full md:max-w-md">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -351,7 +352,7 @@ const ContactUsManagement: React.FC = () => {
             </div>
 
             {/* Table */}
-            <div className="overflow-x-auto bg-white rounded-2xl shadow-md border border-gray-300 text-black">
+            <div className="overflow-x-auto ">
               <table className="w-full">
                 <thead>
                   <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
@@ -361,7 +362,6 @@ const ContactUsManagement: React.FC = () => {
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Country</th>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Type</th>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Message</th>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Created At</th>
                   </tr>
                 </thead>
@@ -396,7 +396,6 @@ const ContactUsManagement: React.FC = () => {
                           {c.status.replace('-', ' ')}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-600">{c.message}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-gray-600">{c.createdAt}</td>
                     </tr>
                   ))}
