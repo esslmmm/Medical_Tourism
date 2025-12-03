@@ -251,7 +251,7 @@ const History = () => {
                   <td className="py-4 px-6">
                     <div className="flex items-center justify-center">
                       <button
-                        onClick={() => router.push(`/staff/BookingDetail/${booking.booking_id}`)}
+                        onClick={() => router.push(`/staff/booking/${booking.booking_id}`)}
                         className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm hover:shadow-md"
                       >
                         <Eye className="w-4 h-4" />

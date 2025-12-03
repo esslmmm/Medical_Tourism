@@ -6,19 +6,22 @@ interface MedicalServiceCardProps {
   user?: user | null;
 }
 
+const countryDialCodes: Record<string, string> = {
+  "United States": "+1",
+  "Canada": "+1",
+  "India": "+91",
+  "United Kingdom": "+44",
+  "Australia": "+61",
+  "Pakistan": "+92",
+  "Thailand": "+66"
+};
+
+
 const UserDetail: React.FC<MedicalServiceCardProps> = ({ data, user }) => {
 
-  // const formatDate = (dateString: string) => {
-  //   if (!dateString) return "Invalid Date";
-  //   const date = new Date(dateString);
-  //   if (isNaN(date.getTime())) return "Invalid Date";
-
-  //   return date.toLocaleDateString("en-GB", {
-  //     year: "numeric",
-  //     month: "long",
-  //     day: "numeric",
-  //   });
-  // };
+  const dialCode = data?.user_contact_detail?.country
+  ? countryDialCodes[data.user_contact_detail.country] || "N/A"
+  : "N/A";
 
   return (
     <div>
@@ -75,7 +78,7 @@ const UserDetail: React.FC<MedicalServiceCardProps> = ({ data, user }) => {
         <div className="space-y-1">
           <p className="text-sm font-semibold text-gray-600">Phone</p>
           <p className="text-lg text-gray-800">
-            {data?.user_contact_detail?.phone ?? "N/A"}
+            {dialCode} {data?.user_contact_detail?.phone ?? "N/A"}
           </p>
         </div>
 

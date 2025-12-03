@@ -10,7 +10,6 @@ interface MedicalServiceCardProps {
 
 const MedicalServiceCard = ({ packageBooking, setPackageBooking }: MedicalServiceCardProps) => {
   if (!packageBooking) return null;
-  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 

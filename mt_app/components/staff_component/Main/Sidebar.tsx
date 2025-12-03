@@ -8,9 +8,9 @@ const Sidebar = () => {
   const router = useRouter();
 
   const menuItems = [
-    { id: 'profile', label: 'Profile', icon: User, path: '/staff/StaffProfile' },
-    { id: 'booking', label: 'Booking', icon: Calendar, path: '/staff/booking-management' },
-    { id: 'chat', label: 'Chat', icon: MessageCircle, path: '/staff/StaffChat' },
+    { id: 'profile', label: 'Profile', icon: User, path: '/staff/profile' },
+    { id: 'booking', label: 'Booking', icon: Calendar, path: '/staff/booking' },
+    { id: 'chat', label: 'Chat', icon: MessageCircle, path: '/staff/chat' },
   ];
 
   const handleItemClick = (item: any) => {

@@ -107,9 +107,23 @@ const MedicalServiceBooking: React.FC<MedicalServiceBookingProps> = ({ bookingDa
               <div className="bg-emerald-500 text-white px-6 py-4 rounded-t-2xl">
                 <h2 className="text-xl font-semibold">Appointment Details</h2>
               </div>
-              <div className="p-6">
-                <p className="font-semibold mb-2">Appointment Date</p>
-                <p className="text-gray-700">{booking.appointments?.date ? new Date(booking.appointments.date).toLocaleString() : '—'}</p>
+              <div className="grid grid-cols-2 gap-4 gap-x-6 p-6">
+              <div>
+                  <span className="font-semibold">Appointment Date : </span>
+                  <span className="text-gray-700">{formatDate(booking?.appointments.date)}</span>
+                </div>
+                <div>
+                  <span className="font-semibold">Time Slot : </span>
+                  <span className="text-gray-700">{booking?.appointments.timeslot}</span>
+                </div>
+                <div>
+                  <span className="font-semibold">Adult : </span>
+                  <span className="text-gray-700">{booking?.appointments.adult}</span>
+                </div>
+                <div>
+                  <span className="font-semibold">Child : </span>
+                  <span className="text-gray-700">{booking?.appointments.child}</span>
+                </div>
               </div>
             </div>
 

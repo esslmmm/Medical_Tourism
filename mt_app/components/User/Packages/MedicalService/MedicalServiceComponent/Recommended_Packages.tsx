@@ -63,11 +63,12 @@ const Recommended_Packages = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6 text-black">Recommended Packages</h2>
-      <div className="relative">
+      {/* "relative" in className below */}
+      <div className=""> 
         {/* Left Chevron */}
         <button
           onClick={() => scroll('left')}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-1 shadow-md hover:bg-gray-50"
+          className="absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-1 shadow-md hover:bg-gray-50"
         >
           <ChevronLeftIcon className="w-5 h-5 text-gray-600" />
         </button>
@@ -120,7 +121,7 @@ const Recommended_Packages = () => {
         {/* Right Chevron */}
         <button
           onClick={() => scroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-1 shadow-md hover:bg-gray-50"
+          className="absolute right-0 top-1/2 -translate-y-1/2  bg-white rounded-full p-1 shadow-md hover:bg-gray-50"
         >
           <ChevronRightIcon className="w-5 h-5 text-gray-600" />
         </button>
