@@ -16,6 +16,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             firstname: true,
             lastname: true,
             phone: true,
+            email: true,
             country: true
           }
         },
@@ -135,3 +136,5 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     return NextResponse.json({ error: 'Failed to fetch package booking' }, { status: 500 });
   }
 }
+
+

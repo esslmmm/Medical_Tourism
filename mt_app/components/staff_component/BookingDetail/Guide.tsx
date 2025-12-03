@@ -1,97 +1,64 @@
-import React, { useEffect, useState } from "react";
-import { Inter } from "next/font/google";
+import React from "react";
 import { guide_bookings } from "@/types/Booking";
 import { CalendarDays } from "lucide-react";
 
-const inter = Inter({ subsets: ["latin"], weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"] });
-
-interface GuideProps {  
+interface GuideProps {
   guideBooking: guide_bookings | null;
   setPackageBooking: (arg: any) => void;
 }
 
-const Guide = ({guideBooking, setPackageBooking}: GuideProps) => {
-  if(!guideBooking) return null;
-
-  const getDayOnly = (dateString: string) => {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return "Invalid Date"; 
-  
-    return date.getDate();
-  };
+const Guide = ({ guideBooking, setPackageBooking }: GuideProps) => {
+  if (!guideBooking) return null;
 
   const handleStatusChange = async (newStatus: string) => {
     if (!guideBooking) return;
+
     try {
       const response = await fetch(`/api/booking/guides/${guideBooking.booking_id}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          status: newStatus, // Only send the status
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
       });
-  
-      if (!response.ok) {
-        throw new Error("Failed to update status");
-      }
-  
-      // Update local state
+
+      if (!response.ok) throw new Error("Failed to update");
+
       setPackageBooking((prev: any) =>
-          prev
-            ? {
-                ...prev,
-                status: newStatus,
-                  tourism_bookings: {
-                    ...prev.tourism_bookings,
-                      guide_bookings:{
-                        ...prev.tourism_bookings.guide_bookings,
-                        status: newStatus,
-                    },
-                  },
-              }
-            : prev
-        );
-      } catch (err) {
-      console.error("Error updating status:", err);
+        prev
+          ? {
+              ...prev,
+              status: newStatus,
+              tourism_bookings: {
+                ...prev.tourism_bookings,
+                guide_bookings: {
+                  ...prev.tourism_bookings.guide_bookings,
+                  status: newStatus,
+                },
+              },
+            }
+          : prev
+      );
+    } catch (err) {
+      console.error(err);
       alert("Could not update status");
     }
   };
-  
-  const startDate = guideBooking?.start ? getDayOnly(guideBooking.start) : null;
-  const endDate = guideBooking?.end ? getDayOnly(guideBooking.end) : null;
-
 
   return (
-    <div
-      className={`border border-[#E0E7F1] w-full max-w-[850px] p-6 rounded-2xl shadow-md bg-white relative transition-all hover:shadow-lg ${inter.className}`}
-    >
-      {/* Title */}
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Guide Booking</h2>
+    <div className="relative px-6 pb-8">
 
-      {/* Status Dropdown - Top Right */}
+      {/* Title */}
+      <h3 className="text-2xl font-bold text-gray-900 mb-4">Guide Details</h3>
+
+      {/* Status Dropdown */}
       <div className="absolute top-6 right-6">
         <select
-          id="status"
-          value={guideBooking?.status}
+          value={guideBooking.status}
           onChange={(e) => handleStatusChange(e.target.value)}
-          className={`border rounded-full px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 transition
-            ${
-              guideBooking?.status === "Pending"
-                ? "text-white bg-[#FFCC00] border-[#E0C050] focus:ring-yellow-300"
-                : ""
-            }
-            ${
-              guideBooking?.status === "Approved"
-                ? "text-white bg-[#28A83D] border-[#1E7A2E] focus:ring-green-300"
-                : ""
-            }
-            ${
-              guideBooking?.status === "Rejected"
-                ? "text-white bg-[#FB5626] border-[#C9441F] focus:ring-red-300"
-                : ""
-            }
+          className={`
+            px-4 py-2 rounded-full text-sm font-semibold shadow-sm border transition
+            ${guideBooking.status === "Pending" && "bg-yellow-500 text-white"}
+            ${guideBooking.status === "Approved" && "bg-green-600 text-white"}
+            ${guideBooking.status === "Rejected" && "bg-red-500 text-white"}
           `}
         >
           <option value="Pending">Pending</option>
@@ -100,15 +67,18 @@ const Guide = ({guideBooking, setPackageBooking}: GuideProps) => {
         </select>
       </div>
 
-      {/* Content Section */}
-      <div className="ml-15 mt-4 space-x-30 flex text-gray-700">
-        {/* Date Range */}
-        <div>
+      {/* Content Container */}
+      <div className="flex flex-col md:flex-row gap-10 mt-6">
+
+        {/* Booking Period */}
+        <div className="flex-1">
           <p className="text-md font-semibold text-gray-600 mb-2">Booking Period</p>
-          <div className="flex items-center gap-3 border border-[#D6E0EE] bg-[#F9FBFD] p-3 rounded-xl w-fit">
-            <CalendarDays className="text-[#3B82F6] w-5 h-5" />
+
+          <div className="flex items-center gap-3 border border-gray-200 bg-gray-50 p-4 rounded-xl shadow-sm w-fit">
+            <CalendarDays className="text-blue-500 w-6 h-6" />
+
             <p className="text-md font-medium text-gray-800">
-              {guideBooking?.start && guideBooking?.end
+              {guideBooking.start && guideBooking.end
                 ? `${new Date(guideBooking.start).toLocaleDateString()} → ${new Date(
                     guideBooking.end
                   ).toLocaleDateString()}`
@@ -118,12 +88,13 @@ const Guide = ({guideBooking, setPackageBooking}: GuideProps) => {
         </div>
 
         {/* Language */}
-        <div>
-          <p className="text-md font-semibold text-gray-600">Language</p>
-          <p className="text-lg font-medium mt-1 black">
-            {guideBooking?.language ?? "Unknown"}
+        <div className="flex-1">
+          <p className="text-md font-semibold text-gray-600 mb-2">Language</p>
+          <p className="text-lg font-semibold text-gray-900">
+            {guideBooking.language ?? "Unknown"}
           </p>
         </div>
+
       </div>
     </div>
   );

@@ -29,7 +29,7 @@ const Sidebar: React.FC = () => {
     { name: 'Package Management', href: '/admin/packages', icon: Package },
     { name: 'Place Management', href: '/admin/places', icon: MapPin },
     { name: 'Trip Management', href: '/admin/trips', icon: Route },
-    { name: 'Booking Management', href: '/admin/booking', icon: Calendar },
+    // { name: 'Booking Management', href: '/admin/booking', icon: Calendar },
     //  { name: 'Payment Management', href: '/admin/payment-dashboard', icon:  BadgeDollarSign },
     { name: 'Customer Feedback', href: '/admin/feedback', icon: MessageSquare },
     { name: 'Profile', href: '/admin/profile', icon: User },

@@ -145,9 +145,9 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
             <button onClick={() => setIsLoginOpen(true)} className="px-4 py-2 text-green-600 hover:bg-gray-200 rounded-lg transition">
               Login
             </button>
-            <Link href="/signup" className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+            <button onClick={() => setIsLoginOpen(true)} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
               Sign Up
-            </Link>
+            </button>
           </>
         ) : (
           // Show when logged in
