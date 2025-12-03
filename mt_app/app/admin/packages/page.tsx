@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
-import StatsCard from '@/components/admin_component/Common/StatsCard';
 import { Package, Search, Edit, Eye, ToggleLeft, Plus } from 'lucide-react';
 import { Package as PackageType } from '@/types/admin';
 import '@/app/admin/styles/globals.css';
@@ -73,15 +72,6 @@ const PackageManagement: React.FC = () => {
             <Plus className="h-4 w-4 mr-2" />
             Add Package
           </button>
-        </div>
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatsCard
-            title="Total Packages"
-            value={totalPackages}
-            icon={Package}
-            color="blue"
-          />
         </div>
         {/* Filters and Search */}
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">

@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
-import StatsCard from '@/components/admin_component/Common/StatsCard';
 import { MapPin, Search, Edit, Eye, Plus, Route, List } from 'lucide-react';
 import { Trip, Route as RouteType } from '@/types/admin';
 import { useRouter } from 'next/navigation';
@@ -131,28 +130,6 @@ const TripsPage: React.FC = () => {
               </button>
             </nav>
           </div>
-        </div>
-        
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatsCard
-            title="Total Trips"
-            value={totalTrips}
-            icon={MapPin}
-            color="blue"
-          />
-          <StatsCard
-            title="Total Routes"
-            value={trips.length}
-            icon={Route}
-            color="green"
-          />
-          <StatsCard
-            title="Cities Covered"
-            value={uniqueCities.length}
-            icon={MapPin}
-            color="purple"
-          />
         </div>
         
         {/* Filters and Search */}

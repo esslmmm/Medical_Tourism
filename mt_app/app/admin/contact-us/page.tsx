@@ -7,6 +7,8 @@ import {
   CheckCircle,
   Clock,
   CalendarRange,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
 
@@ -403,23 +405,49 @@ const ContactUsManagement: React.FC = () => {
               </table>
 
               {/* Pagination */}
-              <div className="flex justify-end items-center gap-2 p-4">
-                <button
-                  onClick={handlePrevPage}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 rounded-xl border border-gray-300 hover:bg-blue-50 disabled:opacity-50 transition"
-                >
-                  Previous
-                </button>
-                <span className="px-3 py-2">{currentPage} / {totalPages}</span>
-                <button
-                  onClick={handleNextPage}
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 rounded-xl border border-gray-300 hover:bg-blue-50 disabled:opacity-50 transition"
-                >
-                  Next
-                </button>
+              {/* Pagination */}
+            <div className="px-6 py-4 border-t border-gray-200 bg-gradient-to-r from-white to-gray-50">
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-600">
+                  Showing <span className="font-semibold text-gray-900">{startIndex + 1}</span> to{' '}
+                  <span className="font-semibold text-gray-900">{Math.min(endIndex, filteredContacts.length)}</span> of{' '}
+                  <span className="font-semibold text-gray-900">{filteredContacts.length}</span> results
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handlePrevPage}
+                    disabled={currentPage === 1}
+                    className="p-2 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  >
+                    <ChevronLeft className="w-5 h-5 text-gray-600" />
+                  </button>
+
+                  <div className="flex gap-1">
+                    {[...Array(totalPages)].map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setCurrentPage(i + 1)}
+                        className={`px-4 py-2 rounded-lg font-medium transition-all ${currentPage === i + 1
+                            ? 'bg-blue-600 text-white shadow-lg'
+                            : 'bg-white border-2 border-gray-200 text-gray-600 hover:border-blue-500 hover:bg-blue-50'
+                          }`}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                    className="p-2 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  >
+                    <ChevronRight className="w-5 h-5 text-gray-600" />
+                  </button>
+                </div>
               </div>
+            </div>
             </div>
           </div>
         </div>

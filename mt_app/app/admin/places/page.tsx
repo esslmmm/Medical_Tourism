@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin_component/Layout/AdminLayout';
-import StatsCard from '@/components/admin_component/Common/StatsCard';
 import { MapPin, TrendingUp, Search, Filter, Edit, Eye, ToggleLeft, Plus } from 'lucide-react';
 import '@/app/admin/styles/globals.css';
 import { useRouter } from 'next/navigation';
@@ -86,22 +85,6 @@ const PlacesPage: React.FC = () => {
             <Plus className="h-4 w-4 mr-2" />
             Add Place
           </button>
-        </div>
-        
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatsCard
-            title="Total Places"
-            value={totalPlaces}
-            icon={MapPin}
-            color="blue"
-          />
-          <StatsCard
-            title="Cities"
-            value={uniqueCities.length}
-            icon={TrendingUp}
-            color="green"
-          />
         </div>
         
         {/* Filters and Search */}
