@@ -183,6 +183,10 @@ const DoctorList: React.FC = () => {
     fetchDoctors();
   }, []);
 
+  useEffect(() => {
+    checkScrollPosition();
+  }, [doctors]);
+
   const checkScrollPosition = () => {
     if (scrollRef.current) {
       setCanScrollLeft(scrollRef.current.scrollLeft > 0);

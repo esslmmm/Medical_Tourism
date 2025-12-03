@@ -360,7 +360,7 @@ const TripList: React.FC<TripListProps> = ({ onTripSelect, trips }) => {
                         : "border-teal-200 text-teal-400 hover:bg-teal-50"
                     }`}
                   >
-                    Choose
+                    {selectedTripIndex === index ? 'Selected' : 'Choose'}
                   </button>
                 </div>
               </div>

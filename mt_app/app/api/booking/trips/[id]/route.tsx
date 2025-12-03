@@ -51,3 +51,24 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       return NextResponse.json({ error: 'Failed to fetch tourism booking' }, { status: 500 })
     }
   }
+
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const {
+        status
+    } = await req.json()
+    const { id } = await params;
+    const tourismBookingId = id;
+    const updatedTourismBooking = await prisma.tourism_bookings.update({
+      where: { tourism_id: tourismBookingId },
+      data:{
+        status,
+      }
+    })
+
+    return NextResponse.json(updatedTourismBooking, { status: 200 })
+  } catch (error) {
+    console.error('Error updating tourism booking:', error)
+    return NextResponse.json({ error: 'Failed to update tourism booking' }, { status: 500 })
+  }
+}

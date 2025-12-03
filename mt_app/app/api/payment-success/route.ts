@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
     console.error("Payment Success Error:", error);
     // return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/user/profile/approval-status?status=failed&reason=${encodeURIComponent(error.message)}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/user/general/booking-status?status=failed&reason=${encodeURIComponent(error.message)}`
     );
   }
 }

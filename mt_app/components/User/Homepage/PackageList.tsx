@@ -52,7 +52,7 @@ const PackageList: React.FC = () => {
 
   useEffect(() => {
     checkScrollPosition();
-  }, []);
+  }, [packages]);
 
   const checkScrollPosition = () => {
     if (scrollRef.current) {

@@ -34,10 +34,10 @@ const Breadcrumb = () => {
         <span className="text-teal-400 cursor-pointer">Package Details</span>
 
         <div className="ml-auto flex gap-4 relative">
-          <button className="flex items-center gap-2 text-teal-500">
+          {/* <button className="flex items-center gap-2 text-teal-500">
             <ChatBubbleLeftIcon className="w-5 h-5" />
             <span className="text-xs font-bold">Ask</span>
-          </button>
+          </button> */}
           <div className="relative">
             <button
               className="flex items-center gap-2 text-teal-500"

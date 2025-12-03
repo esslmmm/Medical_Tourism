@@ -94,31 +94,7 @@ const Navbarpro: React.FC = () => {
 
 
       <div className="flex items-center gap-4">
-        <div className="cursor-pointer p-2 rounded-md hover:bg-gray-200" onClick={toggleCurrency}>
-          <span className="text-black-700 font-bold">{currency}</span>
-        </div>
-
-        <div className="relative language-selector">
-          <div className="flex items-center cursor-pointer p-2 rounded-md hover:bg-gray-200" onClick={() => setIsOpen(!isOpen)}>
-            <img src="/img/Footer&Navbar/engflag.png" alt="Flag" className="w-8 h-auto" />
-          </div>
-          {isOpen && (
-            <div className="absolute left-0 mt-2 w-36 bg-white shadow-lg border border-gray-200 rounded-md z-50">
-              <ul className="text-left">
-                {[
-                  { name: "English", img: "/img/Footer&Navbar/engflag.png" },
-                  { name: "العربية", img: "/img/Footer&Navbar/arabic.png" },
-                  { name: "မြန်မာ", img: "/img/Footer&Navbar/myanmar.png" },
-                ].map((lang, index) => (
-                  <li key={index} className="p-2 hover:bg-gray-100 cursor-pointer flex items-center">
-                    <img src={lang.img} alt={lang.name} className="w-6 h-auto mr-2" />
-                    {lang.name}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+        
 
         {/* Show loading state while checking authentication */}
         {status === 'loading' ? (
