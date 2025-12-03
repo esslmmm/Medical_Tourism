@@ -17,7 +17,8 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
             firstname: true,
             lastname: true,
             phone: true,
-            country: true
+            country: true,
+            email: true,
           }
         },
         user: {

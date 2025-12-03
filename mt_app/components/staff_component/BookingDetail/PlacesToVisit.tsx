@@ -1,13 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Inter } from "next/font/google";
+import React from "react";
 import { Clock, MapPin } from "lucide-react";
 import { tourism_bookings } from "@/types/Booking";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-});
 
 interface TripProps {  
   tripBooking: tourism_bookings | null;
@@ -56,11 +50,8 @@ const handleStatusChange = async (newStatus: string) => {
 
 
 return (
-  <div className={`${inter.className} mb-10 mt-5`}>
-      {/* Section Title */}
-      <h2 className="ml-2 text-2xl font-bold mb-4 text-gray-800">Tourism Booking</h2>
-
-      <div className="border border-[#C5D1E0] w-full max-w-[850px] p-6 rounded-2xl shadow-md bg-white relative hover:shadow-lg transition-all">
+  <div >
+        <div className=" p-6 relative">
         {/* Status Dropdown - Top Right */}
         <div className="absolute top-6 right-6">
           <select
@@ -92,7 +83,8 @@ return (
         </div>
 
         {/* Route Information */}
-        <div className="flex flex-col md:flex-row gap-6 mb-6">
+        <div className="flex flex-col md:flex-row gap-6 ">
+          
           <img
             src={tripBooking.routes?.image}
             alt={tripBooking.routes?.title}

@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Inter } from "next/font/google";
 import { FileText, Loader2, X } from "lucide-react";
 import { PackageBooking, File } from "@/types/Booking";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-});
 
 
 interface MedicalServiceCardProps {
@@ -134,18 +128,19 @@ const MedicalServiceCard = ({packageBooking, setPackageBooking}: MedicalServiceC
   };
 
   return (
-    <div className={`${inter.className}`}>
-      <h2 className="ml-2 text-lg font-bold mb-2" style={{ fontSize: "25px" }}>
-        Medical Service
-      </h2>
-      <div className="border border-[#C5D1E0] w-[850px] p-4 rounded-xl shadow-md bg-white relative">
+    <div>
+      <div className="bg-white rounded-2xl shadow-md mb-8 border border-gray-300">
+        <div className="bg-emerald-500 text-white px-6 py-4 rounded-t-2xl">
+                <h2 className="text-2xl font-semibold">Medical Services</h2>
+              </div>
+              <div className="p-4 relative">
         {/* Status Dropdown - Top Right */}
       <div className="absolute top-4 right-4">
         <select
           id="status"
           value={packageBooking?.appointments.status}
           onChange={(e) => handleStatusChange(e.target.value)}
-          className={`border rounded-[18px] px-2 py-1 text-sm focus:outline-none focus:ring-2
+          className={`border border-gray-300 rounded-[18px] px-2 py-1 text-sm focus:outline-none focus:ring-2
             ${packageBooking?.appointments.status === 'Pending' ? 'text-white bg-[#FFCC00] border-[#C5D1E0] focus:ring-yellow-300' : ''}
             ${packageBooking?.appointments.status === 'Approved' ? 'text-white bg-[#28A83D] border-[#C5D1E0] focus:ring-green-300' : ''}
             ${packageBooking?.appointments.status === 'Rejected' ? 'text-white bg-[#FB5626] border-[#C5D1E0] focus:ring-red-300' : ''}
@@ -229,6 +224,7 @@ const MedicalServiceCard = ({packageBooking, setPackageBooking}: MedicalServiceC
             </p>
           </div>
         </div>
+      </div>
       </div>
 
 

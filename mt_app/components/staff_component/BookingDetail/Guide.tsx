@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Inter } from "next/font/google";
 import { guide_bookings } from "@/types/Booking";
 import { CalendarDays } from "lucide-react";
-
-const inter = Inter({ subsets: ["latin"], weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"] });
 
 interface GuideProps {  
   guideBooking: guide_bookings | null;
@@ -65,10 +62,10 @@ const Guide = ({guideBooking, setPackageBooking}: GuideProps) => {
 
   return (
     <div
-      className={`border border-[#E0E7F1] w-full max-w-[850px] p-6 rounded-2xl shadow-md bg-white relative transition-all hover:shadow-lg ${inter.className}`}
+      className={`p-6 relative`}
     >
       {/* Title */}
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Guide Booking</h2>
+      <h3 className="text-xl font-bold mb-2 text-gray-800">Guide</h3>
 
       {/* Status Dropdown - Top Right */}
       <div className="absolute top-6 right-6">
