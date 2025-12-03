@@ -4,11 +4,11 @@ export function getRoleBasedRedirectUrl(role: string, returnUrl?: string): strin
   // For staff and admin, always redirect to their dashboard regardless of return URL
   if (role === 'staff') {
     console.log('👥 Staff detected, redirecting to /staff/booking-management');
-    return '/staff/booking-management';
+    return '/staff/booking';
   }
   if (role === 'admin') {
     console.log('👑 Admin detected, redirecting to /admin/booking-management');
-    return '/admin';
+    return '/admin/payment';
   }
 
   // For customers, if there's a valid return URL, use it

@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
-import { Phone, Mail, FileText, MapPin, Loader2, X } from 'lucide-react';
-import { PackageBooking, File } from '@/types/Booking';
+import { Phone, Mail, FileText, Globe } from 'lucide-react';
+import { PackageBooking } from '@/types/Booking';
 import { formatDate } from '@/components/Reuseable-Function/FormateDate';
 
 interface MedicalServiceBookingProps {
@@ -21,11 +21,12 @@ const countryDialCodes: Record<string, string> = {
 
 const MedicalServiceBooking: React.FC<MedicalServiceBookingProps> = ({ bookingData }) => {
 
-const dialCode = bookingData?.user_contact_detail?.country
-  ? countryDialCodes[bookingData.user_contact_detail.country] || "N/A"
-  : "N/A";
 
   if (!bookingData) return;
+
+  const dialCode = bookingData?.user_contact_detail?.country
+  ? countryDialCodes[bookingData.user_contact_detail.country] || "N/A"
+  : "N/A";
   const [expandedServices, setExpandedServices] = useState<Record<number, boolean>>({});
 
   const toggleShowMore = (id: number) => {
@@ -140,7 +141,7 @@ const dialCode = bookingData?.user_contact_detail?.country
 
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-gray-700">
-                    <Phone size={16} />
+                    <Globe size={16} />
                     <span>{booking.user_contact_detail.country}</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">

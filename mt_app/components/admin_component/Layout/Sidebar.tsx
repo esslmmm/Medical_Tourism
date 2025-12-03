@@ -15,24 +15,22 @@ import {
   Stethoscope,
   MapPin,
   Route,
-  BadgeDollarSign
 } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const menuItems = [
-    { name: 'Dashboard', href: '/admin', icon: BarChart3 },
-    { name: 'User Management', href: '/admin/user', icon: Users },
+    { name: 'Profile', href: '/admin/profile', icon: User },
+    { name: 'Booking Management', href: '/admin/booking', icon: Calendar },
+    { name: 'Payment Management', href: '/admin/payment', icon:  BarChart3 },
     { name: 'Hospital Management', href: '/admin/hospital', icon: Building },
-    { name: 'Doctor Management', href: '/admin/doctors', icon: Stethoscope },
     { name: 'Package Management', href: '/admin/packages', icon: Package },
+    { name: 'Doctor Management', href: '/admin/doctors', icon: Stethoscope },
     { name: 'Place Management', href: '/admin/places', icon: MapPin },
     { name: 'Trip Management', href: '/admin/trips', icon: Route },
-    { name: 'Booking Management', href: '/admin/booking', icon: Calendar },
-     { name: 'Payment Management', href: '/admin/payment-dashboard', icon:  BadgeDollarSign },
-    { name: 'Customer Feedback', href: '/admin/feedback', icon: MessageSquare },
-    { name: 'Profile', href: '/admin/profile', icon: User },
+    { name: 'User Management', href: '/admin/user', icon: Users },
+    { name: 'Customer Feedback', href: '/admin/contact-us', icon: MessageSquare },
   ];
 
   const handleLogout = async () => {

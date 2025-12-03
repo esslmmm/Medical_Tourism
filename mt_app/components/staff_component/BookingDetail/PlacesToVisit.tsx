@@ -75,11 +75,9 @@ const PlacesToVisit = ({ tripBooking, setPackageBooking }: TripProps) => {
           </div>
 
           <div className="flex-1 space-y-2">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                  <h3 className="text-2xl font-bold text-gray-900">
               {tripBooking.routes?.title}
             </h3>
-                </h3>
 
                 <p className="flex items-center text-gray-600 gap-2 text-lg">
                   <Clock className="w-5 h-5 text-blue-500" />

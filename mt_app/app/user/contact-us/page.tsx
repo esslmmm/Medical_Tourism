@@ -19,6 +19,8 @@ const Contact_Us = () => {
     const router = useRouter();
     const [phoneNumber, setPhoneNumber] = useState("+95 "); // default code
   const [showCountryMenu, setShowCountryMenu] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
 
     // Define the country codes as an array
 const countryPhoneCodes = [
@@ -48,17 +50,16 @@ const countryPhoneCodes = [
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        // Required validation check
-        // if (!isFormValid) {
-        //     alert("Please fill in all required fields and agree to the Terms.");
-        //     return;
-        // }
-
         if (loading) return;
         setLoading(true);
 
         try {
-            const response = await axios.post('/api/contact_us', {
+            // Split phoneNumber into dial code and local number
+        const [dialCode, ...localNumberParts] = phoneNumber.split(" ");
+        const localNumber = localNumberParts.join(""); // remove any spaces in local number
+        const formattedPhoneNumber = `${dialCode}${localNumber}`;
+
+            await axios.post('/api/contact_us', {
                 firstName,
                 lastName,
                 email,
@@ -68,8 +69,20 @@ const countryPhoneCodes = [
                 message,
             });
 
-            console.log("Success:", response.data);
-            router.refresh();
+                    // Show success modal
+        setShowSuccessModal(true);
+
+        // Clear form fields
+        setFirstName('');
+        setLastName('');
+        setEmail('');
+        setPhoneNumber('+95 ');
+        setCountry('');
+        setType('');
+        setMessage('');
+        setAgreed(false);
+        router.refresh
+        
         } catch (error) {
             console.error("Error submitting form:", error);
         } finally {
@@ -231,7 +244,7 @@ const countryPhoneCodes = [
                                         <option value="">Select inquiry type</option>
                                         <option value="support">Support</option>
                                         <option value="partner">Partner</option>
-                                        <option value="medical">Other</option>
+                                        <option value="other">Other</option>
                                     </select>
                                 </div>
                             </div>
@@ -287,6 +300,23 @@ const countryPhoneCodes = [
                     </p>
                 </div>
             </div>
+            {showSuccessModal && (
+  <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white w-full max-w-md p-8 rounded-xl shadow-2xl text-center">
+      <h2 className="text-2xl font-bold text-green-600 mb-3">🎉 Message Sent!</h2>
+      <p className="text-gray-600 mb-6">
+        Thank you for contacting us. We will get back to you shortly.
+      </p>
+      <button
+        onClick={() => setShowSuccessModal(false)}
+        className="bg-teal-500 text-white py-2 px-6 rounded-lg font-semibold transition hover:bg-teal-600"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
+
             <Footer />
         </div>
     );

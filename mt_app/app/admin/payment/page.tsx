@@ -24,7 +24,7 @@ const PaymentDashboard: React.FC = () => {
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const itemsPerPage = 5;
 
-  const [statsFilter, setStatsFilter] = useState<'day' | 'week' | 'month' | 'year' | 'custom'>('month');
+  const [statsFilter, setStatsFilter] = useState<'all' | 'day' | 'week' | 'month' | 'year' | 'custom'>('all');
   const [showStatsMenu, setShowStatsMenu] = useState(false);
 const [customStart, setCustomStart] = useState<string>('');
 const [customEnd, setCustomEnd] = useState<string>('');
@@ -33,9 +33,10 @@ const [customEnd, setCustomEnd] = useState<string>('');
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/payment');
+        const response = await fetch('/api/payment');
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
+        console.log("payment data :", data)
 
         // Transform API data → UI-friendly format
         const formatted = data.map((p: any) => ({
@@ -78,6 +79,8 @@ const [customEnd, setCustomEnd] = useState<string>('');
     const date = new Date(p.dateTime);
 
     switch (statsFilter) {
+      case 'all':
+        return true; 
       case 'day':
         return (
           date.getDate() === now.getDate() &&
@@ -230,6 +233,7 @@ const [customEnd, setCustomEnd] = useState<string>('');
       <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-200 z-10 overflow-hidden">
 
         {[
+          { value: 'all', label: 'All'},
           { value: 'day', label: 'Today' },
           { value: 'week', label: 'This Week' },
           { value: 'month', label: 'This Month' },

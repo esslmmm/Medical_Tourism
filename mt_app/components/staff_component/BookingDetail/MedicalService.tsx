@@ -191,12 +191,6 @@ const MedicalServiceCard = ({ packageBooking, setPackageBooking }: MedicalServic
                   <span className="text-gray-700">{p.passport_number}</span>
                 </div>
                 <div>
-                  <span className="font-semibold">Passport ID : </span>
-                  <span className="text-gray-700">{p.passport_number}</span>
-                </div>
-                <div>
-                  <span className="font-semibold">Passport ID : </span>
-                  <span className="text-gray-700">{p.passport_number}</span>
                 </div>
               </div>
 

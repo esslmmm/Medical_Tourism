@@ -12,7 +12,7 @@ const ProfileHeader = () => {
   return (
     <div className="flex justify-between items-center bg-[#F5F7FA] shadow-md px-6 py-4">
       {/* ✅ Logo on the Left */}
-      <Link href="/staff/booking-management">
+      <Link href="/staff/booking">
         <img src="/img/Logo_staff.png" alt="Logo" className="w-24 h-auto ml-5" />
       </Link>
 

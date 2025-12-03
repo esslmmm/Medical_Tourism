@@ -17,8 +17,6 @@ export default auth((req) => {
     '/user/Form',
     '/user/profile',
     '/user/accommodation_booking',
-    '/user/Guide',
-    '/user/Test',
     '/user/BookingDetail',
     '/user/ContactUs',
     '/user/DoctorList',
@@ -78,8 +76,8 @@ export default auth((req) => {
       });
       
       // Redirect to role-appropriate dashboard
-      const redirectUrl = userRole === 'admin' ? '/admin/booking-management' 
-                         : userRole === 'staff' ? '/staff/booking-management'
+      const redirectUrl = userRole === 'admin' ? '/admin' 
+                         : userRole === 'staff' ? '/staff/booking'
                          : '/'
       return NextResponse.redirect(new URL(redirectUrl, req.url))
     }
@@ -108,7 +106,7 @@ export default auth((req) => {
     // Staff can access staff and user routes (but not admin routes)
     if (userRole === 'staff') {
       if (isAdminRoute) {
-        return NextResponse.redirect(new URL('/staff/booking-management', req.url))
+        return NextResponse.redirect(new URL('/staff/booking', req.url))
       }
       return NextResponse.next()
     }

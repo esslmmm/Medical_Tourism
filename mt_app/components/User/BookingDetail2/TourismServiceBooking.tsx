@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin, Briefcase } from 'lucide-react';
+import { Phone, Mail, Globe } from 'lucide-react';
 import { PackageBooking } from '@/types/Booking';
 import { formatDate } from '@/components/Reuseable-Function/FormateDate';
 
@@ -6,32 +6,23 @@ interface MedicalServiceBookingProps {
   bookingData: PackageBooking | null;
 }
 
+const countryDialCodes: Record<string, string> = {
+  "United States": "+1",
+  "Canada": "+1",
+  "India": "+91",
+  "United Kingdom": "+44",
+  "Australia": "+61",
+  "Pakistan": "+92",
+  "Thailand": "+66"
+};
+
 const TourismServiceBooking: React.FC<MedicalServiceBookingProps> = ({ bookingData }) => {
+  
   if(!bookingData) return;
-    const tripBookings = [
-    {
-      id: 1,
-      tripName: "Phuket Go Around",
-      duration: "3 days",
-      image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=200&h=150&fit=crop",
-      includes: ["Phi Phi Islands", "City Tour", "James Bond Island"],
-      tags: ["Summer", "Holiday", "Relax"],
-      bookingDate: "Monday, October 6 2025 → Tuesday, October 7 2025",
-      contact: {
-        name: "Ekkarat Thepthong",
-        phone: "+66 814739090",
-        email: "test@gmail.com",
-      },
-      payments: [
-        { label: "Adult (ages 16 - 80)", price: "฿ 1000 × 1" },
-        { label: "Child (ages 4 - 15)", price: "฿ 500 × 1" },
-        { label: "Guide (Arabic Language)", price: "฿ 1,000" },
-        { label: "Car Service", price: "฿ 1,000" },
-      ],
-      total: "฿ 3,500",
-      policy: "Cancellation and change policies",
-    },
-  ];
+
+  const dialCode = bookingData?.user_contact_detail?.country
+  ? countryDialCodes[bookingData.user_contact_detail.country] || "N/A"
+  : "N/A";
 
   return (
     <div>
@@ -97,8 +88,12 @@ const TourismServiceBooking: React.FC<MedicalServiceBookingProps> = ({ bookingDa
             <p className="font-semibold  text-lg mb-4">{bookingData.user_contact_detail.firstname} {bookingData.user_contact_detail.firstname}</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-gray-700">
+                <Globe size={16} />
+                <span>{dialCode} {bookingData.user_contact_detail.country}</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-700">
                 <Phone size={16} />
-                <span>{bookingData.user_contact_detail.phone}</span>
+                <span>{dialCode} {bookingData.user_contact_detail.phone}</span>
               </div>
               <div className="flex items-center gap-2 text-gray-700">
                 <Mail size={16} />
