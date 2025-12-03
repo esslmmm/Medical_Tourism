@@ -8,30 +8,31 @@ interface MedicalServiceBookingProps {
   bookingData: PackageBooking | null;
 }
 
+const countryDialCodes: Record<string, string> = {
+  "United States": "+1",
+  "Canada": "+1",
+  "India": "+91",
+  "United Kingdom": "+44",
+  "Australia": "+61",
+  "Pakistan": "+92",
+  "Thailand": "+66"
+};
+
+
 const MedicalServiceBooking: React.FC<MedicalServiceBookingProps> = ({ bookingData }) => {
+
+const dialCode = bookingData?.user_contact_detail?.country
+  ? countryDialCodes[bookingData.user_contact_detail.country] || "N/A"
+  : "N/A";
+
   if (!bookingData) return;
   const [expandedServices, setExpandedServices] = useState<Record<number, boolean>>({});
-  const [selectedPDF, setSelectedPDF] = useState<File | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [iframeLoading, setIframeLoading] = useState(false);
 
   const toggleShowMore = (id: number) => {
     setExpandedServices((prev) => ({
       ...prev,
       [id]: !prev[id], // toggle for specific booking
     }));
-  };
-
-  const handleFileClick = (fileData: File) => {
-    if (!fileData || !fileData.url) return;
-    setIframeLoading(true);
-    setSelectedPDF(fileData);
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    setSelectedPDF(null);
   };
 
 
@@ -140,7 +141,11 @@ const MedicalServiceBooking: React.FC<MedicalServiceBookingProps> = ({ bookingDa
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-gray-700">
                     <Phone size={16} />
-                    <span>{booking.user_contact_detail.phone}</span>
+                    <span>{booking.user_contact_detail.country}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <Phone size={16} />
+                    <span>{dialCode} {booking.user_contact_detail.phone}</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">
                     <Mail size={16} />
@@ -256,39 +261,6 @@ const MedicalServiceBooking: React.FC<MedicalServiceBookingProps> = ({ bookingDa
         );
       })()}
 
-      {showModal && selectedPDF && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex flex-col">
-          <div className="flex items-center justify-between bg-gray-900 text-white px-4 py-3">
-            <div className="flex items-center gap-3">
-              <FileText className="text-red-400" size={20} />
-              <span className="text-sm">{selectedPDF.originalName || selectedPDF.fileName}</span>
-            </div>
-            <button onClick={closeModal} className="hover:bg-gray-800 p-2 rounded transition-colors">
-              <X size={20} />
-            </button>
-          </div>
-
-          <div className="flex-1 relative bg-black">
-            {iframeLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
-                <Loader2 className="animate-spin text-white" size={48} />
-              </div>
-            )}
-            <iframe
-              src={selectedPDF.url}
-              title="PDF Preview"
-              className="w-full h-full"
-              onLoad={() => setIframeLoading(false)}
-            ></iframe>
-            <div className="absolute bottom-4 right-4 z-20">
-              <a href={selectedPDF.url} target="_blank" rel="noopener noreferrer"
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                Open file in New Tab
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
 
     </div>
   )
