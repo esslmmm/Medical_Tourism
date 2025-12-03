@@ -183,12 +183,6 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
                       </Link>
                     </li>
                     <li>
-                      <Link href={`/user/general/reviews`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
-                        <FaRegStar  className="w-4 h-4 mr-3" />
-                          Reviews
-                      </Link>
-                    </li>
-                    <li>
                       <Link href={`/user/general/booking-status`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                         <FaCalendarAlt className="w-4 h-4 mr-3" />
                         My Bookings

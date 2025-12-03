@@ -39,8 +39,6 @@ interface Review {
   type: "Guide" | "Hospital" | "Hotel";
   reviewed_name: string;
   hospitals?: { name: string };
-  hotels?: { name: string };
-  guides?: { name: string };
 }
 
 const Review = () => {
@@ -61,20 +59,10 @@ const Review = () => {
             setUser(data);
 
             const combinedReviews = [
-                ...data.review_guide.map((r) => ({
-                    ...r,
-                    type: "Guide",
-                    reviewed_name: r.guides?.name ?? "Unknown Guide",
-                })),
                 ...data.review_hospital.map((r) => ({
                     ...r,
                     type: "Hospital",
                     reviewed_name: r.hospitals?.name ?? "Unknown Hospital",
-                })),
-                ...data.review_hotel.map((r) => ({
-                    ...r,
-                    type: "Hotel",
-                    reviewed_name: r.hotels?.name ?? "Unknown Hotel",
                 })),
             ] as Review[];
 

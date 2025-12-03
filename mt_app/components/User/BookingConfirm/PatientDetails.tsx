@@ -44,10 +44,6 @@ const PatientDetails = () => {
                   <p>{patient.gender || '-'}</p>
                 </div>
                 <div>
-                  <p className="font-bold">Nation :</p>
-                  <p>{form.contact.country || '-'}</p>
-                </div>
-                <div>
                   <p className="font-bold">Date of Birth :</p>
                   <p>{patient.dob || '-'}</p>
                 </div>

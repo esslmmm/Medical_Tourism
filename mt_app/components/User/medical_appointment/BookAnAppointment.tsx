@@ -186,12 +186,16 @@ export default function MedicalAppointment() {
       }
 
       if (!patient.passportId.trim()) {
-        patientErrors.passportId = 'Passport ID is required';
-      } else if (!validatePassportId(patient.passportId)) {
-        patientErrors.passportId = 'Passport ID must be 6–12 alphanumeric characters';
-      }
+         patientErrors.passportId = 'Passport ID is required';
+       } else if (!validatePassportId(patient.passportId)) {
+         patientErrors.passportId = 'Passport ID must be 6–12 alphanumeric characters';
+       }
 
-      return patientErrors;
+       if (!(patient.symptoms || '').trim()) {
+         patientErrors.symptoms = 'Please provide details about symptoms';
+       }
+
+       return patientErrors;
     });
 
     // Save errors in state
@@ -259,7 +263,8 @@ export default function MedicalAppointment() {
 
       // Validate size
       if (!validateFileSize(file)) {
-        setErrors(prev => ({ ...prev, file: 'File size must be less than 10MB' }));
+        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        setErrors(prev => ({ ...prev, file: `File size is ${fileSizeMB}MB. Maximum allowed size is 10MB` }));
         return;
       }
 
@@ -553,7 +558,7 @@ export default function MedicalAppointment() {
             <div className="mb-4 text-black w-full sm:col-span-2">
               <label className="block font-medium mb-2">
                 More details about symptoms
-                <span className="text-sm text-gray-500">({form.patient.length}/1000)</span>
+                <span className="text-sm text-gray-500">({(form.patient[index].symptoms || '').length}/1000)</span>
               </label>
               <textarea
                 className={`w-full p-3 border bg-gray-50 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.patient ? 'border-red-500' : ''
