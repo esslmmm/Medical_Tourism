@@ -4,25 +4,42 @@ import { NextResponse } from 'next/server'
 
 
 // GET request - Fetch a single tourism booking by ID
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
     
-      const resolvedParams = await params;
+      const { id } = await params;
       const tourismBooking = await prisma.tourism_bookings.findUnique({
-        where: { tourism_id: resolvedParams.id },
-        include: {
-          trips: {
-            include: {
-              package_places: {
-                include: {
-                  places: true
-                }
-              }
+        where: { tourism_id: id },
+        select: {
+          child: true,
+          adult: true,
+          start: true,
+          end: true,
+          routes: {
+            select: {
+              attractions: {
+                select: {
+                  attraction_id: true,
+                  places: {
+                    select: {
+                      place_id: true,
+                      name: true,
+                      image: true,
+                      description: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          guide_bookings: {
+            select: {
+              language: true,
             }
           },
-          package_bookings: true,
+        }
         },
-      })
+      );
   
       if (!tourismBooking) {
         return NextResponse.json({ error: 'Tourism booking not found' }, { status: 404 })
@@ -35,19 +52,16 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     }
   }
 
-// PUT request - Update a tourism booking by ID
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const {
-        tour_id, 
-        car_id, 
         status
     } = await req.json()
-    const tourismBookingId = params.id;
+    const { id } = await params;
+    const tourismBookingId = id;
     const updatedTourismBooking = await prisma.tourism_bookings.update({
       where: { tourism_id: tourismBookingId },
       data:{
-        tour_id,
         status,
       }
     })
@@ -56,20 +70,5 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   } catch (error) {
     console.error('Error updating tourism booking:', error)
     return NextResponse.json({ error: 'Failed to update tourism booking' }, { status: 500 })
-  }
-}
-
-// DELETE request - Delete a tourism booking by ID
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
-  try {
-    const tourismBookingId = params.id;
-    await prisma.tourism_bookings.delete({
-      where: { tourism_id: tourismBookingId },
-    })
-
-    return NextResponse.json({ message: 'Tourism booking deleted successfully' }, { status: 200 })
-  } catch (error) {
-    console.error('Error deleting tourism booking:', error)
-    return NextResponse.json({ error: 'Failed to delete tourism booking' }, { status: 500 })
   }
 }
