@@ -43,29 +43,29 @@ export async function PUT(request: NextRequest) {
         });
         break;
 
-      case 'hotel':
-        // Validate hotel booking status
-        const validHotelStatuses = ['In_Progress', 'Pending', 'Approved', 'Rejected', 'Cancelled'];
-        if (!validHotelStatuses.includes(status)) {
-          return NextResponse.json(
-            { error: 'Invalid hotel booking status' },
-            { status: 400 }
-          );
-        }
+      // case 'hotel':
+      //   // Validate hotel booking status
+      //   const validHotelStatuses = ['In_Progress', 'Pending', 'Approved', 'Rejected', 'Cancelled'];
+      //   if (!validHotelStatuses.includes(status)) {
+      //     return NextResponse.json(
+      //       { error: 'Invalid hotel booking status' },
+      //       { status: 400 }
+      //     );
+      //   }
 
-        updatedService = await prisma.hotel_bookings.update({
-          where: { booking_id: parseInt(serviceId) },
-          data: { status: status as any },
-          include: {
-            hotels: {
-              select: {
-                name: true,
-                hotel_code: true
-              }
-            }
-          }
-        });
-        break;
+      //   updatedService = await prisma.hotel_bookings.update({
+      //     where: { booking_id: parseInt(serviceId) },
+      //     data: { status: status as any },
+      //     include: {
+      //       hotels: {
+      //         select: {
+      //           name: true,
+      //           hotel_code: true
+      //         }
+      //       }
+      //     }
+      //   });
+      //   break;
 
       case 'tourism':
         // Validate tourism booking status
@@ -81,9 +81,10 @@ export async function PUT(request: NextRequest) {
           where: { tourism_id: serviceId },
           data: { status: status as any },
           include: {
-            trips: {
+            routes: {
               select: {
-                tour_id: true,
+                route_id: true,
+                title: true,
                 description: true
               }
             }
@@ -103,14 +104,7 @@ export async function PUT(request: NextRequest) {
 
         updatedService = await prisma.guide_bookings.update({
           where: { booking_id: parseInt(serviceId) },
-          data: { status: status as any },
-          include: {
-            guides: {
-              select: {
-                name: true
-              }
-            }
-          }
+          data: { status: status as any }
         });
         break;
 
