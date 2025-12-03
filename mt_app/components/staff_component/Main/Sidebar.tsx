@@ -30,7 +30,7 @@ const Sidebar = () => {
       <div className="p-6">
         {/* Header */}
         <div className="flex items-center ml-5 justify-centers mb-8">
-            <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <div className="text-2xl font-bold bg-clip-text">
               Dashboard
             </div>
         </div>

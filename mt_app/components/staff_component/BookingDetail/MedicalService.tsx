@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { FileText, Loader2, X } from "lucide-react";
-import { PackageBooking, File } from "@/types/Booking";
+import { FileText } from "lucide-react";
+import { PackageBooking } from "@/types/Booking";
 
 
 interface MedicalServiceCardProps {
@@ -10,28 +10,13 @@ interface MedicalServiceCardProps {
 
 const MedicalServiceCard = ({ packageBooking, setPackageBooking }: MedicalServiceCardProps) => {
   if (!packageBooking) return null;
-  const [files, setFiles] = useState<File[]>([]);
-  const [selectedPDF, setSelectedPDF] = useState<File | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [iframeLoading, setIframeLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchPackageBooking = async () => {
       try {
-        let validFiles: File[] = [];
-
-        // if (
-        //   packageBooking?.appointments?.appointment_files &&
-        //   Array.isArray(packageBooking.appointments.appointment_files)
-        // ) {
-        //   validFiles = packageBooking.appointments.appointment_files
-        //     .filter((appointmentFile: any) => appointmentFile.files)
-        //     .flatMap((appointmentFile: any) => appointmentFile.files); // flatten
-        // }
-
-        setFiles(validFiles);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -79,21 +64,6 @@ const MedicalServiceCard = ({ packageBooking, setPackageBooking }: MedicalServic
     }
   };
 
-
-  useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && showModal) closeModal();
-    };
-    if (showModal) {
-      document.addEventListener('keydown', handleEscKey);
-      document.body.style.overflow = 'hidden';
-    }
-    return () => {
-      document.removeEventListener('keydown', handleEscKey);
-      document.body.style.overflow = 'unset';
-    };
-  }, [showModal]);
-
   const formatDate = (dateString: string) => {
     if (!dateString) return "Invalid Date";
     const date = new Date(dateString);
@@ -102,28 +72,6 @@ const MedicalServiceCard = ({ packageBooking, setPackageBooking }: MedicalServic
       year: "numeric",
       month: "long",
       day: "numeric",
-    });
-  };
-
-  const handleFileClick = (fileData: File) => {
-    if (!fileData || !fileData.url) return;
-    setIframeLoading(true);
-    setSelectedPDF(fileData);
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    setSelectedPDF(null);
-  };
-
-  const formatUploadDate = (dateString: any) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
     });
   };
 
@@ -137,15 +85,15 @@ const MedicalServiceCard = ({ packageBooking, setPackageBooking }: MedicalServic
           
           <div className="p-6 relative">
             {/* Status Dropdown - Top Right */}
-          <div className="absolute top-4 right-4">
+          <div className="absolute top-6 right-6">
             <select
               id="status"
               value={packageBooking?.appointments.status}
               onChange={(e) => handleStatusChange(e.target.value)}
-              className={`border border-gray-300 rounded-[18px] px-2 py-1 text-sm focus:outline-none focus:ring-2
-            ${packageBooking?.appointments.status === 'Pending' ? 'text-white bg-[#FFCC00] border-[#C5D1E0] focus:ring-yellow-300' : ''}
-            ${packageBooking?.appointments.status === 'Approved' ? 'text-white bg-[#28A83D] border-[#C5D1E0] focus:ring-green-300' : ''}
-            ${packageBooking?.appointments.status === 'Rejected' ? 'text-white bg-[#FB5626] border-[#C5D1E0] focus:ring-red-300' : ''}
+              className={`px-4 py-2 rounded-full text-sm font-semibold shadow-sm border transition-all
+            ${packageBooking?.appointments.status === "Pending" && "bg-yellow-500 text-white"}
+            ${packageBooking?.appointments.status === "Approved" && "bg-green-600 text-white"}
+            ${packageBooking?.appointments.status === "Rejected" && "bg-red-500 text-white"}
           `}
             >
               <option value="Pending">Pending</option>
@@ -290,41 +238,6 @@ const MedicalServiceCard = ({ packageBooking, setPackageBooking }: MedicalServic
           ))}
         </div>
       </div>
-
-
-      {showModal && selectedPDF && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex flex-col">
-          <div className="flex items-center justify-between bg-gray-900 text-white px-4 py-3">
-            <div className="flex items-center gap-3">
-              <FileText className="text-red-400" size={20} />
-              <span className="text-sm">{selectedPDF.originalName || selectedPDF.fileName}</span>
-            </div>
-            <button onClick={closeModal} className="hover:bg-gray-800 p-2 rounded transition-colors">
-              <X size={20} />
-            </button>
-          </div>
-
-          <div className="flex-1 relative bg-black">
-            {iframeLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
-                <Loader2 className="animate-spin text-white" size={48} />
-              </div>
-            )}
-            <iframe
-              src={selectedPDF.url}
-              title="PDF Preview"
-              className="w-full h-full"
-              onLoad={() => setIframeLoading(false)}
-            ></iframe>
-            <div className="absolute bottom-4 right-4 z-20">
-              <a href={selectedPDF.url} target="_blank" rel="noopener noreferrer"
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                Open file in New Tab
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

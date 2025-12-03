@@ -107,7 +107,7 @@ const BookingApp = () => {
         {/* Main Content */}
         <div className="pt-6">
           {activeTab === "medical" ? <MedicalServiceCard packageBooking={packageBooking} setPackageBooking={setPackageBooking}/> : <div>
-            <div className="bg-white rounded-2xl shadow-md  border border-gray-300">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-300">
         <div className="bg-emerald-500 text-white px-6 py-4 rounded-t-2xl">
           <h2 className="text-2xl font-semibold">Tourism Services</h2>
         </div>
