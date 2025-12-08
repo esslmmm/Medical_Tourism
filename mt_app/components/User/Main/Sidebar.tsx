@@ -12,7 +12,7 @@ const Sidebar = () => {
   const sidebarItems = [
     { path: `/user/general/profile`, icon: <FaUser />, label: "Profile" },
     { path: `/user/general/booking-status`, icon: <FaCalendarAlt />, label: "My Bookings" },
-    { path: `/user/general/reviews`, icon: <FaRegStar />, label: "Reviews" },
+    // { path: `/user/general/reviews`, icon: <FaRegStar />, label: "Reviews" },
     { path: `/user/general/chat`, icon: <FaCommentDots />, label: "Chat" },
   ];
 

@@ -174,12 +174,12 @@ export const Navbar: React.FC<NavbarProps> = ({ initialEmail }) => {
                         My Bookings
                       </Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link href={`/user/general/reviews`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                         <FaRegStar  className="w-4 h-4 mr-3" />
                           Reviews
                       </Link>
-                    </li>
+                    </li> */}
                     <li>
                       <Link href={`/user/general/chat`} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                         <FaCommentDots className="w-4 h-4 mr-3" />
